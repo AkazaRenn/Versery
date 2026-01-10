@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="App/App.csproj">
+    <BuildDependency Project="Model/Model.csproj" />
+    <BuildDependency Project="View/View.csproj" />
+    <BuildDependency Project="ViewModel/ViewModel.csproj" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Deploy />
+  </Project>
+  <Project Path="Model/Model.csproj" Id="93844fe7-0dc0-4c30-bc60-237144b9fd0b">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="View/View.csproj" Id="363f20d0-47ac-4a30-90f9-ad09bdcec752">
+    <BuildDependency Project="ViewModel/ViewModel.csproj" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ViewModel/ViewModel.csproj" Id="f56d31fd-b6b2-427e-98e2-d67dc013bd88">
+    <BuildDependency Project="Model/Model.csproj" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+</Solution>
