@@ -11,16 +11,69 @@
     Title="MainWindow">
 
     <winex:WindowEx.SystemBackdrop>
-        <MicaBackdrop />
+        <MicaBackdrop/>
     </winex:WindowEx.SystemBackdrop>
 
-    <NavigationView x:Name="nvSample">
-        <NavigationView.MenuItems>
-            <NavigationViewItem Icon="Play" Content="Menu Item1" Tag="SamplePage1" />
-            <NavigationViewItem Icon="Save" Content="Menu Item2" Tag="SamplePage2" />
-            <NavigationViewItem Icon="Refresh" Content="Menu Item3" Tag="SamplePage3" />
-            <NavigationViewItem Icon="Download" Content="Menu Item4" Tag="SamplePage4" />
-        </NavigationView.MenuItems>
-        <Frame x:Name="contentFrame"/>
-    </NavigationView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border
+            x:Name="titleBar"
+            Grid.Row="0"
+            VerticalAlignment="Top"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="136"/>
+            </Grid.ColumnDefinitions>
+            <NavigationView
+                x:Name="mainNavigation"
+                Grid.Column="0"
+                PaneDisplayMode="Top"
+                IsSettingsVisible="False">
+                <NavigationView.MenuItems>
+                    <NavigationViewItem Icon="Play"
+                            Content="Menu Item1"
+                            Tag="SamplePage1"/>
+                    <NavigationViewItem Icon="Save"
+                            Content="Menu Item2"
+                            Tag="SamplePage2"/>
+                    <NavigationViewItem Icon="Refresh"
+                            Content="Menu Item3"
+                            Tag="SamplePage3"/>
+                    <NavigationViewItem Icon="Download"
+                            Content="Menu Item4"
+                            Tag="SamplePage4"/>
+                </NavigationView.MenuItems>
+            </NavigationView>
+            <Button
+                Grid.Column="1"
+                Width="32"
+                Height="32"
+                Padding="0"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                CornerRadius="16">
+                <Button.Flyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem Text="Manage account">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE77B;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Settings">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE713;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+        </Grid>
+        <Frame Grid.Row="1"/>
+    </Grid>
 </winex:WindowEx>

@@ -2,4 +2,8 @@
   <PropertyGroup>
     <RootNamespace>Model</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Mastonet" />
+    <PackageReference Include="Mastonet.Entities" />
+  </ItemGroup>
 </Project>
