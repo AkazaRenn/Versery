@@ -23,13 +23,7 @@
             x:Name="TitleBar"
             Grid.Row="0"
             VerticalAlignment="Top"/>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="136"/>
-            </Grid.ColumnDefinitions>
-            <NavigationView
+        <NavigationView
                 x:Name="MainNavigation"
                 Grid.Column="0"
                 SelectionChanged="MainNavigation_SelectionChanged"
@@ -37,26 +31,36 @@
                 IsBackButtonVisible="Visible"
                 BackRequested="MainNavigation_BackRequested"
                 IsSettingsVisible="False">
-                <NavigationView.MenuItems>
-                    <NavigationViewItem
+            <NavigationView.MenuItems>
+                <NavigationViewItem
                         Icon="Play"
                         x:Name="navigationViewItem_SamplePage1"
                         x:Uid="MenuItem1"/>
-                    <NavigationViewItem
+                <NavigationViewItem
                         Icon="Save"
                         x:Name="navigationViewItem_Login"
                         Content="Login"/>
-                    <NavigationViewItem
+                <NavigationViewItem
                         Icon="Refresh"
                         Content="Menu Item3"
                         Tag="SamplePage3"/>
-                    <NavigationViewItem
+                <NavigationViewItem
                         Icon="Download"
                         Content="Menu Item4"
                         Tag="SamplePage4"/>
-                </NavigationView.MenuItems>
-            </NavigationView>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem IsEnabled="False" Width="{x:Bind MainNavigation_RightPadding}"/>
+            </NavigationView.FooterMenuItems>
+        </NavigationView>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="{x:Bind TitleBarRightInset}"/>
+            </Grid.ColumnDefinitions>
             <Button
+                x:Name="ProfileButton"
                 Grid.Column="1"
                 Width="32"
                 Height="32"

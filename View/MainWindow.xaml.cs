@@ -24,6 +24,26 @@ public sealed partial class MainWindow: WindowEx {
 
         navigationViewItem_SamplePage1.Tag = typeof(View.Pages.SamplePage1);
         navigationViewItem_Login.Tag = typeof(View.Pages.Login);
+
+        foreach (var item in MainNavigation.MenuItems.OfType<NavigationViewItem>()) {
+            item.Height = MainNavigation.CompactPaneLength - 8;
+        }
+
+        if (MainNavigation.MenuItems.OfType<NavigationViewItem>().First().Tag is Type pageType) {
+            ContentFrame.Navigate(pageType);
+        }
+    }
+
+    private GridLength TitleBarRightInset {
+        get {
+            return new GridLength(AppWindow.TitleBar.RightInset - 80);
+        }
+    }
+
+    private Double MainNavigation_RightPadding {
+        get {
+            return AppWindow.TitleBar.RightInset - 84 + ProfileButton.Width;
+        }
     }
 
     private void MainNavigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args) {

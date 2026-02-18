@@ -8,11 +8,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
-        <TextBlock
-            Text="Login Page"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="24"/>
-    </Grid>
+    <StackPanel Padding="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="400"
+                Spacing="12">
+
+        <TextBlock Text="Enter Service URL"
+                   FontSize="20"/>
+
+        <TextBox PlaceholderText="https://example.com/api"
+                 Text="{Binding Domain, Mode=TwoWay}"
+                 FontSize="16"/>
+        <Button Content="Login"
+                Command="{Binding StartLoginCommand}"
+                HorizontalAlignment="Stretch"/>
+    </StackPanel>
 </Page>
