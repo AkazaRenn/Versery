@@ -20,7 +20,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border
-            x:Name="titleBar"
+            x:Name="TitleBar"
             Grid.Row="0"
             VerticalAlignment="Top"/>
         <Grid Grid.Row="0">
@@ -30,23 +30,30 @@
                 <ColumnDefinition Width="136"/>
             </Grid.ColumnDefinitions>
             <NavigationView
-                x:Name="mainNavigation"
+                x:Name="MainNavigation"
                 Grid.Column="0"
+                SelectionChanged="MainNavigation_SelectionChanged"
                 PaneDisplayMode="Top"
+                IsBackButtonVisible="Visible"
+                BackRequested="MainNavigation_BackRequested"
                 IsSettingsVisible="False">
                 <NavigationView.MenuItems>
-                    <NavigationViewItem Icon="Play"
-                            x:Uid="MenuItem1"
-                            Tag="SamplePage1"/>
-                    <NavigationViewItem Icon="Save"
-                            Content="Menu Item2"
-                            Tag="SamplePage2"/>
-                    <NavigationViewItem Icon="Refresh"
-                            Content="Menu Item3"
-                            Tag="SamplePage3"/>
-                    <NavigationViewItem Icon="Download"
-                            Content="Menu Item4"
-                            Tag="SamplePage4"/>
+                    <NavigationViewItem
+                        Icon="Play"
+                        x:Name="navigationViewItem_SamplePage1"
+                        x:Uid="MenuItem1"/>
+                    <NavigationViewItem
+                        Icon="Save"
+                        x:Name="navigationViewItem_Login"
+                        Content="Login"/>
+                    <NavigationViewItem
+                        Icon="Refresh"
+                        Content="Menu Item3"
+                        Tag="SamplePage3"/>
+                    <NavigationViewItem
+                        Icon="Download"
+                        Content="Menu Item4"
+                        Tag="SamplePage4"/>
                 </NavigationView.MenuItems>
             </NavigationView>
             <Button
@@ -74,6 +81,8 @@
                 </Button.Flyout>
             </Button>
         </Grid>
-        <Frame Grid.Row="1"/>
+        <Frame x:Name="ContentFrame"
+               Grid.Row="1"
+               Navigated="ContentFrame_Navigated"/>
     </Grid>
 </winex:WindowEx>
