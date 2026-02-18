@@ -36,7 +36,7 @@
                 IsSettingsVisible="False">
                 <NavigationView.MenuItems>
                     <NavigationViewItem Icon="Play"
-                            Content="Menu Item1"
+                            x:Uid="MenuItem1"
                             Tag="SamplePage1"/>
                     <NavigationViewItem Icon="Save"
                             Content="Menu Item2"
