@@ -62,7 +62,7 @@
                 CornerRadius="16">
                 <Button.Flyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem Text="Manage account">
+                        <MenuFlyoutItem Text="Manage account" RightTapped="MenuFlyoutItem_PointerPressed">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE77B;"/>
                             </MenuFlyoutItem.Icon>

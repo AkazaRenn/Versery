@@ -1,8 +1,11 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using View.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
@@ -27,7 +30,6 @@ public sealed partial class MainWindow: WindowEx {
         foreach (var item in MainNavigation.MenuItems.OfType<NavigationViewItem>()) {
             item.Height = MainNavigation.CompactPaneLength - 8;
         }
-
         if (MainNavigation.MenuItems.OfType<NavigationViewItem>().First().Tag is Type pageType) {
             ContentFrame.Navigate(pageType);
         }
@@ -114,5 +116,9 @@ public sealed partial class MainWindow: WindowEx {
         }
 
         MainNavigation.SelectedItem = null;
+    }
+
+    private async void MenuFlyoutItem_PointerPressed(object sender, RightTappedRoutedEventArgs e) {
+        _ = new LoginDialog(ContentFrame, Content.XamlRoot);
     }
 }

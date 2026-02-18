@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="LoginDialog.CloseButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="LoginDialog.PrimaryButtonText" xml:space="preserve">
+    <value>通過 Versery 登入</value>
+  </data>
+  <data name="LoginDialog.Title" xml:space="preserve">
+    <value>添加聯邦宇宙帳戶</value>
+  </data>
+  <data name="LoginDialog_InstanceTextBox.PlaceholderText" xml:space="preserve">
+    <value>實例？</value>
+  </data>
   <data name="MenuItem1.Content" xml:space="preserve">
     <value>選單項目 1</value>
   </data>
