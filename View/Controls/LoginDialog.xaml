@@ -6,6 +6,8 @@
     xmlns:local="using:View.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="using:ViewModel.Controls"
+    d:DataContext="{d:DesignInstance Type=viewmodel:LoginDialog}"
     mc:Ignorable="d"
     x:Uid="LoginDialog"
     Style="{StaticResource DefaultContentDialogStyle}"

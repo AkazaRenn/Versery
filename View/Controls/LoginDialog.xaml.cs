@@ -3,14 +3,13 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace View.Controls; 
 public sealed partial class LoginDialog: ContentDialog {
-    public LoginDialog(Frame frame, XamlRoot xamlRoot) {
+    public LoginDialog(Frame? frame, XamlRoot xamlRoot) {
         InitializeComponent();
 
-        XamlRoot = xamlRoot;
-
         var viewModel = new ViewModel.Controls.LoginDialog();
-        viewModel.LoginUriCreated += uri => frame.Navigate(typeof(View.Pages.Login), uri);
+        viewModel.LoginUriCreated += uri => frame?.Navigate(typeof(View.Pages.Login), uri);
         DataContext = viewModel;
+        XamlRoot = xamlRoot;
 
         _ = ShowAsync();
     }

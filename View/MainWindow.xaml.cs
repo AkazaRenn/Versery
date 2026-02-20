@@ -1,11 +1,8 @@
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
-using View.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
@@ -20,34 +17,6 @@ public sealed partial class MainWindow: WindowEx {
         ExtendsContentIntoTitleBar = true;
         AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
         SetTitleBar(MainNavigation);
-
-        MinWidth = 400;
-        MinHeight = 400;
-
-        navigationViewItem_SamplePage1.Tag = typeof(View.Pages.SamplePage1);
-        navigationViewItem_Login.Tag = typeof(View.Pages.Login);
-
-        foreach (var item in MainNavigation.MenuItems.OfType<NavigationViewItem>()) {
-            item.Height = MainNavigation.CompactPaneLength - 8;
-        }
-        if (MainNavigation.MenuItems.OfType<NavigationViewItem>().First().Tag is Type pageType) {
-            ContentFrame.Navigate(pageType);
-        }
-        MainNavigation.SizeChanged += (_, _) => {
-            UpdateNonClientInputPassthrough();
-        };
-    }
-
-    private GridLength TitleBarRightInset {
-        get {
-            return new GridLength(AppWindow.TitleBar.RightInset - 80);
-        }
-    }
-
-    private double MainNavigation_RightPadding {
-        get {
-            return AppWindow.TitleBar.RightInset - 120 + ProfileButton.Width;
-        }
     }
 
     private void UpdateNonClientInputPassthrough() {
@@ -57,14 +26,14 @@ public sealed partial class MainWindow: WindowEx {
 
         List<RectInt32> regionRects = [
             GetRegionRect(8, 8, 36, 36), // back button
-            //GetRegionRect(ProfileButton),
+            //GetRegionRect(MainNavigation_UserProfileButton),
         ];
 
         foreach (var item in MainNavigation.MenuItems.OfType<NavigationViewItem>()) {
             if (item.ActualWidth <= 0) {
                 continue;
             }
-            regionRects.Add(GetRegionRect(item, 4));
+            regionRects.Add(GetRegionRect(item, 8));
         }
 
         var nonClientInput = InputNonClientPointerSource.GetForWindowId(AppWindow.Id);
@@ -75,7 +44,7 @@ public sealed partial class MainWindow: WindowEx {
     private RectInt32 GetRegionRect(FrameworkElement element, double offset = 0) {
         var transform = element.TransformToVisual(null);
         Rect bounds = transform.TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
-        return GetRegionRect(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+        return GetRegionRect(bounds.X, bounds.Y, bounds.Width, bounds.Height, offset);
     }
 
     private RectInt32 GetRegionRect(double X, double Y, double Width, double Height, double offset = 0) {
@@ -90,7 +59,7 @@ public sealed partial class MainWindow: WindowEx {
     private void MainNavigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args) {
         if (args.SelectedItem is NavigationViewItem item) {
             if (item.Tag is Type pageType) {
-                ContentFrame.Navigate(pageType);
+                MainFrame.Navigate(pageType);
             }
         }
 
@@ -98,13 +67,34 @@ public sealed partial class MainWindow: WindowEx {
     }
 
     private void MainNavigation_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) {
-        if (ContentFrame.CanGoBack) {
-            ContentFrame.GoBack();
+        if (MainFrame.CanGoBack) {
+            MainFrame.GoBack();
         }
     }
 
-    private void ContentFrame_Navigated(object sender, NavigationEventArgs e) {
-        MainNavigation.IsBackEnabled = ContentFrame.CanGoBack;
+    private void MainNavigation_Loaded(object sender, RoutedEventArgs e) {
+        navigationViewItem_SamplePage1.Tag = typeof(View.Pages.SamplePage1);
+        navigationViewItem_Login.Tag = typeof(View.Pages.Login);
+
+        var ScaleUnawareRightInset = AppWindow.TitleBar.RightInset / Content.XamlRoot.RasterizationScale;
+        MainNavigation_UserProfileButton.Margin = new Thickness(0, 0, ScaleUnawareRightInset + 16, 0);
+        MainNavigation_RightPadding.Width = MainNavigation_UserProfileButton.Margin.Right;
+
+        foreach (var item in MainNavigation.MenuItems.OfType<NavigationViewItem>()) {
+            item.Height = MainNavigation.CompactPaneLength - 8;
+        }
+
+        if (MainNavigation.MenuItems.OfType<NavigationViewItem>().First().Tag is Type pageType) {
+            MainFrame.Navigate(pageType);
+        }
+
+        MainNavigation.SizeChanged += (_, _) => {
+            UpdateNonClientInputPassthrough();
+        };
+    }
+
+    private void MainFrame_Navigated(object sender, NavigationEventArgs e) {
+        MainNavigation.IsBackEnabled = MainFrame.CanGoBack;
 
         foreach (var item in MainNavigation.MenuItems.OfType<NavigationViewItem>()) {
             if (item.Tag is Type pageType) {
@@ -116,9 +106,5 @@ public sealed partial class MainWindow: WindowEx {
         }
 
         MainNavigation.SelectedItem = null;
-    }
-
-    private async void MenuFlyoutItem_PointerPressed(object sender, RightTappedRoutedEventArgs e) {
-        _ = new LoginDialog(ContentFrame, Content.XamlRoot);
     }
 }

@@ -11,7 +11,16 @@ public partial class LoginDialog: ObservableObject {
 
     [RelayCommand]
     private void Login() {
-        Console.WriteLine("Logging in with domain: " + Instance);
-        LoginUriCreated?.Invoke(new Uri($"https://{Instance}"));
+        var input = Instance.Trim();
+        if (!input.Contains("://")) {
+            input = "https://" + input;
+        }
+
+        if (Uri.TryCreate(input, UriKind.Absolute, out var uri)) {
+            LoginUriCreated?.Invoke(uri);
+        } else {
+            Console.WriteLine("Invalid URI: " + input);
+            // optionally expose an error property for the UI
+        }
     }
 }
