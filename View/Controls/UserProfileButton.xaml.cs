@@ -13,6 +13,6 @@ public sealed partial class UserProfileButton: Button {
     public Frame? Frame { get; set; }
 
     private void MenuFlyoutItem_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) {
-        _ = new LoginDialog(Frame, XamlRoot);
+        _ = new LoginDialog(XamlRoot);
     }
 }

@@ -6,16 +6,13 @@
     xmlns:local="using:View.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="using:ViewModel.Controls"
-    d:DataContext="{d:DesignInstance Type=viewmodel:LoginDialog}"
     mc:Ignorable="d"
     x:Uid="LoginDialog"
     Style="{StaticResource DefaultContentDialogStyle}"
-    PrimaryButtonCommand="{Binding LoginCommand}">
-
+    PrimaryButtonCommand="{x:Bind viewModel.LoginCommand}">
     <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <TextBox 
             x:Uid="LoginDialog_InstanceTextBox"
-            Text="{Binding Instance, Mode=TwoWay}"/>
+            Text="{x:Bind viewModel.Instance, Mode=TwoWay}"/>
     </StackPanel>
 </ContentDialog>

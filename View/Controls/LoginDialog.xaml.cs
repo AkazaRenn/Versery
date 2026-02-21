@@ -1,13 +1,18 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using static View.Messages;
 
 namespace View.Controls; 
 public sealed partial class LoginDialog: ContentDialog {
-    public LoginDialog(Frame? frame, XamlRoot xamlRoot) {
+    private readonly ViewModel.Controls.LoginDialog viewModel;
+
+    public LoginDialog(XamlRoot xamlRoot) {
         InitializeComponent();
 
-        var viewModel = new ViewModel.Controls.LoginDialog();
-        viewModel.LoginUriCreated += uri => frame?.Navigate(typeof(View.Pages.Login), uri);
+        viewModel = new ViewModel.Controls.LoginDialog();
+        viewModel.LoginUriCreated += uri => 
+            WeakReferenceMessenger.Default.Send(new NavigationRequest(typeof(Pages.Login), uri));
         DataContext = viewModel;
         XamlRoot = xamlRoot;
 

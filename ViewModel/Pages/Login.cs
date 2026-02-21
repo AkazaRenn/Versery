@@ -1,13 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace ViewModel.Pages;
 public partial class Login : ObservableObject {
-    [ObservableProperty]
-    private string instance = string.Empty;
+    public event Action<string>? LoginFinished;
 
-    [RelayCommand]
-    private void StartLogin() {
-        Console.WriteLine("Logging in with instance: " + Instance);
+    public void CheckLoginUri(string uri) {
+        Console.WriteLine("Logging in with instance: " + uri);
+        Model.Credentials.AddToken("xxx");
     }
 }

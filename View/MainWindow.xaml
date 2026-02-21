@@ -23,14 +23,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <NavigationView
-            x:Name="MainNavigation"
+            x:Name="Navigation"
             Grid.Column="0"
             PaneDisplayMode="Top"
             IsBackButtonVisible="Visible"
             IsSettingsVisible="False"
-            SelectionChanged="MainNavigation_SelectionChanged"
-            BackRequested="MainNavigation_BackRequested"
-            Loaded="MainNavigation_Loaded">
+            SelectionChanged="Navigation_SelectionChanged"
+            BackRequested="Navigation_BackRequested"
+            Loaded="Navigation_Loaded">
             <NavigationView.MenuItems>
                 <NavigationViewItem
                     x:Name="navigationViewItem_SamplePage1"
@@ -47,7 +47,7 @@
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItemHeader
-                    x:Name="MainNavigation_RightPadding"/>
+                    x:Name="Navigation_RightPadding"/>
             </NavigationView.FooterMenuItems>
         </NavigationView>
         <Grid Grid.Row="0">
@@ -56,9 +56,8 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <controls:UserProfileButton
-                x:Name="MainNavigation_UserProfileButton"
+                x:Name="Navigation_UserProfileButton"
                 Grid.Column="1"
-                Frame="{x:Bind MainFrame}"
                 Padding="0"
                 Width="32"
                 Height="32"
@@ -67,8 +66,8 @@
                 VerticalContentAlignment="Center"/>
         </Grid>
         <Frame
-            x:Name="MainFrame"
+            x:Name="Frame"
             Grid.Row="1"
-            Navigated="MainFrame_Navigated"/>
+            Navigated="Frame_Navigated"/>
     </Grid>
 </winex:WindowEx>
