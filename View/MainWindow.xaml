@@ -40,7 +40,7 @@
                     Content="Notifications"/>
                 <NavigationViewItem
                     Icon="Refresh"
-                    Tag="SamplePage3"/>
+                    x:Name="TestPage"/>
                 <NavigationViewItem
                     Icon="Download"
                     Tag="SamplePage4"/>
@@ -56,7 +56,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <controls:UserProfileButton
-                x:Name="Navigation_UserProfileButton"
+                x:Name="UserProfileButton"
                 Grid.Column="1"
                 Padding="0"
                 Width="32"

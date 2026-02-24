@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
 
-namespace View;
+namespace ViewModel;
 public static class Services {
     public static void Add(IServiceCollection services) {
-        services.AddSingleton<MainWindow>();
+        services.AddTransient<Controls.LoginDialog>();
+        services.AddTransient<Pages.Login>();
     }
-
-    public static IServiceProvider? Provider { get; set; }
 }

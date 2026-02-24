@@ -30,7 +30,7 @@ public sealed partial class MainWindow: WindowEx, IRecipient<NavigationRequest> 
 
         List<RectInt32> regionRects = [
             GetRegionRect(8, 8, 36, 36), // back button
-            //GetRegionRect(Navigation_UserProfileButton),
+            //GetRegionRect(UserProfileButton),
         ];
 
         foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>()) {
@@ -81,8 +81,8 @@ public sealed partial class MainWindow: WindowEx, IRecipient<NavigationRequest> 
         navigationViewItem_Login.Tag = typeof(View.Pages.Login);
 
         var ScaleUnawareRightInset = AppWindow.TitleBar.RightInset / Content.XamlRoot.RasterizationScale;
-        Navigation_UserProfileButton.Margin = new Thickness(0, 0, ScaleUnawareRightInset + 16, 0);
-        Navigation_RightPadding.Width = Navigation_UserProfileButton.Margin.Right;
+        UserProfileButton.Margin = new Thickness(0, 0, ScaleUnawareRightInset + 16, 0);
+        Navigation_RightPadding.Width = UserProfileButton.Margin.Right;
 
         foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>()) {
             item.Height = Navigation.CompactPaneLength - 8;

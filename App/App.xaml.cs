@@ -14,12 +14,14 @@ public partial class App: Application {
             .CreateDefaultBuilder()
             .ConfigureServices((context, services) => {
                 View.Services.Add(services);
+                ViewModel.Services.Add(services);
                 Model.Services.Add(services);
             })
             .Build();   
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args) {
+        View.Services.Provider = Host.Services;
         Host.Services.GetRequiredService<View.MainWindow>().Activate();
     }
 }
