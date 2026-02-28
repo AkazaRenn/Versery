@@ -25,8 +25,9 @@ public partial class Login : ObservableObject {
         }
     }
 
-    public async void CheckLoginUri(string uri) {
-        if(await Authentication!.CheckLoginUrl(uri)) {
+    [RelayCommand]
+    private async Task CheckLoginUri(string uri) {
+        if (await Authentication!.CheckLoginUrl(uri)) {
             WeakReferenceMessenger.Default.Send(new Messages.LoginCompleted());
         }
     }

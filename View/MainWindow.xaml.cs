@@ -53,10 +53,10 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
     private RectInt32 GetRegionRect(double X, double Y, double Width, double Height, double offset = 0) {
         double dpiScale = Content.XamlRoot.RasterizationScale;
         return new RectInt32(
-                (int)(dpiScale * (X + offset)),
-                (int)(dpiScale * (Y + offset)),
-                (int)(dpiScale * (Width - offset)),
-                (int)(dpiScale * (Height - offset)));
+            (int)(dpiScale * (X + offset)),
+            (int)(dpiScale * (Y + offset)),
+            (int)(dpiScale * (Width - offset)),
+            (int)(dpiScale * (Height - offset)));
     }
 
     private void Navigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args) {
