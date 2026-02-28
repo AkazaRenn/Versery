@@ -17,11 +17,12 @@ public partial class App: Application {
                 ViewModel.Services.Add(services);
                 Model.Services.Add(services);
             })
-            .Build();   
+            .Build();
+
+        View.Services.Provider = Host.Services;
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args) {
-        View.Services.Provider = Host.Services;
         Host.Services.GetRequiredService<View.MainWindow>().Activate();
     }
 }

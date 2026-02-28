@@ -11,27 +11,28 @@
     Unloaded="Page_Unloaded">
 
     <Page.Resources>
-        <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
-        <converters:EmptyObjectToObjectConverter x:Key="NullableUriToVisibilityConverter" EmptyValue="Collapsed" NotEmptyValue="Visible"/>
+        <converters:EmptyObjectToObjectConverter x:Key="NullableObjectToVisibilityConverter" EmptyValue="Collapsed" NotEmptyValue="Visible"/>
+        <converters:EmptyObjectToObjectConverter x:Key="NullableObjectToBoolConverterReversed" EmptyValue="True" NotEmptyValue="False"/>
     </Page.Resources>
 
     <Grid>
-        <StackPanel 
-            MinWidth="200"
+        <StackPanel
+            Width="240"
             Spacing="16"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
-            <TextBox 
-                x:Uid="LoginDialog_InstanceTextBox"
+            <TextBox
+                x:Uid="Page_Login_InstanceTextBox"
                 Text="{x:Bind viewModel.Instance, Mode=TwoWay}"/>
             <Button
                 x:Uid="Page_Login_LoginButton"
                 Command="{x:Bind viewModel.StartLoginCommand}"
-                HorizontalAlignment="Stretch"/>
+                HorizontalAlignment="Stretch"
+                IsEnabled="{x:Bind viewModel.Authentication, Mode=OneWay, Converter={StaticResource NullableObjectToBoolConverterReversed}}"/>
         </StackPanel>
-        <WebView2 
-            x:Name="WebView" 
-            Visibility="{x:Bind viewModel.OAuthUri, Mode=OneWay, Converter={StaticResource NullableUriToVisibilityConverter}}"
+        <WebView2
+            x:Name="WebView"
+            Visibility="{x:Bind viewModel.OAuthUri, Mode=OneWay, Converter={StaticResource NullableObjectToVisibilityConverter}}"
             Source="{x:Bind viewModel.OAuthUri, Mode=OneWay}"
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
