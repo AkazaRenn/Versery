@@ -6,13 +6,11 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace View.Controls; 
 public sealed partial class UserProfileButton: Button {
+    private readonly ViewModel.Controls.UserProfileButton? viewModel = Services.Provider?.GetService<ViewModel.Controls.UserProfileButton>();
+
     public UserProfileButton() {
         InitializeComponent();
-    }
 
-    public Frame? Frame { get; set; }
-
-    private void MenuFlyoutItem_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) {
-        Services.Provider?.GetService<LoginDialog>()?.Show(XamlRoot);
+        DataContext = viewModel;
     }
 }

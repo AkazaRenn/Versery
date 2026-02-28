@@ -4,46 +4,41 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Model; 
-public partial class Authentication {
-    private readonly AuthenticationClient authenticationClient;
+public partial class Authentication(string instance) {
+    private static readonly Regex oAuthRegex = OAuthRegex();
 
-    public Authentication(string instance) {
-        authenticationClient = new AuthenticationClient(instance);
+    private readonly AuthenticationClient authenticationClient = new(instance);
 
-        var appRegistrationJson = Credentials.GetAppRegistration(instance);
+    public string OAuthUrl => authenticationClient!.OAuthUrl();
+
+    public async Task Register() {
+        var appRegistrationJson = Credentials.GetAppRegistration(authenticationClient.Instance);
         if (!string.IsNullOrEmpty(appRegistrationJson)) {
             var appRegistration = JsonSerializer.Deserialize<AppRegistration>(appRegistrationJson);
             if (appRegistration is not null) {
                 authenticationClient.AppRegistration = appRegistration;
+                return;
             }
         }
 
-        if (authenticationClient.AppRegistration is null) {
-            _ = CreateApp();
-        }
-    }
+        var newAppRegistration = await authenticationClient.CreateApp("Versery", "https://github.com/AkazaRenn/Versery/", null, GranularScope.Read, GranularScope.Write, GranularScope.Follow);
+        Credentials.AddAppRegistration(authenticationClient.Instance, JsonSerializer.Serialize(newAppRegistration));
+}
 
-    public string OAuthUrl => authenticationClient!.OAuthUrl();
+    public async Task<bool> CheckLoginUrl(string url) {
+        var match = oAuthRegex.Match(url);
 
-    private async Task CreateApp() {
-        var appRegistration = await authenticationClient.CreateApp("Versery", "https://github.com/AkazaRenn/Versery/", null, GranularScope.Read, GranularScope.Write, GranularScope.Follow);
-        Credentials.AddAppRegistration(authenticationClient.Instance, JsonSerializer.Serialize(appRegistration));
-    }
-
-    public async Task CheckLoginUrl(string url) {
-        var match = OAuthRegex().Match(url);
-
-        if (authenticationClient is not null && match.Success) {
+        if (match.Success) {
             var code = match.Groups[1].Value;
-            var auth = await authenticationClient!.ConnectWithCode(code);
+            var auth = await authenticationClient.ConnectWithCode(code);
             var mastodonClient = new MastodonClient(authenticationClient.Instance, auth.AccessToken);
-            await SaveAccessToken(mastodonClient);
+            var account = await mastodonClient.GetCurrentUser();
+            var instance = await mastodonClient.GetInstanceV2();
+            Credentials.AddAccessToken($"{account.UserName}@{instance.Domain}", mastodonClient.AccessToken);
+            return true;
         }
-    }
 
-    private static async Task SaveAccessToken(MastodonClient client) {
-        var account = await client.GetCurrentUser();
-        Credentials.AddAccessToken(account.Id, client.AccessToken);
+        return false;
     }
 
     [GeneratedRegex(@"/oauth/authorize/native\?code=([a-zA-Z0-9_-]+)", RegexOptions.Compiled)]

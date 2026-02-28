@@ -11,7 +11,7 @@
         <MenuFlyout Placement="Bottom">
             <MenuFlyoutItem
                 Text="Manage account"
-                Click="MenuFlyoutItem_Click">
+                Command="{x:Bind viewModel.LoginCommand}">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE77B;"/>
                 </MenuFlyoutItem.Icon>

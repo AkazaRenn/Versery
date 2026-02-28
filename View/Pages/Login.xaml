@@ -6,13 +6,35 @@
     xmlns:local="using:View.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d"
     Unloaded="Page_Unloaded">
 
-    <WebView2 
-        x:Name="WebView" 
-        Source="https://jointhefediverse.net/" 
-        HorizontalAlignment="Stretch" 
-        VerticalAlignment="Stretch"
-        NavigationStarting="WebView_NavigationStarting"/>
+    <Page.Resources>
+        <converters:StringVisibilityConverter x:Key="StringVisibilityConverter" />
+        <converters:EmptyObjectToObjectConverter x:Key="NullableUriToVisibilityConverter" EmptyValue="Collapsed" NotEmptyValue="Visible"/>
+    </Page.Resources>
+
+    <Grid>
+        <StackPanel 
+            MinWidth="200"
+            Spacing="16"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <TextBox 
+                x:Uid="LoginDialog_InstanceTextBox"
+                Text="{x:Bind viewModel.Instance, Mode=TwoWay}"/>
+            <Button
+                x:Uid="Page_Login_LoginButton"
+                Command="{x:Bind viewModel.StartLoginCommand}"
+                HorizontalAlignment="Stretch"/>
+        </StackPanel>
+        <WebView2 
+            x:Name="WebView" 
+            Visibility="{x:Bind viewModel.OAuthUri, Mode=OneWay, Converter={StaticResource NullableUriToVisibilityConverter}}"
+            Source="{x:Bind viewModel.OAuthUri, Mode=OneWay}"
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch"
+            NavigationStarting="WebView_NavigationStarting"/>
+    </Grid>
 </Page>

@@ -8,7 +8,7 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="345d931a-3729-473a-84ca-15d727cfec0e"
+    Name="Versery"
     Publisher="CN=dev"
     Version="1.0.0.0" />
 

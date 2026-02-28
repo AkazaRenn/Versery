@@ -10,14 +10,7 @@ public static class Credentials {
     }
 
     public static string GetAccessToken(string userId) {
-        var vault = new PasswordVault();
-        var credential = vault.Retrieve(resourceName, userId);
-        if (credential is not null) {
-            credential.RetrievePassword();
-            return credential.Password;
-        } else {
-            return string.Empty;
-        }
+        return Retrieve(userId);
     }
 
     public static void AddAppRegistration(string instance, string appJson) {
@@ -26,12 +19,20 @@ public static class Credentials {
     }
 
     public static string GetAppRegistration(string instance) {
+        return Retrieve(instance);
+    }
+
+    private static string Retrieve(string userName) {
         var vault = new PasswordVault();
-        var credential = vault.Retrieve(resourceName, instance);
-        if (credential is not null) {
-            credential.RetrievePassword();
-            return credential.Password;
-        } else {
+        try {
+            var credential = vault.Retrieve(resourceName, userName);
+            if (credential is not null) {
+                credential.RetrievePassword();
+                return credential.Password;
+            } else {
+                return string.Empty;
+            }
+        } catch (Exception) {
             return string.Empty;
         }
     }

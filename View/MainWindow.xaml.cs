@@ -8,11 +8,10 @@ using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
 using WinUIEx;
-using static View.Messages;
 
 namespace View;
 
-public sealed partial class MainWindow: WindowEx, IRecipient<NavigationRequest> {
+public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.LoginRequested> ,IRecipient<ViewModel.Messages.LoginCompleted> {
     public MainWindow() {
         InitializeComponent();
 
@@ -112,7 +111,11 @@ public sealed partial class MainWindow: WindowEx, IRecipient<NavigationRequest> 
         Navigation.SelectedItem = null;
     }
 
-    void IRecipient<NavigationRequest>.Receive(NavigationRequest message) {
-        Frame.Navigate(message.PageType, message.Parameter);
+    void IRecipient<ViewModel.Messages.LoginRequested>.Receive(ViewModel.Messages.LoginRequested _) {
+        Frame.Navigate(typeof(Pages.Login));
+    }
+
+    void IRecipient<ViewModel.Messages.LoginCompleted>.Receive(ViewModel.Messages.LoginCompleted _) {
+        Frame.Navigate(typeof(Pages.SamplePage1));
     }
 }

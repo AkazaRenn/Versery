@@ -132,4 +132,7 @@
   <data name="MenuItem1.Content" xml:space="preserve">
     <value>選單項目 1</value>
   </data>
+  <data name="Page_Login_LoginButton.Content" xml:space="preserve">
+    <value>登入</value>
+  </data>
 </root>

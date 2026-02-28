@@ -1,15 +1,33 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Text.RegularExpressions;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Model;
 
 namespace ViewModel.Pages;
 public partial class Login : ObservableObject {
-    private static readonly Regex authRegex = new Regex(@"/oauth/authorize/native\?code=([a-zA-Z0-9_-]+)", RegexOptions.Compiled);
+    [ObservableProperty]
+    private string instance = string.Empty;
 
-    public event Action<string>? LoginFinished;
+    [ObservableProperty]
+    private Uri? oAuthUri = null;
 
-    public void CheckLoginUri(string uri) {
-        if (authRegex.IsMatch(uri)) {
-            Model.Credentials.AddToken("xxx");
+    [ObservableProperty]
+    private Model.Authentication? authentication = null;
+
+    [RelayCommand]
+    private async Task StartLogin() {
+        Authentication = new Model.Authentication(Instance.Trim());
+        await Authentication.Register();
+        if (Uri.TryCreate(Authentication.OAuthUrl, UriKind.Absolute, out var oAuthUri)) {
+            OAuthUri = oAuthUri;
+        } else { 
+            Authentication = null;
+        }
+    }
+
+    public async void CheckLoginUri(string uri) {
+        if(await Authentication!.CheckLoginUrl(uri)) {
+            WeakReferenceMessenger.Default.Send(new Messages.LoginCompleted());
         }
     }
 }

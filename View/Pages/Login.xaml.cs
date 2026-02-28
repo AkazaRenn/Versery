@@ -22,12 +22,15 @@ internal partial class Login: Page {
         }
     }
 
-    private void Page_Unloaded(object sender, RoutedEventArgs e) {
-        WebView.Close();
+    private async void Page_Unloaded(object sender, RoutedEventArgs e) {
+        var webView = WebView;
+        if (webView.CoreWebView2 != null) {
+            await webView.CoreWebView2.Profile.ClearBrowsingDataAsync();
+        }
+        webView.Close();
     }
 
     private void WebView_NavigationStarting(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args) {
         viewModel?.CheckLoginUri(args.Uri);
-        Console.WriteLine("New URL: " + args.Uri.ToString());
     }
 }

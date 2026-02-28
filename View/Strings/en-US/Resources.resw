@@ -132,4 +132,7 @@
   <data name="MenuItem1.Content" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="Page_Login_LoginButton.Content" xml:space="preserve">
+    <value>Login</value>
+  </data>
 </root>
