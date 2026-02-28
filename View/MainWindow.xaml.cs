@@ -15,6 +15,7 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
     public MainWindow() {
         InitializeComponent();
 
+        PersistenceId = "MainWindow";
         ExtendsContentIntoTitleBar = true;
         AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
         SetTitleBar(Navigation);
