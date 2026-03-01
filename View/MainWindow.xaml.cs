@@ -15,10 +15,15 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
     public MainWindow() {
         InitializeComponent();
 
-        PersistenceId = "MainWindow";
         ExtendsContentIntoTitleBar = true;
         AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
         SetTitleBar(Navigation);
+
+        // TODO: replace by the official PersistedStateId (2.0+)
+        // https://github.com/microsoft/WindowsAppSDK/blob/afd4ac42a32a329f4fdfc76d7d443a0200774135/specs/Windowing/AppWindowPlacement.md
+        //AppWindow.PersistedStateId = "MainWindow";
+        //AppWindow.PlacementRestorationBehavior = PlacementRestorationBehavior.Automatic;
+        PersistenceId = "MainWindow";
 
         WeakReferenceMessenger.Default.RegisterAll(this);
     }
@@ -78,7 +83,6 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
 
     private void Navigation_Loaded(object sender, RoutedEventArgs e) {
         navigationViewItem_SamplePage1.Tag = typeof(View.Pages.SamplePage1);
-        navigationViewItem_Login.Tag = typeof(View.Pages.Login);
 
         var ScaleUnawareRightInset = AppWindow.TitleBar.RightInset / Content.XamlRoot.RasterizationScale;
         UserProfileButton.Margin = new Thickness(0, 0, ScaleUnawareRightInset + 16, 0);

@@ -1,10 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using View.Common;
 
 namespace View.Pages;
 
-internal partial class Login: Page {
+internal partial class Login: Page, INavigationPage {
     private readonly ViewModel.Pages.Login? viewModel = Services.Provider?.GetService<ViewModel.Pages.Login>();
 
     public Login() {
@@ -22,4 +23,6 @@ internal partial class Login: Page {
     private void WebView_NavigationStarting(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args) {
         viewModel?.CheckLoginUriCommand.Execute(args.Uri);
     }
+
+    public static Type Type => typeof(Login);
 }
