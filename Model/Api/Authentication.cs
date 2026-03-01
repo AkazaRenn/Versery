@@ -1,5 +1,7 @@
 ﻿using Mastonet;
 using Mastonet.Entities;
+using Model.Api;
+using Model.DataPersistence;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -25,16 +27,13 @@ public partial class Authentication(string instance) {
         Credentials.AddAppRegistration(authenticationClient.Instance, JsonSerializer.Serialize(newAppRegistration));
 }
 
-    public async Task<bool> CheckLoginUrl(string url) {
+    public async Task<bool> CheckLoginUrl(string url, Client client) {
         var match = oAuthRegex.Match(url);
 
         if (match.Success) {
             var code = match.Groups[1].Value;
             var auth = await authenticationClient.ConnectWithCode(code);
-            var mastodonClient = new MastodonClient(authenticationClient.Instance, auth.AccessToken);
-            var account = await mastodonClient.GetCurrentUser();
-            var instance = await mastodonClient.GetInstanceV2();
-            Credentials.AddAccessToken($"{account.UserName}@{instance.Domain}", mastodonClient.AccessToken);
+            client.MastodonClient = new MastodonClient(authenticationClient.Instance, auth.AccessToken);
             return true;
         }
 

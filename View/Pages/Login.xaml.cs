@@ -21,7 +21,9 @@ internal partial class Login: Page, INavigationPage {
     }
 
     private void WebView_NavigationStarting(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args) {
-        viewModel?.CheckLoginUriCommand.Execute(args.Uri);
+        if (viewModel?.CheckLoginUriCommand.CanExecute(args.Uri) == true) {
+            viewModel.CheckLoginUriCommand.Execute(args.Uri);
+        }
     }
 
     public void OnNavigationReInvoke() { }

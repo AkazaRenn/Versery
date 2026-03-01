@@ -1,6 +1,6 @@
 ﻿using Windows.Security.Credentials;
 
-namespace Model; 
+namespace Model.DataPersistence; 
 public static class Credentials {
     private static readonly string resourceName = Windows.ApplicationModel.Package.Current.Id.FamilyName;
 

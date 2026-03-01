@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Model;
+using Model.Api;
 
 namespace ViewModel.Pages;
-public partial class Login : ObservableObject {
+public partial class Login(Client client) : ObservableObject {
     [ObservableProperty]
     private string instance = string.Empty;
 
@@ -27,7 +27,7 @@ public partial class Login : ObservableObject {
 
     [RelayCommand]
     private async Task CheckLoginUri(string uri) {
-        if (await Authentication!.CheckLoginUrl(uri)) {
+        if (await Authentication!.CheckLoginUrl(uri, client)) {
             WeakReferenceMessenger.Default.Send(new Messages.LoginCompleted());
         }
     }
