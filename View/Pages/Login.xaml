@@ -30,12 +30,20 @@
                 HorizontalAlignment="Stretch"
                 IsEnabled="{x:Bind viewModel.Authentication, Mode=OneWay, Converter={StaticResource NullableObjectToBoolConverterReversed}}"/>
         </StackPanel>
-        <WebView2
-            x:Name="WebView"
-            Visibility="{x:Bind viewModel.OAuthUri, Mode=OneWay, Converter={StaticResource NullableObjectToVisibilityConverter}}"
-            Source="{x:Bind viewModel.OAuthUri, Mode=OneWay}"
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            NavigationStarting="WebView_NavigationStarting"/>
+        <Grid
+            Visibility="{x:Bind viewModel.OAuthUri, Mode=OneWay, Converter={StaticResource NullableObjectToVisibilityConverter}}">
+            <ProgressBar
+                x:Name="ProgressBar"
+                VerticalAlignment="Top"
+                IsIndeterminate="True"/>
+            <WebView2
+                x:Name="WebView"
+                Source="{x:Bind viewModel.OAuthUri, Mode=OneWay}"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                NavigationStarting="WebView_NavigationStarting"
+                Loading="WebView_Loading"
+                Loaded="WebView_Loaded"/>
+        </Grid>
     </Grid>
 </Page>

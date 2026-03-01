@@ -33,11 +33,11 @@
             Loaded="Navigation_Loaded">
             <NavigationView.MenuItems>
                 <NavigationViewItem
-                    x:Name="navigationViewItem_SamplePage1"
-                    x:Uid="MenuItem1"/>
+                    x:Uid="MainWindow_NavigationViewItem_Home"
+                    Tag="{x:Bind pages:Home.Type}"/>
                 <NavigationViewItem
-                    Tag="{x:Bind pages:Login.Type}"
-                    Content="Notifications"/>
+                    x:Uid="MainWindow_NavigationViewItem_Notifications"
+                    Tag="{x:Bind pages:Login.Type}"/>
                 <NavigationViewItem
                     Icon="Refresh"
                     x:Name="TestPage"/>

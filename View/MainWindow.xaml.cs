@@ -125,6 +125,6 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
     }
 
     void IRecipient<ViewModel.Messages.LoginCompleted>.Receive(ViewModel.Messages.LoginCompleted _) {
-        Frame.Navigate(typeof(Pages.SamplePage1));
+        Frame.Navigate(typeof(Pages.Home));
     }
 }

@@ -120,10 +120,13 @@
   <data name="Page_Login_InstanceTextBox.PlaceholderText" xml:space="preserve">
     <value>實例？</value>
   </data>
-  <data name="MenuItem1.Content" xml:space="preserve">
-    <value>選單項目 1</value>
+  <data name="MainWindow_NavigationViewItem_Home.Content" xml:space="preserve">
+    <value>主頁</value>
   </data>
   <data name="Page_Login_LoginButton.Content" xml:space="preserve">
     <value>登入</value>
+  </data>
+  <data name="MainWindow_NavigationViewItem_Notifications.Content" xml:space="preserve">
+    <value>通知</value>
   </data>
 </root>

@@ -29,4 +29,12 @@ internal partial class Login: Page, INavigationPage {
     public void OnNavigationReInvoke() { }
 
     public static Type Type => typeof(Login);
+
+    private void WebView_Loading(FrameworkElement sender, object args) {
+        ProgressBar.Visibility = Visibility.Visible;
+    }
+
+    private void WebView_Loaded(object sender, RoutedEventArgs e) {
+        ProgressBar.Visibility= Visibility.Collapsed;
+    }
 }

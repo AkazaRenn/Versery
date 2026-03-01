@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="View.Pages.Home"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:pages="using:View.Pages"
+    xmlns:ctcontrol="using:CommunityToolkit.WinUI.Controls"
+    DataContext="{x:Bind viewModel}"
+    NavigationCacheMode="Required">
+    <ScrollViewer
+        x:Name="ScrollViewer">
+        <StackPanel
+            Orientation="Vertical"
+            Margin="8 8 8 0">
+            <ItemsRepeater
+                ItemTemplate="{x:Bind postsFactory}"
+                ItemsSource="{x:Bind viewModel.Posts, Mode=OneWay}">
+                <ItemsRepeater.Layout>
+                    <ctcontrol:StaggeredLayout 
+                        ColumnSpacing="4"
+                        RowSpacing="4"
+                        DesiredColumnWidth="320"
+                        ItemsStretch="Fill" />
+                </ItemsRepeater.Layout>
+            </ItemsRepeater>
+            <ProgressRing 
+                IsActive="True"
+                Margin="0 16 0 16"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

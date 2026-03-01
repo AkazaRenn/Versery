@@ -1,0 +1,16 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Model.Api;
+using System.Collections.ObjectModel;
+
+namespace ViewModel.Pages; 
+public partial class Home(Client client) {
+    public ObservableCollection<string> Posts { get; } = [
+        @"Takimata takimata et eirmod takimata labore. Diam duo no no justo feugait ea sit tempor justo et et adipiscing ut sed labore consectetuer accumsan. Sadipscing stet ipsum et. Dolor lorem elitr lorem consetetur sed ut clita diam stet ipsum eum voluptua. Stet soluta esse et diam sed. Vel dolore diam amet eos nisl rebum kasd at aliquyam erat tation dolore clita et luptatum clita dolor sea. Kasd aliquyam est ea dolor no ipsum kasd stet diam aliquyam dolor ut voluptua ut dolor. Eirmod velit vel et sit praesent labore exerci. Diam et elitr. Consetetur magna ut diam sea. Magna accusam sanctus ea tempor tempor. Ipsum lorem voluptua no elitr gubergren vero diam. Magna sed no no magna accusam at sea magna elitr justo veniam sadipscing dolore eum amet justo dolores. Diam dolore ut nonumy blandit ipsum. Molestie feugiat doming justo veniam duo at clita erat sed. Ipsum est gubergren amet magna consequat dolor ut sanctus no. Lorem ea eos minim elitr accumsan voluptua eos. Imperdiet euismod et est consetetur dolore. Exerci amet consectetuer.
+
+Accusam amet stet stet in sed dolor. Tation erat ipsum ullamcorper duis dolores. Sit ipsum iriure dolor sadipscing sit et ipsum placerat esse. Dolor lorem magna qui ut in esse. Feugiat rebum dignissim. Illum sit at eos et erat sanctus sed nisl autem consectetuer. Nostrud ut illum labore diam. Sit nulla elitr duo aliquyam dolor invidunt. Consequat no accusam kasd nonumy dolores vel erat kasd illum volutpat rebum amet et no amet dolores et.",
+
+        @"Gubergren elit ipsum invidunt ut ipsum dolor sanctus sea. Stet eos no sed augue ut vero. Nam dolor sed eirmod minim. Luptatum nonumy eirmod aliquyam esse. Dolor delenit sit aliquip magna dolor sanctus justo diam ut accusam molestie delenit no odio in sanctus no. Kasd eirmod sed et aliquyam dolor voluptua justo invidunt magna illum dolores et. Gubergren erat eos accusam et no tation doming in illum accusam eos ipsum. Dolore amet takimata et sed ut magna kasd sed nibh iusto elitr te labore et. Veniam sit et dolore tempor duo sea eos blandit sit zzril labore praesent tation ad. Eum rebum et sed stet ipsum nonumy elitr. Lorem justo molestie consequat aliquyam et hendrerit. Et est et feugait facer aliquam ipsum odio commodo. Diam vero eos kasd eos rebum diam lorem nonummy ea erat lorem amet. Diam wisi liber ea et diam molestie invidunt eos in ipsum ipsum.
+
+Dolor gubergren accusam. Kasd lorem duis duo sanctus nam sit accumsan consetetur dolore amet exerci consequat lorem esse eros stet voluptua. Labore amet exerci exerci vero sit aliquyam rebum esse ut ea sit est sadipscing no sadipscing amet luptatum. Tempor ipsum vulputate magna zzril lorem adipiscing et sit lorem. Accusam clita diam consetetur eirmod justo ut voluptua. Sit vel quod sea. Nonumy invidunt et justo in voluptua takimata at dolores et duo delenit dignissim dolor accusam at. Wisi rebum vero ea dolor justo clita eirmod nonumy sea. Erat dolor est eos nibh elitr clita ut ipsum kasd ut voluptua at amet enim est elitr.",
+        ];
+}

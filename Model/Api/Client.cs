@@ -36,6 +36,6 @@ public class Client {
         }
 
         var instance = user.Split('@').Last();
-        MastodonClient = new MastodonClient(instance, token);
+        mastodonClient = new MastodonClient(instance, token);
     }
 }
