@@ -28,7 +28,7 @@
             PaneDisplayMode="Top"
             IsBackButtonVisible="Visible"
             IsSettingsVisible="False"
-            SelectionChanged="Navigation_SelectionChanged"
+            ItemInvoked="Navigation_ItemInvoked"
             BackRequested="Navigation_BackRequested"
             Loaded="Navigation_Loaded">
             <NavigationView.MenuItems>

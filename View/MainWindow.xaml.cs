@@ -4,6 +4,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using View.Common;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
@@ -12,6 +13,8 @@ using WinUIEx;
 namespace View;
 
 public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.LoginRequested> ,IRecipient<ViewModel.Messages.LoginCompleted> {
+    private NavigationViewItemBase? activeNavigationItem = null;
+
     public MainWindow() {
         InitializeComponent();
 
@@ -65,14 +68,21 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
             (int)(dpiScale * (Height - offset)));
     }
 
-    private void Navigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args) {
-        if (args.SelectedItem is NavigationViewItem item) {
-            if (item.Tag is Type pageType) {
-                Frame.Navigate(pageType);
+    private void Navigation_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args) {
+        if (activeNavigationItem == args.InvokedItemContainer) {
+            if (Frame.Content is INavigationPage navigationPage) {
+                navigationPage.OnNavigationReInvoke();
             }
-        }
+        } else {
+            if (args.InvokedItemContainer is NavigationViewItem item) {
+                if (item.Tag is Type pageType) {
+                    Frame.Navigate(pageType);
+                    activeNavigationItem = item;
+                }
+            }
 
-        UpdateNonClientInputPassthrough();
+            UpdateNonClientInputPassthrough();
+        }
     }
 
     private void Navigation_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) {
@@ -82,18 +92,12 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
     }
 
     private void Navigation_Loaded(object sender, RoutedEventArgs e) {
-        navigationViewItem_SamplePage1.Tag = typeof(View.Pages.SamplePage1);
-
         var ScaleUnawareRightInset = AppWindow.TitleBar.RightInset / Content.XamlRoot.RasterizationScale;
         UserProfileButton.Margin = new Thickness(0, 0, ScaleUnawareRightInset + 16, 0);
         Navigation_RightPadding.Width = UserProfileButton.Margin.Right;
 
         foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>()) {
             item.Height = Navigation.CompactPaneLength - 8;
-        }
-
-        if (Navigation.MenuItems.OfType<NavigationViewItem>().First().Tag is Type pageType) {
-            Frame.Navigate(pageType);
         }
 
         Navigation.SizeChanged += (_, _) => {

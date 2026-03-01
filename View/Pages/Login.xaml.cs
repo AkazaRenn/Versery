@@ -24,5 +24,7 @@ internal partial class Login: Page, INavigationPage {
         viewModel?.CheckLoginUriCommand.Execute(args.Uri);
     }
 
+    public void OnNavigationReInvoke() { }
+
     public static Type Type => typeof(Login);
 }
