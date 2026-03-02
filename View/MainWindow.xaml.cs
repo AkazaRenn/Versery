@@ -77,7 +77,6 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
             if (args.InvokedItemContainer is NavigationViewItem item) {
                 if (item.Tag is Type pageType) {
                     Frame.Navigate(pageType);
-                    activeNavigationItem = item;
                 }
             }
 
@@ -108,16 +107,12 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
     private void Frame_Navigated(object sender, NavigationEventArgs e) {
         Navigation.IsBackEnabled = Frame.CanGoBack;
 
-        foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>()) {
-            if (item.Tag is Type pageType) {
-                if (pageType == e.SourcePageType) {
-                    Navigation.SelectedItem = item;
-                    return;
-                }
-            }
+        if (Navigation.SelectedItem is NavigationViewItem navigationViewItem &&
+            navigationViewItem.Tag as Type == e.SourcePageType) {
+        } else {
+            Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault((NavigationViewItem item) => item.Tag as Type == e.SourcePageType);
         }
-
-        Navigation.SelectedItem = null;
+        activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;
     }
 
     void IRecipient<ViewModel.Messages.LoginRequested>.Receive(ViewModel.Messages.LoginRequested _) {
