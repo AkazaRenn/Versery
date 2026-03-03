@@ -6,15 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:local="using:View"
     DataContext="{x:Bind viewModel}"
     Unloaded="Page_Unloaded">
-
-    <Page.Resources>
-        <converters:EmptyObjectToObjectConverter x:Key="NullableObjectToVisibilityConverter" EmptyValue="Collapsed" NotEmptyValue="Visible"/>
-        <converters:EmptyObjectToObjectConverter x:Key="NullableObjectToBoolConverterReversed" EmptyValue="True" NotEmptyValue="False"/>
-    </Page.Resources>
-
     <Grid>
         <StackPanel
             Width="240"
@@ -28,10 +22,10 @@
                 x:Uid="Page_Login_LoginButton"
                 Command="{x:Bind viewModel.StartLoginCommand}"
                 HorizontalAlignment="Stretch"
-                IsEnabled="{x:Bind viewModel.Authentication, Mode=OneWay, Converter={StaticResource NullableObjectToBoolConverterReversed}}"/>
+                IsEnabled="{x:Bind local:Converters.NullableObjectToBoolReversed(viewModel.Authentication), Mode=OneWay}"/>
         </StackPanel>
         <Grid
-            Visibility="{x:Bind viewModel.OAuthUri, Mode=OneWay, Converter={StaticResource NullableObjectToVisibilityConverter}}">
+            Visibility="{x:Bind local:Converters.NullableObjectToVisibility(viewModel.OAuthUri), Mode=OneWay}">
             <ProgressBar
                 x:Name="ProgressBar"
                 VerticalAlignment="Top"
