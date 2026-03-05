@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
 using WinUIEx;
+using static View.Messages;
 
 namespace View;
 
@@ -113,6 +114,18 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
             Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault((NavigationViewItem item) => item.Tag as Type == e.SourcePageType);
         }
         activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;
+    }
+
+    private void WindowEx_Activated(object sender, WindowActivatedEventArgs args) {
+        switch (args.WindowActivationState) {
+        case WindowActivationState.PointerActivated:
+        case WindowActivationState.CodeActivated:
+            WeakReferenceMessenger.Default.Send(new WindowActivated());
+            break;
+        case WindowActivationState.Deactivated:
+            WeakReferenceMessenger.Default.Send(new WindowDeactivated());
+            break;
+        }
     }
 
     void IRecipient<ViewModel.Messages.LoginRequested>.Receive(ViewModel.Messages.LoginRequested _) {
