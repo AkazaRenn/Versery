@@ -1,7 +1,7 @@
 ﻿using Mastonet;
 using Model.DataPersistence;
 
-namespace Model.Api; 
+namespace Model.Api;
 public class Client {
     private readonly ApplicationStates applicationStates;
 
@@ -10,13 +10,7 @@ public class Client {
         get => mastodonClient;
         set {
             mastodonClient = value;
-            mastodonClient?.GetFullUserId().ContinueWith(task => {
-                if (task.IsCompletedSuccessfully) {
-                    var userId = task.Result;
-                    Credentials.AddAccessToken(userId, mastodonClient.AccessToken);
-                    applicationStates.ActiveUser = userId;
-                }
-            });
+            _ = UpdateUserId();
         }
     }
 
@@ -37,5 +31,14 @@ public class Client {
 
         var instance = user.Split('@').Last();
         mastodonClient = new MastodonClient(instance, token);
+    }
+
+    private async Task UpdateUserId() {
+        if (mastodonClient == null) {
+            return;
+        }
+        var userId = await mastodonClient.GetFullUserId();
+        Credentials.AddAccessToken(userId, mastodonClient.AccessToken);
+        applicationStates.ActiveUser = userId;
     }
 }
