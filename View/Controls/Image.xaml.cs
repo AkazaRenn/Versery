@@ -1,23 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
+using CommunityToolkit.WinUI;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Xaml;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-
 using Windows.Graphics.DirectX;
 
-namespace Versery.Controls;
+namespace View.Controls;
 
 internal sealed partial class Image: UserControl {
     private int currentFrame = 0;
     private uint loop = 0;
-    private DispatcherTimer? timer;
+    private DispatcherQueueTimer timer;
     private ImageData? data;
 
     private Uri? source;
@@ -34,14 +30,14 @@ internal sealed partial class Image: UserControl {
 
     public Image() {
         InitializeComponent();
+
+        var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        timer = dispatcherQueue.CreateTimer();
+        timer.Tick += Timer_Tick;
+        timer.IsRepeating = false;
     }
 
     private void Timer_Tick(object? sender, object e) {
-        if (timer is null) {
-            return;
-        }
-        timer.Stop();
-
         if (data is null) {
             return;
         }
@@ -56,7 +52,6 @@ internal sealed partial class Image: UserControl {
         }
 
         timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame]);
-        timer.Start();
 
         Canvas.Invalidate();
     }
@@ -67,13 +62,20 @@ internal sealed partial class Image: UserControl {
         }
 
         if (currentFrame < data.FrameCount) {
-            args.DrawingSession.DrawImage(data.Frames[currentFrame]);
+            args.DrawingSession.DrawImage(
+                data.Frames[currentFrame],
+                0, 0,
+                sender.Size.ToRect(),
+                1.0f,
+                CanvasImageInterpolation.Linear
+            );
         }
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e) {
-        if (data?.IsAnimated == true)
-            timer?.Start();
+        if ((data?.IsAnimated == true) && (!timer.IsRunning)) {
+            timer.Start();
+        }
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
@@ -81,34 +83,31 @@ internal sealed partial class Image: UserControl {
     }
 
     private void Canvas_CreateResources(CanvasControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args) {
-        _ = LoadImage(source);
+        _ = LoadImage();
     }
 
     private void Reset() {
-        if (timer is not null) {
-            timer.Stop();
-            timer.Tick -= Timer_Tick;
-            timer = null;
-        }
-
+        timer.Stop();
         data?.Dispose();
+        data = null;
         currentFrame = 0;
         loop = 0;
     }
 
     public async Task LoadImage() {
+        if (!IsLoaded) {
+            return;
+        }
+
         Reset();
         if (source is null) {
             return;
         }
 
-        using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(source.AbsolutePath);
+        using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(source.LocalPath);
         data = new ImageData(image, Canvas.Device);
         if (data.IsAnimated) {
-            timer = new() {
-                Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame])
-            };
-            timer.Tick += Timer_Tick;
+            timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[0]);
             timer.Start();
         }
         Canvas.Invalidate();
@@ -149,14 +148,12 @@ internal partial class ImageData: IDisposable {
             MaxLoop = 0;
         }
 
+        var pixels = new byte[image.Width * image.Height * 4];
         for (int i = 0; i < frameCount; i++) {
             // Enforce a minimum delay of 20ms to avoid excessively fast frames
-            if (delays[i] < 20) {
-                delays[i] = 100;
-            }
+            delays[i] = Math.Max(delays[i], 20);
 
             var frame = image.Frames[i];
-            var pixels = new byte[frame.Width * frame.Height * 4];
             frame.CopyPixelDataTo(pixels);
             frames[i] = CanvasBitmap.CreateFromBytes(
                 device,
