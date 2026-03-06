@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace View.Controls;
 public sealed partial class UserProfileButton: Button {
-    private readonly ViewModel.Controls.UserProfileButton? viewModel = Services.Provider?.GetService<ViewModel.Controls.UserProfileButton>();
+    private readonly ViewModel.Controls.UserProfileButton viewModel = Services.Provider.GetRequiredService<ViewModel.Controls.UserProfileButton>();
 
     public UserProfileButton() {
         InitializeComponent();

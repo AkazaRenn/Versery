@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Composition;
 using Microsoft.Graphics.DirectX;
@@ -14,14 +15,12 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace View.Controls;
 
-internal sealed partial class Emoji: UserControl, IDisposable,
-    IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
-    private readonly Compositor compositor;
+internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
+    private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
+    private readonly CompositionGraphicsDevice graphicsDevice = Services.Provider.GetRequiredService<CompositionGraphicsDevice>();
     private readonly SpriteVisual visual;
     private readonly CompositionSurfaceBrush brush;
-    private readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
-    private CompositionGraphicsDevice? graphicsDevice;
-    private CompositionDrawingSurface? surface;
+    private CompositionDrawingSurface surface;
 
     private int currentFrame = 0;
     private uint loop = 0;
@@ -45,10 +44,16 @@ internal sealed partial class Emoji: UserControl, IDisposable,
     public Emoji() {
         InitializeComponent();
 
-        compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
+        surface = graphicsDevice.CreateDrawingSurface(
+            new Windows.Foundation.Size(0, 0),
+            DirectXPixelFormat.R8G8B8A8UIntNormalized,
+            DirectXAlphaMode.Premultiplied);
+
+        var compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
 
         brush = compositor.CreateSurfaceBrush();
         brush.Stretch = CompositionStretch.Uniform;
+        brush.Surface = surface;
 
         visual = compositor.CreateSpriteVisual();
         visual.Brush = brush;
@@ -57,8 +62,6 @@ internal sealed partial class Emoji: UserControl, IDisposable,
         timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
         timer.Tick += Timer_Tick;
         timer.IsRepeating = false;
-
-        canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
 
         WeakReferenceMessenger.Default.RegisterAll(this);
     }
@@ -72,36 +75,34 @@ internal sealed partial class Emoji: UserControl, IDisposable,
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e) {
-        _ = LoadImage();
+        canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
+        if (ShouldPlay) {
+            timer.Start();
+        }
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
-        Dispose();
+        canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
+        Reset();
     }
 
     private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
-        _ = LoadImage();
+        visual.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
     }
 
     private async Task LoadImage() {
-        if (!IsLoaded) {
-            return;
-        }
-
         Reset();
+
+        data?.Dispose();
+        data = null;
+
         if (source is null) {
             return;
         }
 
         using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(source.LocalPath);
-        data = new ImageData(image, canvasDevice);
-        graphicsDevice = CanvasComposition.CreateCompositionGraphicsDevice(compositor, canvasDevice);
-        surface = graphicsDevice.CreateDrawingSurface(
-            new Windows.Foundation.Size(data.Width, data.Height),
-            DirectXPixelFormat.R8G8B8A8UIntNormalized,
-            DirectXAlphaMode.Premultiplied);
-        brush.Surface = surface;
-        visual.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
+        data = new ImageData(image);
+        surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
 
         Draw();
     }
@@ -126,40 +127,26 @@ internal sealed partial class Emoji: UserControl, IDisposable,
                 loop++;
             }
 
-            if (!ShouldPlay) {
-                return;
+            if (ShouldPlay) {
+                timer.Start();
             }
-
-            timer.Start();
         }
     }
 
     private void Reset() {
         timer.Stop();
-        surface?.Dispose();
-        graphicsDevice?.Dispose();
-        data?.Dispose();
-        data = null;
         currentFrame = 0;
         loop = 0;
     }
 
-    public void Dispose() {
-        WeakReferenceMessenger.Default.UnregisterAll(this);
-        canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
-        Reset();
-    }
-
     void IRecipient<Messages.WindowActivated>.Receive(Messages.WindowActivated message) {
-        if ((!timer.IsRunning) && ShouldPlay) {
+        if (ShouldPlay) {
             timer.Start();
         }
     }
 
     void IRecipient<Messages.WindowDeactivated>.Receive(Messages.WindowDeactivated message) {
-        if (timer.IsRunning) {
-            timer.Stop();
-        }
+        timer.Stop();
     }
 
     private partial class ImageData: IDisposable {
@@ -171,7 +158,7 @@ internal sealed partial class Emoji: UserControl, IDisposable,
         public int FrameCount => Frames.Count;
         public bool IsAnimated => FrameCount > 1;
 
-        public ImageData(Image<Rgba32> image, CanvasDevice device) {
+        public ImageData(Image<Rgba32> image) {
             Width = image.Width;
             Height = image.Height;
 
@@ -209,7 +196,7 @@ internal sealed partial class Emoji: UserControl, IDisposable,
                 var frame = image.Frames[i];
                 frame.CopyPixelDataTo(pixels);
                 frames[i] = CanvasBitmap.CreateFromBytes(
-                    device,
+                    canvasDevice,
                     pixels,
                     frame.Width,
                     frame.Height,
@@ -222,8 +209,10 @@ internal sealed partial class Emoji: UserControl, IDisposable,
         }
 
         public void Dispose() {
-            foreach (var f in Frames) {
-                f.Dispose();
+            if (Frames is not null) {
+                foreach (var f in Frames) {
+                    f.Dispose();
+                }
             }
             GC.SuppressFinalize(this);
         }

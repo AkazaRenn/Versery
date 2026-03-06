@@ -6,7 +6,7 @@ using View.Common;
 namespace View.Pages;
 
 internal partial class Login: Page, INavigationPage {
-    private readonly ViewModel.Pages.Login? viewModel = Services.Provider?.GetService<ViewModel.Pages.Login>();
+    private readonly ViewModel.Pages.Login viewModel = Services.Provider.GetRequiredService<ViewModel.Pages.Login>();
 
     public Login() {
         InitializeComponent();
