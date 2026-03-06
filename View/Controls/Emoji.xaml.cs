@@ -191,7 +191,6 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
                 }
             } else {
                 MaxLoop = 0;
-                delays[0] = 0;
             }
 
             var pixels = new byte[Width * Height * 4];
