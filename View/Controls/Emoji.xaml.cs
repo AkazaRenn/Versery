@@ -31,11 +31,10 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
     public Uri? Source {
         get => source;
         set {
-            if (source == value) {
-                return;
+            if (source != value) {
+                source = value;
+                _ = LoadImage();
             }
-            source = value;
-            _ = LoadImage();
         }
     }
 
@@ -75,19 +74,35 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+        TryPlay();
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
-        if (ShouldPlay) {
-            timer.Start();
-        }
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
         canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
-        Reset();
+        Stop();
     }
 
     private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
         visual.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
+    }
+
+    private void TryPlay() {
+        if (ShouldPlay) {
+            timer.Start();
+        } else {
+            timer.Stop();
+        }
+    }
+
+    private void Stop() {
+        timer.Stop();
+    }
+
+    private void Reset() {
+        Stop();
+        currentFrame = 0;
+        loop = 0;
     }
 
     private async Task LoadImage() {
@@ -127,26 +142,16 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
                 loop++;
             }
 
-            if (ShouldPlay) {
-                timer.Start();
-            }
+            TryPlay();
         }
-    }
-
-    private void Reset() {
-        timer.Stop();
-        currentFrame = 0;
-        loop = 0;
     }
 
     void IRecipient<Messages.WindowActivated>.Receive(Messages.WindowActivated message) {
-        if (ShouldPlay) {
-            timer.Start();
-        }
+        TryPlay();
     }
 
     void IRecipient<Messages.WindowDeactivated>.Receive(Messages.WindowDeactivated message) {
-        timer.Stop();
+        Stop();
     }
 
     private partial class ImageData: IDisposable {
@@ -186,6 +191,7 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
                 }
             } else {
                 MaxLoop = 0;
+                delays[0] = 0;
             }
 
             var pixels = new byte[Width * Height * 4];
