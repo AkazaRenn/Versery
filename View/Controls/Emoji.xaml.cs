@@ -39,7 +39,7 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
         }
     }
 
-    public bool ShouldPlay => (data is not null) && (data.IsAnimated) && ((data.MaxLoop == 0) || (loop < data.MaxLoop));
+    public bool ShouldPlay => (data is not null) && (data.IsAnimated) && IsLoaded && ((data.MaxLoop == 0) || (loop < data.MaxLoop));
 
     public Emoji() {
         InitializeComponent();
