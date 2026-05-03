@@ -21,8 +21,7 @@
             <Button
                 x:Uid="Page_Login_LoginButton"
                 Command="{x:Bind viewModel.StartLoginCommand}"
-                HorizontalAlignment="Stretch"
-                IsEnabled="{x:Bind local:Converters.NullableObjectToBoolReversed(viewModel.Authentication), Mode=OneWay}"/>
+                HorizontalAlignment="Stretch"/>
         </StackPanel>
         <Grid
             Visibility="{x:Bind local:Converters.NullableObjectToVisibility(viewModel.OAuthUri), Mode=OneWay}">

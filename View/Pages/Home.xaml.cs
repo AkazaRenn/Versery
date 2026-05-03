@@ -5,7 +5,7 @@ using View.Common;
 
 namespace View.Pages;
 internal partial class Home: Page, INavigationPage {
-    private readonly ViewModel.Pages.Home? viewModel = Services.Provider?.GetService<ViewModel.Pages.Home>();
+    private readonly ViewModel.Pages.Home viewModel = Services.Provider.GetRequiredService<ViewModel.Pages.Home>();
 
     public Home() {
         InitializeComponent();
@@ -14,17 +14,17 @@ internal partial class Home: Page, INavigationPage {
     public static Type Type => typeof(Home);
 
     public void OnNavigationReInvoke() {
-        if (ScrollViewer.VerticalOffset == 0) {
+        if (ScrollView.VerticalOffset == 0) {
             // Trigger refresh
         } else {
-            ScrollViewer.ChangeView(null, 0, null);
+            ScrollView.ScrollTo(0, 0);
         }
     }
 
-    private readonly PostsFactory postsFactory = new();
+    private readonly StatusesFactory statusesFactory = new();
 }
 
-public class PostsFactory: IElementFactory {
+public class StatusesFactory: IElementFactory {
     public UIElement GetElement(ElementFactoryGetArgs args) {
         return new TextBlock {
             Text = args.Data as string,

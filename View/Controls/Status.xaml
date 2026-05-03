@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Grid
+    x:Class="View.Controls.Status"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    DataContext="{x:Bind viewModel}"
+    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+    CornerRadius="{StaticResource ControlCornerRadius}">
+    <StackPanel
+        Orientation="Vertical"
+        Margin="4 4 4 0">
+        <Grid
+            Margin="0 0 0 4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button 
+                Grid.Column="0"
+                Height="40"
+                Width="40"
+                CornerRadius="20"
+                Margin="0 0 4 0"/>
+            <Grid
+                Grid.Column="1"
+                VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    FontWeight="SemiBold"
+                    VerticalAlignment="Top"
+                    Text="{x:Bind viewModel.DispalyName}"/>
+                <TextBlock
+                    Grid.Row="2"
+                    FontWeight="Light"
+                    VerticalAlignment="Bottom"
+                    TextTrimming="CharacterEllipsis"
+                    Text="{x:Bind viewModel.Id}"/>
+            </Grid>
+            <TextBlock
+                Grid.Column="2"
+                Text="{x:Bind viewModel.CreatedAt.ToShortTimeString()}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"/>
+        </Grid>
+        <TextBlock
+            TextWrapping="WrapWholeWords"
+            Text="{x:Bind viewModel.Content}"/>
+        <StackPanel
+            Orientation="Horizontal">
+            <AppBarToggleButton
+                Icon="Accept"
+                Height="64"
+                Width="64"
+                CornerRadius="32"/>
+            <AppBarToggleButton
+                Icon="Accept"
+                Height="16"
+                Width="16"
+                CornerRadius="8"/>
+            <AppBarToggleButton
+                Icon="Accept"
+                Height="16"
+                Width="16"
+                CornerRadius="8"/>
+            <AppBarToggleButton
+                Icon="Accept"
+                Height="16"
+                Width="16"
+                CornerRadius="8"/>
+        </StackPanel>
+    </StackPanel>
+</Grid>
