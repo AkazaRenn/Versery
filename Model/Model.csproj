@@ -3,8 +3,10 @@
     <RootNamespace>Model</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FluentSettings.Generator" />
     <PackageReference Include="Mastonet" />
     <PackageReference Include="Mastonet.Entities" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Realm" />
   </ItemGroup>
 </Project>
