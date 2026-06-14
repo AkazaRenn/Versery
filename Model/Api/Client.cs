@@ -1,31 +1,23 @@
 ﻿using Mastonet;
+using Microsoft.Extensions.DependencyInjection;
+using Model.Database.Entities;
 using Model.DataPersistence;
+using Utilities;
 
 namespace Model.Api;
-public class Client {
-    private readonly ApplicationStates applicationStates;
-
+public sealed class Client {
+    private readonly Database database = Utilities.Services.Provider.GetRequiredService<Database>();
+    private readonly ApplicationStates applicationStates = Utilities.Services.Provider.GetRequiredService<ApplicationStates>();
     private MastodonClient? mastodonClient = null;
-    public MastodonClient? MastodonClient {
-        get => mastodonClient;
-        set {
-            mastodonClient = value;
-            _ = UpdateUserId();
-        }
-    }
 
-    public bool Ready => MastodonClient != null;
-
-    public Client(ApplicationStates _applicationStates) {
-        applicationStates = _applicationStates;
-
+    public Client() {
         var user = applicationStates.ActiveUser;
-        if (string.IsNullOrEmpty(user)) {
+        if (string.IsNullOrWhiteSpace(user)) {
             return;
         }
 
         var token = Credentials.GetAccessToken(applicationStates.ActiveUser);
-        if (string.IsNullOrEmpty(token)) {
+        if (string.IsNullOrWhiteSpace(token)) {
             return;
         }
 
@@ -33,12 +25,23 @@ public class Client {
         mastodonClient = new MastodonClient(instance, token);
     }
 
-    private async Task UpdateUserId() {
-        if (mastodonClient == null) {
-            return;
-        }
+    internal async Task NewUser(string instance, string accessToken) {
+        mastodonClient = new(instance, accessToken);
         var userId = await mastodonClient.GetFullUserId();
         Credentials.AddAccessToken(userId, mastodonClient.AccessToken);
         applicationStates.ActiveUser = userId;
+    }
+
+    public async Task<ICollection<StatusEntry>> HomeTimeline(UInt64? afterId) {
+        if (mastodonClient is null) {
+            return Array.Empty<StatusEntry>();
+        }
+
+        var mastodonList = await mastodonClient.GetHomeTimeline();
+        database.HomeTimeline.Add(mastodonList, afterId);
+
+        if (mastodonList.Count == 0) {
+            return Array.Empty<StatusEntry>();
+        }
     }
 }

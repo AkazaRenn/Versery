@@ -4,16 +4,15 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using View.Common;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
 using WinUIEx;
-using static View.Messages;
+using Utilities;
+using Utilities.Interfaces;
 
 namespace View;
-
-public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.LoginRequested> ,IRecipient<ViewModel.Messages.LoginCompleted> {
+public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequested> ,IRecipient<Messages.SignInCompleted> {
     private NavigationViewItemBase? activeNavigationItem = null;
 
     public MainWindow() {
@@ -120,19 +119,19 @@ public sealed partial class MainWindow: WindowEx, IRecipient<ViewModel.Messages.
         switch (args.WindowActivationState) {
         case WindowActivationState.PointerActivated:
         case WindowActivationState.CodeActivated:
-            WeakReferenceMessenger.Default.Send(new WindowActivated());
+            WeakReferenceMessenger.Default.Send(new Messages.WindowActivated());
             break;
         case WindowActivationState.Deactivated:
-            WeakReferenceMessenger.Default.Send(new WindowDeactivated());
+            WeakReferenceMessenger.Default.Send(new Messages.WindowDeactivated());
             break;
         }
     }
 
-    void IRecipient<ViewModel.Messages.LoginRequested>.Receive(ViewModel.Messages.LoginRequested _) {
+    void IRecipient<Messages.SignInRequested>.Receive(Messages.SignInRequested _) {
         Frame.Navigate(typeof(Pages.Login));
     }
 
-    void IRecipient<ViewModel.Messages.LoginCompleted>.Receive(ViewModel.Messages.LoginCompleted _) {
+    void IRecipient<Messages.SignInCompleted>.Receive(Messages.SignInCompleted _) {
         Frame.Navigate(typeof(Pages.Home));
     }
 }

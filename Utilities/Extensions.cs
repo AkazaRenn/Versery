@@ -1,7 +1,7 @@
 ﻿using Mastonet;
 
-namespace Model; 
-internal static class Extensions {
+namespace Utilities; 
+public static class Extensions {
     extension(MastodonClient mastodonClient) {
         public async Task<string> GetFullUserId() {
             var account = await mastodonClient.GetCurrentUser();

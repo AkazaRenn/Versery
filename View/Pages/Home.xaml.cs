@@ -1,11 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using View.Common;
+using Utilities.Interfaces;
 
 namespace View.Pages;
-internal partial class Home: Page, INavigationPage {
-    private readonly ViewModel.Pages.Home viewModel = Services.Provider.GetRequiredService<ViewModel.Pages.Home>();
+internal sealed partial class Home: Page, INavigationPage {
+    private readonly ViewModel.Pages.Home viewModel = Utilities.Services.Provider.GetRequiredService<ViewModel.Pages.Home>();
 
     public Home() {
         InitializeComponent();

@@ -3,7 +3,7 @@ using Windows.Storage;
 
 namespace Model.DataPersistence; 
 public class ApplicationStates {
-    private ApplicationDataContainer Container => ApplicationData.Current.LocalSettings.CreateContainer(this.GetType().FullName, ApplicationDataCreateDisposition.Always);
+    private ApplicationDataContainer Container => ApplicationData.Current.LocalSettings.CreateContainer(GetType().FullName, ApplicationDataCreateDisposition.Always);
 
     private void Set<T>(ref T field, T value, [CallerMemberName] string name = "")
         where T : notnull {

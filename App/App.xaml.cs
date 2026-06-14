@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 
 namespace App;
 
-public partial class App: Application {
+public sealed partial class App: Application {
     public IHost Host { get; private set; }
 
     public App() {
@@ -13,13 +13,13 @@ public partial class App: Application {
         Host = Microsoft.Extensions.Hosting.Host
             .CreateDefaultBuilder()
             .ConfigureServices((context, services) => {
-                View.Services.Add(services);
-                ViewModel.Services.Add(services);
-                Model.Services.Add(services);
+                View.Services.Configure(services);
+                ViewModel.Services.Configure(services);
+                Model.Services.Configure(services);
             })
             .Build();
 
-        View.Services.Provider = Host.Services;
+        Utilities.Services.Provider = Host.Services;
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args) {

@@ -2,8 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 
 namespace View.Controls;
-public sealed partial class UserProfileButton: Button {
-    private readonly ViewModel.Controls.UserProfileButton viewModel = Services.Provider.GetRequiredService<ViewModel.Controls.UserProfileButton>();
+internal sealed partial class UserProfileButton: Button {
+    private readonly ViewModel.Controls.UserProfileButton viewModel = Utilities.Services.Provider.GetRequiredService<ViewModel.Controls.UserProfileButton>();
 
     public UserProfileButton() {
         InitializeComponent();

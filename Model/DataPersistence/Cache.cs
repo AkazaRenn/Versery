@@ -4,7 +4,7 @@ using System.Text;
 using Windows.Storage;
 
 namespace Model.DataPersistence; 
-internal class Cache {
+internal sealed class Cache {
     private static readonly StorageFolder cacheFolder = ApplicationData.Current.TemporaryFolder;
     private static readonly HttpClient httpClient = new();
     private static readonly ConcurrentDictionary<string, Task<Uri?>> cacheTasks = new();
@@ -17,7 +17,7 @@ internal class Cache {
         try {
             var existing = await cacheFolder.TryGetItemAsync(hash);
             if (existing is StorageFile existingFile) {
-                // Update the modification time to avoid Windows from deleting it
+                // Update the modification time to avoid from being deleted by Windows
                 File.SetLastWriteTime(existingFile.Path, DateTime.Now);
                 return new Uri(existingFile.Path);
             }

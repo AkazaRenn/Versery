@@ -1,15 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace ViewModel.Controls; 
-public partial class Status(Mastonet.Entities.Status status): ObservableObject {
+namespace ViewModel.Controls;
+public sealed partial class Status(Mastonet.Entities.Status status): ObservableObject {
     [ObservableProperty]
-    private string dispalyName = status.Account.DisplayName;
+    public partial string DisplayName { get; set; } = status.Account.DisplayName;
     [ObservableProperty]
-    private string id = status.Account.Id;
+    public partial string Id { get; set; } = status.Account.Id;
     [ObservableProperty]
-    private DateTime createdAt = status.CreatedAt;
+    public partial DateTime CreatedAt { get; set; } = status.CreatedAt;
     [ObservableProperty]
-    private string uri = status.Uri;
+    public partial string Uri { get; set; } = status.Uri;
     [ObservableProperty]
-    private string content = status.Content;
+    public partial string Content { get; set; } = status.Content;
+
 }

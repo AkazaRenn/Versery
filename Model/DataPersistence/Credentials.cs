@@ -1,7 +1,7 @@
 ﻿using Windows.Security.Credentials;
 
 namespace Model.DataPersistence; 
-public static class Credentials {
+internal static class Credentials {
     private static readonly string resourceName = Windows.ApplicationModel.Package.Current.Id.FamilyName;
 
     public static void AddAccessToken(string userId, string token) {

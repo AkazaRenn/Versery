@@ -1,39 +1,41 @@
 ﻿using Mastonet;
 using Mastonet.Entities;
+using Microsoft.Extensions.DependencyInjection;
 using Model.Api;
 using Model.DataPersistence;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Utilities;
 
-namespace Model; 
-public partial class Authentication(string instance) {
+namespace Model.Api;
+public sealed partial class Authentication(string instance) {
     private static readonly Regex oAuthRegex = OAuthRegex();
 
     private readonly AuthenticationClient authenticationClient = new(instance);
+    private readonly Client client = Utilities.Services.Provider.GetRequiredService<Client>();
 
-    public string OAuthUrl => authenticationClient!.OAuthUrl();
-
-    public async Task Register() {
+    public async Task<string> OAuthUrl() {
         var appRegistrationJson = Credentials.GetAppRegistration(authenticationClient.Instance);
-        if (!string.IsNullOrEmpty(appRegistrationJson)) {
+        if (!string.IsNullOrWhiteSpace(appRegistrationJson)) {
             var appRegistration = JsonSerializer.Deserialize<AppRegistration>(appRegistrationJson);
             if (appRegistration is not null) {
                 authenticationClient.AppRegistration = appRegistration;
-                return;
+                return string.Empty;
             }
         }
 
-        var newAppRegistration = await authenticationClient.CreateApp("Versery", "https://github.com/AkazaRenn/Versery/", null, GranularScope.Read, GranularScope.Write, GranularScope.Follow);
+        var newAppRegistration = await authenticationClient.CreateApp(Constants.AppName, Constants.ProjectLink, null, GranularScope.Read, GranularScope.Write, GranularScope.Follow);
         Credentials.AddAppRegistration(authenticationClient.Instance, JsonSerializer.Serialize(newAppRegistration));
+        return authenticationClient.OAuthUrl();
 }
 
-    public async Task<bool> CheckLoginUrl(string url, Client client) {
+    public async Task<bool> CheckSignInUrl(string url) {
         var match = oAuthRegex.Match(url);
 
         if (match.Success) {
             var code = match.Groups[1].Value;
             var auth = await authenticationClient.ConnectWithCode(code);
-            client.MastodonClient = new MastodonClient(authenticationClient.Instance, auth.AccessToken);
+            await client.NewUser(authenticationClient.Instance, auth.AccessToken);
             return true;
         }
 

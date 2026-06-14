@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Utilities;
 
 namespace ViewModel.Controls; 
-public partial class UserProfileButton {
+public sealed partial class UserProfileButton {
     [RelayCommand]
     private void Login() {
-        WeakReferenceMessenger.Default.Send(new Messages.LoginRequested());
+        WeakReferenceMessenger.Default.Send(new Messages.SignInRequested());
     }
 }

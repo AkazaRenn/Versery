@@ -4,7 +4,7 @@ using Model.Api;
 using System.Collections.ObjectModel;
 
 namespace ViewModel.Pages; 
-public partial class Home(Client client) {
+public sealed partial class Home(Client client) {
     public ObservableCollection<Controls.Status> Statuses { get; } = [];
 
     //[RelayCommand]

@@ -9,18 +9,17 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
-
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using Utilities;
 
 namespace View.Controls;
-
 internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
-    private readonly CompositionGraphicsDevice graphicsDevice = Services.Provider.GetRequiredService<CompositionGraphicsDevice>();
+    private readonly CompositionGraphicsDevice graphicsDevice = Utilities.Services.Provider.GetRequiredService<CompositionGraphicsDevice>();
     private readonly SpriteVisual visual;
     private readonly CompositionSurfaceBrush brush;
-    private CompositionDrawingSurface surface;
+    private readonly CompositionDrawingSurface surface;
 
     private int currentFrame = 0;
     private uint loop = 0;

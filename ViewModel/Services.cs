@@ -2,9 +2,9 @@
 
 namespace ViewModel;
 public static class Services {
-    public static void Add(IServiceCollection services) {
+    public static void Configure(IServiceCollection services) {
         services.AddTransient<Controls.UserProfileButton>();
         services.AddTransient<Pages.Home>();
-        services.AddTransient<Pages.Login>();
+        services.AddTransient<Pages.SignIn>();
     }
 }
