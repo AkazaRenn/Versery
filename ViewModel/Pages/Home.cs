@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Model.Api;
+using Model.Access;
 using System.Collections.ObjectModel;
 
 namespace ViewModel.Pages; 
-public sealed partial class Home(Client client) {
+public sealed partial class Home {
+    private readonly Client client = Utilities.Services.Get<Client>();
+
     public ObservableCollection<Controls.Status> Statuses { get; } = [];
 
     //[RelayCommand]

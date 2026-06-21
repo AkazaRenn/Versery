@@ -1,7 +1,7 @@
 ﻿using LiteDB;
 
-namespace Model.Data.Entities;
-public record class TimelineEntry {
+namespace Model.Entities;
+public record class Timeline {
     [BsonId]
     public UInt64 Id;
     [BsonField("z")]

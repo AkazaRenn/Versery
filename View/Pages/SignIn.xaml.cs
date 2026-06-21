@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Utilities.Interfaces;
@@ -6,7 +5,7 @@ using Utilities.Interfaces;
 namespace View.Pages;
 
 internal sealed partial class SignIn: Page, INavigationPage {
-    private readonly ViewModel.Pages.SignIn viewModel = Utilities.Services.Provider.GetRequiredService<ViewModel.Pages.SignIn>();
+    private readonly ViewModel.Pages.SignIn viewModel = new();
 
     public SignIn() {
         InitializeComponent();

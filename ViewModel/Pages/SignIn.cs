@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Model.Api;
+using Model.Access;
 using Utilities;
 
 namespace ViewModel.Pages;

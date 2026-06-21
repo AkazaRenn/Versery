@@ -128,7 +128,7 @@ public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequ
     }
 
     void IRecipient<Messages.SignInRequested>.Receive(Messages.SignInRequested _) {
-        Frame.Navigate(typeof(Pages.Login));
+        Frame.Navigate(typeof(Pages.SignIn));
     }
 
     void IRecipient<Messages.SignInCompleted>.Receive(Messages.SignInCompleted _) {

@@ -38,7 +38,7 @@
                     Tag="{x:Bind pages:Home.Type}"/>
                 <NavigationViewItem
                     x:Uid="MainWindow_NavigationViewItem_Notifications"
-                    Tag="{x:Bind pages:Login.Type}"/>
+                    Tag="{x:Bind pages:SignIn.Type}"/>
                 <NavigationViewItem
                     Icon="Refresh"
                     x:Name="TestPage"/>

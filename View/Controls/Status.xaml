@@ -38,7 +38,7 @@
                     Grid.Row="0"
                     FontWeight="SemiBold"
                     VerticalAlignment="Top"
-                    Text="{x:Bind viewModel.DispalyName}"/>
+                    Text="{x:Bind viewModel.DisplayName}"/>
                 <TextBlock
                     Grid.Row="2"
                     FontWeight="Light"

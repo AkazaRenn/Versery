@@ -3,6 +3,8 @@
     <RootNamespace>Utilities</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="LiteDB" />
     <PackageReference Include="Mastonet" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
 </Project>

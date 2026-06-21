@@ -16,7 +16,7 @@ using Utilities;
 namespace View.Controls;
 internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
-    private readonly CompositionGraphicsDevice graphicsDevice = Utilities.Services.Provider.GetRequiredService<CompositionGraphicsDevice>();
+    private readonly CompositionGraphicsDevice graphicsDevice = Utilities.Services.Get<CompositionGraphicsDevice>();
     private readonly SpriteVisual visual;
     private readonly CompositionSurfaceBrush brush;
     private readonly CompositionDrawingSurface surface;

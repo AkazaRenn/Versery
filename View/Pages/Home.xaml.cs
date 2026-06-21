@@ -5,7 +5,7 @@ using Utilities.Interfaces;
 
 namespace View.Pages;
 internal sealed partial class Home: Page, INavigationPage {
-    private readonly ViewModel.Pages.Home viewModel = Utilities.Services.Provider.GetRequiredService<ViewModel.Pages.Home>();
+    private readonly ViewModel.Pages.Home viewModel = Utilities.Services.Get<ViewModel.Pages.Home>();
 
     public Home() {
         InitializeComponent();
@@ -24,7 +24,7 @@ internal sealed partial class Home: Page, INavigationPage {
     private readonly StatusesFactory statusesFactory = new();
 }
 
-public class StatusesFactory: IElementFactory {
+public partial class StatusesFactory: IElementFactory {
     public UIElement GetElement(ElementFactoryGetArgs args) {
         return new TextBlock {
             Text = args.Data as string,
