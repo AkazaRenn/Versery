@@ -4,7 +4,10 @@ namespace Model.Entities;
 public record class Status {
     [BsonId]
     public string Id;
+    public string AccountId;
     public DateTime CreatedAt;
+    public string Uri;
+    public string Content;
     public bool Favourited;
     public bool Reblogged;
     public bool Muted;
@@ -12,14 +15,17 @@ public record class Status {
     public bool Pinned;
     public bool FollowedByGap;
 
-    internal Status(Mastonet.Entities.Status apiStatus) {
-        Id = apiStatus.Id;
-        CreatedAt = apiStatus.CreatedAt;
-        Favourited = apiStatus.Favourited ?? false;
-        Reblogged = apiStatus.Reblogged ?? false;
-        Muted = apiStatus.Muted ?? false;
-        Bookmarked = apiStatus.Bookmarked ?? false;
-        Pinned = apiStatus.Pinned ?? false;
+    internal Status(Mastonet.Entities.Status serverStatus) {
+        Id = serverStatus.Id;
+        AccountId = serverStatus.Account.Id;
+        CreatedAt = serverStatus.CreatedAt;
+        Uri = serverStatus.Uri;
+        Content = serverStatus.Content;
+        Favourited = serverStatus.Favourited ?? false;
+        Reblogged = serverStatus.Reblogged ?? false;
+        Muted = serverStatus.Muted ?? false;
+        Bookmarked = serverStatus.Bookmarked ?? false;
+        Pinned = serverStatus.Pinned ?? false;
         FollowedByGap = false;
     }
 }

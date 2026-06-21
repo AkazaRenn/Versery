@@ -38,21 +38,21 @@ internal sealed class Timeline {
         return query.Limit(count).ToEnumerable();
     }
 
-    internal void Add(MastodonList<Mastonet.Entities.Status> apiStatuses, UInt64? afterId) {
-        var timelineEntries = new List<Entities.Timeline>(apiStatuses.Count + 1);
-        var dbStatuses = new List<Entities.Status>(apiStatuses.Count);
-        foreach (var apiStatus in apiStatuses) {
-            if (!UInt64.TryParse(apiStatus.Id, out var statusId)) {
+    internal void Add(MastodonList<Mastonet.Entities.Status> serverStatuses, UInt64? afterId) {
+        var timelineEntries = new List<Entities.Timeline>(serverStatuses.Count + 1);
+        var dbStatuses = new List<Entities.Status>(serverStatuses.Count);
+        foreach (var serverStatus in serverStatuses) {
+            if (!UInt64.TryParse(serverStatus.Id, out var statusId)) {
                 continue;
             }
             timelineEntries.Add(new Entities.Timeline {
                 Id = statusId,
                 FollowedByGap = false,
             });
-            dbStatuses.Add(new(apiStatus));
+            dbStatuses.Add(new(serverStatus));
         }
 
-        if (apiStatuses.Count >= Constants.StatusesCountPerLoad) {
+        if (serverStatuses.Count >= Constants.StatusesCountPerLoad) {
             timelineEntries[^1].FollowedByGap = true;
         }
 

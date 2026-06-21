@@ -22,15 +22,23 @@ public sealed class Client {
             return;
         }
 
-        var instance = user.Split('@').Last();
+        var split = user.Split('@');
+        if (split.Length != 2) {
+            return;
+        }
+
+        var useranme = split.First();
+        var instance = split.Last();
         mastodonClient = new MastodonClient(instance, token);
-        databaseClient = new Database.Client(user);
+        databaseClient = new Database.Client(useranme, instance);
     }
 
     internal async Task NewUser(string instance, string accessToken) {
         mastodonClient = new(instance, accessToken);
-        var userId = await mastodonClient.GetFullUserId();
-        databaseClient = new Database.Client(userId);
+        var username = (await mastodonClient.GetCurrentUser()).UserName;
+        databaseClient = new Database.Client(username, instance);
+
+        var userId = $"{username}@{instance}";
         Credentials.AddAccessToken(userId, mastodonClient.AccessToken);
         applicationStates.ActiveUser = userId;
     }
@@ -91,5 +99,12 @@ public sealed class Client {
         }
 
         return databaseClient!.Statuses.FindById(id);
+    }
+
+    public Entities.Account? GetAccount(string id) {
+        if (!SignedIn) {
+            throw new InvalidOperationException("Client is not signed in");
+        }
+        return databaseClient!.Accounts.FindById(id);
     }
 }
