@@ -25,12 +25,10 @@ public sealed partial class SignIn : ObservableObject {
     }
 
     [RelayCommand]
-    private async Task CheckSignInUri(string uri) {
+    private void CheckSignInUri(string uri) {
         if (Authentication is null) {
             return;
         }
-        if (await Authentication.CheckSignInUrl(uri)) {
-            WeakReferenceMessenger.Default.Send(new Messages.SignInCompleted());
-        }
+        _ = Authentication.CheckSignInUrl(uri);
     }
 }

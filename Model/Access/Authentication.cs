@@ -29,17 +29,13 @@ public sealed partial class Authentication(string instance) {
         return authenticationClient.OAuthUrl();
 }
 
-    public async Task<bool> CheckSignInUrl(string url) {
+    public async Task CheckSignInUrl(string url) {
         var match = oAuthRegex.Match(url);
-
         if (match.Success) {
             var code = match.Groups[1].Value;
             var auth = await authenticationClient.ConnectWithCode(code);
             await client.NewUser(authenticationClient.Instance, auth.AccessToken);
-            return true;
         }
-
-        return false;
     }
 
     [GeneratedRegex(@"/oauth/authorize/native\?code=([a-zA-Z0-9_-]+)", RegexOptions.Compiled)]

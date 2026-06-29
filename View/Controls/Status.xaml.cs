@@ -2,11 +2,13 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace View.Controls; 
 internal sealed partial class Status: Grid {
-    private readonly ViewModel.Controls.Status viewModel;
+    public ViewModel.Controls.Status? ViewModel { get; set; }
 
-    public Status(ViewModel.Controls.Status _viewModel) {
+    public Status() {
         InitializeComponent();
+    }
 
-        viewModel = _viewModel;
+    private void LoadMore() {
+        ViewModel!.LoadMore(this.ElementIndex);
     }
 }

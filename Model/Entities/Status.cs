@@ -3,17 +3,17 @@
 namespace Model.Entities;
 public record class Status {
     [BsonId]
-    public string Id;
-    public string AccountId;
-    public DateTime CreatedAt;
-    public string Uri;
-    public string Content;
-    public bool Favourited;
-    public bool Reblogged;
-    public bool Muted;
-    public bool Bookmarked;
-    public bool Pinned;
-    public bool FollowedByGap;
+    public string Id { get; set; }
+    public string AccountId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string Uri { get; set; }
+    public string Content { get; set; }
+    public bool Favourited { get; set; }
+    public bool Reblogged { get; set; }
+    public bool Muted { get; set; }
+    public bool Bookmarked { get; set; }
+    public bool Pinned { get; set; }
+    public bool FollowedByGap { get; set; }
 
     internal Status(Mastonet.Entities.Status serverStatus) {
         Id = serverStatus.Id;

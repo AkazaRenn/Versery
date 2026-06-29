@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    DataContext="{x:Bind viewModel}"
+    DataContext="{x:Bind ViewModel}"
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
     CornerRadius="{StaticResource ControlCornerRadius}">
@@ -38,23 +38,23 @@
                     Grid.Row="0"
                     FontWeight="SemiBold"
                     VerticalAlignment="Top"
-                    Text="{x:Bind viewModel.DisplayName}"/>
+                    Text="{x:Bind ViewModel.PosterDisplayName, Mode=OneWay}"/>
                 <TextBlock
                     Grid.Row="2"
                     FontWeight="Light"
                     VerticalAlignment="Bottom"
                     TextTrimming="CharacterEllipsis"
-                    Text="{x:Bind viewModel.Id}"/>
+                    Text="{x:Bind ViewModel.PosterId, Mode=OneTime}"/>
             </Grid>
             <TextBlock
                 Grid.Column="2"
-                Text="{x:Bind viewModel.CreatedAt.ToShortTimeString()}"
+                Text="{x:Bind ViewModel.CreatedAt.ToShortTimeString(), Mode=OneTime}"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Right"/>
         </Grid>
         <TextBlock
             TextWrapping="WrapWholeWords"
-            Text="{x:Bind viewModel.Content}"/>
+            Text="{x:Bind ViewModel.TextContent, Mode=OneWay}"/>
         <StackPanel
             Orientation="Horizontal">
             <AppBarToggleButton

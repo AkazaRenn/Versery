@@ -26,12 +26,11 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
     private readonly DispatcherQueueTimer timer;
     private ImageData? data;
 
-    private Uri? source;
     public Uri? Source {
-        get => source;
+        get;
         set {
-            if (source != value) {
-                source = value;
+            if (field != value) {
+                field = value;
                 _ = LoadImage();
             }
         }
@@ -110,11 +109,11 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
         data?.Dispose();
         data = null;
 
-        if (source is null) {
+        if (Source is null) {
             return;
         }
 
-        using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(source.LocalPath);
+        using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Source.LocalPath);
         data = new ImageData(image);
         surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
 

@@ -11,8 +11,8 @@ internal sealed class Timeline {
 
     public Timeline(string account, string name, ILiteCollection<Entities.Status> _statuses) {
         var db = Utilities.Services.Get<LiteDatabase>();
-        entries = db.GetCollection<Entities.Timeline>($"{account}:{name}");
-        entries.EnsureIndex(x => x.Id);
+        entries = db.GetCollection<Entities.Timeline>($"{account}${name}");
+        entries.EnsureIndex(x => x.CreatedAt);
         statuses = _statuses;
     }
 
@@ -30,23 +30,26 @@ internal sealed class Timeline {
     //    }
     //}
 
-    internal IEnumerable<Entities.Timeline> Get(int count, UInt64? after = null) {
-        var query = entries.Query().OrderByDescending(x => x);
-        if (after is not null) {
-            query = query.Where(x => x.Id < after);
+    internal IEnumerable<Entities.Timeline> Get(int count, string? after = null) {
+        var query = entries.Query();
+
+        if (!String.IsNullOrEmpty(after)) {
+            var afterEntry = entries.FindById(after);
+            if (afterEntry is not null) {
+                query = query.Where(x => x.CreatedAt <= afterEntry.CreatedAt);
+            }
         }
-        return query.Limit(count).ToEnumerable();
+
+        return query.OrderByDescending(x => x.CreatedAt).Limit(count).ToEnumerable();
     }
 
-    internal void Add(MastodonList<Mastonet.Entities.Status> serverStatuses, UInt64? afterId) {
+    internal void Add(MastodonList<Mastonet.Entities.Status> serverStatuses, string? afterId) {
         var timelineEntries = new List<Entities.Timeline>(serverStatuses.Count + 1);
         var dbStatuses = new List<Entities.Status>(serverStatuses.Count);
         foreach (var serverStatus in serverStatuses) {
-            if (!UInt64.TryParse(serverStatus.Id, out var statusId)) {
-                continue;
-            }
             timelineEntries.Add(new Entities.Timeline {
-                Id = statusId,
+                Id = serverStatus.Id,
+                CreatedAt = serverStatus.CreatedAt,
                 FollowedByGap = false,
             });
             dbStatuses.Add(new(serverStatus));

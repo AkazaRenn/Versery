@@ -102,6 +102,8 @@ public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequ
         Navigation.SizeChanged += (_, _) => {
             UpdateNonClientInputPassthrough();
         };
+
+        Frame.Navigate(typeof(Pages.Home));
     }
 
     private void Frame_Navigated(object sender, NavigationEventArgs e) {

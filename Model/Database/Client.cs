@@ -16,8 +16,8 @@ internal sealed class Client {
     public Client(string _username, string _instance) {
         username = _username;
         instance = _instance;
-        Accounts = Utilities.Services.Get<LiteDatabase>().GetCollection<Account>($"{instance}:accounts");
-        Statuses = Utilities.Services.Get<LiteDatabase>().GetCollection<Status>($"{instance}:statuses");
+        Accounts = Utilities.Services.Get<LiteDatabase>().GetCollection<Account>($"{instance}$accounts");
+        Statuses = Utilities.Services.Get<LiteDatabase>().GetCollection<Status>($"{instance}$statuses");
 
         HomeTimeline = new(username, "home_timeline", Statuses);
         FederatedTimeline = new(username, "federated_timeline", Statuses);

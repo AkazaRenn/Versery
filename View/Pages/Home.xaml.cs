@@ -5,7 +5,7 @@ using Utilities.Interfaces;
 
 namespace View.Pages;
 internal sealed partial class Home: Page, INavigationPage {
-    private readonly ViewModel.Pages.Home viewModel = Utilities.Services.Get<ViewModel.Pages.Home>();
+    private readonly ViewModel.Pages.Home viewModel = new();
 
     public Home() {
         InitializeComponent();
@@ -21,18 +21,4 @@ internal sealed partial class Home: Page, INavigationPage {
         }
     }
 
-    private readonly StatusesFactory statusesFactory = new();
-}
-
-public partial class StatusesFactory: IElementFactory {
-    public UIElement GetElement(ElementFactoryGetArgs args) {
-        return new TextBlock {
-            Text = args.Data as string,
-            TextWrapping = TextWrapping.WrapWholeWords,
-        };
-    }
-
-    public void RecycleElement(ElementFactoryRecycleArgs args) {
-        //throw new NotImplementedException();
-    }
 }

@@ -3,10 +3,10 @@
 namespace Model.Entities;
 public record class Account {
     [BsonId]
-    public string Id;
-    public string AccountName;
-    public string DisplayName;
-    public string AvatarUrl;
+    public string Id { get; set; }
+    public string AccountName { get; set; }
+    public string DisplayName { get; set; }
+    public string AvatarUrl { get; set; }
 
     internal Account(Mastonet.Entities.Account serverAccount) {
         Id = serverAccount.Id;

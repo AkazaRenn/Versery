@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:controls="using:View.Controls"
+    xmlns:vm.controls="using:ViewModel.Controls"
     DataContext="{x:Bind viewModel}"
     NavigationCacheMode="Required">
     <ScrollView
@@ -16,9 +17,12 @@
             Orientation="Vertical"
             Margin="6 4 6 0"
             MaxWidth="600">
-            <ItemsRepeater
-                ItemTemplate="{x:Bind statusesFactory}"
-                ItemsSource="{x:Bind viewModel.Statuses, Mode=OneWay}">
+            <ItemsRepeater ItemsSource="{x:Bind viewModel.Statuses}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="vm.controls:Status">
+                        <controls:Status ViewModel="{x:Bind}" />
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
             <ProgressRing 
                 IsActive="True"

@@ -1,4 +1,5 @@
-﻿using Mastonet;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Mastonet;
 using Model.DataPersistence;
 using Model.Enums;
 using Utilities;
@@ -41,9 +42,11 @@ public sealed class Client {
         var userId = $"{username}@{instance}";
         Credentials.AddAccessToken(userId, mastodonClient.AccessToken);
         applicationStates.ActiveUser = userId;
+
+        WeakReferenceMessenger.Default.Send(new Messages.SignInCompleted());
     }
 
-    public async Task<IEnumerable<Entities.Timeline>> GetTimelineFromServer(TimelineType type, UInt64? afterId) {
+    public async Task<IEnumerable<Entities.Timeline>> GetTimelineFromServer(TimelineType type, string? afterId) {
         if (!SignedIn) {
             return [];
         }
@@ -68,17 +71,15 @@ public sealed class Client {
 
         List<Entities.Timeline> timeline = [];
         foreach (var serverStatus in serverStatuses) {
-            if (UInt64.TryParse(serverStatus.Id, out var intId)) {
-                timeline.Add(new Entities.Timeline() {
-                    Id = intId,
-                });
-            }
+            timeline.Add(new Entities.Timeline() {
+                Id = serverStatus.Id,
+            });
         }
 
         return timeline;
     }
 
-    public IEnumerable<Entities.Timeline> GetTimelineFromDatabase(TimelineType type, UInt64? afterId) {
+    public IEnumerable<Entities.Timeline> GetTimelineFromDatabase(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
             return [];
         }
@@ -93,11 +94,10 @@ public sealed class Client {
         return databaseTimeline.Get(Constants.StatusesCountPerLoad, afterId);
     }
 
-    public Entities.Status? GetStatus(UInt64 id) {
+    public Entities.Status? GetStatus(string id) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-
         return databaseClient!.Statuses.FindById(id);
     }
 
