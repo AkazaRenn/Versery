@@ -7,7 +7,10 @@ namespace ViewModel.Controls;
 public sealed partial class Status: ObservableObject {
     private readonly Client client = Utilities.Services.Get<Client>();
 
+    public event Action<int, IEnumerable<Model.Entities.Timeline>>? MoreLoaded;
+
     public string Id { get; }
+    public int Index { get; set; }
 
     [ObservableProperty]
     public partial string PosterId { get; set; }
@@ -25,6 +28,8 @@ public sealed partial class Status: ObservableObject {
     public partial bool Favourited { get; set; }
     [ObservableProperty]
     public partial bool Bookmarked { get; set; }
+    [ObservableProperty]
+    public partial bool FollowedByGap { get; set; }
 
     public Status(Timeline timeline) {
         var status = client.GetStatus(timeline.Id);
@@ -46,9 +51,12 @@ public sealed partial class Status: ObservableObject {
         Reblogged = status.Reblogged;
         Favourited = status.Favourited;
         Bookmarked = status.Bookmarked;
+        FollowedByGap = status.FollowedByGap;
     }
 
-    public void LoadMore(uint index) {
-        throw new NotImplementedException();
+    public async void LoadMore() {
+        var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home, Id);
+        FollowedByGap = false;
+        MoreLoaded?.Invoke(Index, timelines);
     }
 }

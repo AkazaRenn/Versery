@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Utilities.Interfaces;
 
@@ -21,4 +19,9 @@ internal sealed partial class Home: Page, INavigationPage {
         }
     }
 
+    private void ItemsRepeater_ElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args) {
+        if (args.Element is Controls.Status status) {
+            status.ParentItemsRepeater = sender;
+        }
+    }
 }
