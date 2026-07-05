@@ -1,31 +1,35 @@
 ﻿using LiteDB;
 
 namespace Model.Entities;
-public record class Status {
+public record class Status() {
     [BsonId]
-    public string Id { get; set; }
-    public string AccountId { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string Uri { get; set; }
-    public string Content { get; set; }
-    public bool Favourited { get; set; }
-    public bool Reblogged { get; set; }
-    public bool Muted { get; set; }
-    public bool Bookmarked { get; set; }
-    public bool Pinned { get; set; }
-    public bool FollowedByGap { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string AccountId { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.MinValue;
+    public string? ReblogId { get; set; } = null;
+    public string Uri { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public bool? Favourited { get; set; } = null;
+    public bool? Reblogged { get; set; } = null;
+    public bool? Muted { get; set; } = null;
+    public bool? Bookmarked { get; set; } = null;
+    public bool? Pinned { get; set; } = null;
+    public bool? FollowedByGap { get; set; } = null;
 
-    internal Status(Mastonet.Entities.Status serverStatus) {
+    internal Status(Mastonet.Entities.Status serverStatus): this() {
         Id = serverStatus.Id;
         AccountId = serverStatus.Account.Id;
         CreatedAt = serverStatus.CreatedAt;
-        Uri = serverStatus.Uri;
-        Content = serverStatus.Content;
-        Favourited = serverStatus.Favourited ?? false;
-        Reblogged = serverStatus.Reblogged ?? false;
-        Muted = serverStatus.Muted ?? false;
-        Bookmarked = serverStatus.Bookmarked ?? false;
-        Pinned = serverStatus.Pinned ?? false;
-        FollowedByGap = false;
+        if (serverStatus.Reblog != null) {
+            ReblogId = serverStatus.Reblog.Id;
+        } else {
+            Uri = serverStatus.Uri;
+            Content = serverStatus.Content;
+            Favourited = serverStatus.Favourited;
+            Reblogged = serverStatus.Reblogged;
+            Muted = serverStatus.Muted;
+            Bookmarked = serverStatus.Bookmarked;
+            Pinned = serverStatus.Pinned;
+        }
     }
 }

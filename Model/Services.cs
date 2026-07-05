@@ -7,6 +7,7 @@ using Windows.Storage;
 namespace Model;
 public static class Services {
     public static void Configure(IServiceCollection services) {
+        services.AddSingleton<HttpClient>();
         services.AddSingleton<Client>();
         services.AddSingleton<ApplicationStates>();
         services.AddSingleton<LiteDatabase>(sp => {

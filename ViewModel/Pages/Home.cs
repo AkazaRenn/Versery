@@ -17,6 +17,8 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         WeakReferenceMessenger.Default.RegisterAll(this);
 
         Statuses.CollectionChanged += Timelines_CollectionChanged;
+
+        LoadInitialTimelines();
     }
 
     private void Timelines_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
@@ -77,11 +79,22 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         }
     }
 
-    public void Receive(Messages.SignInCompleted message) {
+    public async void Receive(Messages.SignInCompleted message) {
         Statuses.Clear();
+        LoadInitialTimelines();
+    }
+
+    private async void LoadInitialTimelines() {
         var databaseTimelines = client.GetTimelineFromDatabase(Model.Enums.TimelineType.Home);
-        foreach (var databaseTimeline in databaseTimelines) {
-            Statuses.Add(new Controls.Status(databaseTimeline));
+        if (databaseTimelines.Any()) {
+            foreach (var databaseTimeline in databaseTimelines) {
+                Statuses.Add(new Controls.Status(databaseTimeline));
+            }
+        } else {
+            var serverTimelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+            foreach (var serverTimeline in serverTimelines) {
+                Statuses.Add(new Controls.Status(serverTimeline));
+            }
         }
     }
 

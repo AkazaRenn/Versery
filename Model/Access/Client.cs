@@ -7,6 +7,7 @@ using Utilities;
 namespace Model.Access;
 public sealed class Client {
     private readonly ApplicationStates applicationStates = Utilities.Services.Get<ApplicationStates>();
+    private readonly HttpClient httpClient = Utilities.Services.Get<HttpClient>();
     private Database.Client? databaseClient = null;
     private MastodonClient? mastodonClient = null;
 
@@ -28,14 +29,13 @@ public sealed class Client {
             return;
         }
 
-        var useranme = split.First();
         var instance = split.Last();
-        mastodonClient = new MastodonClient(instance, token);
-        databaseClient = new Database.Client(useranme, instance);
+        mastodonClient = new(instance, token, httpClient);
+        databaseClient = new(user, instance);
     }
 
     internal async Task NewUser(string instance, string accessToken) {
-        mastodonClient = new(instance, accessToken);
+        mastodonClient = new(instance, accessToken, httpClient);
         var username = (await mastodonClient.GetCurrentUser()).UserName;
         databaseClient = new Database.Client(username, instance);
 
@@ -46,7 +46,7 @@ public sealed class Client {
         WeakReferenceMessenger.Default.Send(new Messages.SignInCompleted());
     }
 
-    public async Task<IEnumerable<Entities.Timeline>> GetTimelineFromServer(TimelineType type, string? afterId) {
+    public async Task<IEnumerable<Entities.Timeline>> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
             return [];
         }
@@ -64,6 +64,7 @@ public sealed class Client {
         };
 
         databaseTimeline.Add(serverStatuses, afterId);
+        databaseClient.AddAccounts(serverStatuses.Flattened);
 
         if (!serverStatuses.Any()) {
             return [];

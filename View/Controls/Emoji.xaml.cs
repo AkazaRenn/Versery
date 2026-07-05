@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Composition;
 using Microsoft.Graphics.DirectX;
@@ -136,7 +135,7 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
             timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame]);
 
             currentFrame = (currentFrame + 1) % data.FrameCount;
-            if (currentFrame == 0) {
+            if (currentFrame == 0 && data.MaxLoop > 0) {
                 loop++;
             }
 

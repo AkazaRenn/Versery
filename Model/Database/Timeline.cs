@@ -11,7 +11,7 @@ internal sealed class Timeline {
 
     public Timeline(string account, string name, ILiteCollection<Entities.Status> _statuses) {
         var db = Utilities.Services.Get<LiteDatabase>();
-        entries = db.GetCollection<Entities.Timeline>($"{account}${name}");
+        entries = db.GetCollection<Entities.Timeline>($"account_{account.Sha256}_{name}");
         entries.EnsureIndex(x => x.CreatedAt);
         statuses = _statuses;
     }
@@ -53,6 +53,9 @@ internal sealed class Timeline {
                 FollowedByGap = false,
             });
             dbStatuses.Add(new(serverStatus));
+            if (serverStatus.Reblog is not null) {
+                dbStatuses.Add(new(serverStatus.Reblog));
+            }
         }
 
         if (serverStatuses.Count >= Constants.StatusesCountPerLoad) {

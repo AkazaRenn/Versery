@@ -6,7 +6,7 @@ using Windows.Storage;
 namespace Model.DataPersistence; 
 internal sealed class Cache {
     private static readonly StorageFolder cacheFolder = ApplicationData.Current.TemporaryFolder;
-    private static readonly HttpClient httpClient = new();
+    private static readonly HttpClient httpClient = Utilities.Services.Get<HttpClient>();
     private static readonly ConcurrentDictionary<string, Task<Uri?>> cacheTasks = new();
 
     public static Task<Uri?> Get(Uri uri) {

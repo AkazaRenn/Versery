@@ -13,6 +13,8 @@ public sealed partial class Status: ObservableObject {
     public int Index { get; set; }
 
     [ObservableProperty]
+    public partial string? RebloggerDisplayName { get; set; }
+    [ObservableProperty]
     public partial string PosterId { get; set; }
     [ObservableProperty]
     public partial string PosterDisplayName { get; set; }
@@ -32,26 +34,25 @@ public sealed partial class Status: ObservableObject {
     public partial bool FollowedByGap { get; set; }
 
     public Status(Timeline timeline) {
-        var status = client.GetStatus(timeline.Id);
-        if (status is null) {
-            throw new ArgumentNullException(null, nameof(status));
-        }
-        var account = client.GetAccount(status.AccountId);
-        if (account is null) {
-            throw new ArgumentNullException(null, nameof(account));
-        }
-
         Id = timeline.Id;
+        var status = client.GetStatus(Id) ?? throw new ArgumentNullException(null, $"Unable to get status {Id}");
+        var account = client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
+
+        if (status.ReblogId != null) {
+            RebloggerDisplayName = account.DisplayName;
+            status = client.GetStatus(status.ReblogId) ?? throw new ArgumentNullException(null, $"Unable to get status {status.ReblogId}");
+            account = client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
+        }
 
         PosterId = account.AccountName;
         PosterDisplayName = account.DisplayName;
         CreatedAt = status.CreatedAt;
         Uri = status.Uri;
         TextContent = status.Content;
-        Reblogged = status.Reblogged;
-        Favourited = status.Favourited;
-        Bookmarked = status.Bookmarked;
-        FollowedByGap = status.FollowedByGap;
+        Reblogged = status.Reblogged ?? false;
+        Favourited = status.Favourited ?? false;
+        Bookmarked = status.Bookmarked ?? false;
+        FollowedByGap = status.FollowedByGap ?? false;
     }
 
     public async void LoadMore() {

@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:controls="using:View.Controls"
     DataContext="{x:Bind ViewModel}"
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
@@ -52,10 +53,11 @@
                 VerticalAlignment="Top"
                 HorizontalAlignment="Right"/>
         </Grid>
-        <TextBlock
+        <controls:HtmlTextBlock
             TextWrapping="WrapWholeWords"
-            Text="{x:Bind ViewModel.TextContent, Mode=OneWay}"/>
-        <StackPanel
+            Html="{x:Bind ViewModel.TextContent}">
+        </controls:HtmlTextBlock>
+            <StackPanel
             Orientation="Horizontal">
             <AppBarToggleButton
                 Icon="Accept"
