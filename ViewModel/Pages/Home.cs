@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Model.Access;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -85,16 +84,12 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     }
 
     private async void LoadInitialTimelines() {
-        var databaseTimelines = client.GetTimelineFromDatabase(Model.Enums.TimelineType.Home);
-        if (databaseTimelines.Any()) {
-            foreach (var databaseTimeline in databaseTimelines) {
-                Statuses.Add(new Controls.Status(databaseTimeline));
-            }
-        } else {
-            var serverTimelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
-            foreach (var serverTimeline in serverTimelines) {
-                Statuses.Add(new Controls.Status(serverTimeline));
-            }
+        var timelines = client.GetTimelineFromDatabase(Model.Enums.TimelineType.Home);
+        if (!timelines.Any()) {
+            timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+        }
+        foreach (var timeline in timelines) {
+            Statuses.Add(new Controls.Status(timeline));
         }
     }
 

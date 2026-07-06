@@ -8,8 +8,8 @@ namespace View.Controls;
 
 internal sealed partial class HtmlTextBlock: UserControl {
     public TextWrapping TextWrapping { 
-        get => Content.TextWrapping;
-        set => Content.TextWrapping = value;
+        get => RichTextBlock.TextWrapping;
+        set => RichTextBlock.TextWrapping = value;
     }
     public string Html {
         get; set {
@@ -27,10 +27,11 @@ internal sealed partial class HtmlTextBlock: UserControl {
     private async void UpdateContent(string html) {
         var browsingContext = new BrowsingContext();
         var document = await browsingContext.OpenAsync(req => req.Content(html));
-        Content.Blocks.Clear();
+        var blocks = RichTextBlock.Blocks;
+        blocks.Clear();
 
         if (document.Body == null || document.Body.ChildElementCount == 0) {
-            Content.Blocks.Add(new Paragraph {
+            blocks.Add(new Paragraph {
                 Inlines = {
                     new Run {
                         Text = html,
@@ -43,12 +44,13 @@ internal sealed partial class HtmlTextBlock: UserControl {
         foreach (var child in document.Body.Children) {
             var paragraph = Parse(child);
             if (paragraph is not null) {
-                Content.Blocks.Add(paragraph);
+                blocks.Add(paragraph);
             }
         }
 
-        for (int i = 0; i < Content.Blocks.Count - 1; i++) {
-            Content.Blocks[i].Margin = new Thickness(0, 0, 0, Content.Blocks[i].FontSize);
+        for (int i = 0; i < blocks.Count - 1; i++) {
+            var block = blocks[i];
+            block.Margin = new Thickness(0, 0, 0, block.FontSize);
         }
     }
 
