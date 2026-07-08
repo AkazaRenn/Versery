@@ -21,13 +21,13 @@ internal sealed partial class Home: Page, INavigationPage {
 
     private void ItemsRepeater_ElementIndexChanged(ItemsRepeater _, ItemsRepeaterElementIndexChangedEventArgs args) {
         if (args.Element is Controls.Status status) {
-            status.Index = args.NewIndex;
+            status.ViewModel?.Index = args.NewIndex;
         }
     }
 
-    private void ItemsRepeater_ElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args) {
+    private void ItemsRepeater_ElementPrepared(ItemsRepeater _, ItemsRepeaterElementPreparedEventArgs args) {
         if (args.Element is Controls.Status status) {
-            status.Index = args.Index;
+            status.ViewModel?.Index = args.Index;
         }
     }
 }

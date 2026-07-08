@@ -15,6 +15,8 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial string? RebloggerDisplayName { get; set; }
     [ObservableProperty]
+    public partial Uri? PosterAvatar { get; set; }
+    [ObservableProperty]
     public partial string PosterId { get; set; }
     [ObservableProperty]
     public partial string PosterDisplayName { get; set; }
@@ -53,11 +55,17 @@ public sealed partial class Status: ObservableObject {
         Favourited = status.Favourited ?? false;
         Bookmarked = status.Bookmarked ?? false;
         FollowedByGap = status.FollowedByGap ?? false;
+
+        DownloadAvatar(account.AvatarUrl);
     }
 
     public async void LoadMore() {
         var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home, Id);
         FollowedByGap = false;
         MoreLoaded?.Invoke(Index, timelines);
+    }
+
+    private async void DownloadAvatar(string url) {
+        PosterAvatar = await Cache.Get(url);
     }
 }

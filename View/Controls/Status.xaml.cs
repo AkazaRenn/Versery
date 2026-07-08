@@ -12,13 +12,6 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    public ItemsRepeater? ParentItemsRepeater { get; set; }
-    public int Index {
-        get => ViewModel?.Index ?? 0;
-        set {
-            ViewModel?.Index = value;
-        }
-    }
 
     public Status() {
         InitializeComponent();

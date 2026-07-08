@@ -20,7 +20,7 @@ public sealed partial class Authentication(string instance) {
             var appRegistration = JsonSerializer.Deserialize<AppRegistration>(appRegistrationJson);
             if (appRegistration is not null) {
                 authenticationClient.AppRegistration = appRegistration;
-                return string.Empty;
+                return authenticationClient.OAuthUrl();
             }
         }
 

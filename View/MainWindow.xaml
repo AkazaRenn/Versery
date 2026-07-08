@@ -59,10 +59,9 @@
             <controls:UserProfileButton
                 x:Name="UserProfileButton"
                 Grid.Column="1"
-                Padding="0"
-                Width="32"
-                Height="32"
-                CornerRadius="16"
+                Width="40"
+                Height="40"
+                CornerRadius="20"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"/>
         </Grid>

@@ -11,6 +11,11 @@ internal sealed partial class HtmlTextBlock: UserControl {
         get => RichTextBlock.TextWrapping;
         set => RichTextBlock.TextWrapping = value;
     }
+    public bool IsTextSelectionEnabled {
+        get => RichTextBlock.IsTextSelectionEnabled;
+        set => RichTextBlock.IsTextSelectionEnabled = value;
+    }
+
     public string Html {
         get; set {
             if (field != value) {

@@ -6,7 +6,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    DataContext="{x:Bind viewModel}">
+    DataContext="{x:Bind viewModel}"
+    Padding="0"
+    BorderThickness="0"
+    Background="Transparent">
+    <Image>
+        <Image.Source>
+            <BitmapImage UriSource="{x:Bind viewModel.Avatar, Mode=OneWay}"/>
+        </Image.Source>
+    </Image>
     <Button.Flyout>
         <MenuFlyout Placement="Bottom">
             <MenuFlyoutItem

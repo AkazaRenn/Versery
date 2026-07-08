@@ -8,8 +8,9 @@ namespace Model.Access;
 public sealed class Client {
     private readonly ApplicationStates applicationStates = Utilities.Services.Get<ApplicationStates>();
     private readonly HttpClient httpClient = Utilities.Services.Get<HttpClient>();
-    private Database.Client? databaseClient = null;
-    private MastodonClient? mastodonClient = null;
+    private Database.Client? databaseClient;
+    private MastodonClient? mastodonClient;
+    private Mastonet.Entities.Account? account;
 
     public bool SignedIn => mastodonClient is not null && databaseClient is not null;
 
@@ -36,8 +37,9 @@ public sealed class Client {
 
     internal async Task NewUser(string instance, string accessToken) {
         mastodonClient = new(instance, accessToken, httpClient);
-        var username = (await mastodonClient.GetCurrentUser()).UserName;
-        databaseClient = new Database.Client(username, instance);
+        account = await mastodonClient.GetCurrentUser();
+        var username = account.UserName;
+        databaseClient = new Database.Client(account.UserName, instance);
 
         var userId = $"{username}@{instance}";
         Credentials.AddAccessToken(userId, mastodonClient.AccessToken);
@@ -46,9 +48,19 @@ public sealed class Client {
         WeakReferenceMessenger.Default.Send(new Messages.SignInCompleted());
     }
 
+    public async Task<Mastonet.Entities.Account?> GetAccount() {
+        if (account is null) {
+            if (mastodonClient is not null) {
+                account = await mastodonClient.GetCurrentUser();
+            }
+        }
+
+        return account;
+    }
+
     public async Task<IEnumerable<Entities.Timeline>> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
-            return [];
+            throw new InvalidOperationException("Client is not signed in");
         }
 
         Mastonet.ArrayOptions arrayOptions = new() {
@@ -82,7 +94,7 @@ public sealed class Client {
 
     public IEnumerable<Entities.Timeline> GetTimelineFromDatabase(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
-            return [];
+            throw new InvalidOperationException("Client is not signed in");
         }
 
         Database.Timeline databaseTimeline = type switch {

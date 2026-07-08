@@ -9,11 +9,10 @@
     xmlns:controls="using:View.Controls"
     DataContext="{x:Bind ViewModel}"
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-    CornerRadius="{StaticResource ControlCornerRadius}">
+    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
     <StackPanel
         Orientation="Vertical"
-        Margin="4 4 4 0">
+        Margin="8 8 8 0">
         <Grid
             Margin="0 0 0 4">
             <Grid.ColumnDefinitions>
@@ -26,7 +25,16 @@
                 Height="40"
                 Width="40"
                 CornerRadius="20"
-                Margin="0 0 4 0"/>
+                BorderThickness="0"
+                Padding="0"
+                Margin="0 0 8 0"
+                Background="Transparent">
+                <Image>
+                    <Image.Source>
+                        <BitmapImage UriSource="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}"/>
+                    </Image.Source>
+                </Image>
+            </Button>
             <Grid
                 Grid.Column="1"
                 VerticalAlignment="Stretch">
@@ -45,16 +53,17 @@
                     FontWeight="Light"
                     VerticalAlignment="Bottom"
                     TextTrimming="CharacterEllipsis"
-                    Text="{x:Bind ViewModel.PosterId, Mode=OneTime}"/>
+                    Text="{x:Bind ViewModel.PosterId}"/>
             </Grid>
             <TextBlock
                 Grid.Column="2"
-                Text="{x:Bind ViewModel.CreatedAt.ToShortTimeString(), Mode=OneTime}"
+                Text="{x:Bind ViewModel.CreatedAt.ToShortTimeString()}"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Right"/>
         </Grid>
         <controls:HtmlTextBlock
             TextWrapping="WrapWholeWords"
+            IsTextSelectionEnabled="False"
             Html="{x:Bind ViewModel.TextContent}">
         </controls:HtmlTextBlock>
             <StackPanel

@@ -1,16 +1,24 @@
 ﻿using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
+using Utilities;
 using Windows.Storage;
 
-namespace Model.DataPersistence; 
-internal sealed class Cache {
+namespace Model.Access; 
+public sealed class Cache {
     private static readonly StorageFolder cacheFolder = ApplicationData.Current.TemporaryFolder;
     private static readonly HttpClient httpClient = Utilities.Services.Get<HttpClient>();
     private static readonly ConcurrentDictionary<string, Task<Uri?>> cacheTasks = new();
 
+    public static Task<Uri?> Get(string url) {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri)) {
+            return Task.FromResult<Uri?>(null);
+        }
+        return Get(uri);
+    }
+
     public static Task<Uri?> Get(Uri uri) {
-        return cacheTasks.GetOrAdd(Hash(uri), hash => GetInternal(uri, hash));
+        return cacheTasks.GetOrAdd(uri.AbsoluteUri.Sha256, hash => GetInternal(uri, hash));
     }
 
     private static async Task<Uri?> GetInternal(Uri uri, string hash) {
@@ -40,11 +48,5 @@ internal sealed class Cache {
         } finally {
             cacheTasks.TryRemove(hash, out _);
         }
-    }
-
-    private static string Hash(Uri uri) {
-        byte[] bytes = Encoding.UTF8.GetBytes(uri.AbsoluteUri);
-        byte[] hash = SHA256.HashData(bytes);
-        return Convert.ToHexString(hash);
     }
 }

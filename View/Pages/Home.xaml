@@ -12,10 +12,10 @@
     NavigationCacheMode="Required">
     <ScrollView
         x:Name="ScrollView"
-        VerticalScrollBarVisibility="Hidden">
+        VerticalScrollBarVisibility="Hidden"
+        CornerRadius="0">
         <StackPanel
             Orientation="Vertical"
-            Margin="6 4 6 0"
             MaxWidth="600">
             <ItemsRepeater 
                 ItemsSource="{x:Bind viewModel.Statuses}"
