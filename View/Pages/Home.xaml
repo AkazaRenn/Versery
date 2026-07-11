@@ -8,7 +8,6 @@
     mc:Ignorable="d"
     xmlns:controls="using:View.Controls"
     xmlns:vm.controls="using:ViewModel.Controls"
-    DataContext="{x:Bind viewModel}"
     NavigationCacheMode="Required">
     <ScrollView
         x:Name="ScrollView"
@@ -17,7 +16,7 @@
         <StackPanel
             Orientation="Vertical"
             MaxWidth="600">
-            <ItemsRepeater 
+            <ItemsRepeater
                 ItemsSource="{x:Bind viewModel.Statuses}"
                 ElementPrepared="ItemsRepeater_ElementPrepared"
                 ElementIndexChanged="ItemsRepeater_ElementIndexChanged">
@@ -27,7 +26,7 @@
                     </DataTemplate>
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
-            <ProgressRing 
+            <ProgressRing
                 IsActive="True"
                 Margin="0 16 0 16"/>
         </StackPanel>
