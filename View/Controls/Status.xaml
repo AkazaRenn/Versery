@@ -3,10 +3,7 @@
     x:Class="View.Controls.Status"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    xmlns:controls="using:View.Controls"
+    xmlns:components="using:View.Controls.StatusComponents"
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
     BorderThickness="0 0 0 0.5"
@@ -37,75 +34,38 @@
         Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"
         Visibility="Collapsed"/>
 
-    <Button 
+    <components:AvatarButton 
         Grid.Column="0"
         Grid.Row="1"
         Height="40"
         Width="40"
         CornerRadius="20"
-        BorderThickness="0"
-        Padding="0"
-        Background="Transparent">
-        <Image>
-            <Image.Source>
-                <BitmapImage UriSource="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}"/>
-            </Image.Source>
-        </Image>
-    </Button>
+        Avatar="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}">
+    </components:AvatarButton>
 
     <Grid
         Grid.Column="1"
         Grid.Row="1"
         ColumnDefinitions="*, Auto"
-        RowDefinitions="Auto, *, Auto">
-        <TextBlock
-            Grid.Column="0"
-            Grid.Row="0"
-            FontWeight="SemiBold"
-            TextTrimming="CharacterEllipsis"
-            Text="{x:Bind ViewModel.PosterDisplayName, Mode=OneWay}"/>
+        ColumnSpacing="2">
+        <components:PosterInfo
+            DisplayName="{x:Bind ViewModel.PosterDisplayName, Mode=OneWay}"
+            Id="{x:Bind ViewModel.PosterId, Mode=OneWay}"/>
         <TextBlock
             Grid.Column="1"
             Grid.Row="0"
             Text="{x:Bind ViewModel.CreatedAt.ToShortDateString()}"
             HorizontalAlignment="Right"/>
-        <TextBlock
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Grid.Row="2"
-            TextTrimming="CharacterEllipsis"
-            Text="{x:Bind ViewModel.PosterId}"/>
     </Grid>
 
-    <StackPanel
+    <components:Body
         Grid.Column="1"
-        Grid.Row="2">
-        <controls:HtmlTextBlock
-            TextWrapping="WrapWholeWords"
-            IsTextSelectionEnabled="False"
-            Html="{x:Bind ViewModel.TextContent}">
-        </controls:HtmlTextBlock>
-        <ContentPresenter Content="{x:Bind additionalElement, Mode=OneWay}"/>
-    </StackPanel>
+        Grid.Row="2"
+        TextContent="{x:Bind ViewModel.TextContent}"
+        AdditionalContent="{x:Bind additionalElement, Mode=OneWay}"/>
 
-    <Grid
+    <components:ReactButtons
         Grid.Column="1"
-        Grid.Row="3"
-        ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
-        <Button Grid.Column="0">
-            ABC
-        </Button>
-        <Button Grid.Column="2">
-            ABC
-        </Button>
-        <Button Grid.Column="4">
-            ABC
-        </Button>
-        <Button Grid.Column="6">
-            ABC
-        </Button>
-        <Button Grid.Column="8">
-            ABC
-        </Button>
-    </Grid>
+        Grid.Row="3">
+    </components:ReactButtons>
 </Grid>

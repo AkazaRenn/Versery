@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StackPanel
+    x:Class="View.Controls.StatusComponents.Body"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:View.Controls.StatusComponents">
+    <local:HtmlTextBlock
+        x:Name="TextBlock"
+        TextWrapping="WrapWholeWords"
+        IsTextSelectionEnabled="False">
+    </local:HtmlTextBlock>
+    <ContentPresenter x:Name="AdditionalContentPresenter"/>
+</StackPanel>

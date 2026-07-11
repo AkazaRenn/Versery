@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 
-namespace View.Controls;
+namespace View.Controls.StatusComponents;
 
 internal sealed partial class HtmlTextBlock: UserControl {
     public TextWrapping TextWrapping { 
