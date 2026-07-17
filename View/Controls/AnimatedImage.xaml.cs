@@ -18,7 +18,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
     private static readonly MemoryCache imageCache = new(nameof(AnimatedImage));
     private static readonly CacheItemPolicy imageCachePolicy = new() {
-        SlidingExpiration = TimeSpan.FromMinutes(10),
+        SlidingExpiration = TimeSpan.FromMinutes(30),
     };
 
     private readonly CompositionGraphicsDevice graphicsDevice = Utilities.Services.Get<CompositionGraphicsDevice>();
@@ -30,6 +30,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     private uint loop = 0;
     private readonly DispatcherQueueTimer timer;
     private ImageData? data;
+    private CanvasBitmap[] gpuFrames = [];
 
     public Uri? Source {
         get;
@@ -41,7 +42,11 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         }
     }
 
-    public bool ShouldPlay => (data is not null) && (data.IsAnimated) && IsLoaded && ((data.MaxLoop == 0) || (loop < data.MaxLoop));
+    public bool ShouldPlay =>
+        (gpuFrames.Length > 1) &&
+        IsLoaded &&
+        data is not null &&
+        ((data.MaxLoop == 0) || (loop < data.MaxLoop));
 
     public AnimatedImage() {
         InitializeComponent();
@@ -69,7 +74,11 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     }
 
     private void CanvasDevice_DeviceLost(CanvasDevice sender, object args) {
-        _ = LoadImage();
+        if (DispatcherQueue.HasThreadAccess) {
+            _ = LoadImage();
+        } else {
+            DispatcherQueue.TryEnqueue(() => _ = LoadImage());
+        }
     }
 
     private void Timer_Tick(object? sender, object e) {
@@ -77,13 +86,18 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e) {
-        TryPlay();
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
+        if (Source is not null && gpuFrames.Length == 0) {
+            _ = LoadImage();
+        } else {
+            TryPlay();
+        }
+
     }
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
         canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
-        Stop();
+        Reset();
     }
 
     private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -106,6 +120,11 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         Stop();
         currentFrame = 0;
         loop = 0;
+
+        foreach (var frame in gpuFrames) {
+            frame.Dispose();
+        }
+        gpuFrames = [];
     }
 
     private async Task LoadImage() {
@@ -126,21 +145,25 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
             imageCache.Add(cacheKey, data, imageCachePolicy);
         }
 
-
+        gpuFrames = data.CreateGpuFrames();
         surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
         Draw();
     }
 
     private void Draw() {
-        if (data is null ||
-            currentFrame < 0 ||
-            currentFrame >= data.FrameCount) {
+        if ((data is null) ||
+            (gpuFrames.Length == 0)) {
             return;
+        }
+
+        if ((currentFrame < 0) ||
+            (currentFrame >= data.FrameCount)) {
+            currentFrame = 0;
         }
 
         using (var ds = CanvasComposition.CreateDrawingSession(surface)) {
             ds.Clear(Colors.Transparent);
-            ds.DrawImage(data.Frames[currentFrame]);
+            ds.DrawImage(gpuFrames[currentFrame]);
         }
 
         if (data.IsAnimated) {
@@ -163,12 +186,12 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         Stop();
     }
 
-    private partial class ImageData: IDisposable {
-        public uint MaxLoop { get; init; } // 0 = infinite
-        public IReadOnlyList<double> FrameDelaysMs { get; init; }
-        public IReadOnlyList<CanvasBitmap> Frames { get; init; }
-        public int Width { get; init; }
-        public int Height { get; init; }
+    private partial class ImageData {
+        public uint MaxLoop { get; } // 0 = infinite
+        public IReadOnlyList<double> FrameDelaysMs { get; }
+        public IReadOnlyList<byte[]> Frames { get; }
+        public int Width { get; }
+        public int Height { get; }
         public int FrameCount => Frames.Count;
         public bool IsAnimated => FrameCount > 1;
 
@@ -178,7 +201,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
 
             var frameCount = image.Frames.Count;
             var delays = new double[frameCount];
-            var frames = new CanvasBitmap[frameCount];
+            var frames = new byte[frameCount][];
 
             if (image.Metadata.TryGetGifMetadata(out var gifMeta)) {
                 MaxLoop = gifMeta.RepeatCount;
@@ -202,33 +225,52 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
                 MaxLoop = 0;
             }
 
-            var pixels = new byte[Width * Height * 4];
             for (int i = 0; i < frameCount; i++) {
                 // Enforce a minimum delay of 20ms to avoid excessively fast frames
                 delays[i] = Math.Max(delays[i], 20);
 
                 var frame = image.Frames[i];
+                var pixels = new byte[frame.Width * frame.Height * 4];
                 frame.CopyPixelDataTo(pixels);
-                frames[i] = CanvasBitmap.CreateFromBytes(
-                    canvasDevice,
-                    pixels,
-                    frame.Width,
-                    frame.Height,
-                    Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized
-                );
+                PremultiplyAlphaInPlace(pixels);
+                frames[i] = pixels;
             }
 
             FrameDelaysMs = delays;
             Frames = frames;
         }
 
-        public void Dispose() {
-            if (Frames is not null) {
-                foreach (var f in Frames) {
-                    f.Dispose();
-                }
+        private static void PremultiplyAlphaInPlace(byte[] pixels) {
+            for (int i = 0; i < pixels.Length; i += 4) {
+                var a = pixels[i + 3];
+                pixels[i + 0] = (byte)((pixels[i + 0] * a + 127) / 255); // R
+                pixels[i + 1] = (byte)((pixels[i + 1] * a + 127) / 255); // G
+                pixels[i + 2] = (byte)((pixels[i + 2] * a + 127) / 255); // B
             }
-            GC.SuppressFinalize(this);
+        }
+
+        internal CanvasBitmap[] CreateGpuFrames() {
+            var frames = new List<CanvasBitmap>(FrameCount);
+
+            try {
+                foreach (var frameData in Frames) {
+                    frames.Add(CanvasBitmap.CreateFromBytes(
+                        canvasDevice,
+                        frameData,
+                        Width,
+                        Height,
+                        Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized
+                    ));
+                }
+
+                return [.. frames];
+            } catch {
+                foreach (var frame in frames) {
+                    frame.Dispose();
+                }
+
+                throw;
+            }
         }
     }
 }
