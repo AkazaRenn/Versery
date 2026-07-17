@@ -10,11 +10,17 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Runtime.Caching;
 using Utilities;
 
 namespace View.Controls;
 internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
+    private static readonly MemoryCache imageCache = new(nameof(AnimatedImage));
+    private static readonly CacheItemPolicy imageCachePolicy = new() {
+        SlidingExpiration = TimeSpan.FromMinutes(10),
+    };
+
     private readonly CompositionGraphicsDevice graphicsDevice = Utilities.Services.Get<CompositionGraphicsDevice>();
     private readonly SpriteVisual visual;
     private readonly CompositionSurfaceBrush brush;
@@ -105,17 +111,23 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     private async Task LoadImage() {
         Reset();
 
-        data?.Dispose();
-        data = null;
-
         if (Source is null) {
+            data = null;
             return;
         }
 
-        using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Source.LocalPath);
-        data = new ImageData(image);
-        surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
+        var cacheKey = Source.AbsoluteUri;
 
+        if (imageCache.Get(cacheKey) is ImageData cachedData) {
+            data = cachedData;
+        } else {
+            using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Source.LocalPath);
+            data = new ImageData(image);
+            imageCache.Add(cacheKey, data, imageCachePolicy);
+        }
+
+
+        surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
         Draw();
     }
 
