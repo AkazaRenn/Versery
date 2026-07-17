@@ -13,7 +13,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using Utilities;
 
 namespace View.Controls;
-internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
+internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
     private readonly CompositionGraphicsDevice graphicsDevice = Utilities.Services.Get<CompositionGraphicsDevice>();
     private readonly SpriteVisual visual;
@@ -37,7 +37,7 @@ internal sealed partial class Emoji: UserControl, IRecipient<Messages.WindowActi
 
     public bool ShouldPlay => (data is not null) && (data.IsAnimated) && IsLoaded && ((data.MaxLoop == 0) || (loop < data.MaxLoop));
 
-    public Emoji() {
+    public AnimatedImage() {
         InitializeComponent();
 
         surface = graphicsDevice.CreateDrawingSurface(
