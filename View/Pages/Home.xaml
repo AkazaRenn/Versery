@@ -9,7 +9,7 @@
     xmlns:controls="using:View.Controls"
     xmlns:vm.controls="using:ViewModel.Controls"
     NavigationCacheMode="Required">
-    <ScrollView
+    <ScrollViewer
         x:Name="ScrollView"
         VerticalScrollBarVisibility="Hidden"
         CornerRadius="0">
@@ -26,9 +26,6 @@
                     </DataTemplate>
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
-            <ProgressRing
-                IsActive="True"
-                Margin="0 16 0 16"/>
         </StackPanel>
-    </ScrollView>
+    </ScrollViewer>
 </Page>

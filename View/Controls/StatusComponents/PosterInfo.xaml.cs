@@ -15,4 +15,8 @@ public sealed partial class PosterInfo: Grid {
     public PosterInfo() {
         InitializeComponent();
     }
+
+    private double GetIdFontSize(double referenceFontSize) {
+        return referenceFontSize * 0.8;
+    }
 }

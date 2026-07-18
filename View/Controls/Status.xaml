@@ -10,8 +10,8 @@
     Padding="8 8 8 8"
     ColumnDefinitions="Auto, *"
     ColumnSpacing="8"
-    RowDefinitions="Auto, Auto, *, Auto"
-    RowSpacing="4">
+    RowDefinitions="Auto, Auto, Auto, Auto"
+    RowSpacing="8">
 
     <Rectangle
         x:Name="AboveLine"
@@ -39,6 +39,7 @@
     <components:AvatarButton 
         Grid.Column="0"
         Grid.Row="1"
+        Margin="0 -8 0 0"
         Height="40"
         Width="40"
         CornerRadius="20"
@@ -48,6 +49,7 @@
     <Grid
         Grid.Column="1"
         Grid.Row="1"
+        Margin="0 -8 0 0"
         ColumnDefinitions="*, Auto"
         ColumnSpacing="2">
         <components:PosterInfo

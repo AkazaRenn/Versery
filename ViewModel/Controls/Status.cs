@@ -10,6 +10,7 @@ public sealed partial class Status: ObservableObject {
     public event Action<int, IEnumerable<Model.Entities.Timeline>>? MoreLoaded;
 
     public string Id { get; }
+    public string ContentId { get; }
     public int Index { get; set; }
 
     [ObservableProperty]
@@ -46,6 +47,7 @@ public sealed partial class Status: ObservableObject {
             account = client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
         }
 
+        ContentId = status.Id;
         PosterId = account.AccountName;
         PosterDisplayName = account.DisplayName;
         CreatedAt = status.CreatedAt;

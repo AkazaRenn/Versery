@@ -8,16 +8,17 @@ namespace ViewModel.Pages;
 
 public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     private readonly Client client = Utilities.Services.Get<Client>();
-    private readonly Dictionary<string, List<Controls.Status>> idToStatusesDict = [];
+    private readonly Dictionary<string, List<Controls.Status>> contentIdToStatusesDict = [];
+    private readonly HashSet<string> statusIds = [];
+    private bool loadingOldStatuses = false;
 
     public ObservableCollection<Controls.Status> Statuses { get; } = [];
 
     public Home() {
-        WeakReferenceMessenger.Default.RegisterAll(this);
-
         Statuses.CollectionChanged += Timelines_CollectionChanged;
 
-        LoadInitialTimelines();
+        _ = LoadInitialTimelines();
+        WeakReferenceMessenger.Default.RegisterAll(this);
     }
 
     private void Timelines_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
@@ -44,11 +45,12 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         }
 
         foreach (Controls.Status status in statuses) {
-            if (!idToStatusesDict.TryGetValue(status.Id, out var list)) {
+            if (!contentIdToStatusesDict.TryGetValue(status.ContentId, out var list)) {
                 list = [];
-                idToStatusesDict[status.Id] = list;
+                contentIdToStatusesDict[status.ContentId] = list;
             }
             list.Add(status);
+            statusIds.Add(status.Id);
         }
     }
 
@@ -58,32 +60,35 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         }
 
         foreach (Controls.Status status in statuses) {
-            if (idToStatusesDict.TryGetValue(status.Id, out var list)) {
+            if (contentIdToStatusesDict.TryGetValue(status.ContentId, out var list)) {
                 list.Remove(status);
                 if (list.Count == 0) {
-                    idToStatusesDict.Remove(status.Id);
+                    contentIdToStatusesDict.Remove(status.ContentId);
                 }
             }
+            statusIds.Remove(status.Id);
         }
     }
 
     private void ResetIdToTimelinesDict() {
-        idToStatusesDict.Clear();
+        contentIdToStatusesDict.Clear();
+        statusIds.Clear();
         foreach (var status in Statuses) {
-            if (!idToStatusesDict.TryGetValue(status.Id, out var list)) {
+            if (!contentIdToStatusesDict.TryGetValue(status.ContentId, out var list)) {
                 list = [];
-                idToStatusesDict[status.Id] = list;
+                contentIdToStatusesDict[status.ContentId] = list;
             }
             list.Add(status);
+            statusIds.Add(status.Id);
         }
     }
 
-    public async void Receive(Messages.SignInCompleted message) {
+    public void Receive(Messages.SignInCompleted message) {
         Statuses.Clear();
-        LoadInitialTimelines();
+        _ = LoadInitialTimelines();
     }
 
-    private async void LoadInitialTimelines() {
+    private async Task LoadInitialTimelines() {
         var timelines = client.GetTimelineFromDatabase(Model.Enums.TimelineType.Home);
         if (!timelines.Any()) {
             timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
@@ -91,6 +96,32 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         foreach (var timeline in timelines) {
             Statuses.Add(new Controls.Status(timeline));
         }
+    }
+
+    public async Task LoadLatestTimelines() {
+        var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+
+        int index = 0;
+        foreach (var timeline in timelines) {
+            if (!statusIds.Contains(timeline.Id)) {
+                Statuses.Insert(index++, new Controls.Status(timeline));
+            }
+        }
+    }
+
+    public async Task OnStatusRealized(int index) {
+        if ((index < Statuses.Count - 5) || !Statuses.Any() || loadingOldStatuses) {
+            return;
+        }
+
+        loadingOldStatuses = true;
+        var timelines = await Task.Run(() => 
+            client.GetTimelineFromDatabase(Model.Enums.TimelineType.Home, Statuses.Last().Id)
+        );
+        foreach (var timeline in timelines) {
+            Statuses.Add(new Controls.Status(timeline));
+        }
+        loadingOldStatuses = false;
     }
 
     //[RelayCommand]

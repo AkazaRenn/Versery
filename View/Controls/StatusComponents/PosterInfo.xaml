@@ -8,9 +8,12 @@
         x:Name="DisplayNameTextBlock"
         Grid.Row="0"
         FontWeight="SemiBold"
+        FontSize="16"
         TextTrimming="CharacterEllipsis"/>
     <TextBlock
         x:Name="IdTextBlock"
         Grid.Row="2"
+        FontSize="{x:Bind GetIdFontSize(DisplayNameTextBlock.FontSize)}"
+        Opacity="0.75"
         TextTrimming="CharacterEllipsis"/>
 </Grid>

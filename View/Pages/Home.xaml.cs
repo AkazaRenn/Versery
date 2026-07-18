@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Utilities.Interfaces;
 
@@ -13,21 +14,24 @@ internal sealed partial class Home: Page, INavigationPage {
 
     public void OnNavigationReInvoke() {
         if (ScrollView.VerticalOffset == 0) {
-            // Trigger refresh
+            _ = viewModel.LoadLatestTimelines();
         } else {
-            ScrollView.ScrollTo(0, 0);
+            // ScrollView.ScrollTo(0, 0);
+            // https://github.com/microsoft/microsoft-ui-xaml/issues/9368
+            ScrollView.ScrollToVerticalOffset(0);
         }
     }
 
-    private void ItemsRepeater_ElementIndexChanged(ItemsRepeater _, ItemsRepeaterElementIndexChangedEventArgs args) {
+    private void ItemsRepeater_ElementIndexChanged(ItemsRepeater obj, ItemsRepeaterElementIndexChangedEventArgs args) {
         if (args.Element is Controls.Status status) {
             status.ViewModel?.Index = args.NewIndex;
         }
     }
 
-    private void ItemsRepeater_ElementPrepared(ItemsRepeater _, ItemsRepeaterElementPreparedEventArgs args) {
+    private void ItemsRepeater_ElementPrepared(ItemsRepeater obj, ItemsRepeaterElementPreparedEventArgs args) {
         if (args.Element is Controls.Status status) {
             status.ViewModel?.Index = args.Index;
+            _ = viewModel.OnStatusRealized(args.Index);
         }
     }
 }
