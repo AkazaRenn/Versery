@@ -25,10 +25,12 @@ internal sealed class Client {
     public void AddTimeline(IEnumerable<Mastonet.Entities.Status> serverStatuses, string? afterId = null) {
         var dbTimeline = new List<Entities.Timeline>(serverStatuses.Count() + 1);
         foreach (var status in serverStatuses) {
+            if (Timeline.AccessedTimeline.Contains(status.Id)) {
+                continue;
+            }
             dbTimeline.Add(new Entities.Timeline {
                 Id = status.Id,
                 CreatedAt = status.CreatedAt,
-                FollowedByGap = false,
             });
         }
         if (serverStatuses.Count() >= Constants.StatusesCountPerLoad) {

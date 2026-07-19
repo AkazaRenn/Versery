@@ -14,6 +14,10 @@ public sealed partial class Status: ObservableObject {
     public int Index { get; set; }
 
     [ObservableProperty]
+    public partial Uri? RebloggerAvatar { get; set; }
+    [ObservableProperty]
+    public partial string? RebloggerId { get; set; }
+    [ObservableProperty]
     public partial string? RebloggerDisplayName { get; set; }
     [ObservableProperty]
     public partial Uri? PosterAvatar { get; set; }
@@ -24,7 +28,7 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial DateTime CreatedAt { get; set; }
     [ObservableProperty]
-    public partial string Uri { get; set; }
+    public partial Uri? Uri { get; set; }
     [ObservableProperty]
     public partial string TextContent { get; set; }
     [ObservableProperty]
@@ -42,6 +46,8 @@ public sealed partial class Status: ObservableObject {
         var account = client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
 
         if (status.ReblogId != null) {
+            RebloggerAvatar = account.Avatar;
+            RebloggerId = account.Id;
             RebloggerDisplayName = account.DisplayName;
             status = client.GetStatus(status.ReblogId) ?? throw new ArgumentNullException(null, $"Unable to get status {status.ReblogId}");
             account = client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
@@ -58,7 +64,7 @@ public sealed partial class Status: ObservableObject {
         Bookmarked = status.Bookmarked ?? false;
         FollowedByGap = timeline.FollowedByGap;
 
-        DownloadAvatar(account.AvatarUrl);
+        _ = DownloadAvatar(account.Avatar);
     }
 
     public async void LoadMore() {
@@ -67,7 +73,9 @@ public sealed partial class Status: ObservableObject {
         MoreLoaded?.Invoke(Index, timelines);
     }
 
-    private async void DownloadAvatar(string url) {
-        PosterAvatar = await Cache.Get(url);
+    private async Task DownloadAvatar(Uri? uri) {
+        if (uri != null) {
+            PosterAvatar = await Cache.Get(uri);
+        }
     }
 }
