@@ -3,11 +3,17 @@ using AngleSharp.Dom;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using System.Runtime.Caching;
 
 namespace View.Controls.StatusComponents;
 
 internal sealed partial class HtmlTextBlock: UserControl {
-    public TextWrapping TextWrapping { 
+    private static readonly MemoryCache htmlCache = new(nameof(HtmlTextBlock));
+    private static readonly CacheItemPolicy htmlCachePolicy = new() {
+        SlidingExpiration = TimeSpan.FromMinutes(30),
+    };
+
+    public TextWrapping TextWrapping {
         get => RichTextBlock.TextWrapping;
         set => RichTextBlock.TextWrapping = value;
     }
@@ -30,27 +36,20 @@ internal sealed partial class HtmlTextBlock: UserControl {
     }
 
     private async void UpdateContent(string html) {
-        var browsingContext = new BrowsingContext();
-        var document = await browsingContext.OpenAsync(req => req.Content(html));
+        if (htmlCache.Get(html) is not HtmlContentToken tokenizedContent) {
+            tokenizedContent = await TokenizeHtmlAsync(html);
+            htmlCache.Add(html, tokenizedContent, htmlCachePolicy);
+        }
+
+        RenderContent(tokenizedContent);
+    }
+
+    private void RenderContent(HtmlContentToken content) {
         var blocks = RichTextBlock.Blocks;
         blocks.Clear();
 
-        if (document.Body == null || document.Body.ChildElementCount == 0) {
-            blocks.Add(new Paragraph {
-                Inlines = {
-                    new Run {
-                        Text = html,
-                    },
-                },
-            });
-            return;
-        } 
-
-        foreach (var child in document.Body.Children) {
-            var paragraph = Parse(child);
-            if (paragraph is not null) {
-                blocks.Add(paragraph);
-            }
+        foreach (var paragraphToken in content.Paragraphs) {
+            blocks.Add(RenderParagraph(paragraphToken));
         }
 
         for (int i = 0; i < blocks.Count - 1; i++) {
@@ -59,86 +58,119 @@ internal sealed partial class HtmlTextBlock: UserControl {
         }
     }
 
-    private Paragraph? Parse(IElement element) {
-        if (element is IText text) {
-            return new Paragraph {
-                Inlines = {
-                    new Run {
-                        Text = text.Text,
-                    },
-                },
-            };
+    private static async Task<HtmlContentToken> TokenizeHtmlAsync(string html) {
+        var browsingContext = new BrowsingContext();
+        var document = await browsingContext.OpenAsync(req => req.Content(html));
+
+        if (document.Body == null || document.Body.ChildElementCount == 0) {
+            return new HtmlContentToken([
+                new ParagraphToken([
+                    new TextToken(html),
+                ]),
+            ]);
         }
 
+        var paragraphs = new List<ParagraphToken>(document.Body.ChildElementCount);
+        foreach (var child in document.Body.Children) {
+            paragraphs.Add(TokenizeParagraph(child));
+        }
+
+        return new HtmlContentToken(paragraphs);
+    }
+
+    private static ParagraphToken TokenizeParagraph(IElement element) {
         return element.TagName.ToLower() switch {
-            "br" => new Paragraph {
-                Inlines = {
-                    new LineBreak(),
-                },
-            },
-            "p" or "div" or _ => ParseParagraph(element),
+            "br" => new ParagraphToken([
+                new LineBreakToken(),
+            ]),
+            _ => new ParagraphToken(TokenizeInlineChildren(element)),
         };
     }
 
-    private Paragraph ParseParagraph(IElement element) {
-        var paragraph = new Paragraph();
+    private static List<InlineToken> TokenizeInlineChildren(IElement element) {
+        var tokens = new List<InlineToken>(element.ChildNodes.Length);
 
         foreach (var child in element.ChildNodes) {
-            var inline = ParseInline(child);
-            if (inline is not null) {
-                paragraph.Inlines.Add(inline);
+            var token = TokenizeInline(child);
+            if (token is not null) {
+                tokens.Add(token);
             }
         }
 
-        return paragraph;
+        return tokens;
     }
 
-    private Inline? ParseInline(INode node) {
+    private static InlineToken? TokenizeInline(INode node) {
         switch (node) {
         case IText text:
-            return new Run { Text = text.Text };
+            return new TextToken(text.Text);
         case IElement element:
             var cls = element.GetAttribute("class");
             if (cls is not null && cls.Contains("invisible")) {
-                return null; 
+                return null;
             }
 
             switch (element.TagName.ToLower()) {
             case "b":
             case "strong":
-                return ParseInlineChildren(new Bold(), element);
+                return new BoldToken(TokenizeInlineChildren(element));
             case "i":
             case "em":
-                return ParseInlineChildren(new Italic(), element);
+                return new ItalicToken(TokenizeInlineChildren(element));
             case "a":
                 var href = element.GetAttribute("href");
                 if (string.IsNullOrEmpty(href)) {
-                    // fallback: treat <a> without href as plain text
-                    return new Run { Text = element.TextContent };
+                    return new TextToken(element.TextContent);
                 }
 
-                return ParseInlineChildren(new Hyperlink {
-                    NavigateUri = new Uri(href)
-                }, element);
+                return new HyperlinkToken(href, TokenizeInlineChildren(element));
             case "br":
-                return new LineBreak();
+                return new LineBreakToken();
             default:
-                // fallback: treat unknown inline elements as plain text
-                return new Run { Text = element.TextContent };
+                return new TextToken(element.TextContent);
             }
         default:
             return null;
         }
     }
 
-    private Span ParseInlineChildren(Span span, IElement element) {
-        foreach (var child in element.ChildNodes) {
-            var inline = ParseInline(child);
-            if (inline is not null) {
-                span.Inlines.Add(inline);
-            }
+    private static Paragraph RenderParagraph(ParagraphToken paragraphToken) {
+        var paragraph = new Paragraph();
+
+        foreach (var inlineToken in paragraphToken.Inlines) {
+            paragraph.Inlines.Add(RenderInline(inlineToken));
+        }
+
+        return paragraph;
+    }
+
+    private static Inline RenderInline(InlineToken token) {
+        return token switch {
+            TextToken text => new Run { Text = text.Text },
+            LineBreakToken => new LineBreak(),
+            BoldToken bold => RenderInlineChildren(new Bold(), bold.Children),
+            ItalicToken italic => RenderInlineChildren(new Italic(), italic.Children),
+            HyperlinkToken hyperlink => RenderInlineChildren(new Hyperlink {
+                NavigateUri = new Uri(hyperlink.Href),
+            }, hyperlink.Children),
+            _ => new Run(),
+        };
+    }
+
+    private static Span RenderInlineChildren(Span span, IReadOnlyList<InlineToken> tokens) {
+        foreach (var token in tokens) {
+            span.Inlines.Add(RenderInline(token));
         }
 
         return span;
     }
+
+    private abstract record InlineToken;
+    private sealed record TextToken(string Text): InlineToken;
+    private sealed record LineBreakToken: InlineToken;
+    private sealed record BoldToken(IReadOnlyList<InlineToken> Children): InlineToken;
+    private sealed record ItalicToken(IReadOnlyList<InlineToken> Children): InlineToken;
+    private sealed record HyperlinkToken(string Href, IReadOnlyList<InlineToken> Children): InlineToken;
+    private sealed record ParagraphToken(IReadOnlyList<InlineToken> Inlines);
+    private sealed record HtmlContentToken(IReadOnlyList<ParagraphToken> Paragraphs);
 }
