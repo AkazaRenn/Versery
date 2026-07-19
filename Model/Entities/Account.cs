@@ -14,4 +14,10 @@ public record class Account() {
         DisplayName = serverAccount.DisplayName;
         AvatarUrl = serverAccount.AvatarUrl;
     }
+
+    internal static IEnumerable<Account> FromServer(IEnumerable<Mastonet.Entities.Account> serverAccounts) {
+        foreach (var serverAccount in serverAccounts) {
+            yield return new Account(serverAccount);
+        }
+    }
 }

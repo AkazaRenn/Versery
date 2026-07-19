@@ -14,7 +14,6 @@ public record class Status() {
     public bool? Muted { get; set; } = null;
     public bool? Bookmarked { get; set; } = null;
     public bool? Pinned { get; set; } = null;
-    public bool? FollowedByGap { get; set; } = null;
 
     internal Status(Mastonet.Entities.Status serverStatus): this() {
         Id = serverStatus.Id;
@@ -30,6 +29,12 @@ public record class Status() {
             Muted = serverStatus.Muted;
             Bookmarked = serverStatus.Bookmarked;
             Pinned = serverStatus.Pinned;
+        }
+    }
+
+    internal static IEnumerable<Status> FromServer(IEnumerable<Mastonet.Entities.Status> serverStatuses) {
+        foreach (var serverStatus in serverStatuses) {
+            yield return new Status(serverStatus);
         }
     }
 }

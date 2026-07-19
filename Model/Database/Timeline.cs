@@ -1,72 +1,47 @@
 ﻿using LiteDB;
-using Mastonet.Entities;
-using Model.Entities;
 using Utilities;
 
 namespace Model.Database;
 
 internal sealed class Timeline {
-    private readonly ILiteCollection<Entities.Timeline> entries;
-    private readonly ILiteCollection<Entities.Status> statuses;
+    private readonly ILiteCollection<Entities.Timeline> db;
+    private readonly HashSet<string> accessedTimeline = [];
 
-    public Timeline(string account, string name, ILiteCollection<Entities.Status> _statuses) {
-        var db = Utilities.Services.Get<LiteDatabase>();
-        entries = db.GetCollection<Entities.Timeline>($"account_{account.Sha256}_{name}");
-        entries.EnsureIndex(x => x.CreatedAt);
-        statuses = _statuses;
+    public IReadOnlyCollection<string> AccessedTimeline => accessedTimeline;
+
+    public Timeline(string hash, string name) {
+        db = Utilities.Services.Get<LiteDatabase>().GetCollection<Entities.Timeline>($"account_{hash}_{name}");
+        db.EnsureIndex(x => x.CreatedAt);
     }
 
-    //public IEnumerable<Entities.Status> Get(int count, UInt64? after = null) {
-    //    var query = entries.Query().OrderByDescending(x => x);
-    //    if (after is not null) {
-    //        query = query.Where(x => x.Id < after);
-    //    }
-
-    //    foreach (var id in query.Limit(count).ToEnumerable()) {
-    //        var statusOrNull = statuses.FindById(id.ToString());
-    //        if (statusOrNull is Entities.Status status) {
-    //            yield return status;
-    //        }
-    //    }
-    //}
-
     internal IEnumerable<Entities.Timeline> Get(int count, string? after = null) {
-        var query = entries.Query();
+        var query = db.Query();
 
         if (!String.IsNullOrEmpty(after)) {
-            var afterEntry = entries.FindById(after);
+            var afterEntry = db.FindById(after);
             if (afterEntry is not null) {
                 query = query.Where(x => x.CreatedAt <= afterEntry.CreatedAt);
             }
         }
 
-        return query.OrderByDescending(x => x.CreatedAt).Limit(count).ToEnumerable();
+        var statuses = query.OrderByDescending(x => x.CreatedAt).Limit(count).ToEnumerable();
+        foreach (var status in statuses) {
+            if (accessedTimeline.Contains(status.Id)) {
+                continue;
+            }
+            accessedTimeline.Add(status.Id);
+            yield return status;
+        }
     }
 
-    internal void Add(MastodonList<Mastonet.Entities.Status> serverStatuses, string? afterId) {
-        var timelineEntries = new List<Entities.Timeline>(serverStatuses.Count + 1);
-        var dbStatuses = new List<Entities.Status>(serverStatuses.Count);
-        foreach (var serverStatus in serverStatuses) {
-            timelineEntries.Add(new Entities.Timeline {
-                Id = serverStatus.Id,
-                CreatedAt = serverStatus.CreatedAt,
-                FollowedByGap = false,
-            });
-            dbStatuses.Add(new(serverStatus));
-            if (serverStatus.Reblog is not null) {
-                dbStatuses.Add(new(serverStatus.Reblog));
-            }
-        }
-
-        if (serverStatuses.Count >= Constants.StatusesCountPerLoad) {
-            timelineEntries[^1].FollowedByGap = true;
-        }
-
+    internal void Add(IEnumerable<Entities.Timeline> statuses, string? afterId) {
         if (afterId is not null) {
-            entries.TryUpdate(afterId, x => x.FollowedByGap = false);
+            db.TryUpdate(afterId, x => x.FollowedByGap = false);
         }
 
-        entries.Upsert(timelineEntries);
-        statuses.Upsert(dbStatuses);
+        db.Upsert(statuses);
+        foreach (var status in statuses) {
+            accessedTimeline.Add(status.Id);
+        }
     }
 }

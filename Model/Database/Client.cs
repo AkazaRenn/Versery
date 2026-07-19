@@ -1,28 +1,53 @@
-﻿using LiteDB;
-using Model.Entities;
-using Utilities;
+﻿using Utilities;
 
 namespace Model.Database;
 
 internal sealed class Client {
-    internal ILiteCollection<Account> Accounts { get; }
-    internal ILiteCollection<Status> Statuses { get; }
-    internal Timeline HomeTimeline { get; }
-    internal Timeline FederatedTimeline { get; }
-    internal Timeline LocalTimeline { get; }
+    private Account Account { get; }
+    private Status Status { get; }
+    private Timeline Timeline { get; }
 
     public Client(string account, string instance) {
-        var sha256 = instance.Sha256;
-        Statuses = Utilities.Services.Get<LiteDatabase>().GetCollection<Status>($"instance_{sha256}_statuses");
-        Accounts = Utilities.Services.Get<LiteDatabase>().GetCollection<Account>($"instance_{sha256}_accounts");
+        var instanceHash = instance.Sha256;
+        Status = new Status(instanceHash);
+        Account = new Account(instanceHash);
 
-        HomeTimeline = new(account, "hometimeline", Statuses);
-        FederatedTimeline = new(account, "federatedtimeline", Statuses);
-        LocalTimeline = new(account, "localtimeline", Statuses);
+        var accountHash = account.Sha256;
+        Timeline = new(accountHash, "hometimeline");
+        //FederatedTimeline = new(accountHash, "federatedtimeline");
+        //LocalTimeline = new(accountHash, "localtimeline");
     }
 
-    public void AddAccounts(IEnumerable<Mastonet.Entities.Status> statuses) {
-        var accounts = statuses.Select(x => new Account(x.Account));
-        Accounts.Upsert(accounts);
+    public IEnumerable<Entities.Timeline> GetTimeline(int count, string? afterId = null) {
+        return Timeline.Get(count, afterId);
+    }
+
+    public void AddTimeline(IEnumerable<Mastonet.Entities.Status> serverStatuses, string? afterId = null) {
+        var dbTimeline = new List<Entities.Timeline>(serverStatuses.Count() + 1);
+        foreach (var status in serverStatuses) {
+            dbTimeline.Add(new Entities.Timeline {
+                Id = status.Id,
+                CreatedAt = status.CreatedAt,
+                FollowedByGap = false,
+            });
+        }
+        if (serverStatuses.Count() >= Constants.StatusesCountPerLoad) {
+            dbTimeline[^1].FollowedByGap = true;
+        }
+        Timeline.Add(dbTimeline, afterId);
+    }
+
+    public Entities.Status? GetStatus(string id) {
+        return Status.Get(id);
+    }
+
+    public void AddStatuses(IEnumerable<Mastonet.Entities.Status> serverStatuses) {
+        var flattened = serverStatuses.Flattened;
+        Status.Add(Entities.Status.FromServer(flattened));
+        Account.Add(Entities.Account.FromServer(flattened.Select(x => x.Account)));
+    }
+
+    public Entities.Account? GetAccount(string id) {
+        return Account.Get(id);
     }
 }

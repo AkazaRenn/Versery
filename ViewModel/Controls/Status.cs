@@ -56,7 +56,7 @@ public sealed partial class Status: ObservableObject {
         Reblogged = status.Reblogged ?? false;
         Favourited = status.Favourited ?? false;
         Bookmarked = status.Bookmarked ?? false;
-        FollowedByGap = status.FollowedByGap ?? false;
+        FollowedByGap = timeline.FollowedByGap;
 
         DownloadAvatar(account.AvatarUrl);
     }

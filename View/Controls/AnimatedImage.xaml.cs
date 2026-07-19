@@ -69,8 +69,6 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
         timer.Tick += Timer_Tick;
         timer.IsRepeating = false;
-
-        WeakReferenceMessenger.Default.RegisterAll(this);
     }
 
     private void CanvasDevice_DeviceLost(CanvasDevice sender, object args) {
@@ -87,6 +85,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e) {
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
+        StrongReferenceMessenger.Default.RegisterAll(this);
         if (Source is not null && gpuFrames.Length == 0) {
             _ = LoadImage();
         } else {
@@ -97,6 +96,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
         canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
+        StrongReferenceMessenger.Default.UnregisterAll(this);
         Reset();
     }
 

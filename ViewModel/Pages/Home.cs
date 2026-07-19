@@ -9,7 +9,6 @@ namespace ViewModel.Pages;
 public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     private readonly Client client = Utilities.Services.Get<Client>();
     private readonly Dictionary<string, List<Controls.Status>> contentIdToStatusesDict = [];
-    private readonly HashSet<string> statusIds = [];
     private bool loadingOldStatuses = false;
 
     public ObservableCollection<Controls.Status> Statuses { get; } = [];
@@ -50,7 +49,6 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
                 contentIdToStatusesDict[status.ContentId] = list;
             }
             list.Add(status);
-            statusIds.Add(status.Id);
         }
     }
 
@@ -66,20 +64,17 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
                     contentIdToStatusesDict.Remove(status.ContentId);
                 }
             }
-            statusIds.Remove(status.Id);
         }
     }
 
     private void ResetIdToTimelinesDict() {
         contentIdToStatusesDict.Clear();
-        statusIds.Clear();
         foreach (var status in Statuses) {
             if (!contentIdToStatusesDict.TryGetValue(status.ContentId, out var list)) {
                 list = [];
                 contentIdToStatusesDict[status.ContentId] = list;
             }
             list.Add(status);
-            statusIds.Add(status.Id);
         }
     }
 
@@ -103,9 +98,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
 
         int index = 0;
         foreach (var timeline in timelines) {
-            if (!statusIds.Contains(timeline.Id)) {
-                Statuses.Insert(index++, new Controls.Status(timeline));
-            }
+            Statuses.Insert(index++, new Controls.Status(timeline));
         }
     }
 

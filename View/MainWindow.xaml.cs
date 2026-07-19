@@ -121,10 +121,10 @@ public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequ
         switch (args.WindowActivationState) {
         case WindowActivationState.PointerActivated:
         case WindowActivationState.CodeActivated:
-            WeakReferenceMessenger.Default.Send(new Messages.WindowActivated());
+            StrongReferenceMessenger.Default.Send(new Messages.WindowActivated());
             break;
         case WindowActivationState.Deactivated:
-            WeakReferenceMessenger.Default.Send(new Messages.WindowDeactivated());
+            StrongReferenceMessenger.Default.Send(new Messages.WindowDeactivated());
             break;
         }
     }

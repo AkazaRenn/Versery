@@ -8,11 +8,11 @@ namespace Model.Access;
 public sealed class Client {
     private readonly ApplicationStates applicationStates = Utilities.Services.Get<ApplicationStates>();
     private readonly HttpClient httpClient = Utilities.Services.Get<HttpClient>();
-    private Database.Client? databaseClient;
-    private MastodonClient? mastodonClient;
+    private Database.Client? database;
+    private MastodonClient? server;
     private Mastonet.Entities.Account? account;
 
-    public bool SignedIn => mastodonClient is not null && databaseClient is not null;
+    public bool SignedIn => server is not null && database is not null;
 
     public Client() {
         var user = applicationStates.ActiveUser;
@@ -31,18 +31,18 @@ public sealed class Client {
         }
 
         var instance = split.Last();
-        mastodonClient = new(instance, token, httpClient);
-        databaseClient = new(user, instance);
+        server = new(instance, token, httpClient);
+        database = new(user, instance);
     }
 
     internal async Task NewUser(string instance, string accessToken) {
-        mastodonClient = new(instance, accessToken, httpClient);
-        account = await mastodonClient.GetCurrentUser();
+        server = new(instance, accessToken, httpClient);
+        account = await server.GetCurrentUser();
         var username = account.UserName;
-        databaseClient = new Database.Client(account.UserName, instance);
+        database = new Database.Client(account.UserName, instance);
 
         var userId = $"{username}@{instance}";
-        Credentials.AddAccessToken(userId, mastodonClient.AccessToken);
+        Credentials.AddAccessToken(userId, server.AccessToken);
         applicationStates.ActiveUser = userId;
 
         WeakReferenceMessenger.Default.Send(new Messages.SignInCompleted());
@@ -50,8 +50,8 @@ public sealed class Client {
 
     public async Task<Mastonet.Entities.Account?> GetAccount() {
         if (account is null) {
-            if (mastodonClient is not null) {
-                account = await mastodonClient.GetCurrentUser();
+            if (server is not null) {
+                account = await server.GetCurrentUser();
             }
         }
 
@@ -63,20 +63,20 @@ public sealed class Client {
             throw new InvalidOperationException("Client is not signed in");
         }
 
-        Mastonet.ArrayOptions arrayOptions = new() {
+        ArrayOptions arrayOptions = new() {
             Limit = Constants.StatusesCountPerLoad,
             MaxId = afterId?.ToString(),
         };
 
-        var (serverStatuses, databaseTimeline) = type switch {
-            TimelineType.Home => (await mastodonClient!.GetHomeTimeline(arrayOptions), databaseClient!.HomeTimeline),
-            TimelineType.Federated => (await mastodonClient!.GetPublicTimeline(arrayOptions, local: false), databaseClient!.FederatedTimeline),
-            TimelineType.Local => (await mastodonClient!.GetPublicTimeline(arrayOptions, local: true), databaseClient!.LocalTimeline),
+        var serverStatuses = type switch {
+            TimelineType.Home => await server!.GetHomeTimeline(arrayOptions),
+            TimelineType.Federated => await server!.GetPublicTimeline(arrayOptions, local: false),
+            TimelineType.Local => await server!.GetPublicTimeline(arrayOptions, local: true),
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 
-        databaseTimeline.Add(serverStatuses, afterId);
-        databaseClient.AddAccounts(serverStatuses.Flattened);
+        database!.AddTimeline(serverStatuses, afterId);
+        database.AddStatuses(serverStatuses);
 
         if (!serverStatuses.Any()) {
             return [];
@@ -96,28 +96,20 @@ public sealed class Client {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-
-        Database.Timeline databaseTimeline = type switch {
-            TimelineType.Home => databaseClient!.HomeTimeline,
-            TimelineType.Federated => databaseClient!.FederatedTimeline,
-            TimelineType.Local => databaseClient!.LocalTimeline,
-            _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
-        };
-
-        return databaseTimeline.Get(Constants.StatusesCountPerLoad, afterId);
+        return database!.GetTimeline(Constants.StatusesCountPerLoad, afterId);
     }
 
     public Entities.Status? GetStatus(string id) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-        return databaseClient!.Statuses.FindById(id);
+        return database!.GetStatus(id);
     }
 
     public Entities.Account? GetAccount(string id) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-        return databaseClient!.Accounts.FindById(id);
+        return database!.GetAccount(id);
     }
 }
