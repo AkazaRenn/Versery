@@ -53,8 +53,8 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     }
 
     private void RemoveFromIdToTimelinesDict(System.Collections.IList? statuses) {
-        if (statuses is null) { 
-            return; 
+        if (statuses is null) {
+            return;
         }
 
         foreach (Controls.Status status in statuses) {
@@ -84,12 +84,13 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     }
 
     private async Task LoadInitialTimelines() {
-        var timelines = client.GetTimelineFromDatabase(Model.Enums.TimelineType.Home);
+        var timelines = await client.GetTimelineFromDatabase();
         if (!timelines.Any()) {
             timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
         }
-        foreach (var timeline in timelines) {
-            Statuses.Add(new Controls.Status(timeline));
+
+        foreach (var status in await Controls.Status.FromTimelines(timelines)) {
+            Statuses.Add(status);
         }
     }
 
@@ -97,8 +98,8 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
 
         int index = 0;
-        foreach (var timeline in timelines) {
-            Statuses.Insert(index++, new Controls.Status(timeline));
+        foreach (var status in await Controls.Status.FromTimelines(timelines)) {
+            Statuses.Insert(index++, status);
         }
     }
 
@@ -108,11 +109,9 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         }
 
         loadingOldStatuses = true;
-        var timelines = await Task.Run(() => 
-            client.GetTimelineFromDatabase(Model.Enums.TimelineType.Home, Statuses.Last().Id)
-        );
-        foreach (var timeline in timelines) {
-            Statuses.Add(new Controls.Status(timeline));
+        var timelines = await client.GetTimelineFromDatabase(Statuses.Last().Id);
+        foreach (var status in await Controls.Status.FromTimelines(timelines)) {
+            Statuses.Add(status);
         }
         loadingOldStatuses = false;
     }
