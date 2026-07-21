@@ -46,6 +46,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         (gpuFrames.Length > 1) &&
         IsLoaded &&
         data is not null &&
+        data.IsAnimated &&
         ((data.MaxLoop == 0) || (loop < data.MaxLoop));
 
     public AnimatedImage() {
@@ -166,7 +167,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
             ds.DrawImage(gpuFrames[currentFrame]);
         }
 
-        if (data.IsAnimated) {
+        if (ShouldPlay) {
             timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame]);
 
             currentFrame = (currentFrame + 1) % data.FrameCount;
@@ -186,7 +187,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         Stop();
     }
 
-    private partial class ImageData {
+    private class ImageData {
         public uint MaxLoop { get; } // 0 = infinite
         public IReadOnlyList<double> FrameDelaysMs { get; }
         public IReadOnlyList<byte[]> Frames { get; }
