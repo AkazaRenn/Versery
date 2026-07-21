@@ -157,26 +157,18 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
             return;
         }
 
-        if ((currentFrame < 0) ||
-            (currentFrame >= data.FrameCount)) {
-            currentFrame = 0;
-        }
-
         using (var ds = CanvasComposition.CreateDrawingSession(surface)) {
             ds.Clear(Colors.Transparent);
             ds.DrawImage(gpuFrames[currentFrame]);
         }
 
-        if (ShouldPlay) {
-            timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame]);
-
-            currentFrame = (currentFrame + 1) % data.FrameCount;
-            if (currentFrame == 0 && data.MaxLoop > 0) {
-                loop++;
-            }
-
-            TryPlay();
+        timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame]);
+        currentFrame = (currentFrame + 1) % data.FrameCount;
+        if (currentFrame == 0 && data.MaxLoop > 0) {
+            loop++;
         }
+
+        TryPlay();
     }
 
     void IRecipient<Messages.WindowActivated>.Receive(Messages.WindowActivated message) {
