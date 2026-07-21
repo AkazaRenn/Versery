@@ -28,6 +28,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
 
     private int currentFrame = 0;
     private uint loop = 0;
+    private uint maxLoop = 0;
     private readonly DispatcherQueueTimer timer;
     private ImageData? data;
     private CanvasBitmap[] gpuFrames = [];
@@ -45,9 +46,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     public bool ShouldPlay =>
         (gpuFrames.Length > 1) &&
         IsLoaded &&
-        data is not null &&
-        data.IsAnimated &&
-        ((data.MaxLoop == 0) || (loop < data.MaxLoop));
+        ((maxLoop == 0) || (loop < maxLoop));
 
     public AnimatedImage() {
         InitializeComponent();
@@ -121,6 +120,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         Stop();
         currentFrame = 0;
         loop = 0;
+        maxLoop = 0;
 
         foreach (var frame in gpuFrames) {
             frame.Dispose();
@@ -132,12 +132,12 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         Reset();
 
         if (Source is null) {
-            data = null;
             return;
         }
 
         var cacheKey = Source.AbsoluteUri;
 
+        ImageData data;
         if (imageCache.Get(cacheKey) is ImageData cachedData) {
             data = cachedData;
         } else {
@@ -147,13 +147,13 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         }
 
         gpuFrames = data.CreateGpuFrames();
+        maxLoop = data.MaxLoop;
         surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
         Draw();
     }
 
     private void Draw() {
-        if ((data is null) ||
-            (gpuFrames.Length == 0)) {
+        if (gpuFrames.Length == 0) {
             return;
         }
 
@@ -163,8 +163,8 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         }
 
         timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame]);
-        currentFrame = (currentFrame + 1) % data.FrameCount;
-        if (currentFrame == 0 && data.MaxLoop > 0) {
+        currentFrame = (currentFrame + 1) % gpuFrames.Length;
+        if ((currentFrame == 0) && (maxLoop > 0)) {
             loop++;
         }
 
@@ -180,19 +180,19 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     }
 
     private class ImageData {
+        private int frameCount;
+        
         public uint MaxLoop { get; } // 0 = infinite
         public IReadOnlyList<double> FrameDelaysMs { get; }
         public IReadOnlyList<byte[]> Frames { get; }
         public int Width { get; }
         public int Height { get; }
-        public int FrameCount => Frames.Count;
-        public bool IsAnimated => FrameCount > 1;
 
         public ImageData(Image<Rgba32> image) {
             Width = image.Width;
             Height = image.Height;
 
-            var frameCount = image.Frames.Count;
+            frameCount = image.Frames.Count;
             var delays = new double[frameCount];
             var frames = new byte[frameCount][];
 
@@ -243,7 +243,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         }
 
         internal CanvasBitmap[] CreateGpuFrames() {
-            var frames = new List<CanvasBitmap>(FrameCount);
+            var frames = new List<CanvasBitmap>(frameCount);
 
             try {
                 foreach (var frameData in Frames) {
