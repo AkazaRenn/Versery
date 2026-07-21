@@ -30,8 +30,8 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     private uint loop = 0;
     private uint maxLoop = 0;
     private readonly DispatcherQueueTimer timer;
-    private ImageData? data;
     private CanvasBitmap[] gpuFrames = [];
+    private IReadOnlyList<double> frameDelaysMs = [];
 
     public Uri? Source {
         get;
@@ -147,6 +147,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         }
 
         gpuFrames = data.CreateGpuFrames();
+        frameDelaysMs = data.FrameDelaysMs;
         maxLoop = data.MaxLoop;
         surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
         Draw();
@@ -162,7 +163,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
             ds.DrawImage(gpuFrames[currentFrame]);
         }
 
-        timer.Interval = TimeSpan.FromMilliseconds(data.FrameDelaysMs[currentFrame]);
+        timer.Interval = TimeSpan.FromMilliseconds(frameDelaysMs[currentFrame]);
         currentFrame = (currentFrame + 1) % gpuFrames.Length;
         if ((currentFrame == 0) && (maxLoop > 0)) {
             loop++;
