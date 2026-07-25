@@ -20,6 +20,8 @@ public sealed partial class Status: ObservableObject {
     public partial StatusComponents.PosterInfo PosterInfo { get; set; } = new();
     [ObservableProperty]
     public partial StatusComponents.ReactButtons ReactButtons { get; set; } = new();
+    [ObservableProperty]
+    public partial RichTextRenderer.HtmlRenderer HtmlRenderer { get; set; } = new();
 
 
     [ObservableProperty]
@@ -30,8 +32,6 @@ public sealed partial class Status: ObservableObject {
     public partial DateTime CreatedAt { get; set; } = DateTime.MinValue;
     [ObservableProperty]
     public partial Uri? Uri { get; set; } = null;
-    [ObservableProperty]
-    public partial string TextContent { get; set; } = string.Empty;
     [ObservableProperty]
     public partial bool FollowedByGap { get; set; } = false;
 
@@ -67,10 +67,12 @@ public sealed partial class Status: ObservableObject {
         obj.ReactButtons.Favourited = status.Favourited ?? false;
         obj.ReactButtons.Bookmarked = status.Bookmarked ?? false;
 
+        obj.HtmlRenderer.Html = status.Content;
+        obj.HtmlRenderer.Emojis = status.Emojis;
+
         obj.ContentId = status.Id;
         obj.CreatedAt = status.CreatedAt;
         obj.Uri = status.Uri;
-        obj.TextContent = status.Content;
         obj.FollowedByGap = timeline.FollowedByGap;
 
         return obj;

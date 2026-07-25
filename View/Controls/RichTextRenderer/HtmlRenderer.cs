@@ -5,47 +5,53 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using System.Runtime.Caching;
 
-namespace View.Controls.StatusComponents;
+namespace View.Controls.RichTextRenderer;
 
-internal sealed partial class HtmlTextBlock: UserControl {
-    private static readonly MemoryCache htmlCache = new(nameof(HtmlTextBlock));
+internal static class HtmlRenderer {
+    private static readonly MemoryCache htmlCache = new(nameof(HtmlRenderer));
     private static readonly CacheItemPolicy htmlCachePolicy = new() {
         SlidingExpiration = TimeSpan.FromMinutes(30),
     };
 
-    public TextWrapping TextWrapping {
-        get => RichTextBlock.TextWrapping;
-        set => RichTextBlock.TextWrapping = value;
-    }
-    public bool IsTextSelectionEnabled {
-        get => RichTextBlock.IsTextSelectionEnabled;
-        set => RichTextBlock.IsTextSelectionEnabled = value;
+    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.RegisterAttached(
+        "ViewModel",
+        typeof(ViewModel.Controls.RichTextRenderer.HtmlRenderer),
+        typeof(HtmlRenderer),
+        new PropertyMetadata(null, OnViewModelChanged)
+    );
+
+    public static ViewModel.Controls.RichTextRenderer.HtmlRenderer? GetViewModel(DependencyObject obj) {
+        return (ViewModel.Controls.RichTextRenderer.HtmlRenderer?)obj.GetValue(ViewModelProperty);
     }
 
-    public string Html {
-        get; set {
-            if (field != value) {
-                field = value;
-                UpdateContent(field);
-            }
+    public static void SetViewModel(DependencyObject obj, ViewModel.Controls.RichTextRenderer.HtmlRenderer? value) {
+        obj.SetValue(ViewModelProperty, value);
+    }
+
+    private static void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        if (d is not RichTextBlock richTextBlock) {
+            return;
         }
-    } = string.Empty;
 
-    public HtmlTextBlock() {
-        InitializeComponent();
+        if (e.NewValue is ViewModel.Controls.RichTextRenderer.HtmlRenderer newVm) {
+            _ = UpdateContent(richTextBlock, newVm.Html, newVm.Emojis);
+            return;
+        }
+
+        richTextBlock.Blocks.Clear();
     }
 
-    private async void UpdateContent(string html) {
+    private static async Task UpdateContent(RichTextBlock richTextBlock, string html, Dictionary<string, Uri> emojis) {
         if (htmlCache.Get(html) is not HtmlContentToken tokenizedContent) {
             tokenizedContent = await TokenizeHtmlAsync(html);
             htmlCache.Add(html, tokenizedContent, htmlCachePolicy);
         }
 
-        RenderContent(tokenizedContent);
+        RenderContent(richTextBlock, tokenizedContent, emojis);
     }
 
-    private void RenderContent(HtmlContentToken content) {
-        var blocks = RichTextBlock.Blocks;
+    private static void RenderContent(RichTextBlock richTextBlock, HtmlContentToken content, Dictionary<string, Uri> emojis) {
+        var blocks = richTextBlock.Blocks;
         blocks.Clear();
 
         foreach (var paragraphToken in content.Paragraphs) {

@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.StatusComponents"
+    xmlns:richtextrenderer="using:View.Controls.RichTextRenderer"
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
     BorderThickness="0 0 0 0.5"
@@ -36,7 +37,7 @@
         VerticalAlignment="Stretch"
         Fill="{x:Bind BorderBrush}"/>
 
-    <components:AvatarButton 
+    <components:AvatarButton
         Grid.Column="0"
         Grid.Row="1"
         Margin="0 -8 0 0"
@@ -61,13 +62,13 @@
             HorizontalAlignment="Right"/>
     </Grid>
 
-    <components:HtmlTextBlock
+    <RichTextBlock
         Grid.Column="1"
         Grid.Row="2"
         TextWrapping="WrapWholeWords"
         IsTextSelectionEnabled="False"
-        Html="{x:Bind ViewModel.TextContent}">
-    </components:HtmlTextBlock>
+        richtextrenderer:HtmlRenderer.ViewModel="{x:Bind ViewModel.HtmlRenderer, Mode=OneWay}">
+    </RichTextBlock>
 
     <components:ReactButtons
         Grid.Column="1"
