@@ -1,6 +1,5 @@
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Utilities.Interfaces;
+using View.Interfaces;
 
 namespace View.Pages;
 internal sealed partial class Home: Page, INavigationPage {

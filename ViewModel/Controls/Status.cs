@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Model.Access;
 using Model.Entities;
+using Utilities;
 
 namespace ViewModel.Controls;
 
@@ -72,7 +73,8 @@ public sealed partial class Status: ObservableObject {
         return obj;
     }
 
-    public static async Task<IEnumerable<Status>> FromTimelines(IEnumerable<Timeline> timelines) {
+    public static async Task<Status[]> FromTimelines(IEnumerable<Timeline> timelines) {
+        timelines = timelines.ToCollection();
         var statuses = new Status[timelines.Count()];
         for (int i = 0; i < timelines.Count(); i++) {
             statuses[i] = await FromTimeline(timelines.ElementAt(i));

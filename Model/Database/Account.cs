@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Utilities;
 
 namespace Model.Database; 
 internal class Account(string hash) {
@@ -22,6 +23,8 @@ internal class Account(string hash) {
     }
 
     public void Add(IEnumerable<Entities.Account> accounts) {
+        accounts = accounts.ToCollection();
+
         db.Upsert(accounts);
         foreach (var account in accounts) {
             cache[account.Id] = account;

@@ -58,7 +58,7 @@ public sealed class Client {
         return account;
     }
 
-    public async Task<IEnumerable<Entities.Timeline>> GetTimelineFromServer(TimelineType type, string? afterId = null) {
+    public async Task<List<Entities.Timeline>> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }

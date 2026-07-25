@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Utilities;
 
 namespace Model.Database; 
 internal class Status(string hash) {
@@ -22,6 +23,8 @@ internal class Status(string hash) {
     }
 
     public void Add(IEnumerable<Entities.Status> statuses) {
+        statuses = statuses.ToCollection();
+
         db.Upsert(statuses);
         foreach (var status in statuses) {
             cache[status.Id] = status;

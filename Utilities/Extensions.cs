@@ -28,6 +28,12 @@ public static class Extensions {
         }
     }
 
+    extension<T>(IEnumerable<T> enumerable) {
+        public ICollection<T> ToCollection() {
+            return enumerable is ICollection<T> collection ? collection : [.. enumerable];
+        }
+    }
+
     extension<T>(ILiteCollection<T> collection) {
         public bool TryFindById(BsonValue id, [NotNullWhen(true)] out T? result) {
             result = collection.FindById(id);

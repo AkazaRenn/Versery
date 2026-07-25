@@ -150,8 +150,11 @@ internal sealed partial class HtmlTextBlock: UserControl {
             LineBreakToken => new LineBreak(),
             BoldToken bold => RenderInlineChildren(new Bold(), bold.Children),
             ItalicToken italic => RenderInlineChildren(new Italic(), italic.Children),
+            // Todo: replace by HyperlinkButton
+            // https://github.com/microsoft/microsoft-ui-xaml/discussions/11251
             HyperlinkToken hyperlink => RenderInlineChildren(new Hyperlink {
                 NavigateUri = new Uri(hyperlink.Href),
+                UnderlineStyle = UnderlineStyle.None,
             }, hyperlink.Children),
             _ => new Run(),
         };

@@ -10,9 +10,8 @@
     xmlns:controls="using:View.Controls"
     xmlns:pages="using:View.Pages"
     Title="MainWindow"
-    MinWidth="400"
-    MinHeight="400"
-    Activated="WindowEx_Activated">
+    MinWidth="300"
+    MinHeight="400">
 
     <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop/>

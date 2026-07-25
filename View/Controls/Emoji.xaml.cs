@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Composition;
 using Microsoft.Graphics.DirectX;
@@ -6,17 +5,16 @@ using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Runtime.Caching;
-using Utilities;
+using View.Interfaces;
 
 namespace View.Controls;
-internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.WindowActivated>, IRecipient<Messages.WindowDeactivated> {
+internal sealed partial class Emoji: FrameworkElement {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
-    private static readonly MemoryCache imageCache = new(nameof(AnimatedImage));
+    private static readonly MemoryCache imageCache = new(nameof(Emoji));
     private static readonly CacheItemPolicy imageCachePolicy = new() {
         SlidingExpiration = TimeSpan.FromMinutes(30),
     };
@@ -25,6 +23,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
     private readonly SpriteVisual visual;
     private readonly CompositionSurfaceBrush brush;
     private readonly CompositionDrawingSurface surface;
+    private readonly Window? window;
 
     private int currentFrame = 0;
     private uint loop = 0;
@@ -48,8 +47,13 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         IsLoaded &&
         ((maxLoop == 0) || (loop < maxLoop));
 
-    public AnimatedImage() {
+    public Emoji() {
         InitializeComponent();
+
+        if (Application.Current is IWindowHelper windowHelper)
+        {
+            windowHelper.TryGetWindow(this, out window);
+        }
 
         surface = graphicsDevice.CreateDrawingSurface(
             new Windows.Foundation.Size(0, 0),
@@ -85,7 +89,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e) {
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
-        StrongReferenceMessenger.Default.RegisterAll(this);
+        window?.Activated += Window_Activated;
         if (Source is not null && gpuFrames.Length == 0) {
             _ = LoadImage();
         } else {
@@ -96,7 +100,7 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
 
     private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
         canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
-        StrongReferenceMessenger.Default.UnregisterAll(this);
+        window?.Activated -= Window_Activated;
         Reset();
     }
 
@@ -172,12 +176,15 @@ internal sealed partial class AnimatedImage: UserControl, IRecipient<Messages.Wi
         TryPlay();
     }
 
-    void IRecipient<Messages.WindowActivated>.Receive(Messages.WindowActivated message) {
-        TryPlay();
-    }
-
-    void IRecipient<Messages.WindowDeactivated>.Receive(Messages.WindowDeactivated message) {
-        Stop();
+    private void Window_Activated(object sender, WindowActivatedEventArgs args) {
+        switch (args.WindowActivationState) {
+        case WindowActivationState.Deactivated:
+            Stop();
+            break;
+        default:
+            TryPlay();
+            break;
+        }
     }
 
     private class ImageData {

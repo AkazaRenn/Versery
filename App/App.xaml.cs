@@ -4,7 +4,9 @@ using Microsoft.UI.Xaml;
 
 namespace App;
 
-public sealed partial class App: Application {
+public sealed partial class App: Application, View.Interfaces.IWindowHelper {
+    private readonly HashSet<Window> windows = [];
+
     public IHost Host { get; private set; }
 
     public App() {
@@ -23,6 +25,19 @@ public sealed partial class App: Application {
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args) {
-        Host.Services.GetRequiredService<View.MainWindow>().Activate();
+        var mainWindow = Host.Services.GetRequiredService<View.MainWindow>();
+        windows.Add(mainWindow);
+        mainWindow.Activate();
+    }
+
+    public bool TryGetWindow(UIElement element, out Window? window) {
+        foreach (var w in windows) {
+            if (w.Content.XamlRoot == element.XamlRoot) {
+                window = w;
+                return true;
+            }
+        }
+        window = null;
+        return false;
     }
 }

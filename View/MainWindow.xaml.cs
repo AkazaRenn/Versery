@@ -9,17 +9,17 @@ using Windows.Graphics;
 using Windows.UI.WindowManagement;
 using WinUIEx;
 using Utilities;
-using Utilities.Interfaces;
+using View.Interfaces;
 
 namespace View;
-public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequested> ,IRecipient<Messages.SignInCompleted> {
+public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequested>, IRecipient<Messages.SignInCompleted> {
     private NavigationViewItemBase? activeNavigationItem = null;
 
     public MainWindow() {
         InitializeComponent();
 
         ExtendsContentIntoTitleBar = true;
-        AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
+        AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         SetTitleBar(Navigation);
 
         // TODO: replace by the official PersistedStateId (2.0+)
@@ -115,18 +115,6 @@ public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequ
             Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault((NavigationViewItem item) => item.Tag as Type == e.SourcePageType);
         }
         activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;
-    }
-
-    private void WindowEx_Activated(object sender, WindowActivatedEventArgs args) {
-        switch (args.WindowActivationState) {
-        case WindowActivationState.PointerActivated:
-        case WindowActivationState.CodeActivated:
-            StrongReferenceMessenger.Default.Send(new Messages.WindowActivated());
-            break;
-        case WindowActivationState.Deactivated:
-            StrongReferenceMessenger.Default.Send(new Messages.WindowDeactivated());
-            break;
-        }
     }
 
     void IRecipient<Messages.SignInRequested>.Receive(Messages.SignInRequested _) {

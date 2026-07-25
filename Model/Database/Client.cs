@@ -18,12 +18,14 @@ internal sealed class Client {
         //LocalTimeline = new(accountHash, "localtimeline");
     }
 
-    public async Task<IEnumerable<Entities.Timeline>> GetTimeline(int count, string? afterId = null) {
+    public async Task<Entities.Timeline[]> GetTimeline(int count, string? afterId = null) {
         return await Task.Run(() => Timeline.Get(count, afterId).ToArray());
     }
 
     public async Task AddTimeline(IEnumerable<Mastonet.Entities.Status> serverStatuses, string? afterId = null) {
         await Task.Run(() => {
+            serverStatuses = serverStatuses.ToCollection();
+
             var dbTimeline = new List<Entities.Timeline>(serverStatuses.Count() + 1);
             foreach (var status in serverStatuses) {
                 dbTimeline.Add(new Entities.Timeline {
@@ -44,7 +46,7 @@ internal sealed class Client {
 
     public async Task AddStatuses(IEnumerable<Mastonet.Entities.Status> serverStatuses) {
         await Task.Run(() => {
-            var flattened = serverStatuses.Flattened;
+            var flattened = serverStatuses.ToCollection().Flattened;
             Status.Add(Entities.Status.FromServer(flattened));
             Account.Add(Entities.Account.FromServer(flattened.Select(x => x.Account)));
         });

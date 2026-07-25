@@ -39,6 +39,8 @@ internal sealed class Timeline {
             db.TryUpdate(afterId, x => x.FollowedByGap = false);
         }
 
+        statuses = statuses.ToCollection();
+
         db.Upsert(statuses);
         foreach (var status in statuses) {
             accessedTimeline.Add(status.Id);
