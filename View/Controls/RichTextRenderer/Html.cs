@@ -7,24 +7,24 @@ using System.Runtime.Caching;
 
 namespace View.Controls.RichTextRenderer;
 
-internal static class HtmlRenderer {
-    private static readonly MemoryCache htmlCache = new(nameof(HtmlRenderer));
+internal static class Html {
+    private static readonly MemoryCache htmlCache = new(nameof(Html));
     private static readonly CacheItemPolicy htmlCachePolicy = new() {
         SlidingExpiration = TimeSpan.FromMinutes(30),
     };
 
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.RegisterAttached(
         "ViewModel",
-        typeof(ViewModel.Controls.RichTextRenderer.HtmlRenderer),
-        typeof(HtmlRenderer),
+        typeof(ViewModel.Controls.RichTextRenderer.Html),
+        typeof(Html),
         new PropertyMetadata(null, OnViewModelChanged)
     );
 
-    public static ViewModel.Controls.RichTextRenderer.HtmlRenderer? GetViewModel(DependencyObject obj) {
-        return (ViewModel.Controls.RichTextRenderer.HtmlRenderer?)obj.GetValue(ViewModelProperty);
+    public static ViewModel.Controls.RichTextRenderer.Html? GetViewModel(DependencyObject obj) {
+        return (ViewModel.Controls.RichTextRenderer.Html?)obj.GetValue(ViewModelProperty);
     }
 
-    public static void SetViewModel(DependencyObject obj, ViewModel.Controls.RichTextRenderer.HtmlRenderer? value) {
+    public static void SetViewModel(DependencyObject obj, ViewModel.Controls.RichTextRenderer.Html? value) {
         obj.SetValue(ViewModelProperty, value);
     }
 
@@ -33,18 +33,18 @@ internal static class HtmlRenderer {
             return;
         }
 
-        if (e.NewValue is ViewModel.Controls.RichTextRenderer.HtmlRenderer newVm) {
-            _ = UpdateContent(richTextBlock, newVm.Html, newVm.Emojis);
+        if (e.NewValue is ViewModel.Controls.RichTextRenderer.Html newVm) {
+            _ = UpdateContent(richTextBlock, newVm.RawText, newVm.Emojis);
             return;
         }
 
         richTextBlock.Blocks.Clear();
     }
 
-    private static async Task UpdateContent(RichTextBlock richTextBlock, string html, Dictionary<string, Uri> emojis) {
-        if (htmlCache.Get(html) is not HtmlContentToken tokenizedContent) {
-            tokenizedContent = await TokenizeHtmlAsync(html);
-            htmlCache.Add(html, tokenizedContent, htmlCachePolicy);
+    private static async Task UpdateContent(RichTextBlock richTextBlock, string rawText, Dictionary<string, Uri> emojis) {
+        if (htmlCache.Get(rawText) is not HtmlContentToken tokenizedContent) {
+            tokenizedContent = await TokenizeHtmlAsync(rawText);
+            htmlCache.Add(rawText, tokenizedContent, htmlCachePolicy);
         }
 
         RenderContent(richTextBlock, tokenizedContent, emojis);
@@ -64,14 +64,14 @@ internal static class HtmlRenderer {
         }
     }
 
-    private static async Task<HtmlContentToken> TokenizeHtmlAsync(string html) {
+    private static async Task<HtmlContentToken> TokenizeHtmlAsync(string rawText) {
         var browsingContext = new BrowsingContext();
-        var document = await browsingContext.OpenAsync(req => req.Content(html));
+        var document = await browsingContext.OpenAsync(req => req.Content(rawText));
 
         if (document.Body == null || document.Body.ChildElementCount == 0) {
             return new HtmlContentToken([
                 new ParagraphToken([
-                    new TextToken(html),
+                    new TextToken(rawText),
                 ]),
             ]);
         }

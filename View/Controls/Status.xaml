@@ -67,7 +67,7 @@
         Grid.Row="2"
         TextWrapping="WrapWholeWords"
         IsTextSelectionEnabled="False"
-        richtextrenderer:HtmlRenderer.ViewModel="{x:Bind ViewModel.HtmlRenderer, Mode=OneWay}">
+        richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Html, Mode=OneWay}">
     </RichTextBlock>
 
     <components:ReactButtons

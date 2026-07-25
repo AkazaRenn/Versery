@@ -21,7 +21,7 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial StatusComponents.ReactButtons ReactButtons { get; set; } = new();
     [ObservableProperty]
-    public partial RichTextRenderer.HtmlRenderer HtmlRenderer { get; set; } = new();
+    public partial RichTextRenderer.Html Html { get; set; } = new();
 
 
     [ObservableProperty]
@@ -65,8 +65,8 @@ public sealed partial class Status: ObservableObject {
         ReactButtons.Favourited = status.Favourited ?? false;
         ReactButtons.Bookmarked = status.Bookmarked ?? false;
 
-        HtmlRenderer.Html = status.Content;
-        HtmlRenderer.Emojis = status.Emojis;
+        Html.RawText = status.Content;
+        Html.Emojis = status.Emojis;
 
         ContentId = status.Id;
         CreatedAt = status.CreatedAt;
