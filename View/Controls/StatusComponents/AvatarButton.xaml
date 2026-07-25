@@ -8,7 +8,7 @@
     Background="Transparent">
     <Image>
         <Image.Source>
-            <BitmapImage x:Name="AvatarImage"/>
+            <BitmapImage UriSource="{x:Bind ViewModel.ContentPosterAvatar, Mode=OneWay}"/>
         </Image.Source>
     </Image>
 </Button>

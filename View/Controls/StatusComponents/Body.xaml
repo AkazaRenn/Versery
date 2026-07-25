@@ -9,5 +9,4 @@
         TextWrapping="WrapWholeWords"
         IsTextSelectionEnabled="False">
     </local:HtmlTextBlock>
-    <ContentPresenter x:Name="AdditionalContentPresenter"/>
 </StackPanel>

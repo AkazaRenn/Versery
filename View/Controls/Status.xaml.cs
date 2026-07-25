@@ -9,19 +9,12 @@ internal sealed partial class Status: Grid {
         set {
             if (field != value) {
                 field = value;
-                UpdateAdditionalElement();
                 Bindings.Update();
             }
         }
     }
 
-    private UIElement? additionalElement = null;
-
     public Status() {
         InitializeComponent();
-    }
-
-    private void UpdateAdditionalElement() {
-        additionalElement = null;
     }
 }

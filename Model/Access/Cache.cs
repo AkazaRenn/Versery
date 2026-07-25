@@ -18,7 +18,11 @@ public sealed class Cache {
     }
 
     public static Task<Uri?> Get(Uri uri) {
-        return cacheTasks.GetOrAdd(uri.AbsoluteUri.Sha256, hash => GetInternal(uri, hash));
+        if (uri.IsFile) {
+            return Task.FromResult<Uri?>(uri);
+        } else {
+            return cacheTasks.GetOrAdd(uri.AbsoluteUri.Sha256, hash => GetInternal(uri, hash));
+        }
     }
 
     private static async Task<Uri?> GetInternal(Uri uri, string hash) {

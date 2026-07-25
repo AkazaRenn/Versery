@@ -14,15 +14,14 @@ public sealed partial class Status: ObservableObject {
     public string ContentId { get; private set; } = string.Empty;
     public int Index { get; set; } = -1;
 
-
     [ObservableProperty]
-    public partial Uri? RebloggerAvatar { get; set; } = null;
+    public partial StatusComponents.AvatarButton AvatarButton { get; set; } = new();
+
+
     [ObservableProperty]
     public partial string? RebloggerId { get; set; } = null;
     [ObservableProperty]
     public partial string? RebloggerDisplayName { get; set; } = null;
-    [ObservableProperty]
-    public partial Uri? PosterAvatar { get; set; } = null;
     [ObservableProperty]
     public partial string PosterId { get; set; } = string.Empty;
     [ObservableProperty]
@@ -51,15 +50,23 @@ public sealed partial class Status: ObservableObject {
         var account = await client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
 
         if (status.ReblogId != null) {
-            obj.RebloggerAvatar = account.Avatar;
+            _ = obj.DownloadRebloggerAvatar(account.Avatar);
+
+            obj.AvatarButton.IsReblog = true;
+
             obj.RebloggerId = account.Id;
             obj.RebloggerDisplayName = account.DisplayName;
+
             status = await client.GetStatus(status.ReblogId) ?? throw new ArgumentNullException(null, $"Unable to get status {status.ReblogId}");
             account = await client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
         }
 
+        _ = obj.DownloadAvatar(account.Avatar);
+
+        obj.AvatarButton.ContentPosterId = account.Id;
+
         obj.ContentId = status.Id;
-        obj.PosterId = account.AccountName;
+        obj.AvatarButton.ContentPosterId = account.AccountName;
         obj.PosterDisplayName = account.DisplayName;
         obj.CreatedAt = status.CreatedAt;
         obj.Uri = status.Uri;
@@ -69,7 +76,6 @@ public sealed partial class Status: ObservableObject {
         obj.Bookmarked = status.Bookmarked ?? false;
         obj.FollowedByGap = timeline.FollowedByGap;
 
-        _ = obj.DownloadAvatar(account.Avatar);
         return obj;
     }
 
@@ -90,7 +96,13 @@ public sealed partial class Status: ObservableObject {
 
     private async Task DownloadAvatar(Uri? uri) {
         if (uri is not null) {
-            PosterAvatar = await Cache.Get(uri);
+            AvatarButton.ContentPosterAvatar = await Cache.Get(uri);
+        }
+    }
+
+    private async Task DownloadRebloggerAvatar(Uri? uri) {
+        if (uri is not null) {
+            AvatarButton.RebloggerAvatar = await Cache.Get(uri);
         }
     }
 }

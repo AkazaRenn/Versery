@@ -43,7 +43,7 @@
         Height="40"
         Width="40"
         CornerRadius="20"
-        Avatar="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}">
+        ViewModel="{x:Bind ViewModel.AvatarButton, Mode=OneWay}">
     </components:AvatarButton>
 
     <Grid
@@ -65,8 +65,7 @@
     <components:Body
         Grid.Column="1"
         Grid.Row="2"
-        TextContent="{x:Bind ViewModel.TextContent}"
-        AdditionalContent="{x:Bind additionalElement, Mode=OneWay}"/>
+        TextContent="{x:Bind ViewModel.TextContent}"/>
 
     <components:ReactButtons
         Grid.Column="1"

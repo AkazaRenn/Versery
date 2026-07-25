@@ -7,11 +7,6 @@ public sealed partial class Body: StackPanel {
         set => TextBlock.Html = value;
     }
 
-    public object AdditionalContent {
-        get => AdditionalContentPresenter.Content;
-        set => AdditionalContentPresenter.Content = value;
-    }
-
     public Body() {
         InitializeComponent();
     }
