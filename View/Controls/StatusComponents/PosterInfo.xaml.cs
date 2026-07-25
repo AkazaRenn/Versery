@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace View.Controls.StatusComponents;
 
-internal sealed partial class PosterInfo: Grid {
+internal sealed partial class PosterInfo: StackPanel {
     public ViewModel.Controls.StatusComponents.PosterInfo ViewModel {
         get;
         set {

@@ -1,9 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
-namespace ViewModel.Controls.RichTextRenderer;
-public sealed partial class Html: ObservableObject {
-    [ObservableProperty]
-    public partial string RawText { get; set; } = string.Empty;
-    [ObservableProperty]
-    public partial Dictionary<string, Uri> Emojis { get; set; } = [];
+﻿namespace ViewModel.Controls.RichTextRenderer;
+public sealed class Html {
+    public string RawText { get; set; } = string.Empty;
+    public Dictionary<string, Uri> Emojis { get; set; } = [];
 }
