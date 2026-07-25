@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 namespace ViewModel.Pages;
 
 public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
-    private readonly Client client = Utilities.Services.Get<Client>();
+    private readonly Client client = Model.Services.Get<Client>();
     private readonly Dictionary<string, List<Controls.Status>> contentIdToStatusesDict = [];
     private bool loadingOldStatuses = false;
 

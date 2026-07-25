@@ -2,12 +2,11 @@
 using Mastonet;
 using Model.DataPersistence;
 using Model.Enums;
-using Utilities;
 
 namespace Model.Access;
 public sealed class Client {
-    private readonly ApplicationStates applicationStates = Utilities.Services.Get<ApplicationStates>();
-    private readonly HttpClient httpClient = Utilities.Services.Get<HttpClient>();
+    private readonly ApplicationStates applicationStates = Services.Get<ApplicationStates>();
+    private readonly HttpClient httpClient = Services.Get<HttpClient>();
     private Database.Client? database;
     private MastodonClient? server;
     private Mastonet.Entities.Account? account;

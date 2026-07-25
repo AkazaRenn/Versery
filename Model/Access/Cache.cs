@@ -1,13 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
-using Utilities;
 using Windows.Storage;
 
-namespace Model.Access; 
+namespace Model.Access;
 public sealed class Cache {
     private static readonly StorageFolder cacheFolder = ApplicationData.Current.TemporaryFolder;
-    private static readonly HttpClient httpClient = Utilities.Services.Get<HttpClient>();
+    private static readonly HttpClient httpClient = Services.Get<HttpClient>();
     private static readonly ConcurrentDictionary<string, Task<Uri?>> cacheTasks = new();
 
     public static Task<Uri?> Get(string url) {

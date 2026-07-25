@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Model;
 using Model.Access;
 using Model.Entities;
-using Utilities;
 
 namespace ViewModel.Controls;
 
 public sealed partial class Status: ObservableObject {
-    private static readonly Client client = Utilities.Services.Get<Client>();
+    private static readonly Client client = Model.Services.Get<Client>();
 
     public event Action<int, IEnumerable<Model.Entities.Timeline>>? MoreLoaded;
 

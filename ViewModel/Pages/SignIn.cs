@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Model.Access;
-using Utilities;
 
 namespace ViewModel.Pages;
 public sealed partial class SignIn : ObservableObject {

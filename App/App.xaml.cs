@@ -21,7 +21,7 @@ public sealed partial class App: Application, View.Interfaces.IWindowHelper {
             })
             .Build();
 
-        Utilities.Services.Provider = Host.Services;
+        Model.Services.Provider = Host.Services;
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args) {

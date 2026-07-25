@@ -1,5 +1,4 @@
 ﻿using LiteDB;
-using Utilities;
 
 namespace Model.Database;
 internal sealed class Timeline {
@@ -9,7 +8,7 @@ internal sealed class Timeline {
     public IReadOnlyCollection<string> AccessedTimeline => accessedTimeline;
 
     public Timeline(string hash, string name) {
-        db = Utilities.Services.Get<LiteDatabase>().GetCollection<Entities.Timeline>($"account_{hash}_{name}");
+        db = Services.Get<LiteDatabase>().GetCollection<Entities.Timeline>($"account_{hash}_{name}");
         db.EnsureIndex(x => x.CreatedAt);
     }
 

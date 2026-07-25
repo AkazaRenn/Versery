@@ -1,9 +1,8 @@
 ﻿using LiteDB;
-using Utilities;
 
 namespace Model.Database;
 internal class Status(string hash) {
-    private readonly ILiteCollection<Entities.Status> db = Utilities.Services.Get<LiteDatabase>().GetCollection<Entities.Status>($"instance_{hash}_statuses");
+    private readonly ILiteCollection<Entities.Status> db = Services.Get<LiteDatabase>().GetCollection<Entities.Status>($"instance_{hash}_statuses");
     private readonly Dictionary<string, Entities.Status> cache = [];
 
     public Entities.Status? Get(string id) {

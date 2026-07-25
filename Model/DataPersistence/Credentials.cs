@@ -2,7 +2,7 @@
 
 namespace Model.DataPersistence; 
 internal static class Credentials {
-    private static readonly string resourceName = Windows.ApplicationModel.Package.Current.Id.FamilyName;
+    private static readonly string resourceName = Constants.PackageName;
 
     public static void AddAccessToken(string userId, string token) {
         var vault = new PasswordVault();

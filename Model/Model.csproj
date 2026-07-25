@@ -3,7 +3,6 @@
     <RootNamespace>Model</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Utilities\Utilities.csproj" />
     <PackageReference Include="FluentSettings.Generator" />
     <PackageReference Include="LiteDB" />
     <PackageReference Include="Mastonet" />

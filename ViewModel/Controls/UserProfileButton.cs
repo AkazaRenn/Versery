@@ -4,9 +4,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using Model;
 using Model.Access;
 
-namespace ViewModel.Controls; 
+namespace ViewModel.Controls;
 public sealed partial class UserProfileButton: ObservableObject, IRecipient<Messages.SignInCompleted> {
-    private readonly Client client = Utilities.Services.Get<Client>();
+    private readonly Client client = Model.Services.Get<Client>();
 
     [ObservableProperty]
     public partial Uri? Avatar { get; set; }

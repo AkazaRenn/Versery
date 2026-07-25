@@ -1,5 +1,4 @@
-﻿using Utilities;
-
+﻿
 namespace Model.Database;
 internal sealed class Client {
     private Account Account { get; }

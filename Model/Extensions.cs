@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Utilities; 
+namespace Model; 
 public static class Extensions {
     extension(MastodonClient mastodonClient) {
         public async Task<string> GetFullUserId() {

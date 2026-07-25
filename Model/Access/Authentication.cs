@@ -5,14 +5,13 @@ using Model.Access;
 using Model.DataPersistence;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Utilities;
 
 namespace Model.Access;
 public sealed partial class Authentication(string instance) {
     private static readonly Regex oAuthRegex = OAuthRegex();
 
     private readonly AuthenticationClient authenticationClient = new(instance);
-    private readonly Client client = Utilities.Services.Get<Client>();
+    private readonly Client client = Services.Get<Client>();
 
     public async Task<string> OAuthUrl() {
         var appRegistrationJson = Credentials.GetAppRegistration(authenticationClient.Instance);

@@ -15,4 +15,8 @@ public static class Services {
             return new LiteDatabase(path);
         });
     }
+    public static IServiceProvider Provider { get; set; } = null!;
+    public static T Get<T>() where T : notnull {
+        return Provider.GetRequiredService<T>();
+    }
 }
