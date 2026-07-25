@@ -1,3 +1,6 @@
+using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.UI.Composition;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -10,12 +13,16 @@ using WinUIEx;
 using View.Interfaces;
 
 namespace View;
-public sealed partial class MainWindow: WindowEx {
+public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProvider {
     private NavigationViewItemBase? activeNavigationItem = null;
     private readonly ViewModel.MainWindow viewModel = new();
 
+    public CompositionGraphicsDevice CompositionGraphicsDevice { get; }
+
     public MainWindow() {
         InitializeComponent();
+
+        CompositionGraphicsDevice = CanvasComposition.CreateCompositionGraphicsDevice(Compositor, CanvasDevice.GetSharedDevice());
 
         ExtendsContentIntoTitleBar = true;
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;

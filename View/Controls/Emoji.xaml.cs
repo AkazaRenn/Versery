@@ -19,11 +19,10 @@ internal sealed partial class Emoji: FrameworkElement {
         SlidingExpiration = TimeSpan.FromMinutes(30),
     };
 
-    private readonly CompositionGraphicsDevice graphicsDevice = Utilities.Services.Get<CompositionGraphicsDevice>();
-    private readonly SpriteVisual visual;
-    private readonly CompositionSurfaceBrush brush;
-    private readonly CompositionDrawingSurface surface;
-    private readonly Window? window;
+    private SpriteVisual? visual;
+    private CompositionSurfaceBrush? brush;
+    private CompositionDrawingSurface? surface;
+    private Window? window;
 
     private int currentFrame = 0;
     private uint loop = 0;
@@ -50,11 +49,13 @@ internal sealed partial class Emoji: FrameworkElement {
     public Emoji() {
         InitializeComponent();
 
-        if (Application.Current is IWindowHelper windowHelper)
-        {
-            windowHelper.TryGetWindow(this, out window);
-        }
+        timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+        timer.Tick += Timer_Tick;
+        timer.IsRepeating = false;
+    }
 
+    private void InitComposition(ICompositionGraphicsDeviceProvider provider) {
+        var graphicsDevice = provider.CompositionGraphicsDevice;
         surface = graphicsDevice.CreateDrawingSurface(
             new Windows.Foundation.Size(0, 0),
             DirectXPixelFormat.R8G8B8A8UIntNormalized,
@@ -68,11 +69,8 @@ internal sealed partial class Emoji: FrameworkElement {
 
         visual = compositor.CreateSpriteVisual();
         visual.Brush = brush;
+        visual.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
         ElementCompositionPreview.SetElementChildVisual(this, visual);
-
-        timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-        timer.Tick += Timer_Tick;
-        timer.IsRepeating = false;
     }
 
     private void CanvasDevice_DeviceLost(CanvasDevice sender, object args) {
@@ -87,8 +85,14 @@ internal sealed partial class Emoji: FrameworkElement {
         Draw();
     }
 
-    private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+    private void FrameworkElement_Loaded(object sender, RoutedEventArgs e) {
+        if ((window is null) && (Application.Current is IWindowHelper windowHelper)) {
+            if (windowHelper.TryGetWindow(this, out window) && (window is ICompositionGraphicsDeviceProvider provider)) {
+                InitComposition(provider);
+            }
+        }
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
+        window?.Activated -= Window_Activated;
         window?.Activated += Window_Activated;
         if (Source is not null && gpuFrames.Length == 0) {
             _ = LoadImage();
@@ -98,14 +102,14 @@ internal sealed partial class Emoji: FrameworkElement {
 
     }
 
-    private void UserControl_Unloaded(object sender, RoutedEventArgs e) {
+    private void FrameworkElement_Unloaded(object sender, RoutedEventArgs e) {
         canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
         Reset();
     }
 
-    private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
-        visual.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
+    private void FrameworkElement_SizeChanged(object sender, SizeChangedEventArgs e) {
+        visual?.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
     }
 
     private void TryPlay() {
@@ -135,7 +139,7 @@ internal sealed partial class Emoji: FrameworkElement {
     private async Task LoadImage() {
         Reset();
 
-        if (Source is null) {
+        if ((Source is null) || (surface is null)) {
             return;
         }
 
@@ -158,7 +162,7 @@ internal sealed partial class Emoji: FrameworkElement {
     }
 
     private void Draw() {
-        if (gpuFrames.Length == 0) {
+        if ((gpuFrames.Length == 0) || (surface is null)) {
             return;
         }
 
@@ -188,8 +192,6 @@ internal sealed partial class Emoji: FrameworkElement {
     }
 
     private class ImageData {
-        private int frameCount;
-        
         public uint MaxLoop { get; } // 0 = infinite
         public IReadOnlyList<double> FrameDelaysMs { get; }
         public IReadOnlyList<byte[]> Frames { get; }
@@ -200,7 +202,7 @@ internal sealed partial class Emoji: FrameworkElement {
             Width = image.Width;
             Height = image.Height;
 
-            frameCount = image.Frames.Count;
+            var frameCount = image.Frames.Count;
             var delays = new double[frameCount];
             var frames = new byte[frameCount][];
 
@@ -251,23 +253,23 @@ internal sealed partial class Emoji: FrameworkElement {
         }
 
         internal CanvasBitmap[] CreateGpuFrames() {
-            var frames = new List<CanvasBitmap>(frameCount);
+            var frames = new CanvasBitmap[Frames.Count];
 
             try {
-                foreach (var frameData in Frames) {
-                    frames.Add(CanvasBitmap.CreateFromBytes(
+                for (int i = 0; i < Frames.Count; i++) {
+                    frames[i] = CanvasBitmap.CreateFromBytes(
                         canvasDevice,
-                        frameData,
+                        Frames[i],
                         Width,
                         Height,
                         Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized
-                    ));
+                    );
                 }
 
-                return [.. frames];
+                return frames;
             } catch {
                 foreach (var frame in frames) {
-                    frame.Dispose();
+                    frame?.Dispose();
                 }
 
                 throw;

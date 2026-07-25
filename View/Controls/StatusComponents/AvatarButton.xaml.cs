@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace View.Controls.StatusComponents; 
+namespace View.Controls.StatusComponents;
 internal sealed partial class AvatarButton: Button {
-    public ViewModel.Controls.StatusComponents.MainWindow ViewModel {
+    public ViewModel.Controls.StatusComponents.AvatarButton ViewModel {
         get;
         set {
             if (field != value) {
