@@ -1,16 +1,17 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace View.Controls.StatusComponents; 
-public sealed partial class PosterInfo: Grid {
-    public string DisplayName {
-        get => DisplayNameTextBlock.Text;
-        set => DisplayNameTextBlock.Text = value;
-    }
+namespace View.Controls.StatusComponents;
 
-    public string Id {
-        get => IdTextBlock.Text;
-        set => IdTextBlock.Text = value;
-    }
+internal sealed partial class PosterInfo: Grid {
+    public ViewModel.Controls.StatusComponents.PosterInfo ViewModel {
+        get;
+        set {
+            if (field != value) {
+                field = value;
+                Bindings.Update();
+            }
+        }
+    } = new();
 
     public PosterInfo() {
         InitializeComponent();

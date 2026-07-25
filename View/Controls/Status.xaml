@@ -53,8 +53,7 @@
         ColumnDefinitions="*, Auto"
         ColumnSpacing="2">
         <components:PosterInfo
-            DisplayName="{x:Bind ViewModel.PosterDisplayName, Mode=OneWay}"
-            Id="{x:Bind ViewModel.PosterId, Mode=OneWay}"/>
+            ViewModel="{x:Bind ViewModel.PosterInfo, Mode=OneWay}"/>
         <TextBlock
             Grid.Column="1"
             Grid.Row="0"

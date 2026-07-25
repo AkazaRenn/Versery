@@ -1,7 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace View.Controls.StatusComponents; 
-public sealed partial class Body: StackPanel {
+namespace View.Controls.StatusComponents;
+
+internal sealed partial class Body: StackPanel {
     public string TextContent {
         get => TextBlock.Html;
         set => TextBlock.Html = value;

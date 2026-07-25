@@ -16,16 +16,14 @@ public sealed partial class Status: ObservableObject {
 
     [ObservableProperty]
     public partial StatusComponents.AvatarButton AvatarButton { get; set; } = new();
+    [ObservableProperty]
+    public partial StatusComponents.PosterInfo PosterInfo { get; set; } = new();
 
 
     [ObservableProperty]
     public partial string? RebloggerId { get; set; } = null;
     [ObservableProperty]
     public partial string? RebloggerDisplayName { get; set; } = null;
-    [ObservableProperty]
-    public partial string PosterId { get; set; } = string.Empty;
-    [ObservableProperty]
-    public partial string PosterDisplayName { get; set; } = string.Empty;
     [ObservableProperty]
     public partial DateTime CreatedAt { get; set; } = DateTime.MinValue;
     [ObservableProperty]
@@ -65,9 +63,11 @@ public sealed partial class Status: ObservableObject {
 
         obj.AvatarButton.ContentPosterId = account.Id;
 
+        obj.PosterInfo.Id = account.Id;
+        obj.PosterInfo.DisplayName = account.DisplayName;
+        obj.PosterInfo.AccountName = account.AccountName;
+
         obj.ContentId = status.Id;
-        obj.AvatarButton.ContentPosterId = account.AccountName;
-        obj.PosterDisplayName = account.DisplayName;
         obj.CreatedAt = status.CreatedAt;
         obj.Uri = status.Uri;
         obj.TextContent = status.Content;
