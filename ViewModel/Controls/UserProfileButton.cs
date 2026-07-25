@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Model;
 using Model.Access;
-using Utilities;
 
 namespace ViewModel.Controls; 
 public sealed partial class UserProfileButton: ObservableObject, IRecipient<Messages.SignInCompleted> {

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace ViewModel.Controls.StatusComponents; 
+namespace ViewModel.Controls.StatusComponents;
 public sealed partial class AvatarButton: ObservableObject {
     public string ContentPosterId { get; set; } = string.Empty;
 

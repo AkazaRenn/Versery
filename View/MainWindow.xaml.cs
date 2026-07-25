@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -8,12 +7,12 @@ using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
 using WinUIEx;
-using Utilities;
 using View.Interfaces;
 
 namespace View;
-public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequested>, IRecipient<Messages.SignInCompleted> {
+public sealed partial class MainWindow: WindowEx {
     private NavigationViewItemBase? activeNavigationItem = null;
+    private readonly ViewModel.MainWindow viewModel = new();
 
     public MainWindow() {
         InitializeComponent();
@@ -28,7 +27,7 @@ public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequ
         //AppWindow.PlacementRestorationBehavior = PlacementRestorationBehavior.Automatic;
         PersistenceId = "MainWindow";
 
-        WeakReferenceMessenger.Default.RegisterAll(this);
+        viewModel.NavigationRequested += ViewModel_NavigationRequested;
     }
 
     private void UpdateNonClientInputPassthrough() {
@@ -117,11 +116,14 @@ public sealed partial class MainWindow: WindowEx, IRecipient<Messages.SignInRequ
         activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;
     }
 
-    void IRecipient<Messages.SignInRequested>.Receive(Messages.SignInRequested _) {
-        Frame.Navigate(typeof(Pages.SignIn));
-    }
-
-    void IRecipient<Messages.SignInCompleted>.Receive(Messages.SignInCompleted _) {
-        Frame.Navigate(typeof(Pages.Home));
+    private void ViewModel_NavigationRequested(ViewModel.Enumerations.Page page, string? obj) {
+        switch (page) {
+            case ViewModel.Enumerations.Page.Home:
+                Frame.Navigate(typeof(Pages.Home));
+                break;
+            case ViewModel.Enumerations.Page.SignIn:
+                Frame.Navigate(typeof(Pages.SignIn));
+                break;
+        }
     }
 }
