@@ -68,6 +68,7 @@
 
     <components:ReactButtons
         Grid.Column="1"
-        Grid.Row="3">
+        Grid.Row="3"
+        ViewModel="{x:Bind ViewModel.ReactButtons, Mode=OneWay}">
     </components:ReactButtons>
 </Grid>

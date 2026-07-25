@@ -18,6 +18,8 @@ public sealed partial class Status: ObservableObject {
     public partial StatusComponents.AvatarButton AvatarButton { get; set; } = new();
     [ObservableProperty]
     public partial StatusComponents.PosterInfo PosterInfo { get; set; } = new();
+    [ObservableProperty]
+    public partial StatusComponents.ReactButtons ReactButtons { get; set; } = new();
 
 
     [ObservableProperty]
@@ -30,12 +32,6 @@ public sealed partial class Status: ObservableObject {
     public partial Uri? Uri { get; set; } = null;
     [ObservableProperty]
     public partial string TextContent { get; set; } = string.Empty;
-    [ObservableProperty]
-    public partial bool Reblogged { get; set; } = false;
-    [ObservableProperty]
-    public partial bool Favourited { get; set; } = false;
-    [ObservableProperty]
-    public partial bool Bookmarked { get; set; } = false;
     [ObservableProperty]
     public partial bool FollowedByGap { get; set; } = false;
 
@@ -63,17 +59,18 @@ public sealed partial class Status: ObservableObject {
 
         obj.AvatarButton.ContentPosterId = account.Id;
 
-        obj.PosterInfo.Id = account.Id;
+        obj.PosterInfo.AccountId = account.Id;
         obj.PosterInfo.DisplayName = account.DisplayName;
         obj.PosterInfo.AccountName = account.AccountName;
+
+        obj.ReactButtons.Reblogged = status.Reblogged ?? false;
+        obj.ReactButtons.Favourited = status.Favourited ?? false;
+        obj.ReactButtons.Bookmarked = status.Bookmarked ?? false;
 
         obj.ContentId = status.Id;
         obj.CreatedAt = status.CreatedAt;
         obj.Uri = status.Uri;
         obj.TextContent = status.Content;
-        obj.Reblogged = status.Reblogged ?? false;
-        obj.Favourited = status.Favourited ?? false;
-        obj.Bookmarked = status.Bookmarked ?? false;
         obj.FollowedByGap = timeline.FollowedByGap;
 
         return obj;

@@ -7,9 +7,9 @@
     <Button Grid.Column="0">
         ABC
     </Button>
-    <Button Grid.Column="2">
-        ABC
-    </Button>
+    <Button 
+        Grid.Column="2"
+        Content="{x:Bind GetFavouriteButtonIcon(ViewModel.Favourited)}"/>
     <Button Grid.Column="4">
         ABC
     </Button>
