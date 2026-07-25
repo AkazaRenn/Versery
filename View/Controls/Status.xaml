@@ -61,10 +61,13 @@
             HorizontalAlignment="Right"/>
     </Grid>
 
-    <components:Body
+    <components:HtmlTextBlock
         Grid.Column="1"
         Grid.Row="2"
-        TextContent="{x:Bind ViewModel.TextContent}"/>
+        TextWrapping="WrapWholeWords"
+        IsTextSelectionEnabled="False"
+        Html="{x:Bind ViewModel.TextContent}">
+    </components:HtmlTextBlock>
 
     <components:ReactButtons
         Grid.Column="1"
