@@ -89,7 +89,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
             timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
         }
 
-        foreach (var status in await Controls.Status.FromTimelines(timelines)) {
+        foreach (var status in Controls.Status.FromTimelines(timelines)) {
             Statuses.Add(status);
         }
     }
@@ -98,7 +98,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
 
         int index = 0;
-        foreach (var status in await Controls.Status.FromTimelines(timelines)) {
+        foreach (var status in Controls.Status.FromTimelines(timelines)) {
             Statuses.Insert(index++, status);
         }
     }
@@ -110,7 +110,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
 
         loadingOldStatuses = true;
         var timelines = await client.GetTimelineFromDatabase(Statuses.Last().Id);
-        foreach (var status in await Controls.Status.FromTimelines(timelines)) {
+        foreach (var status in Controls.Status.FromTimelines(timelines)) {
             Statuses.Add(status);
         }
         loadingOldStatuses = false;

@@ -15,6 +15,8 @@ public record class Status() {
     public bool? Bookmarked { get; set; } = null;
     public bool? Pinned { get; set; } = null;
     public Dictionary<string, Uri> Emojis { get; set; } = [];
+    public string? RepliedStatusId { get; set; } = null;
+    public string? RepliedAccountId { get; set; } = null;
 
     internal Status(Mastonet.Entities.Status serverStatus): this() {
         Id = serverStatus.Id;

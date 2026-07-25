@@ -10,8 +10,8 @@ public sealed partial class Status: ObservableObject {
 
     public event Action<int, IEnumerable<Model.Entities.Timeline>>? MoreLoaded;
 
-    public string Id { get; private set; } = string.Empty;
-    public string ContentId { get; private set; } = string.Empty;
+    public string Id { get; }
+    public string ContentId { get; } = string.Empty;
     public int Index { get; set; } = -1;
 
     [ObservableProperty]
@@ -35,54 +35,50 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool FollowedByGap { get; set; } = false;
 
-    public static async Task<Status> FromTimeline(Timeline timeline) {
-        var obj = new Status() {
-            Id = timeline.Id,
-        };
+    public Status(Timeline timeline) {
+        Id = timeline.Id;
 
-        var status = await client.GetStatus(obj.Id) ?? throw new ArgumentNullException(null, $"Unable to get status {obj.Id}");
-        var account = await client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
+        var status = client.GetStatus(Id)!;
+        var account = client.GetAccount(status.AccountId)!;
 
         if (status.ReblogId != null) {
-            _ = obj.DownloadRebloggerAvatar(account.Avatar);
+            _ = DownloadRebloggerAvatar(account.Avatar);
 
-            obj.AvatarButton.IsReblog = true;
+            AvatarButton.IsReblog = true;
 
-            obj.RebloggerId = account.Id;
-            obj.RebloggerDisplayName = account.DisplayName;
+            RebloggerId = account.Id;
+            RebloggerDisplayName = account.DisplayName;
 
-            status = await client.GetStatus(status.ReblogId) ?? throw new ArgumentNullException(null, $"Unable to get status {status.ReblogId}");
-            account = await client.GetAccount(status.AccountId) ?? throw new ArgumentNullException(null, $"Unable to get account {status.AccountId}");
+            status = client.GetStatus(status.ReblogId)!;
+            account = client.GetAccount(status.AccountId)!;
         }
 
-        _ = obj.DownloadAvatar(account.Avatar);
+        _ = DownloadAvatar(account.Avatar);
 
-        obj.AvatarButton.ContentPosterId = account.Id;
+        AvatarButton.ContentPosterId = account.Id;
 
-        obj.PosterInfo.AccountId = account.Id;
-        obj.PosterInfo.DisplayName = account.DisplayName;
-        obj.PosterInfo.AccountName = account.AccountName;
+        PosterInfo.AccountId = account.Id;
+        PosterInfo.DisplayName = account.DisplayName;
+        PosterInfo.AccountName = account.AccountName;
 
-        obj.ReactButtons.Reblogged = status.Reblogged ?? false;
-        obj.ReactButtons.Favourited = status.Favourited ?? false;
-        obj.ReactButtons.Bookmarked = status.Bookmarked ?? false;
+        ReactButtons.Reblogged = status.Reblogged ?? false;
+        ReactButtons.Favourited = status.Favourited ?? false;
+        ReactButtons.Bookmarked = status.Bookmarked ?? false;
 
-        obj.HtmlRenderer.Html = status.Content;
-        obj.HtmlRenderer.Emojis = status.Emojis;
+        HtmlRenderer.Html = status.Content;
+        HtmlRenderer.Emojis = status.Emojis;
 
-        obj.ContentId = status.Id;
-        obj.CreatedAt = status.CreatedAt;
-        obj.Uri = status.Uri;
-        obj.FollowedByGap = timeline.FollowedByGap;
-
-        return obj;
+        ContentId = status.Id;
+        CreatedAt = status.CreatedAt;
+        Uri = status.Uri;
+        FollowedByGap = timeline.FollowedByGap;
     }
 
-    public static async Task<Status[]> FromTimelines(IEnumerable<Timeline> timelines) {
+    public static Status[] FromTimelines(IEnumerable<Timeline> timelines) {
         timelines = timelines.ToCollection();
         var statuses = new Status[timelines.Count()];
         for (int i = 0; i < timelines.Count(); i++) {
-            statuses[i] = await FromTimeline(timelines.ElementAt(i));
+            statuses[i] = new Status(timelines.ElementAt(i));
         }
         return statuses;
     }

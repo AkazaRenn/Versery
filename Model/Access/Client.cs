@@ -76,7 +76,6 @@ public sealed class Client {
         };
 
         await database!.AddTimeline(serverStatuses, afterId);
-        await database.AddStatuses(serverStatuses);
 
         if (!serverStatuses.Any()) {
             return [];
@@ -99,17 +98,17 @@ public sealed class Client {
         return await database!.GetTimeline(Constants.StatusesCountPerLoad, afterId);
     }
 
-    public async Task<Entities.Status?> GetStatus(string id) {
+    public Entities.Status? GetStatus(string id) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-        return await database!.GetStatus(id);
+        return database!.GetStatus(id);
     }
 
-    public async Task<Entities.Account?> GetAccount(string id) {
+    public Entities.Account? GetAccount(string id) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-        return await database!.GetAccount(id);
+        return database!.GetAccount(id);
     }
 }

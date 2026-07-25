@@ -1,7 +1,6 @@
 ﻿using Utilities;
 
 namespace Model.Database;
-
 internal sealed class Client {
     private Account Account { get; }
     private Status Status { get; }
@@ -19,7 +18,16 @@ internal sealed class Client {
     }
 
     public async Task<Entities.Timeline[]> GetTimeline(int count, string? afterId = null) {
-        return await Task.Run(() => Timeline.Get(count, afterId).ToArray());
+        var timelines = await Task.Run(() => Timeline.Get(count, afterId).ToArray());
+        foreach (var timeline in timelines) {
+            if (GetStatus(timeline.Id) is Entities.Status status) {
+                GetAccount(status.AccountId);
+                if ((status.ReblogId is not null) && GetStatus(status.ReblogId) is Entities.Status reblogStatus) {
+                    GetAccount(reblogStatus.AccountId);
+                }
+            }
+        }
+        return timelines;
     }
 
     public async Task AddTimeline(IEnumerable<Mastonet.Entities.Status> serverStatuses, string? afterId = null) {
@@ -37,22 +45,18 @@ internal sealed class Client {
                 dbTimeline[^1].FollowedByGap = true;
             }
             Timeline.Add(dbTimeline, afterId);
-        });
-    }
 
-    public async Task<Entities.Status?> GetStatus(string id) {
-        return await Task.Run(() => Status.Get(id));
-    }
-
-    public async Task AddStatuses(IEnumerable<Mastonet.Entities.Status> serverStatuses) {
-        await Task.Run(() => {
-            var flattened = serverStatuses.ToCollection().Flattened;
+            var flattened = serverStatuses.Flattened.ToCollection();
             Status.Add(Entities.Status.FromServer(flattened));
             Account.Add(Entities.Account.FromServer(flattened.Select(x => x.Account)));
         });
     }
 
-    public async Task<Entities.Account?> GetAccount(string id) {
-        return await Task.Run(() => Account.Get(id));
+    public Entities.Status? GetStatus(string id) {
+        return Status.Get(id);
+    }
+
+    public Entities.Account? GetAccount(string id) {
+        return Account.Get(id);
     }
 }
