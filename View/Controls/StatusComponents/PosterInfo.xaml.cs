@@ -18,6 +18,6 @@ internal sealed partial class PosterInfo: StackPanel {
     }
 
     private double GetIdFontSize(double referenceFontSize) {
-        return referenceFontSize * 0.8;
+        return referenceFontSize * 0.85;
     }
 }

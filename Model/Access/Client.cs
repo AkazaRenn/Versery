@@ -57,7 +57,7 @@ public sealed class Client {
         return account;
     }
 
-    public async Task<List<Entities.Timeline>> GetTimelineFromServer(TimelineType type, string? afterId = null) {
+    public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
@@ -74,27 +74,27 @@ public sealed class Client {
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 
-        await database!.AddTimeline(serverStatuses, afterId);
+        database!.AddTimeline(serverStatuses, afterId);
 
         if (!serverStatuses.Any()) {
             return [];
         }
 
-        List<Entities.Timeline> timeline = [];
-        foreach (var serverStatus in serverStatuses) {
-            timeline.Add(new Entities.Timeline() {
-                Id = serverStatus.Id,
-            });
+        var timeline = new Entities.Timeline[serverStatuses.Count];
+        for (int i = 0; i < serverStatuses.Count; i++) {
+            timeline[i] = new Entities.Timeline() {
+                Id = serverStatuses[i].Id,
+            };
         }
 
         return timeline;
     }
 
-    public async Task<IEnumerable<Entities.Timeline>> GetTimelineFromDatabase(string? afterId = null) {
+    public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-        return await database!.GetTimeline(Constants.StatusesCountPerLoad, afterId);
+        return database!.GetTimeline(Constants.StatusesCountPerLoad, afterId);
     }
 
     public Entities.Status? GetStatus(string id) {

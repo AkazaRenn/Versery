@@ -74,13 +74,11 @@ public sealed partial class Status: ObservableObject {
         FollowedByGap = timeline.FollowedByGap;
     }
 
-    public static Status[] FromTimelines(IEnumerable<Timeline> timelines) {
+    public static IEnumerable<Status> FromTimelines(IEnumerable<Timeline> timelines) {
         timelines = timelines.ToCollection();
-        var statuses = new Status[timelines.Count()];
         for (int i = 0; i < timelines.Count(); i++) {
-            statuses[i] = new Status(timelines.ElementAt(i));
+            yield return new Status(timelines.ElementAt(i));
         }
-        return statuses;
     }
 
     public async Task LoadMore() {

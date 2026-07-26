@@ -84,22 +84,27 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     }
 
     private async Task LoadInitialTimelines() {
-        var timelines = await client.GetTimelineFromDatabase();
-        if (!timelines.Any()) {
-            timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
-        }
+        var statuses = await Task.Run(async () => {
+            var timelines = client.GetTimelineFromDatabase();
+            if (timelines.Length == 0) {
+                timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+            }
+            return Controls.Status.FromTimelines(timelines).ToArray();
+        });
 
-        foreach (var status in Controls.Status.FromTimelines(timelines)) {
+        foreach (var status in statuses) {
             Statuses.Add(status);
         }
     }
 
     public async Task LoadLatestTimelines() {
-        var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+        var statuses = await Task.Run(async () => {
+            var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+            return Controls.Status.FromTimelines(timelines).ToArray();
+        });
 
-        int index = 0;
-        foreach (var status in Controls.Status.FromTimelines(timelines)) {
-            Statuses.Insert(index++, status);
+        for (int i = 0; i < Statuses.Count; i++) {
+            Statuses.Insert(i, Statuses[i]);
         }
     }
 
@@ -109,8 +114,11 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         }
 
         loadingOldStatuses = true;
-        var timelines = await client.GetTimelineFromDatabase(Statuses.Last().Id);
-        foreach (var status in Controls.Status.FromTimelines(timelines)) {
+        var statuses = await Task.Run(() => {
+            var timelines = client.GetTimelineFromDatabase(Statuses.Last().Id);
+            return Controls.Status.FromTimelines(timelines).ToArray();
+        });
+        foreach (var status in statuses) {
             Statuses.Add(status);
         }
         loadingOldStatuses = false;
