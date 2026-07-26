@@ -9,7 +9,7 @@ public sealed class Client {
     private readonly HttpClient httpClient = Services.Get<HttpClient>();
     private Database.Client? database;
     private MastodonClient? server;
-    private Mastonet.Entities.Account? account;
+    private Entities.Account? account;
 
     public bool SignedIn => server is not null && database is not null;
 
@@ -36,9 +36,10 @@ public sealed class Client {
 
     internal async Task NewUser(string instance, string accessToken) {
         server = new(instance, accessToken, httpClient);
-        account = await server.GetCurrentUser();
-        var username = account.UserName;
-        database = new Database.Client(account.UserName, instance);
+        var serverAccount = await server.GetCurrentUser();
+        var username = serverAccount.UserName;
+        database = new Database.Client(serverAccount.UserName, instance);
+        account = database.AddAccount(serverAccount);
 
         var userId = $"{username}@{instance}";
         Credentials.AddAccessToken(userId, server.AccessToken);
@@ -47,11 +48,10 @@ public sealed class Client {
         WeakReferenceMessenger.Default.Send(new Messages.SignInCompleted());
     }
 
-    public async Task<Mastonet.Entities.Account?> GetAccount() {
-        if (account is null) {
-            if (server is not null) {
-                account = await server.GetCurrentUser();
-            }
+    public async Task<Entities.Account?> GetAccount() {
+        if ((account is null) && SignedIn) {
+            var serverAccount = await server!.GetCurrentUser();
+            account = database!.AddAccount(serverAccount);
         }
 
         return account;

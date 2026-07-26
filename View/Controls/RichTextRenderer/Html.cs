@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Model.Access;
 using System.Runtime.Caching;
 
 namespace View.Controls.RichTextRenderer;
@@ -17,7 +18,7 @@ internal static class Html {
         "ViewModel",
         typeof(ViewModel.Controls.RichTextRenderer.Html),
         typeof(Html),
-        new PropertyMetadata(null, OnViewModelChanged)
+        new PropertyMetadata(null, OnViewModelChangedAsync)
     );
 
     public static ViewModel.Controls.RichTextRenderer.Html? GetViewModel(DependencyObject obj) {
@@ -28,12 +29,17 @@ internal static class Html {
         obj.SetValue(ViewModelProperty, value);
     }
 
-    private static void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+    private static async void OnViewModelChangedAsync(DependencyObject d, DependencyPropertyChangedEventArgs e) {
         if (d is not RichTextBlock richTextBlock) {
             return;
         }
 
         if (e.NewValue is ViewModel.Controls.RichTextRenderer.Html newVm) {
+            foreach (var item in newVm.Emojis.ToArray()) {
+                if (await Cache.Get(item.Value) is Uri uri) {
+                    newVm.Emojis[item.Key] = uri;
+                }
+            }
             _ = UpdateContent(richTextBlock, newVm.RawText, newVm.Emojis);
             return;
         }
@@ -156,11 +162,10 @@ internal static class Html {
             LineBreakToken => new LineBreak(),
             BoldToken bold => RenderInlineChildren(new Bold(), bold.Children),
             ItalicToken italic => RenderInlineChildren(new Italic(), italic.Children),
-            // Todo: replace by HyperlinkButton
+            // Todo: replace by HyperlinkButton for tags
             // https://github.com/microsoft/microsoft-ui-xaml/discussions/11251
             HyperlinkToken hyperlink => RenderInlineChildren(new Hyperlink {
                 NavigateUri = new Uri(hyperlink.Href),
-                UnderlineStyle = UnderlineStyle.None,
             }, hyperlink.Children),
             _ => new Run(),
         };

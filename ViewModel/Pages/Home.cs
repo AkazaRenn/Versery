@@ -103,8 +103,8 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
             return Controls.Status.FromTimelines(timelines).ToArray();
         });
 
-        for (int i = 0; i < Statuses.Count; i++) {
-            Statuses.Insert(i, Statuses[i]);
+        for (int i = 0; i < statuses.Length; i++) {
+            Statuses.Insert(i, statuses[i]);
         }
     }
 

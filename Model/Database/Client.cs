@@ -34,19 +34,16 @@ internal sealed class Client {
 
         var dbTimeline = new List<Entities.Timeline>(serverStatuses.Count() + 1);
         foreach (var status in serverStatuses) {
-            dbTimeline.Add(new Entities.Timeline {
-                Id = status.Id,
-                CreatedAt = status.CreatedAt,
-            });
+            dbTimeline.Add(new Entities.Timeline(status));
         }
         if (serverStatuses.Count() >= Constants.StatusesCountPerLoad) {
             dbTimeline[^1].FollowedByGap = true;
         }
         Timeline.Add(dbTimeline, afterId);
 
-        var flattened = serverStatuses.Flattened.ToCollection();
+        var flattened = serverStatuses.Flattened.DistinctBy(x => x.Id).ToCollection();
         Status.Add(Entities.Status.FromServer(flattened));
-        Account.Add(Entities.Account.FromServer(flattened.Select(x => x.Account)));
+        Account.Add(Entities.Account.FromServer(flattened.Select(x => x.Account).DistinctBy(x => x.Id)));
     }
 
     public Entities.Status? GetStatus(string id) {
@@ -55,5 +52,11 @@ internal sealed class Client {
 
     public Entities.Account? GetAccount(string id) {
         return Account.Get(id);
+    }
+
+    public Entities.Account AddAccount(Mastonet.Entities.Account serverAccount) {
+        var account = new Entities.Account(serverAccount);
+        Account.Add(account);
+        return account;
     }
 }

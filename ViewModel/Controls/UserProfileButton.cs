@@ -21,9 +21,9 @@ public sealed partial class UserProfileButton: ObservableObject, IRecipient<Mess
     }
 
     private async Task UpdateUserInfo() {
-        var url = (await client.GetAccount())?.AvatarUrl;
-        if (url is not null) {
-            Avatar = await Cache.Get(url);
+        var uri = (await client.GetAccount())?.Avatar;
+        if (uri is not null) {
+            Avatar = await Cache.Get(uri);
         }
     }
 

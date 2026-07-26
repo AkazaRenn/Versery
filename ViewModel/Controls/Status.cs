@@ -58,7 +58,8 @@ public sealed partial class Status: ObservableObject {
         AvatarButton.ContentPosterId = account.Id;
 
         PosterInfo.AccountId = account.Id;
-        PosterInfo.DisplayName = account.DisplayName;
+        PosterInfo.DisplayNameInfo.RawText = account.DisplayName;
+        PosterInfo.DisplayNameInfo.Emojis = account.Emojis;
         PosterInfo.AccountName = account.AccountName;
 
         ReactButtons.Reblogged = status.Reblogged ?? false;
