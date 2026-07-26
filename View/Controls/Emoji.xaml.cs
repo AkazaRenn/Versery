@@ -230,7 +230,11 @@ internal sealed partial class Emoji: FrameworkElement {
 
             for (int i = 0; i < frameCount; i++) {
                 // Enforce a minimum delay of 20ms to avoid excessively fast frames
-                delays[i] = Math.Max(delays[i], 20);
+                if (double.IsNaN(delays[i])) {
+                    delays[i] = 20;
+                } else if (delays[i] < 20) {
+                    delays[i] = 20;
+                }
 
                 var frame = image.Frames[i];
                 var pixels = new byte[frame.Width * frame.Height * 4];

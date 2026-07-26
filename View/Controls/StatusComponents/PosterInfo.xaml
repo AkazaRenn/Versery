@@ -9,10 +9,12 @@
         FontWeight="SemiBold"
         FontSize="16"
         TextTrimming="CharacterEllipsis"
+        IsTextSelectionEnabled="False"
         richtextrenderer:TextWithEmoji.ViewModel="{x:Bind ViewModel.DisplayNameInfo, Mode=OneWay}"/>
     <TextBlock
         FontSize="{x:Bind GetIdFontSize(DisplayNameTextBlock.FontSize)}"
         Opacity="0.75"
         TextTrimming="CharacterEllipsis"
+        IsTextSelectionEnabled="False"
         Text="{x:Bind ViewModel.AccountName, Mode=OneWay}"/>
 </StackPanel>
