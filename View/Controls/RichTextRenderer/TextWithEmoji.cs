@@ -78,14 +78,14 @@ internal static class TextWithEmoji {
         int index = 0;
         while (index < rawText.Length) {
             if ((rawText[index] != ':') ||
-                (!TryReadEmojiPlaceholder(rawText, ref index, out var placeholder, out var shortcode))) {
+                (!TryReadEmojiPlaceholder(rawText, ref index, out var placeholder, out var shortCode))) {
                 text.Append(rawText[index]);
                 index++;
                 continue;
             }
 
             FlushText();
-            tokens.Add(new EmojiToken(shortcode, placeholder));
+            tokens.Add(new EmojiToken(shortCode, placeholder));
         }
 
         FlushText();
@@ -103,9 +103,9 @@ internal static class TextWithEmoji {
         }
     }
 
-    private static bool TryReadEmojiPlaceholder(string rawText, ref int index, out string placeholder, out string shortcode) {
+    private static bool TryReadEmojiPlaceholder(string rawText, ref int index, out string placeholder, out string shortCode) {
         placeholder = string.Empty;
-        shortcode = string.Empty;
+        shortCode = string.Empty;
 
         int startIndex = index;
         int cursor = startIndex + 1;
@@ -123,9 +123,13 @@ internal static class TextWithEmoji {
         }
 
         var hasTrailingColon = cursor < rawText.Length && rawText[cursor] == ':';
-        var endIndex = hasTrailingColon ? cursor + 1 : cursor;
+        if (!hasTrailingColon) {
+            return false;
+        }
+
+        var endIndex = cursor + 1;
         placeholder = rawText[startIndex..endIndex];
-        shortcode = rawText[(startIndex + 1)..cursor];
+        shortCode = rawText[(startIndex + 1)..cursor];
         index = endIndex;
         return true;
     }
@@ -134,7 +138,7 @@ internal static class TextWithEmoji {
         switch (token) {
         case TextToken text:
             return new Run { Text = text.Text };
-        case EmojiToken emoji when emojis.TryGetValue(emoji.Shortcode, out var source):
+        case EmojiToken emoji when emojis.TryGetValue(emoji.ShortCode, out var source):
             var emojiControl = new Emoji {
                 Width = fontSize,
                 Height = fontSize,
@@ -151,6 +155,7 @@ internal static class TextWithEmoji {
     }
 
     private static async Task DownloadEmoji(Emoji control, Uri uri) {
-        control.Source = await Cache.Get(uri);
+        var downloaded = await Cache.Get(uri);
+        control.Source = downloaded;
     }
 }

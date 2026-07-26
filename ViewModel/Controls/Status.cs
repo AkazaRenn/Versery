@@ -90,13 +90,15 @@ public sealed partial class Status: ObservableObject {
 
     private async Task DownloadAvatar(Uri? uri) {
         if (uri is not null) {
-            AvatarButton.ContentPosterAvatar = await Cache.Get(uri);
+            var downloaded = await Cache.Get(uri);
+            AvatarButton.ContentPosterAvatar = downloaded;
         }
     }
 
     private async Task DownloadRebloggerAvatar(Uri? uri) {
         if (uri is not null) {
-            AvatarButton.RebloggerAvatar = await Cache.Get(uri);
+            var downloaded = await Cache.Get(uri);
+            AvatarButton.RebloggerAvatar = downloaded;
         }
     }
 }

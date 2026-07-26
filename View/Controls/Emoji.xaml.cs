@@ -150,7 +150,7 @@ internal sealed partial class Emoji: FrameworkElement {
             data = cachedData;
         } else {
             using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Source.LocalPath);
-            data = new ImageData(image);
+            data = await Task.Run(() => new ImageData(image));
             imageCache.Add(cacheKey, data, imageCachePolicy);
         }
 
