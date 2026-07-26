@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Model.Access;
 using System.Runtime.Caching;
+using View.Controls;
 
 namespace View.Controls.RichTextRenderer;
 
@@ -48,7 +49,7 @@ internal static class Html {
     }
 
     private static async Task UpdateContent(RichTextBlock richTextBlock, string rawText, Dictionary<string, Uri> emojis) {
-        if (htmlCache.Get(rawText) is not HtmlContentToken tokenizedContent) {
+        if (htmlCache.Get(rawText) is not ContentToken tokenizedContent) {
             tokenizedContent = await TokenizeHtmlAsync(rawText);
             htmlCache.Add(rawText, tokenizedContent, htmlCachePolicy);
         }
@@ -56,12 +57,12 @@ internal static class Html {
         RenderContent(richTextBlock, tokenizedContent, emojis);
     }
 
-    private static void RenderContent(RichTextBlock richTextBlock, HtmlContentToken content, Dictionary<string, Uri> emojis) {
+    private static void RenderContent(RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Uri> emojis) {
         var blocks = richTextBlock.Blocks;
         blocks.Clear();
 
         foreach (var paragraphToken in content.Paragraphs) {
-            blocks.Add(RenderParagraph(paragraphToken));
+            blocks.Add(RenderParagraph(paragraphToken, emojis, richTextBlock.FontSize));
         }
 
         for (int i = 0; i < blocks.Count - 1; i++) {
@@ -70,12 +71,12 @@ internal static class Html {
         }
     }
 
-    private static async Task<HtmlContentToken> TokenizeHtmlAsync(string rawText) {
+    private static async Task<ContentToken> TokenizeHtmlAsync(string rawText) {
         var browsingContext = new BrowsingContext();
         var document = await browsingContext.OpenAsync(req => req.Content(rawText));
 
         if (document.Body == null || document.Body.ChildElementCount == 0) {
-            return new HtmlContentToken([
+            return new ContentToken([
                 new ParagraphToken([
                     new TextToken(rawText),
                 ]),
@@ -87,7 +88,7 @@ internal static class Html {
             paragraphs.Add(TokenizeParagraph(child));
         }
 
-        return new HtmlContentToken(paragraphs);
+        return new ContentToken(paragraphs);
     }
 
     private static ParagraphToken TokenizeParagraph(IElement element) {
@@ -146,45 +147,50 @@ internal static class Html {
         }
     }
 
-    private static Paragraph RenderParagraph(ParagraphToken paragraphToken) {
+    private static Paragraph RenderParagraph(ParagraphToken paragraphToken, Dictionary<string, Uri> emojis, double fontSize) {
         var paragraph = new Paragraph();
 
         foreach (var inlineToken in paragraphToken.Inlines) {
-            paragraph.Inlines.Add(RenderInline(inlineToken));
+            paragraph.Inlines.Add(RenderInline(inlineToken, emojis, fontSize));
         }
 
         return paragraph;
     }
 
-    private static Inline RenderInline(InlineToken token) {
+    private static Inline RenderInline(InlineToken token, Dictionary<string, Uri> emojis, double fontSize) {
         return token switch {
-            TextToken text => new Run { Text = text.Text },
+            TextToken text => RenderTokenizedText(text.Text, emojis, fontSize),
             LineBreakToken => new LineBreak(),
-            BoldToken bold => RenderInlineChildren(new Bold(), bold.Children),
-            ItalicToken italic => RenderInlineChildren(new Italic(), italic.Children),
+            BoldToken bold => RenderInlineChildren(new Bold(), bold.Children, emojis, fontSize),
+            ItalicToken italic => RenderInlineChildren(new Italic(), italic.Children, emojis, fontSize),
             // Todo: replace by HyperlinkButton for tags
             // https://github.com/microsoft/microsoft-ui-xaml/discussions/11251
             HyperlinkToken hyperlink => RenderInlineChildren(new Hyperlink {
                 NavigateUri = new Uri(hyperlink.Href),
-            }, hyperlink.Children),
+            }, hyperlink.Children, emojis, fontSize),
             _ => new Run(),
         };
     }
 
-    private static Span RenderInlineChildren(Span span, IReadOnlyList<InlineToken> tokens) {
-        foreach (var token in tokens) {
-            span.Inlines.Add(RenderInline(token));
+    private static Inline RenderTokenizedText(string rawText, Dictionary<string, Uri> emojis, double fontSize) {
+        var tokenizedContent = TextWithEmoji.TokenizeTextWithEmoji(rawText);
+        var span = new Span();
+
+        foreach (var paragraph in tokenizedContent.Paragraphs) {
+            foreach (var token in paragraph.Inlines) {
+                span.Inlines.Add(TextWithEmoji.RenderInline(token, emojis, fontSize));
+            }
         }
 
         return span;
     }
 
-    private abstract record InlineToken;
-    private sealed record TextToken(string Text): InlineToken;
-    private sealed record LineBreakToken: InlineToken;
-    private sealed record BoldToken(IReadOnlyList<InlineToken> Children): InlineToken;
-    private sealed record ItalicToken(IReadOnlyList<InlineToken> Children): InlineToken;
-    private sealed record HyperlinkToken(string Href, IReadOnlyList<InlineToken> Children): InlineToken;
-    private sealed record ParagraphToken(IReadOnlyList<InlineToken> Inlines);
-    private sealed record HtmlContentToken(IReadOnlyList<ParagraphToken> Paragraphs);
+    private static Span RenderInlineChildren(Span span, IReadOnlyList<InlineToken> tokens, Dictionary<string, Uri> emojis, double fontSize) {
+        foreach (var token in tokens) {
+            span.Inlines.Add(RenderInline(token, emojis, fontSize));
+        }
+
+        return span;
+    }
+
 }

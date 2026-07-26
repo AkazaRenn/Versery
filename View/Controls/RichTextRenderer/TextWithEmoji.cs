@@ -48,29 +48,30 @@ internal static class TextWithEmoji {
     }
 
     private static void UpdateContent(RichTextBlock richTextBlock, string rawText, Dictionary<string, Uri> emojis) {
-        if (tokenCache.Get(rawText) is not DisplayNameContentToken tokenizedContent) {
-            tokenizedContent = TokenizeDisplayName(rawText);
+        if (tokenCache.Get(rawText) is not ContentToken tokenizedContent) {
+            tokenizedContent = TokenizeTextWithEmoji(rawText);
             tokenCache.Add(rawText, tokenizedContent, tokenCachePolicy);
         }
 
         RenderContent(richTextBlock, tokenizedContent, emojis);
     }
 
-    private static void RenderContent(RichTextBlock richTextBlock, DisplayNameContentToken content, Dictionary<string, Uri> emojis) {
+    private static void RenderContent(RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Uri> emojis) {
         var blocks = richTextBlock.Blocks;
         blocks.Clear();
-
-        var paragraph = new Paragraph();
         var fontSize = richTextBlock.FontSize > 0 ? richTextBlock.FontSize : 16;
 
-        foreach (var inlineToken in content.Inlines) {
-            paragraph.Inlines.Add(RenderInline(inlineToken, emojis, fontSize));
-        }
+        foreach (var paragraphToken in content.Paragraphs) {
+            var paragraph = new Paragraph();
+            foreach (var inlineToken in paragraphToken.Inlines) {
+                paragraph.Inlines.Add(RenderInline(inlineToken, emojis, fontSize));
+            }
 
-        blocks.Add(paragraph);
+            blocks.Add(paragraph);
+        }
     }
 
-    private static DisplayNameContentToken TokenizeDisplayName(string rawText) {
+    internal static ContentToken TokenizeTextWithEmoji(string rawText) {
         var tokens = new List<InlineToken>();
         var text = new StringBuilder();
 
@@ -88,7 +89,9 @@ internal static class TextWithEmoji {
         }
 
         FlushText();
-        return new DisplayNameContentToken(tokens);
+        return new ContentToken([
+            new ParagraphToken(tokens),
+        ]);
 
         void FlushText() {
             if (text.Length == 0) {
@@ -127,7 +130,7 @@ internal static class TextWithEmoji {
         return true;
     }
 
-    private static Inline RenderInline(InlineToken token, Dictionary<string, Uri> emojis, double fontSize) {
+    internal static Inline RenderInline(InlineToken token, Dictionary<string, Uri> emojis, double fontSize) {
         return token switch {
             TextToken text => new Run { Text = text.Text },
             EmojiToken emoji when emojis.TryGetValue(emoji.Shortcode, out var source) => new InlineUIContainer {
@@ -142,9 +145,4 @@ internal static class TextWithEmoji {
             _ => new Run(),
         };
     }
-
-    private abstract record InlineToken;
-    private sealed record TextToken(string Text): InlineToken;
-    private sealed record EmojiToken(string Shortcode, string Placeholder): InlineToken;
-    private sealed record DisplayNameContentToken(IReadOnlyList<InlineToken> Inlines);
 }
