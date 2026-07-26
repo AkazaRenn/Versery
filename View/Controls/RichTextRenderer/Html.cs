@@ -1,11 +1,9 @@
-using AngleSharp;
 using AngleSharp.Dom;
+using AngleSharp.Html.Parser;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
-using Model.Access;
 using System.Runtime.Caching;
-using View.Controls;
 
 namespace View.Controls.RichTextRenderer;
 
@@ -35,22 +33,20 @@ internal static class Html {
             return;
         }
 
-        if (e.NewValue is ViewModel.Controls.RichTextRenderer.Html newVm) {
-            foreach (var item in newVm.Emojis.ToArray()) {
-                if (await Cache.Get(item.Value) is Uri uri) {
-                    newVm.Emojis[item.Key] = uri;
-                }
-            }
-            _ = UpdateContent(richTextBlock, newVm.RawText, newVm.Emojis);
+        if (e.OldValue == e.NewValue) {
             return;
         }
 
-        richTextBlock.Blocks.Clear();
+        if ((e.NewValue is ViewModel.Controls.RichTextRenderer.Html newVm) && (!String.IsNullOrEmpty(newVm.RawText))) {
+            _ = UpdateContent(richTextBlock, newVm.RawText, newVm.Emojis);
+        } else {
+            richTextBlock.Blocks.Clear();
+        }
     }
 
     private static async Task UpdateContent(RichTextBlock richTextBlock, string rawText, Dictionary<string, Uri> emojis) {
         if (htmlCache.Get(rawText) is not ContentToken tokenizedContent) {
-            tokenizedContent = await TokenizeHtmlAsync(rawText);
+            tokenizedContent = await Task.Run(() => TokenizeHtmlAsync(rawText));
             htmlCache.Add(rawText, tokenizedContent, htmlCachePolicy);
         }
 
@@ -71,9 +67,9 @@ internal static class Html {
         }
     }
 
-    private static async Task<ContentToken> TokenizeHtmlAsync(string rawText) {
-        var browsingContext = new BrowsingContext();
-        var document = await browsingContext.OpenAsync(req => req.Content(rawText));
+    private static ContentToken TokenizeHtmlAsync(string rawText) {
+        var parser = new HtmlParser();
+        var document = parser.ParseDocument(rawText);
 
         if (document.Body == null || document.Body.ChildElementCount == 0) {
             return new ContentToken([
@@ -151,7 +147,10 @@ internal static class Html {
         var paragraph = new Paragraph();
 
         foreach (var inlineToken in paragraphToken.Inlines) {
-            paragraph.Inlines.Add(RenderInline(inlineToken, emojis, fontSize));
+            var inline = RenderInline(inlineToken, emojis, fontSize);
+            if (inline != null) {
+                paragraph.Inlines.Add(inline);
+            }
         }
 
         return paragraph;
@@ -172,7 +171,7 @@ internal static class Html {
         };
     }
 
-    private static Inline RenderTokenizedText(string rawText, Dictionary<string, Uri> emojis, double fontSize) {
+    private static Span RenderTokenizedText(string rawText, Dictionary<string, Uri> emojis, double fontSize) {
         var tokenizedContent = TextWithEmoji.TokenizeTextWithEmoji(rawText);
         var span = new Span();
 

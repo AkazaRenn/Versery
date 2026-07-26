@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml.Documents;
 using Model.Access;
 using System.Runtime.Caching;
 using System.Text;
-using View.Controls;
 
 namespace View.Controls.RichTextRenderer;
 
@@ -34,22 +33,20 @@ internal static class TextWithEmoji {
             return;
         }
 
-        if (e.NewValue is ViewModel.Controls.RichTextRenderer.TextWithEmoji newVm) {
-            foreach (var item in newVm.Emojis.ToArray()) {
-                if (await Cache.Get(item.Value) is Uri uri) {
-                    newVm.Emojis[item.Key] = uri;
-                }
-            }
-            UpdateContent(richTextBlock, newVm.RawText, newVm.Emojis);
+        if (e.OldValue == e.NewValue) {
             return;
         }
 
-        richTextBlock.Blocks.Clear();
+        if ((e.NewValue is ViewModel.Controls.RichTextRenderer.TextWithEmoji newVm) && (!String.IsNullOrEmpty(newVm.RawText))) {
+            _ = UpdateContent(richTextBlock, newVm.RawText, newVm.Emojis);
+        } else {
+            richTextBlock.Blocks.Clear();
+        }
     }
 
-    private static void UpdateContent(RichTextBlock richTextBlock, string rawText, Dictionary<string, Uri> emojis) {
+    private static async Task UpdateContent(RichTextBlock richTextBlock, string rawText, Dictionary<string, Uri> emojis) {
         if (tokenCache.Get(rawText) is not ContentToken tokenizedContent) {
-            tokenizedContent = TokenizeTextWithEmoji(rawText);
+            tokenizedContent = await Task.Run(() => TokenizeTextWithEmoji(rawText));
             tokenCache.Add(rawText, tokenizedContent, tokenCachePolicy);
         }
 
@@ -64,7 +61,10 @@ internal static class TextWithEmoji {
         foreach (var paragraphToken in content.Paragraphs) {
             var paragraph = new Paragraph();
             foreach (var inlineToken in paragraphToken.Inlines) {
-                paragraph.Inlines.Add(RenderInline(inlineToken, emojis, fontSize));
+                var inline = RenderInline(inlineToken, emojis, fontSize);
+                if (inline != null) {
+                    paragraph.Inlines.Add(inline);
+                }
             }
 
             blocks.Add(paragraph);
@@ -130,19 +130,27 @@ internal static class TextWithEmoji {
         return true;
     }
 
-    internal static Inline RenderInline(InlineToken token, Dictionary<string, Uri> emojis, double fontSize) {
-        return token switch {
-            TextToken text => new Run { Text = text.Text },
-            EmojiToken emoji when emojis.TryGetValue(emoji.Shortcode, out var source) => new InlineUIContainer {
-                Child = new Emoji {
-                    Source = source,
-                    Width = fontSize,
-                    Height = fontSize,
-                    VerticalAlignment = VerticalAlignment.Center,
-                },
-            },
-            EmojiToken emoji => new Run { Text = emoji.Placeholder },
-            _ => new Run(),
-        };
+    internal static Inline? RenderInline(InlineToken token, Dictionary<string, Uri> emojis, double fontSize) {
+        switch (token) {
+        case TextToken text:
+            return new Run { Text = text.Text };
+        case EmojiToken emoji when emojis.TryGetValue(emoji.Shortcode, out var source):
+            var emojiControl = new Emoji {
+                Width = fontSize,
+                Height = fontSize,
+            };
+            _ = DownloadEmoji(emojiControl, source);
+            return new InlineUIContainer {
+                Child = emojiControl,
+            };
+        case EmojiToken emoji:
+            return new Run { Text = emoji.Placeholder };
+        default:
+            return null;
+        }
+    }
+
+    private static async Task DownloadEmoji(Emoji control, Uri uri) {
+        control.Source = await Cache.Get(uri);
     }
 }
