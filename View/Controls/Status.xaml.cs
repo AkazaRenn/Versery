@@ -9,7 +9,7 @@ internal sealed partial class Status: Grid {
         set {
             if (field != value) {
                 field = value;
-                Bindings.Update();
+                _ = DispatcherQueue.TryEnqueue(Bindings.Update);
             }
         }
     }

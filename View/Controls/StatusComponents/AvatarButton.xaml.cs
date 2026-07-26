@@ -7,7 +7,7 @@ internal sealed partial class AvatarButton: Button {
         set {
             if (field != value) {
                 field = value;
-                Bindings.Update();
+                _ = DispatcherQueue.TryEnqueue(Bindings.Update);
             }
         }
     } = new();

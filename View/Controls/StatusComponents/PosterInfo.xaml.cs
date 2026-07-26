@@ -8,7 +8,7 @@ internal sealed partial class PosterInfo: StackPanel {
         set {
             if (field != value) {
                 field = value;
-                Bindings.Update();
+                _ = DispatcherQueue.TryEnqueue(Bindings.Update);
             }
         }
     } = new();
