@@ -11,7 +11,7 @@ internal sealed partial class ReactButtons: Grid {
     private readonly Brush borderBrush = new SolidColorBrush(Colors.Transparent);
     private readonly Thickness borderThickness = new(0, 0, 0, 0);
     private readonly Thickness padding = new(4, 4, 4, 4);
-    private readonly IconSize iconSize = IconSize.Size16;
+    private readonly IconSize iconSize = IconSize.Resizable;
 
     public ViewModel.Controls.StatusComponents.ReactButtons ViewModel {
         get;
