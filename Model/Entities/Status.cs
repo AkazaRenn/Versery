@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Model.Enumerations;
 
 namespace Model.Entities;
 public record class Status() {
@@ -9,6 +10,8 @@ public record class Status() {
     public string? ReblogId { get; set; } = null;
     public Uri? Uri { get; set; } = null;
     public string Content { get; set; } = string.Empty;
+    public Visibility Visibility { get; set; } = Visibility.Public;
+    public long RepliesCount { get; set; } = 0;
     public bool? Favourited { get; set; } = null;
     public bool? Reblogged { get; set; } = null;
     public bool? Muted { get; set; } = null;
@@ -26,6 +29,7 @@ public record class Status() {
             ReblogId = serverStatus.Reblog.Id;
         } else {
             Content = serverStatus.Content;
+            RepliesCount = serverStatus.RepliesCount;
             Favourited = serverStatus.Favourited;
             Reblogged = serverStatus.Reblogged;
             Muted = serverStatus.Muted;

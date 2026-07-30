@@ -1,4 +1,4 @@
-﻿namespace Model.Enums; 
+﻿namespace Model.Enumerations; 
 public enum TimelineType {
     Home,
     Federated,

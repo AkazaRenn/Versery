@@ -62,6 +62,8 @@ public sealed partial class Status: ObservableObject {
         PosterInfo.DisplayNameInfo.Emojis = account.Emojis;
         PosterInfo.AccountName = account.AccountName;
 
+        ReactButtons.Visibility = status.Visibility;
+        ReactButtons.RepliesCount = status.RepliesCount;
         ReactButtons.Reblogged = status.Reblogged ?? false;
         ReactButtons.Favourited = status.Favourited ?? false;
         ReactButtons.Bookmarked = status.Bookmarked ?? false;
@@ -83,7 +85,7 @@ public sealed partial class Status: ObservableObject {
     }
 
     public async Task LoadMore() {
-        var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home, Id);
+        var timelines = await client.GetTimelineFromServer(Model.Enumerations.TimelineType.Home, Id);
         FollowedByGap = false;
         MoreLoaded?.Invoke(Index, timelines);
     }

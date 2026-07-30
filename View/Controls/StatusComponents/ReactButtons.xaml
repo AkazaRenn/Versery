@@ -3,20 +3,42 @@
     x:Class="View.Controls.StatusComponents.ReactButtons"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:fluenticons="using:FluentIcons.WinUI"
     ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
-    <Button Grid.Column="0">
-        ABC
+    <Button 
+        Grid.Column="0"
+        Background="Transparent"
+        BorderBrush="Transparent">
+        <fluenticons:FluentIcon
+            Icon="{x:Bind GetReplyIcon(ViewModel.RepliesCount)}"/>
     </Button>
     <Button 
         Grid.Column="2"
-        Content="{x:Bind GetFavouriteButtonIcon(ViewModel.Favourited)}"/>
-    <Button Grid.Column="4">
-        ABC
+        Background="Transparent"
+        BorderBrush="Transparent">
+        <fluenticons:FluentIcon 
+            Icon="{x:Bind GetReblogIcon(ViewModel.Visibility)}"/>
     </Button>
-    <Button Grid.Column="6">
-        ABC
+    <Button 
+        Grid.Column="4"
+        Background="Transparent"
+        BorderBrush="Transparent">
+        <fluenticons:FluentIcon 
+            Icon="Star" 
+            IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.Favourited)}"/>
     </Button>
-    <Button Grid.Column="8">
-        ABC
+    <Button 
+        Grid.Column="6"
+        Background="Transparent"
+        BorderBrush="Transparent">
+        <fluenticons:FluentIcon
+            Icon="Share"/>
+    </Button>
+    <Button 
+        Grid.Column="8"
+        Background="Transparent"
+        BorderBrush="Transparent">
+        <fluenticons:FluentIcon
+            Icon="MoreHorizontal"/>
     </Button>
 </Grid>

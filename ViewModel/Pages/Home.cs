@@ -87,7 +87,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         var statuses = await Task.Run(async () => {
             var timelines = client.GetTimelineFromDatabase();
             if (timelines.Length == 0) {
-                timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+                timelines = await client.GetTimelineFromServer(Model.Enumerations.TimelineType.Home);
             }
             return Controls.Status.FromTimelines(timelines).ToArray();
         });
@@ -99,7 +99,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
 
     public async Task LoadLatestTimelines() {
         var statuses = await Task.Run(async () => {
-            var timelines = await client.GetTimelineFromServer(Model.Enums.TimelineType.Home);
+            var timelines = await client.GetTimelineFromServer(Model.Enumerations.TimelineType.Home);
             return Controls.Status.FromTimelines(timelines).ToArray();
         });
 

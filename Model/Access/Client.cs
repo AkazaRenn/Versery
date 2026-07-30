@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Mastonet;
 using Model.DataPersistence;
-using Model.Enums;
+using Model.Enumerations;
 
 namespace Model.Access;
 public sealed class Client {

@@ -13,7 +13,7 @@
         richtextrenderer:TextWithEmoji.ViewModel="{x:Bind ViewModel.DisplayNameInfo, Mode=OneWay}"/>
     <TextBlock
         FontSize="{x:Bind GetIdFontSize(DisplayNameTextBlock.FontSize)}"
-        Opacity="0.75"
+        Foreground="{ThemeResource TextFillColorSecondary}"
         TextTrimming="CharacterEllipsis"
         IsTextSelectionEnabled="False"
         Text="{x:Bind ViewModel.AccountName, Mode=OneWay}"/>
