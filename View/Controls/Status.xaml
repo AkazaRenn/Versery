@@ -8,7 +8,7 @@
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
     BorderThickness="0 0 0 0.5"
-    Padding="8 8 8 8"
+    Padding="8 8 8 2"
     ColumnDefinitions="Auto, *"
     ColumnSpacing="8"
     RowDefinitions="Auto, Auto, Auto, Auto"
