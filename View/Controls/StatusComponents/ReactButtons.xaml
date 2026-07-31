@@ -7,83 +7,53 @@
     ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
     <Button 
         Grid.Column="0"
-        Height="{x:Bind Height}"
-        Width="{x:Bind Height}"
         Background="{x:Bind background}"
         BorderBrush="{x:Bind borderBrush}"
         BorderThickness="{x:Bind borderThickness}"
         Padding="{x:Bind padding}">
         <fluenticons:FluentIcon
-            Icon="{x:Bind GetReplyIcon(ViewModel.RepliesCount)}"
-            IconSize="{x:Bind iconSize}"/>
+            Icon="{x:Bind GetReplyIcon(ViewModel.HasReplies)}"/>
     </Button>
     <Button 
         Grid.Column="2"
-        Height="{x:Bind Height}"
-        Width="{x:Bind Height}"
         Background="{x:Bind background}"
         BorderBrush="{x:Bind borderBrush}"
         BorderThickness="{x:Bind borderThickness}"
         Padding="{x:Bind padding}">
         <fluenticons:FluentIcon 
-            Icon="{x:Bind GetReblogIcon(ViewModel.Visibility)}"
-            IconSize="{x:Bind iconSize}"
-            RenderTransformOrigin="0.5, 0.5">
-            <fluenticons:FluentIcon.RenderTransform>
-                <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
-            </fluenticons:FluentIcon.RenderTransform>
-        </fluenticons:FluentIcon>
+            Icon="{x:Bind GetReblogIcon(ViewModel.CanBeReblogged)}"/>
     </Button>
     <Button 
         Grid.Column="4"
-        Height="{x:Bind Height}"
-        Width="{x:Bind Height}"
         Background="{x:Bind background}"
         BorderBrush="{x:Bind borderBrush}"
         BorderThickness="{x:Bind borderThickness}"
         Padding="{x:Bind padding}">
         <fluenticons:FluentIcon 
             Icon="Star" 
-            IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.Favourited)}"
-            IconSize="{x:Bind iconSize}"
-            RenderTransformOrigin="0.5, 0.5">
-            <fluenticons:FluentIcon.RenderTransform>
-                <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
-            </fluenticons:FluentIcon.RenderTransform>
-        </fluenticons:FluentIcon>
+            IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.IsFavourited)}"/>
     </Button>
     <Button 
         Grid.Column="6"
-        Height="{x:Bind Height}"
-        Width="{x:Bind Height}"
         Background="{x:Bind background}"
         BorderBrush="{x:Bind borderBrush}"
         BorderThickness="{x:Bind borderThickness}"
         Padding="{x:Bind padding}">
         <fluenticons:FluentIcon
             x:Name="ShareIcon"
-            Icon="Share"
-            IconSize="{x:Bind iconSize}"
-            RenderTransformOrigin="0.5, 1">
-            <fluenticons:FluentIcon.RenderTransform>
-                <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
-            </fluenticons:FluentIcon.RenderTransform>
-        </fluenticons:FluentIcon>
+            Icon="Share"/>
     </Button>
     <Button 
         Grid.Column="8"
-        Height="{x:Bind Height}"
-        Width="{x:Bind Height}"
         Background="{x:Bind background}"
         BorderBrush="{x:Bind borderBrush}"
         BorderThickness="{x:Bind borderThickness}"
         Padding="{x:Bind padding}">
         <fluenticons:FluentIcon
             Icon="MoreHorizontal"
-            IconSize="{x:Bind iconSize}"
             RenderTransformOrigin="0.5, 0.5">
             <fluenticons:FluentIcon.RenderTransform>
-                <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
             </fluenticons:FluentIcon.RenderTransform>
         </fluenticons:FluentIcon>
     </Button>

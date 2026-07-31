@@ -5,14 +5,15 @@ using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Runtime.Caching;
 using View.Interfaces;
 
-namespace View.Controls;
-internal sealed partial class Emoji: FrameworkElement {
+namespace View.Controls.RichTextRenderer;
+internal sealed partial class Emoji: SwapChainPanel {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
     private static readonly MemoryCache imageCache = new(nameof(Emoji));
     private static readonly CacheItemPolicy imageCachePolicy = new() {
@@ -24,6 +25,7 @@ internal sealed partial class Emoji: FrameworkElement {
     private CompositionDrawingSurface? surface;
     private Window? window;
 
+    private bool isLoaded = false;
     private int currentFrame = 0;
     private uint loop = 0;
     private uint maxLoop = 0;
@@ -43,7 +45,7 @@ internal sealed partial class Emoji: FrameworkElement {
 
     public bool ShouldPlay =>
         (gpuFrames.Length > 1) &&
-        IsLoaded &&
+        isLoaded &&
         ((maxLoop == 0) || (loop < maxLoop));
 
     public Emoji() {
@@ -85,7 +87,8 @@ internal sealed partial class Emoji: FrameworkElement {
         Draw();
     }
 
-    private void FrameworkElement_Loaded(object sender, RoutedEventArgs e) {
+    private void SwapChainPanel_Loaded(object sender, RoutedEventArgs e) {
+        isLoaded = true;
         if ((window is null) && (Application.Current is IWindowHelper windowHelper)) {
             if (windowHelper.TryGetWindow(this, out window) && (window is ICompositionGraphicsDeviceProvider provider)) {
                 InitComposition(provider);
@@ -102,13 +105,14 @@ internal sealed partial class Emoji: FrameworkElement {
 
     }
 
-    private void FrameworkElement_Unloaded(object sender, RoutedEventArgs e) {
+    private void SwapChainPanel_Unloaded(object sender, RoutedEventArgs e) {
+        isLoaded = false;
         canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
         Reset();
     }
 
-    private void FrameworkElement_SizeChanged(object sender, SizeChangedEventArgs e) {
+    private void SwapChainPanel_SizeChanged(object sender, SizeChangedEventArgs e) {
         visual?.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
     }
 

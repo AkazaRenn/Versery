@@ -62,11 +62,11 @@ public sealed partial class Status: ObservableObject {
         PosterInfo.DisplayNameInfo.Emojis = account.Emojis;
         PosterInfo.AccountName = account.AccountName;
 
-        ReactButtons.Visibility = status.Visibility;
-        ReactButtons.RepliesCount = status.RepliesCount;
-        ReactButtons.Reblogged = status.Reblogged ?? false;
-        ReactButtons.Favourited = status.Favourited ?? false;
-        ReactButtons.Bookmarked = status.Bookmarked ?? false;
+        ReactButtons.CanBeReblogged = status.Visibility < Model.Enumerations.Visibility.Private;
+        ReactButtons.HasReplies = status.RepliesCount > 0;
+        ReactButtons.IsReblogged = status.Reblogged;
+        ReactButtons.IsFavourited = status.Favourited;
+        ReactButtons.IsBookmarked = status.Bookmarked;
 
         Html.RawText = status.Content;
         Html.Emojis = status.Emojis;

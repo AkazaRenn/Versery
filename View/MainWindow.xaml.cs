@@ -21,6 +21,7 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
 
     public MainWindow() {
         InitializeComponent();
+        InitializeShare();
 
         CompositionGraphicsDevice = CanvasComposition.CreateCompositionGraphicsDevice(Compositor, CanvasDevice.GetSharedDevice());
 

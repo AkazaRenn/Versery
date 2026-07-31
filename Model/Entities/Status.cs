@@ -12,11 +12,11 @@ public record class Status() {
     public string Content { get; set; } = string.Empty;
     public Visibility Visibility { get; set; } = Visibility.Public;
     public long RepliesCount { get; set; } = 0;
-    public bool? Favourited { get; set; } = null;
-    public bool? Reblogged { get; set; } = null;
-    public bool? Muted { get; set; } = null;
-    public bool? Bookmarked { get; set; } = null;
-    public bool? Pinned { get; set; } = null;
+    public bool Favourited { get; set; } = false;
+    public bool Reblogged { get; set; } = false;
+    public bool Muted { get; set; } = false;
+    public bool Bookmarked { get; set; } = false;
+    public bool Pinned { get; set; } = false;
     public Dictionary<string, Uri> Emojis { get; set; } = [];
     public string? RepliedStatusId { get; set; } = null;
     public string? RepliedAccountId { get; set; } = null;
@@ -30,11 +30,11 @@ public record class Status() {
         } else {
             Content = serverStatus.Content;
             RepliesCount = serverStatus.RepliesCount;
-            Favourited = serverStatus.Favourited;
-            Reblogged = serverStatus.Reblogged;
-            Muted = serverStatus.Muted;
-            Bookmarked = serverStatus.Bookmarked;
-            Pinned = serverStatus.Pinned;
+            Favourited = serverStatus.Favourited ?? false;
+            Reblogged = serverStatus.Reblogged ?? false;
+            Muted = serverStatus.Muted ?? false;
+            Bookmarked = serverStatus.Bookmarked ?? false;
+            Pinned = serverStatus.Pinned ?? false;
             if (Uri.TryCreate(serverStatus.Uri, UriKind.Absolute, out var uri)) {
                 Uri = uri;
             }

@@ -11,7 +11,6 @@ internal sealed partial class ReactButtons: Grid {
     private readonly Brush borderBrush = new SolidColorBrush(Colors.Transparent);
     private readonly Thickness borderThickness = new(0, 0, 0, 0);
     private readonly Thickness padding = new(4, 4, 4, 4);
-    private readonly IconSize iconSize = IconSize.Resizable;
 
     public ViewModel.Controls.StatusComponents.ReactButtons ViewModel {
         get;
@@ -27,12 +26,12 @@ internal sealed partial class ReactButtons: Grid {
         InitializeComponent();
     }
 
-    private Icon GetReplyIcon(long repliesCount) {
-        return repliesCount > 0 ? Icon.ArrowReplyAll : Icon.ArrowReply;
+    private Icon GetReplyIcon(bool hasReplies) {
+        return hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
     }
 
-    private Icon GetReblogIcon(Model.Enumerations.Visibility visibility) {
-        return visibility < Model.Enumerations.Visibility.Private ? Icon.ArrowRepeatAll : Icon.LockClosed;
+    private Icon GetReblogIcon(bool canBeReblogged) {
+        return canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
     }
 
     private IconVariant GetFavouriteIconVariant(bool favourited) {

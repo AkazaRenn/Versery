@@ -5,8 +5,8 @@ using Model.Enumerations;
 
 namespace Model.Access;
 public sealed class Client {
+    private static readonly HttpClient httpClient = Services.Get<HttpClient>();
     private readonly ApplicationStates applicationStates = Services.Get<ApplicationStates>();
-    private readonly HttpClient httpClient = Services.Get<HttpClient>();
     private Database.Client? database;
     private MastodonClient? server;
     private Entities.Account? account;

@@ -5,13 +5,13 @@ public sealed partial class ReactButtons: ObservableObject {
     public string StatusId { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial Model.Enumerations.Visibility Visibility { get; set; } = default;
+    public partial bool HasReplies { get; set; } = false;
     [ObservableProperty]
-    public partial long RepliesCount { get; set; } = 0;
+    public partial bool CanBeReblogged { get; set; } = true;
     [ObservableProperty]
-    public partial bool Reblogged { get; set; } = false;
+    public partial bool IsReblogged { get; set; } = false;
     [ObservableProperty]
-    public partial bool Favourited { get; set; } = false;
+    public partial bool IsFavourited { get; set; } = false;
     [ObservableProperty]
-    public partial bool Bookmarked { get; set; } = false;
+    public partial bool IsBookmarked { get; set; } = false;
 }
