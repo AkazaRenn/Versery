@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Model.Enumerations;
+namespace Model.Server.Entities.Enumerations;
 /// <summary>
 /// The contexts in which the filter should be applied.
 /// Version: 4.0.0

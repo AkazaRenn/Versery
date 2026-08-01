@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Model.Enumerations;
+namespace Model.Server.Entities.Enumerations;
 /// <summary>
 /// Represents the types of notifications an account can receive.
 /// Version: 4.6.0

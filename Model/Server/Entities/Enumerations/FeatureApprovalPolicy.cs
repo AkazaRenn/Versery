@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Model.Enumerations;
+namespace Model.Server.Entities.Enumerations;
 
 /// <summary>
 /// Represents the automatic quote approval policy of an account.

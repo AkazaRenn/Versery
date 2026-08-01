@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Model.Enumerations;
+namespace Model.Server.Entities.Enumerations;
 
 /// <summary>
 /// Describes how this account’s feature approval policy applies to the current user.

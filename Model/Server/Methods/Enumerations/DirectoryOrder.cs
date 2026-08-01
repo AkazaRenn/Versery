@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Model.Server.Methods;
+namespace Model.Server.Methods.Enumerations;
 /// <see href="https://docs.joinmastodon.org/methods/directory/#query-parameters">Mastodon API Documentation</see>
 public enum DirectoryOrder {
     /// <summary>

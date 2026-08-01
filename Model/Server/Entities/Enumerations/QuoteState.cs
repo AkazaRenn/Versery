@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Model.Enumerations;
+namespace Model.Server.Entities.Enumerations;
 
 /// <summary>
 /// Represents the state of a quote.

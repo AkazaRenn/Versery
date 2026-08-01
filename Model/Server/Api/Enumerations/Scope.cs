@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Model.Server.Methods;
+namespace Model.Server.Api.Enumerations;
 /// <summary>
 /// Defining what you have permission to do with the API
 /// Version: 4.6.0

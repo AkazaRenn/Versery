@@ -1,4 +1,4 @@
-﻿using Model.Server.Methods;
+﻿using Model.Server.Api.Enumerations;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;

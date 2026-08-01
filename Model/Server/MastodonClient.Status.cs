@@ -1,5 +1,5 @@
-﻿using Model.Enumerations;
-using Model.Server.Entities;
+﻿using Model.Server.Entities;
+using Model.Server.Entities.Enumerations;
 
 
 namespace Model.Server;

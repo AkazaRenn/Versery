@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Model;
 using Model.Access;
+using Model.Enumerations;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -87,7 +88,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         var statuses = await Task.Run(async () => {
             var timelines = client.GetTimelineFromDatabase();
             if (timelines.Length == 0) {
-                timelines = await client.GetTimelineFromServer(Model.Enumerations.TimelineType.Home);
+                timelines = await client.GetTimelineFromServer(TimelineType.Home);
             }
             return Controls.Status.FromTimelines(timelines).ToArray();
         });
@@ -99,7 +100,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
 
     public async Task LoadLatestTimelines() {
         var statuses = await Task.Run(async () => {
-            var timelines = await client.GetTimelineFromServer(Model.Enumerations.TimelineType.Home);
+            var timelines = await client.GetTimelineFromServer(TimelineType.Home);
             return Controls.Status.FromTimelines(timelines).ToArray();
         });
 

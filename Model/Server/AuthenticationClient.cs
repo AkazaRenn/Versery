@@ -1,5 +1,5 @@
-﻿using Model.Server.Entities;
-using Model.Server.Methods;
+﻿using Model.Server.Api.Enumerations;
+using Model.Server.Entities;
 using System.Net;
 
 namespace Model.Server;
@@ -22,8 +22,8 @@ internal class AuthenticationClient: BaseHttpClient {
         return CreateApp(appName, website, redirectUri, scope.AsEnumerable());
     }
 
-    public async Task<CredentialApplication> CreateApp(string appName, string? website = null, string? redirectUri = null, IEnumerable<Scope>? scope = null) {
-        var scopeString = GetScopeParam(scope);
+    public async Task<CredentialApplication> CreateApp(string appName, string? website = null, string? redirectUri = null, IEnumerable<Scope>? scopes = null) {
+        var scopeString = GetScopeParam(scopes);
         var data = new List<KeyValuePair<string, string>>() {
             new("client_name", appName),
             new("scopes", scopeString),
@@ -70,7 +70,7 @@ internal class AuthenticationClient: BaseHttpClient {
             redirectUri = "urn:ietf:wg:oauth:2.0:oob";
         }
 
-        return $"https://{Instance}/oauth/authorize?response_type=code&client_id={AppRegistration.ClientId}&scope={GetScopeParam(AppRegistration.Scopes).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
+        return $"https://{Instance}/oauth/authorize?response_type=code&client_id={AppRegistration.ClientId}&scopes={GetScopeParam(AppRegistration.Scopes).Replace(" ", "%20")}&redirect_uri={redirectUri ?? "urn:ietf:wg:oauth:2.0:oob"}";
     }
 
     /// <summary>
@@ -98,6 +98,7 @@ internal class AuthenticationClient: BaseHttpClient {
             return "";
         }
 
+        scopes = scopes.ToHashSet();
         return String.Join(" ", scopes.Select(s => s.ToString().ToLowerInvariant().Replace("__", ":")));
     }
 

@@ -1,5 +1,5 @@
 ﻿using LiteDB;
-using Model.Enumerations;
+using Model.Server.Entities.Enumerations;
 
 namespace Model.Entities;
 

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 
+namespace Model.Server.Entities;
 /// <summary>
 /// Represents an emoji reaction to an Announcement.
 /// Version: 3.1.0

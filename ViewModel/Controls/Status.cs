@@ -2,6 +2,8 @@
 using Model;
 using Model.Access;
 using Model.Entities;
+using Model.Enumerations;
+using Model.Server.Entities.Enumerations;
 
 namespace ViewModel.Controls;
 
@@ -62,7 +64,7 @@ public sealed partial class Status: ObservableObject {
         PosterInfo.DisplayNameInfo.Emojis = account.Emojis;
         PosterInfo.AccountName = account.AccountName;
 
-        ReactButtons.CanBeReblogged = status.Visibility < Model.Enumerations.StatusVisibility.Private;
+        ReactButtons.CanBeReblogged = status.Visibility < StatusVisibility.Private;
         ReactButtons.HasReplies = status.RepliesCount > 0;
         ReactButtons.IsReblogged = status.Reblogged;
         ReactButtons.IsFavourited = status.Favourited;
@@ -85,7 +87,7 @@ public sealed partial class Status: ObservableObject {
     }
 
     public async Task LoadMore() {
-        var timelines = await client.GetTimelineFromServer(Model.Enumerations.TimelineType.Home, Id);
+        var timelines = await client.GetTimelineFromServer(TimelineType.Home, Id);
         FollowedByGap = false;
         MoreLoaded?.Invoke(Index, timelines);
     }

@@ -1,4 +1,4 @@
-﻿using Model.Enumerations;
+﻿using Model.Server.Entities.Enumerations;
 using System.Globalization;
 using System.Text.Json.Serialization;
 

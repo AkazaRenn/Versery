@@ -87,50 +87,50 @@ public class Announcement {
     public IEnumerable<Reaction> Reactions { get; set; } = [];
 }
 
+/// <summary>
+/// Version: 3.1.0
+/// </summary>
+/// <see href="https://docs.joinmastodon.org/entities/Announcement/#Account">Mastodon API Documentation</see>
+public class AnnouncementAccount {
     /// <summary>
-    /// Version: 3.1.0
+    /// The account ID of the mentioned user.
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/entities/Announcement/#Account">Mastodon API Documentation</see>
-    public class AnnouncementAccount {
-        /// <summary>
-        /// The account ID of the mentioned user.
-        /// </summary>
-        [JsonPropertyName("id")]
-        public string Id { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The username of the mentioned user.
-        /// </summary>
-        [JsonPropertyName("username")]
-        public string UserName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The location of the mentioned user’s profile.
-        /// </summary>
-        [JsonPropertyName("url")]
-        public Uri? Url { get; set; } = null;
-
-        /// <summary>
-        /// The webfinger acct: URI of the mentioned user. Equivalent to username for local users, or username@domain for remote users.
-        /// </summary>
-        [JsonPropertyName("acct")]
-        public string Acct { get; set; } = string.Empty;
-    }
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// Version: 3.1.0
+    /// The username of the mentioned user.
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/entities/Announcement/#Status">Mastodon API Documentation</see>
-    public class AnnouncementStatus {
-        /// <summary>
-        /// The ID of an attached Status in the database.
-        /// </summary>
-        [JsonPropertyName("id")]
-        public string Id { get; set; } = string.Empty;
+    [JsonPropertyName("username")]
+    public string UserName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// The URL of an attached Status.
-        /// </summary>
-        [JsonPropertyName("url")]
-        public Uri? Url { get; set; } = null;
-    }
+    /// <summary>
+    /// The location of the mentioned user’s profile.
+    /// </summary>
+    [JsonPropertyName("url")]
+    public Uri? Url { get; set; } = null;
+
+    /// <summary>
+    /// The webfinger acct: URI of the mentioned user. Equivalent to username for local users, or username@domain for remote users.
+    /// </summary>
+    [JsonPropertyName("acct")]
+    public string Acct { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Version: 3.1.0
+/// </summary>
+/// <see href="https://docs.joinmastodon.org/entities/Announcement/#Status">Mastodon API Documentation</see>
+public class AnnouncementStatus {
+    /// <summary>
+    /// The ID of an attached Status in the database.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The URL of an attached Status.
+    /// </summary>
+    [JsonPropertyName("url")]
+    public Uri? Url { get; set; } = null;
+}

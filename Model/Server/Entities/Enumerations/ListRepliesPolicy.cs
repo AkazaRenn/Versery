@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Model.Enumerations;
+namespace Model.Server.Entities.Enumerations;
 /// <summary>
 /// Version: 3.3.0
 /// </summary>
@@ -22,5 +22,5 @@ public enum ListRepliesPolicy {
     /// Do not show any replies.
     /// </summary>
     [JsonStringEnumMemberName("none")]
-    None
+    None,
 }

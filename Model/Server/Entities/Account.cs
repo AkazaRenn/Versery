@@ -1,4 +1,4 @@
-﻿using Model.Enumerations;
+﻿using Model.Server.Entities.Enumerations;
 using System.Globalization;
 using System.Text.Json.Serialization;
 
@@ -10,7 +10,7 @@ namespace Model.Server.Entities;
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Account/">Mastodon API Documentation</see>
 public class Account: PartialAccountWithAvatar {
-#region Attributes
+    #region Attributes
     /// <summary>
     /// The username of the account, not including domain.
     /// </summary>
@@ -178,7 +178,7 @@ public class Account: PartialAccountWithAvatar {
     /// </summary>
     [JsonPropertyName("feature_approval")]
     public FeatureApproval FeatureApproval { get; set; } = new();
-#endregion
+    #endregion
 
     /// <summary>
     /// An extra entity to be used with API methods to verify credentials and update credentials.
@@ -287,7 +287,7 @@ public class CredentialAccount {
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Account/#PartialAccountWithAvatar">Mastodon API Documentation</see>
-public class PartialAccountWithAvatar{
+public class PartialAccountWithAvatar {
     /// <summary>
     /// The account id.
     /// </summary>

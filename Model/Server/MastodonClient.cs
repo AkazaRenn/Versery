@@ -1,8 +1,8 @@
-﻿using Model.Enumerations;
-using Model.Server.Entities;
+﻿using Model.Server.Entities;
+using Model.Server.Entities.Enumerations;
 using Model.Server.Methods;
+using Model.Server.Methods.Enumerations;
 using System.Text.Json;
-using Windows.Foundation.Collections;
 
 namespace Model.Server;
 

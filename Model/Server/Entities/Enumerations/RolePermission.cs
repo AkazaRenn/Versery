@@ -1,6 +1,4 @@
-using System;
-
-namespace Model.Enumerations;
+namespace Model.Server.Entities.Enumerations;
 /// <summary>
 /// To determine the permissions available to a certain role, convert the permissions attribute to binary and compare from the least significant bit upwards. For convenience (and to prevent the terms from growing too long), permissions will be presented below using hexadecimal values.
 /// Version: 4.0.0
