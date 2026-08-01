@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace ViewModel.Controls.StatusComponents; 
+namespace ViewModel.Controls.StatusComponents;
+
 public sealed partial class ReactButtons: ObservableObject {
     public string StatusId { get; set; } = string.Empty;
 

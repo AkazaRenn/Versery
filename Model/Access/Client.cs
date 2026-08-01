@@ -1,14 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using Mastonet;
 using Model.DataPersistence;
 using Model.Enumerations;
+using Model.Server;
 
 namespace Model.Access;
+
 public sealed class Client {
     private static readonly HttpClient httpClient = Services.Get<HttpClient>();
     private readonly ApplicationStates applicationStates = Services.Get<ApplicationStates>();
     private Database.Client? database;
-    private MastodonClient? server;
+    private Server.Client? server;
     private Entities.Account? account;
 
     public bool SignedIn => server is not null && database is not null;
@@ -30,12 +31,12 @@ public sealed class Client {
         }
 
         var instance = split.Last();
-        server = new(instance, token, httpClient);
+        server = new(instance, token);
         database = new(user, instance);
     }
 
     internal async Task NewUser(string instance, string accessToken) {
-        server = new(instance, accessToken, httpClient);
+        server = new(instance, accessToken);
         var serverAccount = await server.GetCurrentUser();
         var username = serverAccount.UserName;
         database = new Database.Client(serverAccount.UserName, instance);

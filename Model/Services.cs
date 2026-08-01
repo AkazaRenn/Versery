@@ -5,6 +5,7 @@ using Model.DataPersistence;
 using Windows.Storage;
 
 namespace Model;
+
 public static class Services {
     public static void Configure(IServiceCollection services) {
         services.AddSingleton<HttpClient>();

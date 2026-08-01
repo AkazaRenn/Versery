@@ -1,5 +1,6 @@
 ﻿
 namespace Model.Database;
+
 internal sealed class Client {
     private Account Account { get; }
     private Status Status { get; }
@@ -29,7 +30,7 @@ internal sealed class Client {
         return timelines;
     }
 
-    public void AddTimeline(IEnumerable<Mastonet.Entities.Status> serverStatuses, string? afterId = null) {
+    public void AddTimeline(IEnumerable<Model.Server.Entities.Status> serverStatuses, string? afterId = null) {
         serverStatuses = serverStatuses.ToCollection();
 
         var dbTimeline = new List<Entities.Timeline>(serverStatuses.Count() + 1);
@@ -54,7 +55,7 @@ internal sealed class Client {
         return Account.Get(id);
     }
 
-    public Entities.Account AddAccount(Mastonet.Entities.Account serverAccount) {
+    public Entities.Account AddAccount(Model.Server.Entities.Account serverAccount) {
         var account = new Entities.Account(serverAccount);
         Account.Add(account);
         return account;

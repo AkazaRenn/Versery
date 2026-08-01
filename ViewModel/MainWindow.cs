@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Model;
 
-namespace ViewModel; 
+namespace ViewModel;
+
 public sealed partial class MainWindow: IRecipient<Messages.SignInRequested>, IRecipient<Messages.SignInCompleted> {
     public event Action<Enumerations.Page, string?>? NavigationRequested;
 

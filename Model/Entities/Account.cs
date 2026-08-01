@@ -1,6 +1,7 @@
 ﻿using LiteDB;
 
 namespace Model.Entities;
+
 public record class Account() {
     [BsonId]
     public string Id { get; set; } = string.Empty;
@@ -9,22 +10,20 @@ public record class Account() {
     public Uri? Avatar { get; set; } = null;
     public Dictionary<string, Uri> Emojis { get; set; } = [];
 
-    internal Account(Mastonet.Entities.Account serverAccount): this() {
+    internal Account(Model.Server.Entities.Account serverAccount) : this() {
         Id = serverAccount.Id;
-        AccountName = serverAccount.AccountName;
+        AccountName = serverAccount.Acct;
         DisplayName = serverAccount.DisplayName;
+        Avatar = serverAccount.Avatar;
 
-        if (Uri.TryCreate(serverAccount.AvatarUrl, UriKind.Absolute, out var avatarUri)) {
-            Avatar = avatarUri;
-        }
         foreach (var emoji in serverAccount.Emojis) {
-            if (Uri.TryCreate(emoji.Url, UriKind.Absolute, out var emojiUri)) {
-                Emojis[emoji.Shortcode] = emojiUri;
+            if (emoji.Url is not null) {
+                Emojis[emoji.Shortcode] = emoji.Url;
             }
         }
     }
 
-    internal static IEnumerable<Account> FromServer(IEnumerable<Mastonet.Entities.Account> serverAccounts) {
+    internal static IEnumerable<Account> FromServer(IEnumerable<Model.Server.Entities.Account> serverAccounts) {
         foreach (var serverAccount in serverAccounts) {
             yield return new Account(serverAccount);
         }

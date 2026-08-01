@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using View.Interfaces;
 
 namespace View.Pages;
+
 internal sealed partial class Home: Page, INavigationPage {
     private readonly ViewModel.Pages.Home viewModel = new();
 

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Concurrent;
-using System.Security.Cryptography;
-using System.Text;
 using Windows.Storage;
 
 namespace Model.Access;
+
 public sealed class Cache {
     private static readonly StorageFolder cacheFolder = ApplicationData.Current.TemporaryFolder;
     private static readonly HttpClient httpClient = Services.Get<HttpClient>();

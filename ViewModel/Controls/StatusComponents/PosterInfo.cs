@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ViewModel.Controls.RichTextRenderer;
 
-namespace ViewModel.Controls.StatusComponents; 
+namespace ViewModel.Controls.StatusComponents;
+
 public sealed partial class PosterInfo: ObservableObject {
     public string AccountId { get; set; } = string.Empty;
 

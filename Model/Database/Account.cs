@@ -1,6 +1,7 @@
 ﻿using LiteDB;
 
 namespace Model.Database;
+
 internal class Account(string hash) {
     private readonly ILiteCollection<Entities.Account> db = Services.Get<LiteDatabase>().GetCollection<Entities.Account>($"instance_{hash}_accounts");
     private readonly Dictionary<string, Entities.Account> cache = [];

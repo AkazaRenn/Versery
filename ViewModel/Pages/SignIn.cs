@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Model.Access;
 
 namespace ViewModel.Pages;
-public sealed partial class SignIn : ObservableObject {
+
+public sealed partial class SignIn: ObservableObject {
     [ObservableProperty]
     public partial string Instance { set; get; } = string.Empty;
     [ObservableProperty]

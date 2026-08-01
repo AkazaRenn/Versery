@@ -13,6 +13,7 @@ using System.Runtime.Caching;
 using View.Interfaces;
 
 namespace View.Controls.RichTextRenderer;
+
 internal sealed partial class Emoji: SwapChainPanel {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
     private static readonly MemoryCache imageCache = new(nameof(Emoji));

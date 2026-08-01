@@ -1,7 +1,7 @@
 using Microsoft.UI.Composition;
 
 namespace View.Interfaces;
-public interface ICompositionGraphicsDeviceProvider
-{
+
+public interface ICompositionGraphicsDeviceProvider {
     CompositionGraphicsDevice CompositionGraphicsDevice { get; }
 }

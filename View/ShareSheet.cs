@@ -45,7 +45,7 @@ public sealed partial class MainWindow // WinUI 3 Window, WPF Window, or WinForm
         void handler(DataTransferManager sender, DataRequestedEventArgs args) {
             args.Request.Data = data;
         }
-        
+
         if (_dtm is not null) {
             _dtm.DataRequested += handler;
             ShowShareUI();

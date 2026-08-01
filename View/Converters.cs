@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 
-namespace View; 
+namespace View;
+
 internal static class Converters {
     public static bool NullableObjectToBoolReversed(object? value) {
         return value != null;

@@ -34,6 +34,6 @@ internal sealed partial class SignIn: Page, INavigationPage {
     }
 
     private void WebView_Loaded(object sender, RoutedEventArgs e) {
-        ProgressBar.Visibility= Visibility.Collapsed;
+        ProgressBar.Visibility = Visibility.Collapsed;
     }
 }

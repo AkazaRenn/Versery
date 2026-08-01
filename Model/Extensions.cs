@@ -1,27 +1,30 @@
 ﻿using LiteDB;
-using Mastonet;
-using Mastonet.Entities;
+using Model.Server.Entities;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Model; 
+namespace Model;
+
 public static class Extensions {
-    extension(MastodonClient mastodonClient) {
+    extension(Server.Client client) {
         public async Task<string> GetFullUserId() {
-            var account = await mastodonClient.GetCurrentUser();
-            var instance = await mastodonClient.GetInstanceV2();
+            var account = await client.GetCurrentUser();
+            var instance = await client.GetInstance();
             return $"{account.UserName}@{instance.Domain}";
         }
     }
 
-    extension(IEnumerable<Status> statuses) {
+    extension(IEnumerable<Status> serverStatuses) {
         public IEnumerable<Status> Flattened {
             get {
-                foreach (var status in statuses) {
+                foreach (var status in serverStatuses) {
                     yield return status;
                     if (status.Reblog is not null) {
                         yield return status.Reblog;
+                    }
+                    if (status.Quote?.QuotedStatus is not null) {
+                        yield return status.Quote.QuotedStatus;
                     }
                 }
             }

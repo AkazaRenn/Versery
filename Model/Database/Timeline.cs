@@ -1,6 +1,7 @@
 ﻿using LiteDB;
 
 namespace Model.Database;
+
 internal sealed class Timeline {
     private readonly ILiteCollection<Entities.Timeline> db;
     private readonly HashSet<string> accessedTimeline = [];

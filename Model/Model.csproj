@@ -5,7 +5,6 @@
   <ItemGroup>
     <PackageReference Include="FluentSettings.Generator" />
     <PackageReference Include="LiteDB" />
-    <PackageReference Include="Mastonet" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
   </ItemGroup>
 </Project>

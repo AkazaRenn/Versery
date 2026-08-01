@@ -1,12 +1,12 @@
-﻿using Mastonet;
-using Mastonet.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Model.Access;
-using Model.DataPersistence;
+﻿using Model.DataPersistence;
+using Model.Server;
+using Model.Server.Entities;
+using Model.Server.Methods;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Model.Access;
+
 public sealed partial class Authentication(string instance) {
     private static readonly Regex oAuthRegex = OAuthRegex();
 
@@ -16,17 +16,17 @@ public sealed partial class Authentication(string instance) {
     public async Task<string> OAuthUrl() {
         var appRegistrationJson = Credentials.GetAppRegistration(authenticationClient.Instance);
         if (!string.IsNullOrWhiteSpace(appRegistrationJson)) {
-            var appRegistration = JsonSerializer.Deserialize<AppRegistration>(appRegistrationJson);
+            var appRegistration = JsonSerializer.Deserialize<CredentialApplication>(appRegistrationJson);
             if (appRegistration is not null) {
                 authenticationClient.AppRegistration = appRegistration;
                 return authenticationClient.OAuthUrl();
             }
         }
 
-        var newAppRegistration = await authenticationClient.CreateApp(Constants.AppName, Constants.ProjectLink, null, GranularScope.Read, GranularScope.Write, GranularScope.Follow);
+        var newAppRegistration = await authenticationClient.CreateApp(Constants.AppName, Constants.ProjectLink, null, Scope.Read, Scope.Write, Scope.Follow);
         Credentials.AddAppRegistration(authenticationClient.Instance, JsonSerializer.Serialize(newAppRegistration));
         return authenticationClient.OAuthUrl();
-}
+    }
 
     public async Task CheckSignInUrl(string url) {
         var match = oAuthRegex.Match(url);

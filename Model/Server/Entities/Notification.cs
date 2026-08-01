@@ -1,0 +1,48 @@
+﻿using System.Text.Json.Serialization;
+
+namespace Model.Server.Entities;
+/// <summary>
+/// Represents a notification of an event relevant to the user.
+/// Version: 4.6.0
+/// </summary>
+/// <see href="https://docs.joinmastodon.org/entities/Notification/">Mastodon API Documentation</see>
+public class Notification {
+    /// <summary>
+    /// The id of the notification in the database.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The type of event that resulted in the notification. One of:
+    /// follow = Someone followed you
+    /// follow_request = Someone requested to follow you
+    /// mention = Someone mentioned you in their status
+    /// reblog = Someone boosted one of your statuses
+    /// favourite = Someone favourited one of your statuses
+    /// poll = A poll you have voted in or created has ended
+    /// status = Someone you enabled notifications for has posted a status
+    /// </summary>
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
+
+
+
+    /// <summary>
+    /// The timestamp of the notification.
+    /// </summary>
+    [JsonPropertyName("created_at")]
+    public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// The account that performed the action that generated the notification.
+    /// </summary>
+    [JsonPropertyName("account")]
+    public Account Account { get; set; } = new Account();
+
+    /// <summary>
+    /// Status that was the object of the notification, e.g. in mentions, reblogs, favourites, or polls.
+    /// </summary>
+    [JsonPropertyName("status")]
+    public Status? Status { get; set; }
+}

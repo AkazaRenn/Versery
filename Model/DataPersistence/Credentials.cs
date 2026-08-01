@@ -1,6 +1,7 @@
 ﻿using Windows.Security.Credentials;
 
-namespace Model.DataPersistence; 
+namespace Model.DataPersistence;
+
 internal static class Credentials {
     private static readonly string resourceName = Constants.PackageName;
 

@@ -5,6 +5,7 @@ using Model;
 using Model.Access;
 
 namespace ViewModel.Controls;
+
 public sealed partial class UserProfileButton: ObservableObject, IRecipient<Messages.SignInCompleted> {
     private readonly Client client = Model.Services.Get<Client>();
 

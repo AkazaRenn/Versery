@@ -2,6 +2,7 @@
 using Model.Enumerations;
 
 namespace Model.Entities;
+
 public record class Status() {
     [BsonId]
     public string Id { get; set; } = string.Empty;
@@ -10,7 +11,7 @@ public record class Status() {
     public string? ReblogId { get; set; } = null;
     public Uri? Uri { get; set; } = null;
     public string Content { get; set; } = string.Empty;
-    public Visibility Visibility { get; set; } = Visibility.Public;
+    public StatusVisibility Visibility { get; set; } = StatusVisibility.Public;
     public long RepliesCount { get; set; } = 0;
     public bool Favourited { get; set; } = false;
     public bool Reblogged { get; set; } = false;
@@ -21,7 +22,7 @@ public record class Status() {
     public string? RepliedStatusId { get; set; } = null;
     public string? RepliedAccountId { get; set; } = null;
 
-    internal Status(Mastonet.Entities.Status serverStatus): this() {
+    internal Status(Model.Server.Entities.Status serverStatus) : this() {
         Id = serverStatus.Id;
         AccountId = serverStatus.Account.Id;
         CreatedAt = serverStatus.CreatedAt;
@@ -35,18 +36,16 @@ public record class Status() {
             Muted = serverStatus.Muted ?? false;
             Bookmarked = serverStatus.Bookmarked ?? false;
             Pinned = serverStatus.Pinned ?? false;
-            if (Uri.TryCreate(serverStatus.Uri, UriKind.Absolute, out var uri)) {
-                Uri = uri;
-            }
+            Uri = serverStatus.Uri;
             foreach (var emoji in serverStatus.Emojis) {
-                if (Uri.TryCreate(emoji.Url, UriKind.Absolute, out var emojiUri)) {
-                    Emojis[emoji.Shortcode] = emojiUri;
+                if (emoji.Url is not null) {
+                    Emojis[emoji.Shortcode] = emoji.Url;
                 }
             }
         }
     }
 
-    internal static IEnumerable<Status> FromServer(IEnumerable<Mastonet.Entities.Status> serverStatuses) {
+    internal static IEnumerable<Status> FromServer(IEnumerable<Model.Server.Entities.Status> serverStatuses) {
         foreach (var serverStatus in serverStatuses) {
             yield return new Status(serverStatus);
         }

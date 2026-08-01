@@ -6,13 +6,14 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using View.Interfaces;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
 using WinUIEx;
-using View.Interfaces;
 
 namespace View;
+
 public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProvider {
     private NavigationViewItemBase? activeNavigationItem = null;
     private readonly ViewModel.MainWindow viewModel = new();
@@ -126,12 +127,12 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
 
     private void ViewModel_NavigationRequested(ViewModel.Enumerations.Page page, string? obj) {
         switch (page) {
-            case ViewModel.Enumerations.Page.Home:
-                Frame.Navigate(typeof(Pages.Home));
-                break;
-            case ViewModel.Enumerations.Page.SignIn:
-                Frame.Navigate(typeof(Pages.SignIn));
-                break;
+        case ViewModel.Enumerations.Page.Home:
+            Frame.Navigate(typeof(Pages.Home));
+            break;
+        case ViewModel.Enumerations.Page.SignIn:
+            Frame.Navigate(typeof(Pages.SignIn));
+            break;
         }
     }
 }

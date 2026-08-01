@@ -1,7 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using Windows.Storage;
 
-namespace Model.DataPersistence; 
+namespace Model.DataPersistence;
+
 public class ApplicationStates {
     private ApplicationDataContainer Container => ApplicationData.Current.LocalSettings.CreateContainer(GetType().FullName, ApplicationDataCreateDisposition.Always);
 
