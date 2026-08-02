@@ -3,57 +3,29 @@ using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
 
-/// <summary>
-/// Represents a file or media attachment that can be added to a status.
-/// Version: 3.5.0
-/// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/MediaAttachment/">Mastodon API Documentation</see>
 public sealed class MediaAttachment {
-    /// <summary>
-    /// The ID of the attachment in the database.
-    /// </summary>
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
-    /// <summary>
-    /// The type of the attachment.
-    /// </summary>
     [JsonPropertyName("type")]
     public MediaAttachmentType Type { get; set; } = MediaAttachmentType.Unknown;
 
-    /// <summary>
-    /// The location of the original full-size attachment. Url may be null if the file is still being processed. See POST /api/v2/media.
-    /// </summary>
     [JsonPropertyName("url")]
     public Uri? Url { get; set; } = null;
 
-    /// <summary>
-    /// The location of a scaled-down preview of the attachment.
-    /// </summary>
     [JsonPropertyName("preview_url")]
     public Uri? PreviewUrl { get; set; } = null;
 
-    /// <summary>
-    /// The location of the full-size original attachment on the remote website.
-    /// </summary>
     [JsonPropertyName("remote_url")]
     public Uri? RemoteUrl { get; set; } = null;
 
-    /// <summary>
-    /// Metadata returned by Paperclip.
-    /// </summary>
     [JsonPropertyName("meta")]
     public MediaAttachmentMeta? Meta { get; set; } = null;
 
-    /// <summary>
-    /// Alternate text that describes what is in the media attachment, to be used for the visually impaired or when media attachments do not load.
-    /// </summary>
     [JsonPropertyName("description")]
     public string? Description { get; set; } = null;
 
-    /// <summary>
-    /// A hash computed by the BlurHash algorithm, for generating colorful preview thumbnails when media has not been downloaded yet.
-    /// </summary>
     [JsonPropertyName("blurhash")]
     public string? BlurHash { get; set; } = null;
 }

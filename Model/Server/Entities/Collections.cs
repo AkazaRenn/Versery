@@ -2,8 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
 
-/// <summary>
-/// Version: 4.6.0
 /// <see href="https://docs.joinmastodon.org/entities/Collection/#Collections">Mastodon API Documentation</see>
 public sealed class Collections {
     /// <summary>

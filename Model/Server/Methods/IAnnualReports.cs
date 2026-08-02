@@ -1,5 +1,5 @@
-using Refit;
 using Model.Server.Entities;
+using Refit;
 
 namespace Model.Server.Methods;
 

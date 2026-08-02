@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 namespace Model.Server;
+
 [JsonSerializable(typeof(Entities.AccountWarning))]
 [JsonSerializable(typeof(Entities.Account))]
 [JsonSerializable(typeof(Entities.Appeal))]

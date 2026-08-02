@@ -1,5 +1,4 @@
 using Refit;
-using System.Net.Http;
 
 namespace Model.Server.Methods;
 
