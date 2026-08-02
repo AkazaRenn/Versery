@@ -1,5 +1,8 @@
 using Model.Server.Entities;
+using Raiqub.Generators.EnumUtilities;
 using Refit;
+using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace Model.Server.Methods;
 
@@ -17,7 +20,7 @@ public interface IAccounts {
         [AliasAs("agreement")] bool agreement,
         [AliasAs("locale")] string locale,
         [AliasAs("reason")] string? reason = null,
-        [AliasAs("date_of_birth")] string? dateOfBirth = null);
+        [AliasAs("date_of_birth")] DateOnly? dateOfBirth = null);
 
     /// <summary>
     /// Version: 3.3.0
@@ -170,7 +173,7 @@ public interface IAccounts {
         string id,
         [AliasAs("reblogs")] bool? reblogs = null,
         [AliasAs("notify")] bool? notify = null,
-        [AliasAs("languages[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? languages = null);
+        [AliasAs("languages[]")][Query(CollectionFormat.Multi)] IEnumerable<CultureInfo>? languages = null);
 
     /// <summary>
     /// Version: 3.5.0
@@ -235,7 +238,6 @@ public interface IAccounts {
     /// Version: 4.6.1
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/accounts/#update_credentials"/>
-    // Commented out due to lack of AoT support
     [Multipart]
     [Patch("/api/v1/accounts/update_credentials")]
     Task<Account> UpdateCredentials(
@@ -269,4 +271,16 @@ public interface IAccounts {
         [AliasAs("offset")] int? offset = null,
         [AliasAs("resolve")] bool? resolve = null,
         [AliasAs("following")] bool? following = null);
+}
+
+[JsonConverterGenerator]
+public enum UpdateCredentialsSourcePrivacy {
+    [JsonStringEnumMemberName("public")]
+    Public,
+
+    [JsonStringEnumMemberName("unlisted")]
+    Unlisted,
+
+    [JsonStringEnumMemberName("private")]
+    Private
 }

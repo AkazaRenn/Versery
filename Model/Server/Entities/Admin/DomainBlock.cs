@@ -1,3 +1,4 @@
+using Raiqub.Generators.EnumUtilities;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities.Admin;
@@ -75,6 +76,7 @@ public sealed class DomainBlock {
     public bool Obfuscate { get; set; } = false;
 }
 
+[JsonConverterGenerator]
 public enum DomainBlockSeverity {
     [JsonStringEnumMemberName("silence")]
     Silence,

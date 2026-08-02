@@ -1,12 +1,12 @@
 ﻿using Model.Server.Methods;
 using Refit;
-using System.Text.Json;
 
 namespace Model.Server;
 
 public class Client {
     private readonly RefitSettings settings = new() {
-        ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options)
+        ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options),
+        UrlParameterFormatter = new UrlParameterFormatter()
     };
     private readonly HttpClient apiHttpClient;
 

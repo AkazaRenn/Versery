@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Raiqub.Generators.EnumUtilities;
+using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
 /// <see href="https://docs.joinmastodon.org/entities/Notification/">Mastodon API Documentation</see>
@@ -15,7 +16,7 @@ public sealed class Notification {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Notification/#type"/>
     [JsonPropertyName("type")]
-    public NotificationType Type { get; set; } = NotificationType.Unknown;
+    public NotificationType Type { get; set; } = NotificationType.Mention;
 
     /// <summary>
     /// Version: 4.3.0
@@ -81,9 +82,8 @@ public sealed class Notification {
     public Collection? Collection { get; set; } = null;
 }
 
+[JsonConverterGenerator]
 public enum NotificationType {
-    Unknown,
-
     [JsonStringEnumMemberName("mention")]
     Mention,
 

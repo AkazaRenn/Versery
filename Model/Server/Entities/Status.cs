@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Raiqub.Generators.EnumUtilities;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
@@ -280,6 +281,7 @@ public sealed class Status {
     public List<Collection> TaggedCollections { get; set; } = [];
 }
 
+[JsonConverterGenerator]
 public enum StatusVisibility {
     [JsonStringEnumMemberName("public")]
     Public,

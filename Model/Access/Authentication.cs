@@ -29,7 +29,7 @@ public sealed partial class Authentication(string instance) {
                 code,
                 appRegistration.ClientId,
                 appRegistration.ClientSecret,
-                "urn:ietf:wg:oauth:2.0:oob"
+                new Uri("urn:ietf:wg:oauth:2.0:oob")
             );
             await client.NewUser(instance, auth.AccessToken);
         }
@@ -63,19 +63,18 @@ public sealed partial class Authentication(string instance) {
     }
 
     private static string FormatScopes(IEnumerable<Scope> scopes) {
-        var normalizedScopes = scopes.ToHashSet();
-        return string.Join(" ", normalizedScopes.Select(s => s.ToString().ToLowerInvariant().Replace("__", ":")));
+        return string.Join(" ", scopes.Select(s => s.ToJsonString()));
     }
 
-    private static string BuildOAuthUrl(string instance, CredentialApplication appRegistration, string redirectUri = "urn:ietf:wg:oauth:2.0:oob") {
+    private static string BuildOAuthUrl(string instance, CredentialApplication credentialApplication, string redirectUri = "urn:ietf:wg:oauth:2.0:oob") {
         if (string.IsNullOrWhiteSpace(instance)) {
             throw new InvalidOperationException("The instance must be set before you can connect");
         }
 
         var queryParameters = new Dictionary<string, string> {
             ["response_type"] = "code",
-            ["client_id"] = appRegistration.ClientId,
-            ["scope"] = string.Join(" ", appRegistration.Scopes),
+            ["client_id"] = credentialApplication.ClientId,
+            ["scope"] = string.Join(" ", credentialApplication.Scopes),
             ["redirect_uri"] = redirectUri
         };
 

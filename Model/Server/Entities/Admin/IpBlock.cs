@@ -1,3 +1,4 @@
+using Raiqub.Generators.EnumUtilities;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities.Admin;
@@ -47,6 +48,7 @@ public sealed class IpBlock {
     public DateTime? ExpiresAt { get; set; } = null;
 }
 
+[JsonConverterGenerator]
 public enum IpBlockSeverity {
     [JsonStringEnumMemberName("sign_up_requires_approval")]
     SignUpRequiresApproval,

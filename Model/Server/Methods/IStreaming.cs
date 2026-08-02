@@ -1,4 +1,6 @@
+using Raiqub.Generators.EnumUtilities;
 using Refit;
+using System.Text.Json.Serialization;
 
 namespace Model.Server.Methods;
 
@@ -11,10 +13,10 @@ public interface IStreaming {
     [Get("/api/v1/streaming")]
     Task<HttpResponseMessage> Websocket(
         [AliasAs("access_token")] string? accessToken = null,
-        [AliasAs("stream")] string? stream = null,
+        [AliasAs("stream")] StreamingStream? stream = null,
         [AliasAs("list")] string? list = null,
         [AliasAs("tag")] string? tag = null,
-        [AliasAs("type")] string? type = null);
+        [AliasAs("type")] StreamingType? type = null);
 
     /// <summary>
     /// Version: 3.5.0
@@ -85,4 +87,89 @@ public interface IStreaming {
     /// <seealso href="https://docs.joinmastodon.org/methods/streaming/#health"/>
     [Get("/api/v1/streaming/health")]
     Task<string> Health();
+}
+
+[JsonConverterGenerator]
+/// <see href="https://docs.joinmastodon.org/methods/streaming/#stream">Mastodon API Documentation</see>
+public enum StreamingStream {
+    /// <summary>
+    /// Version: 1.0.0
+    /// </summary>
+    [JsonStringEnumMemberName("public")]
+    Public,
+
+    /// <summary>
+    /// Version: 2.4.0
+    /// </summary>
+    [JsonStringEnumMemberName("public:media")]
+    PublicMedia,
+
+    /// <summary>
+    /// Version: 1.1.0
+    /// </summary>
+    [JsonStringEnumMemberName("public:local")]
+    PublicLocal,
+
+    /// <summary>
+    /// Version: 2.4.0
+    /// </summary>
+    [JsonStringEnumMemberName("public:local:media")]
+    PublicLocalMedia,
+
+    /// <summary>
+    /// Version: 3.1.4
+    /// </summary>
+    [JsonStringEnumMemberName("public:remote")]
+    PublicRemote,
+
+    /// <summary>
+    /// Version: 3.1.4
+    /// </summary>
+    [JsonStringEnumMemberName("public:remote:media")]
+    PublicRemoteMedia,
+
+    /// <summary>
+    /// Version: 1.0.0
+    /// </summary>
+    [JsonStringEnumMemberName("hashtag")]
+    Hashtag,
+
+    /// <summary>
+    /// Version: 1.1.0
+    /// </summary>
+    [JsonStringEnumMemberName("hashtag:local")]
+    HashtagLocal,
+
+    /// <summary>
+    /// Version: 1.0.0
+    /// </summary>
+    [JsonStringEnumMemberName("user")]
+    User,
+
+    /// <summary>
+    /// Version: 1.4.2
+    /// </summary>
+    [JsonStringEnumMemberName("user:notification")]
+    UserNotification,
+
+    /// <summary>
+    /// Version: 2.1.0
+    /// </summary>
+    [JsonStringEnumMemberName("list")]
+    List,
+
+    /// <summary>
+    /// Version: 2.4.0
+    /// </summary>
+    [JsonStringEnumMemberName("direct")]
+    Direct,
+}
+
+[JsonConverterGenerator]
+public enum StreamingType {
+    [JsonStringEnumMemberName("subscribe")]
+    Subscribe,
+
+    [JsonStringEnumMemberName("unsubscribe")]
+    Unsubscribe,
 }

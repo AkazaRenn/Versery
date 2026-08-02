@@ -1,3 +1,4 @@
+using Raiqub.Generators.EnumUtilities;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
@@ -63,8 +64,7 @@ public sealed class NotificationPolicySummary {
     public int PendingNotificationsCount { get; set; } = 0;
 }
 
-
-
+[JsonConverterGenerator]
 public enum NotificationPolicyFilter {
     [JsonStringEnumMemberName("accept")]
     Accept,

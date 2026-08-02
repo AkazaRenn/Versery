@@ -1,5 +1,6 @@
 using Model.Server.Entities;
 using Refit;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Methods;
@@ -13,13 +14,13 @@ public interface IOAuth {
     Task<string> Authorize(
         [AliasAs("response_type")] string responseType,
         [AliasAs("client_id")] string clientId,
-        [AliasAs("redirect_uri")] string redirectUri,
+        [AliasAs("redirect_uri")] Uri redirectUri,
         [AliasAs("scope")] string? scope = null,
         [AliasAs("state")] string? state = null,
         [AliasAs("code_challenge")] string? codeChallenge = null,
         [AliasAs("code_challenge_method")] string? codeChallengeMethod = null,
         [AliasAs("force_login")] bool? forceLogin = null,
-        [AliasAs("lang")] string? lang = null
+        [AliasAs("lang")] CultureInfo? lang = null
     );
 
     /// <summary>
@@ -32,7 +33,7 @@ public interface IOAuth {
         [AliasAs("code")] string code,
         [AliasAs("client_id")] string clientId,
         [AliasAs("client_secret")] string clientSecret,
-        [AliasAs("redirect_uri")] string redirectUri,
+        [AliasAs("redirect_uri")] Uri redirectUri,
         [AliasAs("code_verifier")] string? codeVerifier = null,
         [AliasAs("scope")] string? scope = null
     );

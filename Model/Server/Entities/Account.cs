@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Raiqub.Generators.EnumUtilities;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
@@ -411,6 +412,7 @@ public sealed class AccountField {
     public DateTime? VerifiedAt { get; set; }
 }
 
+[JsonConverterGenerator]
 public enum QuotePolicy {
     [JsonStringEnumMemberName("public")]
     Public,

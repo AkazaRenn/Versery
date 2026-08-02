@@ -1,4 +1,5 @@
 using Model.Server.Entities.Admin;
+using Raiqub.Generators.EnumUtilities;
 using Refit;
 using System.Text.Json.Serialization;
 
@@ -122,6 +123,7 @@ public interface IAccounts {
     Task<Account> Unsensitive(string id);
 }
 
+[JsonConverterGenerator]
 public enum AccountsOrigin {
     [JsonStringEnumMemberName("local")]
     Local,
@@ -130,6 +132,7 @@ public enum AccountsOrigin {
     Remote
 }
 
+[JsonConverterGenerator]
 public enum AccountsStatus {
     [JsonStringEnumMemberName("active")]
     Active,
@@ -147,11 +150,13 @@ public enum AccountsStatus {
     Suspended
 }
 
+[JsonConverterGenerator]
 public enum AccountsPermissions {
     [JsonStringEnumMemberName("staff")]
     Staff
 }
 
+[JsonConverterGenerator]
 public enum AccountActionType {
     [JsonStringEnumMemberName("none")]
     None,

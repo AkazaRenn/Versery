@@ -5,7 +5,8 @@ namespace Model.Server;
 
 internal class AuthenticationClient {
     private static readonly RefitSettings settings = new() {
-        ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options)
+        ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options),
+        UrlParameterFormatter = new UrlParameterFormatter()
     };
     private readonly HttpClient httpClient = Services.Get<HttpClient>();
 

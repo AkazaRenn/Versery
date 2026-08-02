@@ -1,5 +1,6 @@
 using Model.Server.Entities;
 using Refit;
+using System.Globalization;
 
 namespace Model.Server.Methods;
 
@@ -13,7 +14,7 @@ public interface ICollections {
     Task<WrappedCollection> Create(
         [AliasAs("name")] string name,
         [AliasAs("description")] string? description = null,
-        [AliasAs("language")] string? language = null,
+        [AliasAs("language")] CultureInfo? language = null,
         [AliasAs("tag_name")] string? tagName = null,
         [AliasAs("sensitive")] bool? sensitive = null,
         [AliasAs("discoverable")] bool? discoverable = null,
@@ -55,7 +56,7 @@ public interface ICollections {
         string id,
         [AliasAs("name")] string? name = null,
         [AliasAs("description")] string? description = null,
-        [AliasAs("language")] string? language = null,
+        [AliasAs("language")] CultureInfo? language = null,
         [AliasAs("tag_name")] string? tagName = null,
         [AliasAs("sensitive")] bool? sensitive = null,
         [AliasAs("discoverable")] bool? discoverable = null);

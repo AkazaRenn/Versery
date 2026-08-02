@@ -39,7 +39,7 @@ Use this for future updates to methods and entities.
 1. Add any missing APIs from docs.
 2. Arguments must match docs exactly in meaning and order.
 3. Use camelCase for argument names.
-4. Input enums are not supported for now; use string for inputs.
+4. If an input is oneOf, anyOf, or enum, use an enum type from Model/Server/Entities when one already exists, or create a new one with [JsonConverterGenerator] and [JsonStringEnumMemberName("json_name")], and add it to Model/Server/UrlParameterFormatter.cs, except when Refit cannot build the request for AoT.
 
 ### C. Collection contracts
 1. Output list types must be List<T>.

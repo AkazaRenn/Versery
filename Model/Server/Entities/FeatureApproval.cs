@@ -1,3 +1,4 @@
+using Raiqub.Generators.EnumUtilities;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
@@ -26,6 +27,7 @@ public sealed class FeatureApproval {
     public UserFeatureOption CurrentUser { get; set; } = UserFeatureOption.Unknown;
 }
 
+[JsonConverterGenerator]
 public enum FeatureApprovalPolicy {
     [JsonStringEnumMemberName("public")]
     Public,

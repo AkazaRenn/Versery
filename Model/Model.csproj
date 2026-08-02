@@ -6,6 +6,7 @@
     <PackageReference Include="FluentSettings.Generator" />
     <PackageReference Include="LiteDB" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Raiqub.Generators.EnumUtilities" />
     <PackageReference Include="Refit" />
   </ItemGroup>
 </Project>

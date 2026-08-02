@@ -1,5 +1,7 @@
 using Model.Server.Entities;
+using Raiqub.Generators.EnumUtilities;
 using Refit;
+using System.Text.Json.Serialization;
 using ServerList = Model.Server.Entities.List;
 
 namespace Model.Server.Methods;
@@ -39,7 +41,7 @@ public interface ILists {
     [Post("/api/v1/lists")]
     Task<ServerList> Create(
         [AliasAs("title")] string title,
-        [AliasAs("replies_policy")] string? repliesPolicy = null,
+        [AliasAs("replies_policy")] ListsRepliesPolicy? repliesPolicy = null,
         [AliasAs("exclusive")] bool? exclusive = null);
 
     /// <summary>
@@ -50,7 +52,7 @@ public interface ILists {
     Task<ServerList> Update(
         string listId,
         [AliasAs("title")] string title,
-        [AliasAs("replies_policy")] string? repliesPolicy = null,
+        [AliasAs("replies_policy")] ListsRepliesPolicy? repliesPolicy = null,
         [AliasAs("exclusive")] bool? exclusive = null);
 
     /// <summary>
@@ -77,4 +79,14 @@ public interface ILists {
     Task AccountsRemove(
         string listId,
         [AliasAs("account_ids[]")][Query(CollectionFormat.Multi)] IEnumerable<string> accountIds);
+}
+
+[JsonConverterGenerator]
+public enum ListsRepliesPolicy {
+    [JsonPropertyName("followed")]
+    Followed,
+    [JsonPropertyName("list")]
+    List,
+    [JsonPropertyName("none")]
+    None
 }

@@ -20,9 +20,9 @@ public interface IGroupedNotifications {
         [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? excludeTypes = null,
         [AliasAs("account_id")] string? accountId = null,
         [AliasAs("expand_accounts")] string? expandAccounts = null,
-        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? groupedTypes = null,
+        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? groupedTypes = null,
         [AliasAs("include_filtered")] bool? includeFiltered = null,
-        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? supportedTypes = null);
+        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? supportedTypes = null);
 
     /// <summary>
     /// Version: 4.6.0
@@ -31,7 +31,7 @@ public interface IGroupedNotifications {
     [Get("/api/v2/notifications/{groupKey}")]
     Task<GroupedNotificationsResults> GetNotificationGroup(
         string groupKey,
-        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? supportedTypes = null);
+        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? supportedTypes = null);
 
     /// <summary>
     /// Version: 4.3.0
@@ -54,10 +54,10 @@ public interface IGroupedNotifications {
     [Get("/api/v2/notifications/unread_count")]
     Task<GroupedNotificationUnreadCount> UnreadGroupCount(
         [AliasAs("limit")] int? limit = null,
-        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? types = null,
-        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? excludeTypes = null,
+        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? types = null,
+        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? excludeTypes = null,
         [AliasAs("account_id")] string? accountId = null,
-        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? groupedTypes = null);
+        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? groupedTypes = null);
 }
 
 public sealed class GroupedNotificationsResults {

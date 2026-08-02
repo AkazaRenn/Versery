@@ -11,7 +11,7 @@ public interface IOEmbed {
     /// <seealso href="https://docs.joinmastodon.org/methods/oembed/#get"/>
     [Get("/api/oembed")]
     Task<OEmbed> Get(
-        [AliasAs("url")] string url,
+        [AliasAs("url")] Uri url,
         [AliasAs("maxwidth")] int? maxWidth = null,
         [AliasAs("maxheight")] int? maxHeight = null);
 }

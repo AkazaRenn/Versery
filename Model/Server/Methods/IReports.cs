@@ -16,6 +16,6 @@ public interface IReports {
         [AliasAs("collection_ids[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? collectionIds = null,
         [AliasAs("comment")] string? comment = null,
         [AliasAs("forward")] bool? forward = null,
-        [AliasAs("category")] string? category = null,
+        [AliasAs("category")] ReportCategory? category = null,
         [AliasAs("rule_ids[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? ruleIds = null);
 }

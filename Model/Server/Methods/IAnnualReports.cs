@@ -17,26 +17,26 @@ public interface IAnnualReports {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/annual_reports/#get"/>
     [Get("/api/v1/annual_reports/{year}")]
-    Task<WrappedAnnualReports> Get(string year);
+    Task<WrappedAnnualReports> Get(int year);
 
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/annual_reports/#get-state"/>
     [Get("/api/v1/annual_reports/{year}/state")]
-    Task<AnnualReportState> GetState(string year);
+    Task<AnnualReportState> GetState(int year);
 
     /// <summary>
     /// Version: 4.3.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/annual_reports/#read"/>
     [Post("/api/v1/annual_reports/{year}/read")]
-    Task Read(string year);
+    Task Read(int year);
 
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/annual_reports/#generate"/>
     [Post("/api/v1/annual_reports/{year}/generate")]
-    Task Generate(string year);
+    Task Generate(int year);
 }

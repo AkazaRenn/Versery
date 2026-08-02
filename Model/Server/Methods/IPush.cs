@@ -1,5 +1,7 @@
 using Model.Server.Entities;
+using Raiqub.Generators.EnumUtilities;
 using Refit;
+using System.Text.Json.Serialization;
 
 namespace Model.Server.Methods;
 
@@ -11,7 +13,7 @@ public interface IPush {
     /// <seealso href="https://docs.joinmastodon.org/methods/push/#create"/>
     [Post("/api/v1/push/subscription")]
     Task<WebPushSubscription> Create(
-        [AliasAs("subscription[endpoint]")] string endpoint,
+        [AliasAs("subscription[endpoint]")] Uri endpoint,
         [AliasAs("subscription[keys][p256dh]")] string p256dh,
         [AliasAs("subscription[keys][auth]")] string auth,
         [AliasAs("subscription[standard]")] bool? standard = null,
@@ -27,7 +29,7 @@ public interface IPush {
         [AliasAs("data[alerts][quoted_update]")] bool? quotedUpdate = null,
         [AliasAs("data[alerts][admin.sign_up]")] bool? adminSignUp = null,
         [AliasAs("data[alerts][admin.report]")] bool? adminReport = null,
-        [AliasAs("data[policy]")] string? policy = null);
+        [AliasAs("data[policy]")] PushPolicy? policy = null);
 
     /// <summary>
     /// Version: 2.4.0
@@ -52,7 +54,7 @@ public interface IPush {
         [AliasAs("data[alerts][update]")] bool? update = null,
         [AliasAs("data[alerts][admin.sign_up]")] bool? adminSignUp = null,
         [AliasAs("data[alerts][admin.report]")] bool? adminReport = null,
-        [AliasAs("policy")] string? policy = null);
+        [AliasAs("policy")] PushPolicy? policy = null);
 
     /// <summary>
     /// Version: 2.4.0
@@ -60,4 +62,16 @@ public interface IPush {
     /// <seealso href="https://docs.joinmastodon.org/methods/push/#delete"/>
     [Delete("/api/v1/push/subscription")]
     Task Delete();
+}
+
+[JsonConverterGenerator]
+public enum PushPolicy {
+    [JsonStringEnumMemberName("all")]
+    All,
+    [JsonStringEnumMemberName("followed")]
+    Followed,
+    [JsonStringEnumMemberName("follower")]
+    Follower,
+    [JsonStringEnumMemberName("none")]
+    None
 }

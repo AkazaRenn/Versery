@@ -16,11 +16,11 @@ public interface INotifications {
         [AliasAs("since_id")] string? sinceId = null,
         [AliasAs("min_id")] string? minId = null,
         [AliasAs("limit")] int? limit = null,
-        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? types = null,
-        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? excludeTypes = null,
+        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? types = null,
+        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? excludeTypes = null,
         [AliasAs("account_id")] string? accountId = null,
         [AliasAs("include_filtered")] bool? includeFiltered = null,
-        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? supportedTypes = null);
+        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? supportedTypes = null);
 
     /// <summary>
     /// Version: 4.6.0
@@ -29,7 +29,7 @@ public interface INotifications {
     [Get("/api/v1/notifications/{notificationId}")]
     Task<Notification> GetOne(
         string notificationId,
-        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? supportedTypes = null);
+        [AliasAs("supported_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? supportedTypes = null);
 
     /// <summary>
     /// Version: 0.0.0
@@ -60,8 +60,8 @@ public interface INotifications {
     [Get("/api/v1/notifications/unread_count")]
     Task<NotificationUnreadCount> UnreadCount(
         [AliasAs("limit")] int? limit = null,
-        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? types = null,
-        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? excludeTypes = null,
+        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? types = null,
+        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? excludeTypes = null,
         [AliasAs("account_id")] string? accountId = null);
 
     /// <summary>
@@ -101,14 +101,14 @@ public interface INotifications {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/notifications/#accept-multiple-requests"/>
     [Post("/api/v1/notifications/requests/accept")]
-    Task AcceptMultipleRequests([AliasAs("id[]")][Query(CollectionFormat.Multi)] IEnumerable<string> ids);
+    Task AcceptMultipleRequests([AliasAs("id[]")][Query(CollectionFormat.Multi)] IEnumerable<string> id);
 
     /// <summary>
     /// Version: 4.3.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/notifications/#dismiss-multiple-requests"/>
     [Post("/api/v1/notifications/requests/dismiss")]
-    Task DismissMultipleRequests([AliasAs("id[]")][Query(CollectionFormat.Multi)] IEnumerable<string> ids);
+    Task DismissMultipleRequests([AliasAs("id[]")][Query(CollectionFormat.Multi)] IEnumerable<string> id);
 
     /// <summary>
     /// Version: 4.3.0
@@ -130,11 +130,11 @@ public interface INotifications {
     /// <seealso href="https://docs.joinmastodon.org/methods/notifications/#update-the-filtering-policy-for-notifications"/>
     [Patch("/api/v2/notifications/policy")]
     Task<NotificationPolicy> UpdatePolicy(
-        [AliasAs("for_not_following")] string? forNotFollowing = null,
-        [AliasAs("for_not_followers")] string? forNotFollowers = null,
-        [AliasAs("for_new_accounts")] string? forNewAccounts = null,
-        [AliasAs("for_private_mentions")] string? forPrivateMentions = null,
-        [AliasAs("for_limited_accounts")] string? forLimitedAccounts = null);
+        [AliasAs("for_not_following")] NotificationPolicyFilter? forNotFollowing = null,
+        [AliasAs("for_not_followers")] NotificationPolicyFilter? forNotFollowers = null,
+        [AliasAs("for_new_accounts")] NotificationPolicyFilter? forNewAccounts = null,
+        [AliasAs("for_private_mentions")] NotificationPolicyFilter? forPrivateMentions = null,
+        [AliasAs("for_limited_accounts")] NotificationPolicyFilter? forLimitedAccounts = null);
 }
 
 public sealed class NotificationUnreadCount {

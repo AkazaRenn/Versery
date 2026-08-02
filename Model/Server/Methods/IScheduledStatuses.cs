@@ -30,7 +30,7 @@ public interface IScheduledStatuses {
     [Put("/api/v1/scheduled_statuses/{scheduledStatusId}")]
     Task<ScheduledStatus> Update(
         string scheduledStatusId,
-        [AliasAs("scheduled_at")] string? scheduledAt = null);
+        [AliasAs("scheduled_at")] DateTime? scheduledAt = null);
 
     /// <summary>
     /// Version: 2.7.0

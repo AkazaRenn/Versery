@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Raiqub.Generators.EnumUtilities;
+using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
 /// <see href="https://docs.joinmastodon.org/entities/Report/">Mastodon API Documentation</see>
@@ -81,8 +82,7 @@ public sealed class Report {
     public Account TargetAccount { get; set; } = new();
 }
 
-
-
+[JsonConverterGenerator]
 public enum ReportCategory {
     [JsonStringEnumMemberName("spam")]
     Spam,

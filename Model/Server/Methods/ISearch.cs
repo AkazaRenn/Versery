@@ -1,4 +1,5 @@
 using Model.Server.Entities;
+using Raiqub.Generators.EnumUtilities;
 using Refit;
 using System.Text.Json.Serialization;
 
@@ -13,7 +14,7 @@ public interface ISearch {
     [Get("/api/v2/search")]
     Task<Search> V2(
         [AliasAs("q")] string q,
-        [AliasAs("type")] string? type = null,
+        [AliasAs("type")] SearchType? type = null,
         [AliasAs("resolve")] bool? resolve = null,
         [AliasAs("following")] bool? following = null,
         [AliasAs("account_id")] string? accountId = null,
@@ -30,13 +31,23 @@ public interface ISearch {
     [Get("/api/v1/search")]
     Task<SearchV1> V1(
         [AliasAs("q")] string q,
-        [AliasAs("type")] string? type = null,
+        [AliasAs("type")] SearchType? type = null,
         [AliasAs("resolve")] bool? resolve = null,
         [AliasAs("account_id")] string? accountId = null,
         [AliasAs("max_id")] string? maxId = null,
         [AliasAs("min_id")] string? minId = null,
         [AliasAs("limit")] int? limit = null,
         [AliasAs("offset")] int? offset = null);
+}
+
+[JsonConverterGenerator]
+public enum SearchType {
+    [JsonStringEnumMemberName("accounts")]
+    Accounts,
+    [JsonStringEnumMemberName("hashtags")]
+    Hashtags,
+    [JsonStringEnumMemberName("statuses")]
+    Statuses
 }
 
 public sealed class SearchV1 {

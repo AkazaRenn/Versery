@@ -15,7 +15,7 @@ public interface IMedia {
         [AliasAs("file")] StreamPart file,
         [AliasAs("thumbnail")] StreamPart? thumbnail = null,
         [AliasAs("description")] string? description = null,
-        [AliasAs("focus")] string? focus = null);
+        [AliasAs("focus")] MediaAttachmentMetaFocus? focus = null);
 
     /// <summary>
     /// Version: 3.1.3
@@ -34,7 +34,7 @@ public interface IMedia {
         [AliasAs("file")] StreamPart file,
         [AliasAs("thumbnail")] StreamPart? thumbnail = null,
         [AliasAs("description")] string? description = null,
-        [AliasAs("focus")] string? focus = null);
+        [AliasAs("focus")] MediaAttachmentMetaFocus? focus = null);
 
     /// <summary>
     /// Version: 3.2.0
@@ -46,7 +46,7 @@ public interface IMedia {
         string mediaId,
         [AliasAs("thumbnail")] StreamPart? thumbnail = null,
         [AliasAs("description")] string? description = null,
-        [AliasAs("focus")] string? focus = null);
+        [AliasAs("focus")] MediaAttachmentMetaFocus? focus = null);
 
     /// <summary>
     /// Version: 4.4.0

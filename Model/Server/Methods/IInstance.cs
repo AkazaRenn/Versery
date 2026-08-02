@@ -75,7 +75,7 @@ public interface IInstance {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/instance/#terms_of_service_date"/>
     [Get("/api/v1/instance/terms_of_service/{date}")]
-    Task<TermsOfService> TermsOfServiceDate(string date);
+    Task<TermsOfService> TermsOfServiceDate(DateOnly date);
 
     /// <summary>
     /// Version: 4.2.0

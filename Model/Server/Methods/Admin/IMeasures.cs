@@ -1,5 +1,6 @@
 
 using Model.Server.Entities.Admin;
+using Raiqub.Generators.EnumUtilities;
 using Refit;
 using System.Text.Json.Serialization;
 
@@ -27,6 +28,7 @@ public interface IMeasures {
         [AliasAs("instance_followers[domain]")] string? instanceFollowersDomain = null);
 }
 
+[JsonConverterGenerator]
 public enum MeasureKey {
     [JsonStringEnumMemberName("active_users")]
     ActiveUsers,

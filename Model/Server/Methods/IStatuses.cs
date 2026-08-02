@@ -1,5 +1,6 @@
 using Model.Server.Entities;
 using Refit;
+using System.Globalization;
 
 namespace Model.Server.Methods;
 
@@ -17,7 +18,7 @@ public interface IStatuses {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/statuses/#index"/>
     [Get("/api/v1/statuses")]
-    Task<List<Status>> Index([AliasAs("id[]")][Query(CollectionFormat.Multi)] IEnumerable<string> ids);
+    Task<List<Status>> Index([AliasAs("id[]")][Query(CollectionFormat.Multi)] IEnumerable<string> id);
 
     /// <summary>
     /// Version: 4.5.0
@@ -70,11 +71,11 @@ public interface IStatuses {
         [AliasAs("in_reply_to_id")] string? inReplyToId = null,
         [AliasAs("sensitive")] bool? sensitive = null,
         [AliasAs("spoiler_text")] string? spoilerText = null,
-        [AliasAs("visibility")] string? visibility = null,
-        [AliasAs("language")] string? language = null,
-        [AliasAs("scheduled_at")] string? scheduledAt = null,
+        [AliasAs("visibility")] StatusVisibility? visibility = null,
+        [AliasAs("language")] CultureInfo? language = null,
+        [AliasAs("scheduled_at")] DateTime? scheduledAt = null,
         [AliasAs("quoted_status_id")] string? quotedStatusId = null,
-        [AliasAs("quote_approval_policy")] string? quoteApprovalPolicy = null);
+        [AliasAs("quote_approval_policy")] FeatureApprovalPolicy? quoteApprovalPolicy = null);
 
     /// <summary>
     /// Version: 4.5.0
@@ -86,16 +87,16 @@ public interface IStatuses {
         [AliasAs("status")] string? status = null,
         [AliasAs("spoiler_text")] string? spoilerText = null,
         [AliasAs("sensitive")] bool? sensitive = null,
-        [AliasAs("language")] string? language = null,
+        [AliasAs("language")] CultureInfo? language = null,
         [AliasAs("media_ids[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? mediaIds = null,
         [AliasAs("media_attributes[][id]")][Query(CollectionFormat.Multi)] IEnumerable<string>? mediaAttributeIds = null,
         [AliasAs("media_attributes[][description]")][Query(CollectionFormat.Multi)] IEnumerable<string>? mediaAttributeDescriptions = null,
         [AliasAs("media_attributes[][focus]")][Query(CollectionFormat.Multi)] IEnumerable<string>? mediaAttributeFocuses = null,
         [AliasAs("poll[options][]")][Query(CollectionFormat.Multi)] IEnumerable<string>? pollOptions = null,
-        [AliasAs("poll[expires_in]")] double? pollExpiresIn = null,
+        [AliasAs("poll[expires_in]")] uint? pollExpiresIn = null,
         [AliasAs("poll[multiple]")] bool? pollMultiple = null,
         [AliasAs("poll[hide_totals]")] bool? pollHideTotals = null,
-        [AliasAs("quote_approval_policy")] string? quoteApprovalPolicy = null);
+        [AliasAs("quote_approval_policy")] FeatureApprovalPolicy? quoteApprovalPolicy = null);
 
     /// <summary>
     /// Version: 4.5.0
@@ -104,7 +105,7 @@ public interface IStatuses {
     [Put("/api/v1/statuses/{statusId}/interaction_policy")]
     Task<Status> EditInteractionPolicy(
         string statusId,
-        [AliasAs("quote_approval_policy")] string quoteApprovalPolicy);
+        [AliasAs("quote_approval_policy")] FeatureApprovalPolicy quoteApprovalPolicy);
 
     /// <summary>
     /// Version: 4.4.0
@@ -118,7 +119,7 @@ public interface IStatuses {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/statuses/#boost"/>
     [Post("/api/v1/statuses/{statusId}/reblog")]
-    Task<Status> Boost(string statusId, [AliasAs("visibility")] string? visibility = null);
+    Task<Status> Boost(string statusId, [AliasAs("visibility")] StatusVisibility? visibility = null);
 
     /// <summary>
     /// Version: 0.0.0
@@ -202,7 +203,7 @@ public interface IStatuses {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/statuses/#translate"/>
     [Post("/api/v1/statuses/{statusId}/translate")]
-    Task<Translation> Translate(string statusId, [AliasAs("lang")] string? lang = null);
+    Task<Translation> Translate(string statusId, [AliasAs("lang")] CultureInfo? lang = null);
 
     /// <summary>
     /// Version: 4.5.0

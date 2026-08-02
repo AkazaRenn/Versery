@@ -1,5 +1,7 @@
 using Model.Server.Entities.Admin;
+using Raiqub.Generators.EnumUtilities;
 using Refit;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Methods.Admin;
@@ -13,15 +15,16 @@ public interface IDimensions {
     [Post("/api/v1/admin/dimensions")]
     Task<List<Dimension>> Get(
         [AliasAs("keys[]")][Query(CollectionFormat.Multi)] IEnumerable<DimensionKey> keys,
-        [AliasAs("start_at")] string startAt,
-        [AliasAs("end_at")] string endAt,
+        [AliasAs("start_at")] DateTime startAt,
+        [AliasAs("end_at")] DateTime endAt,
         [AliasAs("limit")] int? limit = null,
         [AliasAs("tag_servers[id]")] string? tagServersId = null,
-        [AliasAs("tag_languages[id]")] string? tagLanguagesId = null,
+        [AliasAs("tag_languages[id]")] CultureInfo? tagLanguagesId = null,
         [AliasAs("instance_accounts[domain]")] string? instanceAccountsDomain = null,
         [AliasAs("instance_languages[domain]")] string? instanceLanguagesDomain = null);
 }
 
+[JsonConverterGenerator]
 public enum DimensionKey {
     [JsonStringEnumMemberName("languages")]
     Languages,

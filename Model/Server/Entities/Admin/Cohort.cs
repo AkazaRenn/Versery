@@ -1,3 +1,4 @@
+using Raiqub.Generators.EnumUtilities;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities.Admin;
@@ -26,6 +27,7 @@ public sealed class Cohort {
     public List<CohortData> Data { get; set; } = [];
 }
 
+[JsonConverterGenerator]
 public enum CohortFrequency {
     [JsonStringEnumMemberName("day")]
     Day,

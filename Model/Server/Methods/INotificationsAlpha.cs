@@ -1,3 +1,4 @@
+using Model.Server.Entities;
 using Refit;
 
 namespace Model.Server.Methods;
@@ -15,11 +16,11 @@ public interface INotificationsAlpha {
         [AliasAs("since_id")] string? sinceId = null,
         [AliasAs("min_id")] string? minId = null,
         [AliasAs("limit")] int? limit = null,
-        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? types = null,
-        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? excludeTypes = null,
+        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? types = null,
+        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? excludeTypes = null,
         [AliasAs("account_id")] string? accountId = null,
         [AliasAs("expand_accounts")] string? expandAccounts = null,
-        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? groupedTypes = null);
+        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? groupedTypes = null);
 
     /// <summary>
     /// Version: 4.3.0-beta.2
@@ -45,8 +46,8 @@ public interface INotificationsAlpha {
     [Get("/api/v2_alpha/notifications/unread_count")]
     Task<GroupedNotificationUnreadCount> UnreadGroupCount(
         [AliasAs("limit")] int? limit = null,
-        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? types = null,
-        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? excludeTypes = null,
+        [AliasAs("types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? types = null,
+        [AliasAs("exclude_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? excludeTypes = null,
         [AliasAs("account_id")] string? accountId = null,
-        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? groupedTypes = null);
+        [AliasAs("grouped_types[]")][Query(CollectionFormat.Multi)] IEnumerable<NotificationType>? groupedTypes = null);
 }
