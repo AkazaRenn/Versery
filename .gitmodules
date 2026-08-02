@@ -1,0 +1,3 @@
+[submodule "Model/Server/Documentations"]
+	path = Model/Server/Documentations
+	url = https://github.com/mastodon/documentation.git

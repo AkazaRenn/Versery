@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/PreviewCard/">Mastodon API Documentation</see>
-public sealed class PreviewCard {
+public class PreviewCard {
     /// <summary>
     /// Location of linked resource.
     /// </summary>
@@ -114,4 +114,36 @@ public sealed class PreviewCard {
     public DateTime PublishedAt { get; set; } = DateTime.MinValue;
 }
 
-// TODO: https://docs.joinmastodon.org/entities/PreviewCard/#trends-link
+/// <see href="https://docs.joinmastodon.org/entities/PreviewCard/#trends-link">Mastodon API Documentation</see>
+public sealed class TrendsLink : PreviewCard {
+    /// <summary>
+    /// Version: 3.5.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/entities/PreviewCard/#trends-link">Mastodon API Documentation</see>
+    [JsonPropertyName("history")]
+    public IEnumerable<TrendsLinkHistory> History { get; set; } = [];
+}
+
+/// <see href="https://docs.joinmastodon.org/entities/PreviewCard/#history">Mastodon API Documentation</see>
+public sealed class TrendsLinkHistory {
+    /// <summary>
+    /// Version: 3.5.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/entities/PreviewCard/#history-day">Mastodon API Documentation</see>
+    [JsonPropertyName("day")]
+    public string Day { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Version: 3.5.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/entities/PreviewCard/#history-uses">Mastodon API Documentation</see>
+    [JsonPropertyName("uses")]
+    public string Uses { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Version: 3.5.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/entities/PreviewCard/#history-accounts">Mastodon API Documentation</see>
+    [JsonPropertyName("accounts")]
+    public string Accounts { get; set; } = string.Empty;
+}

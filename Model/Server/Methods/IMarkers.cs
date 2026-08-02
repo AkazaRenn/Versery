@@ -1,15 +1,31 @@
 using Model.Server.Entities;
-using Model.Server.Methods.Entities;
 using Refit;
 
 namespace Model.Server.Methods;
 
+/// <see href="https://docs.joinmastodon.org/methods/markers/">Mastodon API Documentation</see>
 public interface IMarkers {
+    /// <summary>
+    /// Version: 3.0.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/markers/#get">Mastodon API Documentation</see>
     [Get("/api/v1/markers")]
     Task<Markers> Get([AliasAs("timeline[]")][Query(CollectionFormat.Multi)] IEnumerable<string> timelines);
 
+    /// <summary>
+    /// Version: 3.0.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/markers/#create">Mastodon API Documentation</see>
     [Post("/api/v1/markers")]
-    Task<Markers> Post(
+    Task<Markers> Create(
         [AliasAs("home[last_read_id]")] string? homeLastReadId = null,
-        [AliasAs("notifications[last_read_id]")] string? notificationLastReadId = null);
+        [AliasAs("notifications[last_read_id]")] string? notificationsLastReadId = null);
+}
+
+public sealed class Markers {
+    [JsonPropertyName("home")]
+    public Marker? Home { get; set; } = null;
+
+    [JsonPropertyName("notifications")]
+    public Marker? Notifications { get; set; } = null;
 }

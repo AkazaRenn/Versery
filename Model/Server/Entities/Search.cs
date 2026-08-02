@@ -11,23 +11,23 @@ public sealed class Search {
     /// Accounts which match the given query
     /// </summary>
     [JsonPropertyName("accounts")]
-    public IEnumerable<Account> Accounts { get; set; } = [];
+    public List<Account> Accounts { get; set; } = [];
 
     /// <summary>
     /// Statuses which match the given query
     /// </summary>
     [JsonPropertyName("statuses")]
-    public IEnumerable<Status> Statuses { get; set; } = [];
+    public List<Status> Statuses { get; set; } = [];
 
     /// <summary>
     /// Hashtags which match the given query
     /// </summary>
     [JsonPropertyName("hashtags")]
-    public IEnumerable<Tag> Hashtags { get; set; } = [];
+    public List<Tag> Hashtags { get; set; } = [];
 
     /// <summary>
     /// Collections which match the given query
     /// </summary>
     [JsonPropertyName("collections")]
-    public IEnumerable<Collection> Collections { get; set; } = [];
+    public List<Collection> Collections { get; set; } = [];
 }

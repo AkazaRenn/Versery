@@ -3,13 +3,40 @@ using Refit;
 
 namespace Model.Server.Methods;
 
+/// <see href="https://docs.joinmastodon.org/methods/tags/">Mastodon API Documentation</see>
 public interface ITags {
-    [Get("/api/v1/tags/{tag}")]
-    Task<Tag> Get(string tag);
+    /// <summary>
+    /// Version: 4.0.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/tags/#get">Mastodon API Documentation</see>
+    [Get("/api/v1/tags/{name}")]
+    Task<Tag> Get(string name);
 
-    [Post("/api/v1/tags/{tag}/follow")]
-    Task<Tag> Follow(string tag);
+    /// <summary>
+    /// Version: 4.1.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/tags/#follow">Mastodon API Documentation</see>
+    [Post("/api/v1/tags/{name}/follow")]
+    Task<Tag> Follow(string name);
 
-    [Post("/api/v1/tags/{tag}/unfollow")]
-    Task<Tag> Unfollow(string tag);
+    /// <summary>
+    /// Version: 4.4.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/tags/#feature">Mastodon API Documentation</see>
+    [Post("/api/v1/tags/{id}/feature")]
+    Task<Tag> Feature(string id);
+
+    /// <summary>
+    /// Version: 4.0.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/tags/#unfollow">Mastodon API Documentation</see>
+    [Post("/api/v1/tags/{name}/unfollow")]
+    Task<Tag> Unfollow(string name);
+
+    /// <summary>
+    /// Version: 4.4.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/tags/#unfeature">Mastodon API Documentation</see>
+    [Post("/api/v1/tags/{id}/unfeature")]
+    Task<Tag> Unfeature(string id);
 }

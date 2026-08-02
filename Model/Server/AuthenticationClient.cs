@@ -1,5 +1,4 @@
-﻿using Model.Server.Api.Enumerations;
-using Model.Server.Entities;
+﻿using Model.Server.Entities;
 using System.Net;
 
 namespace Model.Server;

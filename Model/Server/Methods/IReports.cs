@@ -3,18 +3,19 @@ using Refit;
 
 namespace Model.Server.Methods;
 
+/// <see href="https://docs.joinmastodon.org/methods/reports/">Mastodon API Documentation</see>
 public interface IReports {
-    [Get("/api/v1/reports")]
-    Task<List<Report>> Get(
-        [AliasAs("max_id")] string? maxId = null,
-        [AliasAs("since_id")] string? sinceId = null,
-        [AliasAs("min_id")] string? minId = null,
-        [AliasAs("limit")] int? limit = null);
-
+    /// <summary>
+    /// Version: 4.6.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/reports/#post">Mastodon API Documentation</see>
     [Post("/api/v1/reports")]
-    Task<Report> Post(
+    Task<Report> Create(
         [AliasAs("account_id")] string accountId,
         [AliasAs("status_ids[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? statusIds = null,
+        [AliasAs("collection_ids[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? collectionIds = null,
         [AliasAs("comment")] string? comment = null,
-        [AliasAs("forward")] bool? forward = null);
+        [AliasAs("forward")] bool? forward = null,
+        [AliasAs("category")] string? category = null,
+        [AliasAs("rule_ids[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? ruleIds = null);
 }

@@ -3,7 +3,12 @@ using Refit;
 
 namespace Model.Server.Methods;
 
+/// <see href="https://docs.joinmastodon.org/methods/followed_tags/">Mastodon API Documentation</see>
 public interface IFollowedTags {
+    /// <summary>
+    /// Version: 4.1.0
+    /// </summary>
+    /// <see href="https://docs.joinmastodon.org/methods/followed_tags/#get">Mastodon API Documentation</see>
     [Get("/api/v1/followed_tags")]
     Task<List<Tag>> Get(
         [AliasAs("max_id")] string? maxId = null,
