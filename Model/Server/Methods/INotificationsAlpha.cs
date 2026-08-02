@@ -3,7 +3,6 @@ using Refit;
 namespace Model.Server.Methods;
 
 /// <see href="https://docs.joinmastodon.org/methods/notifications_alpha/">Mastodon API Documentation</see>
-[Obsolete("This page documents experimental API endpoints and is kept for historical purposes only. See the finalized version if you want to implement the grouped notifications feature in a client.")]
 public interface INotificationsAlpha {
     /// <summary>
     /// Version: 4.3.0-beta.2

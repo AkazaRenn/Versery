@@ -9,7 +9,7 @@ public sealed class Error {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Error/#error"/>
     [JsonPropertyName("error")]
-    public string ErrorMessage { get; set; } = string.Empty;
+    public string Error_ { get; set; } = string.Empty;
 
     /// <summary>
     /// Version: 0.6.0

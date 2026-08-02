@@ -235,6 +235,7 @@ public interface IAccounts {
     /// Version: 4.6.1
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/accounts/#update_credentials"/>
+    // Commented out due to lack of AoT support
     [Multipart]
     [Patch("/api/v1/accounts/update_credentials")]
     Task<Account> UpdateCredentials(
@@ -252,10 +253,10 @@ public interface IAccounts {
         [AliasAs("attribution_domains[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? attributionDomains = null,
         [AliasAs("fields_attributes[][name]")] IEnumerable<string>? fieldNames = null,
         [AliasAs("fields_attributes[][value]")] IEnumerable<string>? fieldValues = null,
-        [AliasAs("source[privacy]")] StatusVisibility? sourcePrivacy = null,
+        [AliasAs("source[privacy]")] string? sourcePrivacy = null,
         [AliasAs("source[sensitive]")] bool? sourceSensitive = null,
         [AliasAs("source[language]")] string? sourceLanguage = null,
-        [AliasAs("source[quote_policy]")] QuotePolicy? sourceQuotePolicy = null);
+        [AliasAs("source[quote_policy]")] string? sourceQuotePolicy = null);
 
     /// <summary>
     /// Version: 2.8.0

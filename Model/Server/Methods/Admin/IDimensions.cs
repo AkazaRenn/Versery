@@ -1,7 +1,8 @@
+using Model.Server.Entities.Admin;
 using Refit;
 using System.Text.Json.Serialization;
 
-namespace Model.Server.Admin.Methods;
+namespace Model.Server.Methods.Admin;
 
 /// <see href="https://docs.joinmastodon.org/methods/admin/dimensions/">Mastodon API Documentation</see>
 public interface IDimensions {
@@ -10,8 +11,8 @@ public interface IDimensions {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/dimensions/#get"/>
     [Post("/api/v1/admin/dimensions")]
-    Task<List<AdminDimension>> Get(
-        [AliasAs("keys[]")][Query(CollectionFormat.Multi)] IEnumerable<AdminDimensionKey> keys,
+    Task<List<Dimension>> Get(
+        [AliasAs("keys[]")][Query(CollectionFormat.Multi)] IEnumerable<DimensionKey> keys,
         [AliasAs("start_at")] string startAt,
         [AliasAs("end_at")] string endAt,
         [AliasAs("limit")] int? limit = null,

@@ -1,7 +1,8 @@
+using Model.Server.Entities.Admin;
 using Refit;
 using System.Text.Json.Serialization;
 
-namespace Model.Server.Admin.Methods;
+namespace Model.Server.Methods.Admin;
 
 /// <see href="https://docs.joinmastodon.org/methods/admin/accounts/">Mastodon API Documentation</see>
 public interface IAccounts {
@@ -10,7 +11,7 @@ public interface IAccounts {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#v1"/>
     [Get("/api/v1/admin/accounts")]
-    Task<List<AdminAccount>> V1(
+    Task<List<Account>> V1(
         [AliasAs("local")] bool? local = null,
         [AliasAs("remote")] bool? remote = null,
         [AliasAs("active")] bool? active = null,
@@ -35,7 +36,7 @@ public interface IAccounts {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#v2"/>
     [Get("/api/v2/admin/accounts")]
-    Task<List<AdminAccount>> V2(
+    Task<List<Account>> V2(
         [AliasAs("origin")] AccountsOrigin? origin = null,
         [AliasAs("status")] AccountsStatus? status = null,
         [AliasAs("permissions")] AccountsPermissions? permissions = null,
@@ -56,28 +57,28 @@ public interface IAccounts {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#get-one"/>
     [Get("/api/v1/admin/accounts/{id}")]
-    Task<AdminAccount> GetOne(string id);
+    Task<Account> GetOne(string id);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#approve"/>
     [Post("/api/v1/admin/accounts/{id}/approve")]
-    Task<AdminAccount> Approve(string id);
+    Task<Account> Approve(string id);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#reject"/>
     [Post("/api/v1/admin/accounts/{id}/reject")]
-    Task<AdminAccount> Reject(string id);
+    Task<Account> Reject(string id);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#delete"/>
     [Delete("/api/v1/admin/accounts/{id}")]
-    Task<AdminAccount> Delete(string id);
+    Task<Account> Delete(string id);
 
     /// <summary>
     /// Version: 4.0.0
@@ -97,28 +98,28 @@ public interface IAccounts {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#enable"/>
     [Post("/api/v1/admin/accounts/{id}/enable")]
-    Task<AdminAccount> Enable(string id);
+    Task<Account> Enable(string id);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#unsilence"/>
     [Post("/api/v1/admin/accounts/{id}/unsilence")]
-    Task<AdminAccount> Unsilence(string id);
+    Task<Account> Unsilence(string id);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#unsuspend"/>
     [Post("/api/v1/admin/accounts/{id}/unsuspend")]
-    Task<AdminAccount> Unsuspend(string id);
+    Task<Account> Unsuspend(string id);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/accounts/#unsensitive"/>
     [Post("/api/v1/admin/accounts/{id}/unsensitive")]
-    Task<AdminAccount> Unsensitive(string id);
+    Task<Account> Unsensitive(string id);
 }
 
 public enum AccountsOrigin {

@@ -1,5 +1,6 @@
 using Model.Server.Entities;
 using Refit;
+using System.Text.Json.Serialization;
 
 namespace Model.Server.Methods;
 

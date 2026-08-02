@@ -1,7 +1,9 @@
+
+using Model.Server.Entities.Admin;
 using Refit;
 using System.Text.Json.Serialization;
 
-namespace Model.Server.Admin.Methods;
+namespace Model.Server.Methods.Admin;
 
 /// <see href="https://docs.joinmastodon.org/methods/admin/measures/">Mastodon API Documentation</see>
 public interface IMeasures {
@@ -10,8 +12,8 @@ public interface IMeasures {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/measures/#get"/>
     [Post("/api/v1/admin/measures")]
-    Task<List<AdminMeasure>> Get(
-        [AliasAs("keys[]")][Query(CollectionFormat.Multi)] IEnumerable<AdminMeasureKey> keys,
+    Task<List<Measure>> Get(
+        [AliasAs("keys[]")][Query(CollectionFormat.Multi)] IEnumerable<MeasureKey> keys,
         [AliasAs("start_at")] string startAt,
         [AliasAs("end_at")] string endAt,
         [AliasAs("tag_accounts[id]")] string? tagAccountsId = null,

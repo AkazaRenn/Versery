@@ -1,7 +1,7 @@
 using Model.Server.Entities;
 using Refit;
 
-namespace Model.Server.Admin.Methods;
+namespace Model.Server.Methods.Admin;
 
 /// <see href="https://docs.joinmastodon.org/methods/admin/trends/">Mastodon API Documentation</see>
 public interface ITrends {
@@ -24,5 +24,5 @@ public interface ITrends {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/trends/#tags"/>
     [Get("/api/v1/admin/trends/tags")]
-    Task<List<AdminTag>> Tags();
+    Task<List<Tag>> Tags();
 }

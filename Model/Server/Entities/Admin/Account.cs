@@ -122,7 +122,7 @@ public sealed class Account {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Admin_Account/#account"/>
     [JsonPropertyName("account")]
-    public Account Account { get; set; } = new();
+    public Account Account_ { get; set; } = new();
 
     /// <summary>
     /// Version: 2.9.1

@@ -9,7 +9,7 @@ public sealed class Ip {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Admin_Ip/#id"/>
     [JsonPropertyName("ip")]
-    public string Ip { get; set; } = string.Empty;
+    public string Ip_ { get; set; } = string.Empty;
 
     /// <summary>
     /// Version: 3.5.0

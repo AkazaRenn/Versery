@@ -1,7 +1,7 @@
 using Model.Server.Entities;
 using Refit;
 
-namespace Model.Server.Admin.Methods;
+namespace Model.Server.Methods.Admin;
 
 /// <see href="https://docs.joinmastodon.org/methods/admin/domain_blocks/">Mastodon API Documentation</see>
 public interface IDomainBlocks {
@@ -10,7 +10,7 @@ public interface IDomainBlocks {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/domain_blocks/#get"/>
     [Get("/api/v1/admin/domain_blocks")]
-    Task<List<AdminDomainBlock>> Get(
+    Task<List<DomainBlock>> Get(
         [AliasAs("max_id")] string? maxId = null,
         [AliasAs("since_id")] string? sinceId = null,
         [AliasAs("min_id")] string? minId = null,
@@ -21,14 +21,14 @@ public interface IDomainBlocks {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/domain_blocks/#get-one"/>
     [Get("/api/v1/admin/domain_blocks/{id}")]
-    Task<AdminDomainBlock> GetOne(string id);
+    Task<DomainBlock> GetOne(string id);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/domain_blocks/#create"/>
     [Post("/api/v1/admin/domain_blocks")]
-    Task<AdminDomainBlock> Create(
+    Task<DomainBlock> Create(
         [AliasAs("domain")] string domain,
         [AliasAs("severity")] DomainBlockSeverity? severity = null,
         [AliasAs("reject_media")] bool? rejectMedia = null,
@@ -42,7 +42,7 @@ public interface IDomainBlocks {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/domain_blocks/#update"/>
     [Put("/api/v1/admin/domain_blocks/{id}")]
-    Task<AdminDomainBlock> Update(
+    Task<DomainBlock> Update(
         string id,
         [AliasAs("severity")] DomainBlockSeverity? severity = null,
         [AliasAs("reject_media")] bool? rejectMedia = null,
@@ -56,5 +56,5 @@ public interface IDomainBlocks {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/domain_blocks/#delete"/>
     [Delete("/api/v1/admin/domain_blocks/{id}")]
-    Task<AdminDomainBlock> Delete(string id);
+    Task<DomainBlock> Delete(string id);
 }

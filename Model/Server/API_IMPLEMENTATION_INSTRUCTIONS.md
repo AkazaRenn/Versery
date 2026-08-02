@@ -17,6 +17,13 @@ Use this for future updates to methods and entities.
 5. Keep changes minimal and scoped.
 6. Validate updated file(s) with compile diagnostics.
 
+### JsonContext registration
+1. When adding a new type under any subfolder of Model/Server/Entities, add it to Model/Server/JsonContext.cs.
+2. For types under Entities subfolders, set TypeInfoPropertyName using folder-prefixed naming to avoid collisions.
+	- Format: Folder1_Folder2_ClassName
+	- Example: Entities/Admin/Account => Admin_Account
+3. If a new top-level entity type (directly under Model/Server/Entities) is not referenced by another type already registered in JsonContext, add it explicitly to JsonContext.
+
 ---
 
 ## Methods Sync Rules (Model/Server/Methods)

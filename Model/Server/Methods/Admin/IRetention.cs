@@ -1,6 +1,7 @@
+using Model.Server.Entities.Admin;
 using Refit;
 
-namespace Model.Server.Admin.Methods;
+namespace Model.Server.Methods.Admin;
 
 /// <see href="https://docs.joinmastodon.org/methods/admin/retention/">Mastodon API Documentation</see>
 public interface IRetention {
@@ -9,7 +10,7 @@ public interface IRetention {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/admin/retention/#create"/>
     [Post("/api/v1/admin/retention")]
-    Task<List<AdminCohort>> Create(
+    Task<List<Cohort>> Create(
         [AliasAs("start_at")] string startAt,
         [AliasAs("end_at")] string endAt,
         [AliasAs("frequency")] CohortFrequency frequency);
