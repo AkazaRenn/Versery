@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 3.3.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/FeaturedTag/">Mastodon API Documentation</see>
-public class FeaturedTag {
+public sealed class FeaturedTag {
     /// <summary>
     /// The ID of the featured tag.
     /// </summary>

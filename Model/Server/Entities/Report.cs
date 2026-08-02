@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Report/">Mastodon API Documentation</see>
-public class Report {
+public sealed class Report {
     /// <summary>
     /// The ID of the report in the database.
     /// </summary>

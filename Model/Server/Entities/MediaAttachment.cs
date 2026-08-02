@@ -8,7 +8,7 @@ namespace Model.Server.Entities;
 /// Version: 3.5.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/MediaAttachment/">Mastodon API Documentation</see>
-public class MediaAttachment {
+public sealed class MediaAttachment {
     /// <summary>
     /// The ID of the attachment in the database.
     /// </summary>
@@ -59,7 +59,7 @@ public class MediaAttachment {
 }
 
 /// <see href="https://docs.joinmastodon.org/entities/MediaAttachment/#meta">Mastodon API Documentation</see>
-public class MediaAttachmentMeta {
+public sealed class MediaAttachmentMeta {
     [JsonPropertyName("original")]
     public MediaAttachmentMetaSize? Original { get; set; } = null;
 
@@ -100,7 +100,7 @@ public class MediaAttachmentMeta {
     public string? AudioChannels { get; set; } = null;
 }
 
-public class MediaAttachmentMetaSize {
+public sealed class MediaAttachmentMetaSize {
     [JsonPropertyName("width")]
     public int? Width { get; set; }
 
@@ -123,7 +123,7 @@ public class MediaAttachmentMetaSize {
     public int? BitRate { get; set; }
 }
 
-public class MediaAttachmentMetaFocus {
+public sealed class MediaAttachmentMetaFocus {
     [JsonPropertyName("x")]
     public double? X { get; set; }
 

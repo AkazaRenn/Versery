@@ -8,7 +8,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Status/">Mastodon API Documentation</see>
-public class Status {
+public sealed class Status {
     /// <summary>
     /// The ID of the status in the database.
     /// </summary>
@@ -79,7 +79,7 @@ public class Status {
     /// Version: 0.6.0
     /// </summary>
     /// <see href="https://docs.joinmastodon.org/entities/Status/#Mention">Mastodon API Documentation</see>
-    public class Mention {
+    public sealed class Mention {
         /// <summary>
         /// The account ID of the mentioned user.
         /// </summary>

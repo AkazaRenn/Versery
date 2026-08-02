@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.4.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Rule/">Mastodon API Documentation</see>
-public class Rule {
+public sealed class Rule {
     /// <summary>
     /// An identifier for the rule.
     /// </summary>
@@ -33,7 +33,7 @@ public class Rule {
     public Dictionary<CultureInfo, RuleTranslation> Translations { get; set; } = [];
 }
 
-public class RuleTranslation {
+public sealed class RuleTranslation {
     [JsonPropertyName("text")]
     public string Text { get; set; } = string.Empty;
 

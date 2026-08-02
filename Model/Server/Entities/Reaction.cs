@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 3.1.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Reaction/">Mastodon API Documentation</see>
-public class Reaction {
+public sealed class Reaction {
     /// <summary>
     /// The emoji used for the reaction. Either a unicode emoji, or a custom emoji's shortcode.
     /// </summary>

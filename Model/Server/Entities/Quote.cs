@@ -8,7 +8,7 @@ namespace Model.Server.Entities;
 /// Version: 4.5.7
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Quote/">Mastodon API Documentation</see>
-public class Quote {
+public sealed class Quote {
     /// <summary>
     /// The state of the quote.
     /// </summary>

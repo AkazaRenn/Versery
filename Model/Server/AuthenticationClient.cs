@@ -4,14 +4,15 @@ using System.Net;
 
 namespace Model.Server;
 
-internal class AuthenticationClient: BaseHttpClient {
+internal class AuthenticationClient {
+    public string Instance { get; }
     public CredentialApplication? AppRegistration { get; set; }
 
-    public AuthenticationClient(string instance) : base() {
+    public AuthenticationClient(string instance) {
         Instance = instance;
     }
 
-    public AuthenticationClient(string instance, CredentialApplication app) : base() {
+    public AuthenticationClient(string instance, CredentialApplication app) {
         Instance = instance;
         AppRegistration = app;
     }
@@ -34,7 +35,7 @@ internal class AuthenticationClient: BaseHttpClient {
             data.Add(new KeyValuePair<string, string>("website", website));
         }
 
-        AppRegistration = await Post<CredentialApplication>("/api/v1/apps", data);
+        AppRegistration = await Apps.("/api/v1/apps", data);
         return AppRegistration;
     }
 
@@ -62,6 +63,10 @@ internal class AuthenticationClient: BaseHttpClient {
     public string OAuthUrl(string? redirectUri = null) {
         if (AppRegistration == null) {
             throw new InvalidOperationException("The app must be registered before you can connect");
+        }
+
+        if (String.IsNullOrEmpty(Instance)) {
+            throw new InvalidOperationException("The instance must be set before you can connect");
         }
 
         if (redirectUri != null) {
@@ -103,7 +108,4 @@ internal class AuthenticationClient: BaseHttpClient {
     }
 
     #endregion
-
-    protected override void OnResponseReceived(HttpResponseMessage response) {
-    }
 }

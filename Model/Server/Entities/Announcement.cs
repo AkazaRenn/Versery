@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 3.1.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Announcement/">Mastodon API Documentation</see>
-public class Announcement {
+public sealed class Announcement {
     /// <summary>
     /// The ID of the announcement in the database.
     /// </summary>
@@ -91,7 +91,7 @@ public class Announcement {
 /// Version: 3.1.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Announcement/#Account">Mastodon API Documentation</see>
-public class AnnouncementAccount {
+public sealed class AnnouncementAccount {
     /// <summary>
     /// The account ID of the mentioned user.
     /// </summary>
@@ -121,7 +121,7 @@ public class AnnouncementAccount {
 /// Version: 3.1.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Announcement/#Status">Mastodon API Documentation</see>
-public class AnnouncementStatus {
+public sealed class AnnouncementStatus {
     /// <summary>
     /// The ID of an attached Status in the database.
     /// </summary>

@@ -7,6 +7,8 @@ namespace Model.Server.Entities.Enumerations;
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Notification/#types">Mastodon API Documentation</see>
 public enum NotificationType {
+    Unknown,
+
     /// <summary>
     /// Someone mentioned you in their status.
     /// </summary>

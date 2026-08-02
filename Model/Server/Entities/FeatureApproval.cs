@@ -8,7 +8,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/FeatureApproval/">Mastodon API Documentation</see>
-public class FeatureApproval {
+public sealed class FeatureApproval {
     /// <summary>
     /// Describes who is expected to be able to quote that status and have the quote automatically authorized.
     /// An empty list means that nobody is expected to be able to quote this post. Other values may be added in the future,

@@ -197,7 +197,7 @@ public class Account: PartialAccountWithAvatar {
 /// Version: 3.3.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Account/#MutedAccount">Mastodon API Documentation</see>
-public class MutedAccount: Account {
+public sealed class MutedAccount: Account {
     /// <summary>
     /// When the mute will expire, if applicable.
     /// </summary>
@@ -209,7 +209,7 @@ public class MutedAccount: Account {
 /// Version: 4.5.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Account/#CredentialAccount">Mastodon API Documentation</see>
-public class CredentialAccount {
+public sealed class CredentialAccount {
     /// <summary>
     /// Domains of websites allowed to credit the account.
     /// </summary>
@@ -365,7 +365,7 @@ public class AccountRole {
 /// Version: 2.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Account/#Field">Mastodon API Documentation</see>
-public class Field {
+public sealed class Field {
     /// <summary>
     /// The key of a given field's key-value pair.
     /// </summary>

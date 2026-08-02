@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 0.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Error/">Mastodon API Documentation</see>
-public class Error {
+public sealed class Error {
     /// <summary>
     /// The error message.
     /// </summary>

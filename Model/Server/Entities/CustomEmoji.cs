@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 3.0.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/CustomEmoji/">Mastodon API Documentation</see>
-public class CustomEmoji {
+public sealed class CustomEmoji {
     /// <summary>
     /// The name of the custom emoji.
     /// </summary>

@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 2.8.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/IdentityProof/">Mastodon API Documentation</see>
-public class IdentityProof {
+public sealed class IdentityProof {
     /// <summary>
     /// The name of the identity provider.
     /// </summary>

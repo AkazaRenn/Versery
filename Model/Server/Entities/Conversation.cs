@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 2.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Conversation/">Mastodon API Documentation</see>
-public class Conversation {
+public sealed class Conversation {
     /// <summary>
     /// Local database ID of the conversation.
     /// </summary>

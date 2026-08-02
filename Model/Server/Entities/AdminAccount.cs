@@ -8,7 +8,7 @@ namespace Model.Server.Entities;
 /// Version: 4.0.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Admin_Account/">Mastodon API Documentation</see>
-public class AdminAccount {
+public sealed class AdminAccount {
     /// <summary>
     /// The ID of the account in the database.
     /// </summary>

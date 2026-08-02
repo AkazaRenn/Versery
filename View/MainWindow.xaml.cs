@@ -22,7 +22,6 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
 
     public MainWindow() {
         InitializeComponent();
-        InitializeShare();
 
         CompositionGraphicsDevice = CanvasComposition.CreateCompositionGraphicsDevice(Compositor, CanvasDevice.GetSharedDevice());
 
@@ -120,7 +119,7 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
         if (Navigation.SelectedItem is NavigationViewItem navigationViewItem &&
             navigationViewItem.Tag as Type == e.SourcePageType) {
         } else {
-            Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault((NavigationViewItem item) => item.Tag as Type == e.SourcePageType);
+            Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(item => item.Tag as Type == e.SourcePageType);
         }
         activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;
     }

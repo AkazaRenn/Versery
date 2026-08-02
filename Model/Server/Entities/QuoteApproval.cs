@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.5.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/QuoteApproval/">Mastodon API Documentation</see>
-public class QuoteApproval {
+public sealed class QuoteApproval {
     /// <summary>
     /// Describes who is expected to be able to quote that status and have the quote automatically authorized. An empty list means that nobody is expected to be able to quote this post. Other values may be added in the future, so unknown values should be treated as unsupported_policy.
     /// </summary>

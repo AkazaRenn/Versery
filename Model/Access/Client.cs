@@ -37,7 +37,7 @@ public sealed class Client {
 
     internal async Task NewUser(string instance, string accessToken) {
         server = new(instance, accessToken);
-        var serverAccount = await server.GetCurrentUser();
+        var serverAccount = await server.Accounts.GetVerifyCredentials();
         var username = serverAccount.UserName;
         database = new Database.Client(serverAccount.UserName, instance);
         account = database.AddAccount(serverAccount);
@@ -51,7 +51,7 @@ public sealed class Client {
 
     public async Task<Entities.Account?> GetAccount() {
         if ((account is null) && SignedIn) {
-            var serverAccount = await server!.GetCurrentUser();
+            var serverAccount = await server!.Accounts.GetVerifyCredentials();
             account = database!.AddAccount(serverAccount);
         }
 
@@ -63,15 +63,10 @@ public sealed class Client {
             throw new InvalidOperationException("Client is not signed in");
         }
 
-        ArrayOptions arrayOptions = new() {
-            Limit = Constants.StatusesCountPerLoad,
-            MaxId = afterId?.ToString(),
-        };
-
         var serverStatuses = type switch {
-            TimelineType.Home => await server!.GetHomeTimeline(arrayOptions),
-            TimelineType.Federated => await server!.GetPublicTimeline(arrayOptions, local: false),
-            TimelineType.Local => await server!.GetPublicTimeline(arrayOptions, local: true),
+            TimelineType.Home => await server!.Timelines.GetHome(maxId: afterId, limit: Constants.StatusesCountPerLoad),
+            TimelineType.Federated => await server!.Timelines.GetPublic(maxId: afterId, limit: Constants.StatusesCountPerLoad, local: false),
+            TimelineType.Local => await server!.Timelines.GetPublic(maxId: afterId, limit: Constants.StatusesCountPerLoad, local: true),
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 

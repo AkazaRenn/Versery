@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Model.Server.Entities.Enumerations;
+using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
 /// <summary>
@@ -6,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Notification/">Mastodon API Documentation</see>
-public class Notification {
+public sealed class Notification {
     /// <summary>
     /// The id of the notification in the database.
     /// </summary>
@@ -14,19 +15,10 @@ public class Notification {
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// The type of event that resulted in the notification. One of:
-    /// follow = Someone followed you
-    /// follow_request = Someone requested to follow you
-    /// mention = Someone mentioned you in their status
-    /// reblog = Someone boosted one of your statuses
-    /// favourite = Someone favourited one of your statuses
-    /// poll = A poll you have voted in or created has ended
-    /// status = Someone you enabled notifications for has posted a status
+    /// The type of event that resulted in the notification.
     /// </summary>
     [JsonPropertyName("type")]
-    public string Type { get; set; } = string.Empty;
-
-
+    public NotificationType Type { get; set; } = NotificationType.Unknown;
 
     /// <summary>
     /// The timestamp of the notification.
@@ -45,4 +37,28 @@ public class Notification {
     /// </summary>
     [JsonPropertyName("status")]
     public Status? Status { get; set; }
+
+    /// <summary>
+    /// Summary of the event that caused follow relationships to be severed. Attached when type of the notification is severed_relationships.
+    /// </summary>
+    [JsonPropertyName("event")]
+    public RelationshipSeveranceEvent? Event { get; set; }
+
+    /// <summary>
+    /// Moderation warning against the account. Attached when type of the notification is account_warning.
+    /// </summary>
+    [JsonPropertyName("warning")]
+    public AccountWarning? Warning { get; set; }
+
+    /// <summary>
+    /// Fallback information available for some notification types that clients may not support. Only available for some notification types, and only if the supported_types parameter is used when querying.
+    /// </summary>
+    [JsonPropertyName("fallback")]
+    public NotificationFallback? Fallback { get; set; }
+
+    /// <summary>
+    /// Collection that was the object of the notification. Attached when type of the notification is added_to_collection or collection_update.
+    /// </summary>
+    [JsonPropertyName("collection")]
+    public Collection? Collection { get; set; }
 }

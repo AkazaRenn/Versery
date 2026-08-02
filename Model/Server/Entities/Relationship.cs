@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Relationship/">Mastodon API Documentation</see>
-public class Relationship {
+public sealed class Relationship {
     /// <summary>
     /// The account id.
     /// </summary>

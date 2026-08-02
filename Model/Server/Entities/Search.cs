@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/methods/search/#response">Mastodon API Documentation</see>
-public class Search {
+public sealed class Search {
     /// <summary>
     /// Accounts which match the given query
     /// </summary>

@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Collection/">Mastodon API Documentation</see>
-public class Collection {
+public sealed class Collection {
     /// <summary>
     /// The collection id.
     /// </summary>

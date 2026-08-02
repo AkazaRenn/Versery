@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 4.0.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/FilterStatus/">Mastodon API Documentation</see>
-public class FilterStatus {
+public sealed class FilterStatus {
     /// <summary>
     /// The ID of the FilterStatus in the database.
     /// </summary>

@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.4.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Filter/">Mastodon API Documentation</see>
-public class Filter {
+public sealed class Filter {
     /// <summary>
     /// The ID of the Filter in the database.
     /// </summary>

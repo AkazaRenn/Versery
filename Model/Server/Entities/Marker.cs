@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 3.0.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Marker/">Mastodon API Documentation</see>
-public class Marker {
+public sealed class Marker {
     /// <summary>
     /// The ID of the most recently viewed entity.
     /// </summary>

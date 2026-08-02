@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 4.5.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/ScheduledStatus/">Mastodon API Documentation</see>
-public class ScheduledStatus {
+public sealed class ScheduledStatus {
     /// <summary>
     /// The ID of the scheduled status in the database.
     /// </summary>

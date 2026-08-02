@@ -19,7 +19,7 @@ public class Tag: ShallowTag {
     [JsonPropertyName("history")]
     public IEnumerable<TagHistory>? History { get; set; } = null;
 
-    public class TagHistory {
+    public sealed class TagHistory {
         /// <summary>
         /// UNIX timestamp on midnight of the given day.
         /// </summary>
@@ -56,7 +56,7 @@ public class Tag: ShallowTag {
 /// Version: 3.5.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Tag/#admin">Mastodon API Documentation</see>
-public class AdminTag: Tag {
+public sealed class AdminTag: Tag {
     /// <summary>
     /// Whether the hashtag has been approved to trend.
     /// </summary>

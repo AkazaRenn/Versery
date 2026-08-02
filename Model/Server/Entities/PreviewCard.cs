@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/PreviewCard/">Mastodon API Documentation</see>
-public class PreviewCard {
+public sealed class PreviewCard {
     /// <summary>
     /// Location of linked resource.
     /// </summary>

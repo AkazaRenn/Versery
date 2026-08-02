@@ -5,7 +5,7 @@ namespace Model.Server.Entities;
 /// <summary>
 /// Represents a poll attached to a status.
 /// </summary>
-public class Poll {
+public sealed class Poll {
     /// <summary>
     /// The ID of the poll in the database.
     /// </summary>
@@ -69,7 +69,7 @@ public class Poll {
     public IEnumerable<CustomEmoji> Emojis { get; set; } = [];
 }
 
-public class PollOption {
+public sealed class PollOption {
     /// <summary>
     /// The text value of the poll option.
     /// </summary>
@@ -83,7 +83,7 @@ public class PollOption {
     public int? VotesCount { get; set; }
 }
 
-public class PollParameters {
+public sealed class PollParameters {
     /// <summary>
     /// The array of options
     /// </summary>

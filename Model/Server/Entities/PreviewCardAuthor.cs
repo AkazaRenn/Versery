@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 4.3.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/PreviewCardAuthor/">Mastodon API Documentation</see>
-public class PreviewCardAuthor {
+public sealed class PreviewCardAuthor {
     /// <summary>
     /// The original resource author’s name. Replaces the deprecated author_name attribute of the preview card.
     /// </summary>

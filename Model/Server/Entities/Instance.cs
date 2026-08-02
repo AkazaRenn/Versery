@@ -8,7 +8,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Instance/">Mastodon API Documentation</see>
-public class Instance {
+public sealed class Instance {
     /// <summary>
     /// The WebFinger domain name of the server.
     /// </summary>
@@ -100,7 +100,7 @@ public class Instance {
     public IEnumerable<Rule> Rules { get; set; } = [];
 }
 
-public class InstanceUsage {
+public sealed class InstanceUsage {
     /// <summary>
     /// Usage data related to users on this server.
     /// </summary>
@@ -108,7 +108,7 @@ public class InstanceUsage {
     public InstanceUsageUsers Users { get; set; } = new();
 }
 
-public class InstanceUsageUsers {
+public sealed class InstanceUsageUsers {
     /// <summary>
     /// The number of active users in the past 4 weeks. This is set to zero for server with configuration[limited_federation].
     /// </summary>
@@ -116,7 +116,7 @@ public class InstanceUsageUsers {
     public int ActiveMonth { get; set; } = 0;
 }
 
-public class InstanceThumbnail {
+public sealed class InstanceThumbnail {
     /// <summary>
     /// The URL for the thumbnail image.
     /// </summary>
@@ -142,7 +142,7 @@ public class InstanceThumbnail {
     public InstanceThumbnailVersions Versions { get; set; } = new();
 }
 
-public class InstanceThumbnailVersions {
+public sealed class InstanceThumbnailVersions {
     /// <summary>
     /// The URL for the thumbnail image at 1x resolution.
     /// </summary>
@@ -156,7 +156,7 @@ public class InstanceThumbnailVersions {
     public Uri? TwoX { get; set; } = null;
 }
 
-public class InstanceConfiguration {
+public sealed class InstanceConfiguration {
     /// <summary>
     /// Configured values and limits for this website.
     /// </summary>
@@ -212,7 +212,7 @@ public class InstanceConfiguration {
     public bool LimitedFederation { get; set; } = false;
 }
 
-public class InstanceConfigurationVapid {
+public sealed class InstanceConfigurationVapid {
     /// <summary>
     /// The server’s VAPID public key, used for push notifications, the same as WebPushSubscription#server_key.
     /// </summary>
@@ -220,7 +220,7 @@ public class InstanceConfigurationVapid {
     public string PublicKey { get; set; } = string.Empty;
 }
 
-public class InstanceConfigurationAccounts {
+public sealed class InstanceConfigurationAccounts {
     /// <summary>
     /// The maximum length allowed for an account’s display name.
     /// </summary>
@@ -276,7 +276,7 @@ public class InstanceConfigurationAccounts {
     public int ProfileFieldValueLimit { get; set; } = 0;
 }
 
-public class InstanceConfigurationStatuses {
+public sealed class InstanceConfigurationStatuses {
     /// <summary>
     /// The maximum number of allowed characters per status.
     /// </summary>
@@ -296,7 +296,7 @@ public class InstanceConfigurationStatuses {
     public int CharactersReservedPerUrl { get; set; } = 0;
 }
 
-public class InstanceConfigurationMediaAttachments {
+public sealed class InstanceConfigurationMediaAttachments {
     /// <summary>
     /// Contains MIME types that can be uploaded.
     /// </summary>
@@ -340,7 +340,7 @@ public class InstanceConfigurationMediaAttachments {
     public int VideoMatrixLimit { get; set; } = 0;
 }
 
-public class InstanceConfigurationPolls {
+public sealed class InstanceConfigurationPolls {
     /// <summary>
     /// Each poll is allowed to have up to this many options.
     /// </summary>
@@ -366,7 +366,7 @@ public class InstanceConfigurationPolls {
     public int MaxExpiration { get; set; } = 0;
 }
 
-public class InstanceConfigurationTranslation {
+public sealed class InstanceConfigurationTranslation {
     /// <summary>
     /// Whether the Translations API is available on this server.
     /// </summary>
@@ -374,7 +374,7 @@ public class InstanceConfigurationTranslation {
     public bool Enabled { get; set; } = false;
 }
 
-public class InstanceConfigurationTimelinesAccess {
+public sealed class InstanceConfigurationTimelinesAccess {
     /// <summary>
     /// Access restrictions on public feeds.
     /// </summary>
@@ -394,7 +394,7 @@ public class InstanceConfigurationTimelinesAccess {
     public InstanceConfigurationTimelinesAccessFeeds TrendingLinkFeeds { get; set; } = new();
 }
 
-public class InstanceConfigurationTimelinesAccessFeeds {
+public sealed class InstanceConfigurationTimelinesAccessFeeds {
     /// <summary>
     /// Access restrictions for local posts in the public feed.
     /// </summary>
@@ -408,7 +408,7 @@ public class InstanceConfigurationTimelinesAccessFeeds {
     public InstanceConfigurationTimelineAccess Remote { get; set; } = default;
 }
 
-public class InstanceConfigurationUrls {
+public sealed class InstanceConfigurationUrls {
     /// <summary>
     /// The Websockets URL for connecting to the streaming API.
     /// </summary>
@@ -440,7 +440,7 @@ public class InstanceConfigurationUrls {
     public Uri? TermsOfService { get; set; } = null;
 }
 
-public class InstanceRegistrations {
+public sealed class InstanceRegistrations {
     /// <summary>
     /// Whether registrations are enabled. This will be false if registrations_mode is none or if the server is in single_user_mode.
     /// </summary>
@@ -478,7 +478,7 @@ public class InstanceRegistrations {
     public Uri? Url { get; set; } = null;
 }
 
-public class InstanceApiVersions {
+public sealed class InstanceApiVersions {
     /// <summary>
     /// API version number that increments with substantial API changes. Clients can use this value to determine API compatibility rather than parsing complex version strings like “4.4+hometown-123” from forks or nightly builds. This number increases independently of the human-readable version number.
     /// </summary>
@@ -486,7 +486,7 @@ public class InstanceApiVersions {
     public int Mastodon { get; set; } = 0;
 }
 
-public class InstanceContact {
+public sealed class InstanceContact {
     /// <summary>
     /// An email address that can be messaged regarding inquiries or issues.
     /// </summary>
@@ -500,7 +500,7 @@ public class InstanceContact {
     public Account? Account { get; set; } = null;
 }
 
-public class InstanceIcon {
+public sealed class InstanceIcon {
     /// <summary>
     /// The URL of this icon.
     /// </summary>

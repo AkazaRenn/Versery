@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Model.Server.Methods;
+namespace Model.Server.Methods.Entities;
 /// <summary>
 /// Version: 4.3.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/methods/oauth/#response-1">Mastodon API Documentation</see>
-public class OAuth {
+public sealed class OAuth {
     [JsonPropertyName("access_token")]
     public string AccessToken { get; set; } = string.Empty;
 

@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.2.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/List/">Mastodon API Documentation</see>
-public class List {
+public sealed class List {
     /// <summary>
     /// The ID of the list.
     /// </summary>

@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 4.0.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/FilterResult/">Mastodon API Documentation</see>
-public class FilterResult {
+public sealed class FilterResult {
     /// <summary>
     /// The filter that was matched.
     /// </summary>

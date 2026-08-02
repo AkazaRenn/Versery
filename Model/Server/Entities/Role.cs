@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 4.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Role/">Mastodon API Documentation</see>
-public class Role: AccountRole {
+public sealed class Role: AccountRole {
     /// <summary>
     /// A bitmask that represents the sum of all permissions granted to the role. This is a potentially large integer in decimal representation. The absence of special permissions is denoted by '0'.
     /// </summary>

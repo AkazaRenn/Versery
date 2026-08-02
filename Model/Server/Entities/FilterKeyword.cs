@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 4.0.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/FilterKeyword/">Mastodon API Documentation</see>
-public class FilterKeyword {
+public sealed class FilterKeyword {
     /// <summary>
     /// The ID of the FilterKeyword in the database.
     /// </summary>

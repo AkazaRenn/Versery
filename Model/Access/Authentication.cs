@@ -14,7 +14,7 @@ public sealed partial class Authentication(string instance) {
     private readonly Client client = Services.Get<Client>();
 
     public async Task<string> OAuthUrl() {
-        var appRegistrationJson = Credentials.GetAppRegistration(authenticationClient.Instance);
+        var appRegistrationJson = Credentials.GetAppRegistration(instance);
         if (!string.IsNullOrWhiteSpace(appRegistrationJson)) {
             var appRegistration = JsonSerializer.Deserialize<CredentialApplication>(appRegistrationJson);
             if (appRegistration is not null) {
@@ -24,7 +24,7 @@ public sealed partial class Authentication(string instance) {
         }
 
         var newAppRegistration = await authenticationClient.CreateApp(Constants.AppName, Constants.ProjectLink, null, Scope.Read, Scope.Write, Scope.Follow);
-        Credentials.AddAppRegistration(authenticationClient.Instance, JsonSerializer.Serialize(newAppRegistration));
+        Credentials.AddAppRegistration(instance, JsonSerializer.Serialize(newAppRegistration));
         return authenticationClient.OAuthUrl();
     }
 
@@ -33,7 +33,7 @@ public sealed partial class Authentication(string instance) {
         if (match.Success) {
             var code = match.Groups[1].Value;
             var auth = await authenticationClient.ConnectWithCode(code);
-            await client.NewUser(authenticationClient.Instance, auth.AccessToken);
+            await client.NewUser(instance, auth.AccessToken);
         }
     }
 

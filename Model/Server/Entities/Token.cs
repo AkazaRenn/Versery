@@ -6,7 +6,7 @@ namespace Model.Server.Entities;
 /// Version: 0.1.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Token/">Mastodon API Documentation</see>
-public class Token {
+public sealed class Token {
     /// <summary>
     /// An OAuth token to be used for authorization.
     /// </summary>

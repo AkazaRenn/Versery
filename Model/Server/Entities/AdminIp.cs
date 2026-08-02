@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 3.5.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Admin_Ip/">Mastodon API Documentation</see>
-public class AdminIp {
+public sealed class AdminIp {
     /// <summary>
     /// The IP address.
     /// </summary>

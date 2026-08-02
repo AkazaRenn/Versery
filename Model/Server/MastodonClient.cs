@@ -1,652 +1,95 @@
-﻿using Model.Server.Entities;
-using Model.Server.Entities.Enumerations;
-using Model.Server.Methods;
-using Model.Server.Methods.Enumerations;
-using System.Text.Json;
+﻿using Model.Server.Methods;
+using Refit;
 
 namespace Model.Server;
 
-public partial class Client: BaseHttpClient {
+public class Client {
     #region Ctor
 
-    public Client(string instance, string accessToken)
-        : base() {
-        Instance = instance;
+    private readonly RefitSettings settings = new() {
+        ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options)
+    };
+    private readonly HttpClient apiHttpClient;
+
+    public string InstanceUrl { get; }
+    public string AccessToken { get; }
+
+    #region API Endpoints
+    public IAccounts Accounts { get; }
+    public IProofs Proofs { get; }
+    public IFollowRequests FollowRequests { get; }
+    public ISuggestions Suggestions { get; }
+    public IFavourites Favourites { get; }
+    public IBookmarks Bookmarks { get; }
+    public IFeaturedTags FeaturedTags { get; }
+    public IInstance Instance { get; }
+    public ITrends Trends { get; }
+    public IDirectory Directory { get; }
+    public IAnnouncements Announcements { get; }
+    public ILists Lists { get; }
+    public IMedia Media { get; }
+    public ICustomEmojis CustomEmojis { get; }
+    public INotifications Notifications { get; }
+    public IReports Reports { get; }
+    public ISearch SearchApi { get; }
+    public IFilters Filters { get; }
+    public IPolls Polls { get; }
+    public IStatuses Statuses { get; }
+    public IScheduledStatuses ScheduledStatuses { get; }
+    public ITimelines Timelines { get; }
+    public IConversations Conversations { get; }
+    public IFollows Follows { get; }
+    public IBlocks Blocks { get; }
+    public IMutes Mutes { get; }
+    public IEndorsements Endorsements { get; }
+    public IMarkers Markers { get; }
+    public IDomainBlocks DomainBlocks { get; }
+    public ITags Tags { get; }
+    public IFollowedTags FollowedTags { get; }
+    public IAdminAccounts AdminAccounts { get; }
+    #endregion
+
+    public Client(string instance, string accessToken) {
+        InstanceUrl = instance;
         AccessToken = accessToken;
-    }
 
-    #endregion
-
-    #region Instances
-
-    /// <summary>
-    /// Getting instance information
-    /// </summary>
-    /// <returns>Returns the current Instance. Does not require authentication</returns>
-    public Task<Instance> GetInstance() {
-        return Get<Instance>("/api/v2/instance");
-    }
-
-    /// <summary>
-    /// List of connected domains
-    /// </summary>
-    /// <returns></returns>
-    public Task<IEnumerable<string>> GetInstancePeers() {
-        return Get<IEnumerable<string>>("/api/v1/instance/peers");
-    }
-
-    /// <summary>
-    /// Weekly activity
-    /// </summary>
-    /// <returns></returns>
-    public Task<IEnumerable<WeeklyActivity>> GetInstanceWeeklyActivity() {
-        return Get<IEnumerable<WeeklyActivity>>("/api/v1/instance/activity");
-    }
-
-    /// <summary>
-    /// Tags that are being used more frequently within the past week.
-    /// </summary>
-    /// <returns></returns>
-    public Task<IEnumerable<Tag>> GetTrendingTags() {
-        return Get<IEnumerable<Tag>>("/api/v1/trends/tags");
-    }
-
-    /// <summary>
-    /// Statuses that have been interacted with more than others.
-    /// </summary>
-    /// <param name="offset"></param>
-    /// <param name="limit"></param>
-    /// <returns></returns>
-    public Task<MastodonList<Status>> GetTrendingStatuses(int? offset = null, int? limit = null) {
-        var queryParams = "";
-
-        if (offset.HasValue) {
-            queryParams = "?offset=" + offset.Value;
-        }
-        if (limit.HasValue) {
-            queryParams += (queryParams != "" ? "&" : "?") + "limit=" + limit.Value;
-        }
-
-        return GetMastodonList<Status>("/api/v1/trends/statuses" + queryParams);
-    }
-
-    /// <summary>
-    /// A directory of profiles that your website is aware of.
-    /// </summary>
-    /// <param name="offset"></param>
-    /// <param name="limit"></param>
-    /// <param name="order"></param>
-    /// <param name="local"></param>
-    /// <returns></returns>
-    public Task<IEnumerable<Account>> GetDirectory(int? offset, int? limit, DirectoryOrder? order, bool? local) {
-        var queryParams = "";
-
-        if (offset.HasValue) {
-            queryParams = "?offset=" + offset.Value;
-        }
-
-        if (limit.HasValue) {
-            queryParams += (queryParams != "" ? "&" : "?") + "limit=" + limit.Value;
-        }
-
-        if (order.HasValue) {
-            queryParams += (queryParams != "" ? "&" : "?") + "order=" + order.Value.ToString().ToLowerInvariant();
-        }
-
-        if (local.HasValue) {
-            queryParams += (queryParams != "" ? "&" : "?") + "local=" + local.Value;
-        }
-
-        return Get<IEnumerable<Account>>("/api/v1/directory" + queryParams);
-    }
-
-
-    /// Get all announcements set by administration
-    /// </summary>
-    /// <param name="withDismissed">If true, response will include announcements dismissed by the user</param>
-    /// <returns></returns>
-    public Task<IEnumerable<Announcement>> GetAnnouncements() {
-        return Get<IEnumerable<Announcement>>("/api/v1/announcements");
-    }
-
-    /// <summary>
-    /// Allows a user to mark the announcement as read
-    /// </summary>
-    /// <param name="id"></param>
-    public Task DismissAnnouncement(string id) {
-        return Post($"/api/v1/announcements/{id}/dismiss");
-    }
-
-    /// <summary>
-    /// React to an announcement with an emoji
-    /// </summary>
-    /// <param name="id">Local ID of an announcement in the database</param>
-    /// <param name="emoji">Unicode emoji, or shortcode of custom emoji</param>
-    public Task AddReactionToAnnouncement(string id, string emoji) {
-        return Put($"/api/v1/announcements/{id}/reactions/{emoji}");
-    }
-
-    /// <summary>
-    /// Undo a react emoji to an announcement
-    /// </summary>
-    /// <param name="id">Local ID of an announcement in the database</param>
-    /// <param name="emoji">Unicode emoji, or shortcode of custom emoji</param>
-    /// <returns></returns>
-    public Task RemoveReactionFromAnnouncement(string id, string emoji) {
-        return Delete($"/api/v1/announcements/{id}/reactions/{emoji}");
-    }
-
-    #endregion
-
-    #region Lists
-
-    /// <summary>
-    /// User’s lists.
-    /// </summary>
-    /// <returns>Returns array of List</returns>
-    public Task<IEnumerable<List>> GetLists() {
-        return Get<IEnumerable<List>>("/api/v1/lists");
-    }
-
-    /// <summary>
-    /// User’s lists that a given account is part of.
-    /// </summary>
-    /// <param name="accountId"></param>
-    /// <returns>Returns array of List</returns>
-    public Task<IEnumerable<List>> GetListsContainingAccount(string accountId) {
-        return Get<IEnumerable<List>>($"/api/v1/accounts/{accountId}/lists");
-    }
-
-    /// <summary>
-    /// Accounts that are in a given list.
-    /// </summary>
-    /// <param name="listId"></param>
-    /// <param name="options">Define the first and last items to get</param>
-    /// <returns>Returns array of Account</returns>
-    public Task<MastodonList<Account>> GetListAccounts(string listId, ArrayOptions? options = null) {
-        var url = $"/api/v1/lists/{listId}/accounts";
-        if (options != null) {
-            url += "?" + options.ToQueryString();
-        }
-
-        return GetMastodonList<Account>(url);
-    }
-
-    /// <summary>
-    /// Get a list.
-    /// </summary>
-    /// <param name="listId"></param>
-    /// <returns>Returns List</returns>
-    public Task<List> GetList(string listId) {
-        return Get<List>("/api/v1/lists/" + listId);
-    }
-
-    /// <summary>
-    /// Create a new list.
-    /// </summary>
-    /// <param name="title">The title of the list</param>
-    /// <returns>The list created</returns>
-    public Task<List> CreateList(string title) {
-        if (string.IsNullOrEmpty(title)) {
-            throw new ArgumentException("The title is required", nameof(title));
-        }
-
-        var data = new List<KeyValuePair<string, string>>()
-        {
-            new("title", title),
+        apiHttpClient = new() {
+            BaseAddress = new Uri($"https://{InstanceUrl}")
         };
-
-        return Post<List>("/api/v1/lists", data);
-    }
-
-    /// <summary>
-    /// Update a list.
-    /// </summary>
-    /// <param name="title">The title of the list</param>
-    /// <returns>The list updated</returns>
-    public Task<List> UpdateList(string listId, string newTitle) {
-        if (string.IsNullOrEmpty(newTitle)) {
-            throw new ArgumentException("The title is required", nameof(newTitle));
-        }
-
-        var data = new List<KeyValuePair<string, string>>()
-        {
-            new("title", newTitle),
-        };
-
-        return Put<List>("/api/v1/lists/" + listId, data);
-    }
-
-    /// <summary>
-    /// Remove a list.
-    /// </summary>
-    /// <param name="listId"></param>
-    public Task DeleteList(string listId) {
-        return Delete("/api/v1/lists/" + listId);
-    }
-
-    /// <summary>
-    /// Add accounts to a list.
-    /// Only accounts already followed by the user can be added to a list.
-    /// </summary>
-    /// <param name="listId">List ID</param>
-    /// <param name="accountIds">Array of account IDs</param>
-    public Task AddAccountsToList(string listId, IEnumerable<string> accountIds) {
-        if (accountIds == null || !accountIds.Any()) {
-            throw new ArgumentException("InstanceConfigurationAccounts are required", nameof(accountIds));
-        }
-
-        var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id));
-
-        return Post($"/api/v1/lists/{listId}/accounts", data);
-    }
-
-    /// <summary>
-    /// Add accounts to a list.
-    /// Only accounts already followed by the user can be added to a list.
-    /// </summary>
-    /// <param name="listId">List ID</param>
-    /// <param name="accounts">Array of Accounts</param>
-    public Task AddAccountsToList(string listId, IEnumerable<Account> accounts) {
-        return AddAccountsToList(listId, accounts.Select(account => account.Id));
-    }
-
-    /// <summary>
-    /// Remove accounts from a list.
-    /// </summary>
-    /// <param name="listId">List Id</param>
-    /// <param name="accountIds">Array of Account IDs</param>
-    public Task RemoveAccountsFromList(string listId, IEnumerable<string> accountIds) {
-        if (accountIds == null || !accountIds.Any()) {
-            throw new ArgumentException("InstanceConfigurationAccounts are required", nameof(accountIds));
-        }
-
-        var data = accountIds.Select(id => new KeyValuePair<string, string>("account_ids[]", id));
-
-        return Delete($"/api/v1/lists/{listId}/accounts", data);
-    }
-
-    /// <summary>
-    /// Remove accounts from a list.
-    /// </summary>
-    /// <param name="listId">List Id</param>
-    /// <param name="accountIds">Array of Accounts</param>
-    public Task RemoveAccountsFromList(string listId, IEnumerable<Account> accounts) {
-        return RemoveAccountsFromList(listId, accounts.Select(account => account.Id));
-    }
-
-    #endregion
-
-    #region Media
-
-    /// <summary>
-    /// Uploading a media attachment
-    /// </summary>
-    /// <param name="data">Media stream to be uploaded</param>
-    /// <param name="fileName">Media file name (must contains extension ex: .png, .jpg, ...)</param>
-    /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
-    /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
-    /// <returns>Returns an Attachment that can be used when creating a status</returns>
-    public Task<MediaAttachment> UploadMedia(Stream data, string fileName = "file", string? description = null,
-        MediaAttachmentMetaFocus? focus = null) {
-        return UploadMedia(new MediaDefinition(data, fileName), description, focus);
-    }
-
-    /// <summary>
-    /// Uploading a media attachment
-    /// </summary>
-    /// <param name="media">Media to be uploaded</param>
-    /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
-    /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
-    /// <returns>Returns an Attachment that can be used when creating a status</returns>
-    public Task<MediaAttachment> UploadMedia(MediaDefinition media, string? description = null,
-        MediaAttachmentMetaFocus? focus = null) {
-        media.ParamName = "file";
-        var list = new List<MediaDefinition>() { media };
-        var data = new Dictionary<string, string>();
-        if (description != null) {
-            data.Add("description", description);
-        }
-
-        if (focus != null) {
-            data.Add("focus", $"{focus.X},{focus.Y}");
-        }
-
-        return Post<MediaAttachment>("/api/v2/media", data, list);
-    }
-
-    /// <summary>
-    /// Update a media attachment. Can only be done before the media is attached to a status.
-    /// </summary>
-    /// <param name="mediaId">Media ID</param>
-    /// <param name="description">A plain-text description of the media for accessibility (max 420 chars)</param>
-    /// <param name="focus">Two floating points. See <see cref="https://docs.joinmastodon.org/api/rest/media/#focal-points">focal points</see></param>
-    /// <returns>Returns an MediaAttachment that can be used when creating a status</returns>
-    public Task<MediaAttachment> UpdateMedia(string mediaId, string? description = null, MediaAttachmentMetaFocus? focus = null) {
-        var data = new Dictionary<string, string>();
-        if (description != null) {
-            data.Add("description", description);
-        }
-
-        if (focus != null) {
-            data.Add("focus", $"{focus.X},{focus.Y}");
-        }
-
-        return Put<MediaAttachment>("/api/v1/media/" + mediaId, data);
-    }
-
-    #endregion
-
-    #region Emojis
-
-    /// <summary>
-    /// Custom emojis that are available on the server.
-    /// </summary>
-    /// <returns></returns>
-    public Task<IEnumerable<CustomEmoji>> GetCustomEmojis() {
-        return Get<IEnumerable<CustomEmoji>>("/api/v1/custom_emojis");
-    }
-
-    #endregion
-
-    #region Notifications
-
-    /// <summary>
-    /// Fetching a user's notifications
-    /// </summary>
-    /// <param name="options">Define the first and last items to get</param>
-    /// <param name="excludeTypes">Types to exclude</param>
-    /// <returns>Returns a list of Notifications for the authenticated user</returns>
-    public Task<MastodonList<Notification>> GetNotifications(ArrayOptions? options = null,
-        IEnumerable<NotificationType>? excludeTypes = null) {
-        var url = "/api/v1/notifications";
-        var queryParams = "";
-        if (options != null) {
-            queryParams += "?" + options.ToQueryString();
-        }
-
-        if (excludeTypes is not null) {
-            var json = JsonSerializer.Serialize(excludeTypes);
-            using var doc = JsonDocument.Parse(json);
-            foreach (var jsonName in doc.RootElement.EnumerateArray()) {
-                queryParams += (queryParams != "" ? "&" : "?") + $"exclude_types[]={jsonName.GetString()}";
-            }
-        }
-
-        return GetMastodonList<Notification>(url + queryParams);
-    }
-
-    /// <summary>
-    /// Getting a single notification
-    /// </summary>
-    /// <param name="notificationId"></param>
-    /// <returns>Returns the Notification</returns>
-    public Task<Notification> GetNotification(string notificationId) {
-        return Get<Notification>($"/api/v1/notifications/{notificationId}");
-    }
-
-    /// <summary>
-    /// Deletes all notifications from the Mastodon server for the authenticated user
-    /// </summary>
-    /// <returns></returns>
-    public Task ClearNotifications() {
-        return Post("/api/v1/notifications/clear");
-    }
-
-    /// <summary>
-    /// Delete a single notification from the server.
-    /// </summary>
-    /// <param name="notificationId"></param>
-    /// <returns></returns>
-    public Task DismissNotification(string notificationId) {
-        return Post($"/api/v1/notifications/{notificationId}/dismiss");
-    }
-
-    #endregion
-
-    #region Reports
-
-    /// <summary>
-    /// Fetching a user's reports
-    /// </summary>
-    /// <param name="options">Define the first and last items to get</param>
-    /// <returns>Returns a list of Reports made by the authenticated user</returns>
-    public Task<MastodonList<Report>> GetReports(ArrayOptions? options = null) {
-        var url = "/api/v1/reports";
-        if (options != null) {
-            url += "?" + options.ToQueryString();
-        }
-
-        return GetMastodonList<Report>(url);
-    }
-
-    /// <summary>
-    /// Reporting a user
-    /// </summary>
-    /// <param name="accountId">The ID of the account to report</param>
-    /// <param name="statusIds">The IDs of statuses to report</param>
-    /// <param name="comment">A comment to associate with the report</param>
-    /// <param name="forward">Whether to forward to the remote admin (in case of a remote account)</param>
-    /// <returns>Returns the finished Report</returns>
-    public Task<Report> Report(string accountId, IEnumerable<string>? statusIds = null, string? comment = null,
-        bool? forward = null) {
-        var data = new List<KeyValuePair<string, string>>()
-        {
-            new("account_id", accountId),
-        };
-        if (statusIds != null) {
-            foreach (var statusId in statusIds) {
-                data.Add(new KeyValuePair<string, string>("status_ids[]", statusId));
-            }
-        }
-
-        if (comment != null) {
-            data.Add(new KeyValuePair<string, string>("comment", comment));
-        }
-
-        if (forward.HasValue) {
-            data.Add(new KeyValuePair<string, string>("forward", forward.Value.ToString().ToLowerInvariant()));
-        }
-
-        return Post<Report>("/api/v1/reports", data);
-    }
-
-    #endregion
-
-    #region Search
-
-    /// <summary>
-    /// Searching for content
-    /// </summary>
-    /// <param name="q">The search query</param>
-    /// <param name="resolve">Whether to resolve non-local accounts</param>
-    /// <returns>Returns ResultsV2. If q is a URL, Mastodon will attempt to fetch the provided account or status. Otherwise, it will do a local account and hashtag search</returns>
-    public Task<Search> Search(string q, bool resolveNonLocalAccouns = false) {
-        if (string.IsNullOrEmpty(q)) {
-            return Task.FromResult(new Search());
-        }
-
-        string url = "/api/v2/search?q=" + Uri.EscapeDataString(q);
-        if (resolveNonLocalAccouns) {
-            url += "&resolve=true";
-        }
-
-        return Get<Search>(url);
-    }
-
-    /// <summary>
-    /// Searching for accounts
-    /// </summary>
-    /// <param name="q">What to search for</param>
-    /// <param name="limit">Maximum number of matching accounts to return (default: 40)</param>
-    /// <param name="resolve">Attempt WebFinger look-up (default: false)</param>
-    /// <param name="following">Only who the user is following (default: false)</param>
-    /// <returns>Returns an array of matching Accounts. Will lookup an account remotely if the search term is in the username@domain format and not yet in the database.</returns>
-    public Task<List<Account>> SearchAccounts(string q, int? limit = null, bool resolveNonLocalAccouns = false,
-        bool onlyFollowing = false) {
-        if (string.IsNullOrEmpty(q)) {
-            return Task.FromResult(new List<Account>());
-        }
-
-        string url = "/api/v1/accounts/search?q=" + Uri.EscapeDataString(q);
-        if (limit.HasValue) {
-            url += "&limit=" + limit.Value;
-        }
-
-        if (resolveNonLocalAccouns) {
-            url += "&resolve=true";
-        }
-
-        if (onlyFollowing) {
-            url += "&following=true";
-        }
-
-        return Get<List<Account>>(url);
-    }
-
-    #endregion
-
-    #region Filters
-
-    /// <summary>
-    /// Listing all text filters the user has configured that potentially must be applied client-side
-    /// </summary>
-    /// <returns>Returns an array of filters</returns>
-    public Task<IEnumerable<Filter>> GetFilters() {
-        return Get<IEnumerable<Filter>>("/api/v1/filters");
-    }
-
-    /// <summary>
-    /// Creating a new filter
-    /// </summary>
-    /// <param name="phrase">Keyword or phrase to filter</param>
-    /// <param name="context">Filtering context. At least one context must be specified</param>
-    /// <param name="irreversible">Irreversible filtering will only work in home and notifications contexts by fully dropping the records</param>
-    /// <param name="wholeWord">Whether to consider word boundaries when matching</param>
-    /// <param name="expiresIn">Number that indicates seconds. Filter will be expire in seconds after API processed. Leave null for no expiration</param>
-    /// <returns>Returns a created filter</returns>
-    public Task<Filter> CreateFilter(string phrase, FilterContext context, bool irreversible = false,
-        bool wholeWord = false, uint? expiresIn = null) {
-        if (string.IsNullOrEmpty(phrase)) {
-            throw new ArgumentException("The phrase is required", nameof(phrase));
-        }
-
-        if (context == 0) {
-            throw new ArgumentException("At least one context must be specified", nameof(context));
-        }
-
-        var data = new List<KeyValuePair<string, string>>() { new("phrase", phrase) };
-        foreach (FilterContext checkFlag in new[]
-                     { FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread }) {
-            if ((context & checkFlag) == checkFlag) {
-                data.Add(new KeyValuePair<string, string>("context[]", checkFlag.ToString().ToLowerInvariant()));
-            }
-        }
-
-        if (irreversible) {
-            data.Add(new KeyValuePair<string, string>("irreversible", "true"));
-        }
-
-        if (wholeWord) {
-            data.Add(new KeyValuePair<string, string>("whole_word", "true"));
-        }
-
-        if (expiresIn.HasValue) {
-            data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.Value.ToString()));
-        }
-
-        return Post<Filter>("/api/v1/filters", data);
-    }
-
-    /// <summary>
-    /// Getting a text filter
-    /// </summary>
-    /// <param name="filterId">Filter ID</param>
-    /// <returns>Returns a filter</returns>
-    public Task<Filter> GetFilter(string filterId) {
-        return Get<Filter>($"/api/v1/filters/{filterId}");
-    }
-
-    /// <summary>
-    /// Updating a text filter
-    /// </summary>
-    /// <param name="filterId">Filter ID</param>
-    /// <param name="phrase">A new keyword or phrase to filter, or null to keep</param>
-    /// <param name="context">A new filtering context, or null to keep</param>
-    /// <param name="irreversible">A new irreversible flag, or null to keep</param>
-    /// <param name="wholeWord">A new whole_word flag, or null to keep</param>
-    /// <param name="expiresIn">A new number that indicates seconds. Filter will be expire in seconds after API processed. Leave null to keep</param>
-    /// <returns>Returns an updated filter</returns>
-    public Task<Filter> UpdateFilter(string filterId, string? phrase = null, FilterContext? context = null,
-        bool? irreversible = null, bool? wholeWord = null, uint? expiresIn = null) {
-        if (context == 0) {
-            throw new ArgumentException("At least one context to filter must be specified", nameof(context));
-        }
-
-        var data = new List<KeyValuePair<string, string>>();
-        if (phrase != null) {
-            data.Add(new KeyValuePair<string, string>("phrase", phrase));
-        }
-
-        if (context.HasValue) {
-            foreach (FilterContext checkFlag in new[]
-                     {
-                         FilterContext.Home, FilterContext.Notifications, FilterContext.Public, FilterContext.Thread
-                     }) {
-                if ((context & checkFlag) == checkFlag) {
-                    data.Add(new KeyValuePair<string, string>("context[]", checkFlag.ToString().ToLowerInvariant()));
-                }
-            }
-        }
-
-        if (irreversible.HasValue) {
-            data.Add(new KeyValuePair<string, string>("irreversible",
-                irreversible.Value.ToString().ToLowerInvariant()));
-        }
-
-        if (wholeWord.HasValue) {
-            data.Add(new KeyValuePair<string, string>("whole_word", wholeWord.Value.ToString().ToLowerInvariant()));
-        }
-
-        if (expiresIn.HasValue) {
-            data.Add(new KeyValuePair<string, string>("expires_in", expiresIn.Value.ToString()));
-        }
-
-        return Put<Filter>($"/api/v1/filters/{filterId}", data);
-    }
-
-    /// <summary>
-    /// Deleting a text filter
-    /// </summary>
-    /// <param name="filterId"></param>
-    public Task DeleteFilter(string filterId) {
-        return Delete($"/api/v1/filters/{filterId}");
-    }
-
-    #endregion
-
-    #region Polls
-
-    /// <summary>
-    /// Get a poll
-    /// </summary>
-    /// <param name="id">The ID of the poll</param>
-    /// <returns>Returns Poll</returns>
-    public Task<Poll> GetPoll(string id) {
-        return Get<Poll>("/api/v1/polls/" + id.ToString());
-    }
-
-    /// <summary>
-    /// Vote on a poll.
-    /// </summary>
-    /// <param name="id">The ID of the poll</param>
-    /// <param name="choices">Array of choice indices</param>
-    /// <returns>Returns Poll</returns>
-    public Task<Poll> Vote(string id, IEnumerable<int> choices) {
-        var data = choices
-            .Select(index => new KeyValuePair<string, string>("choices[]", index.ToString()))
-            .ToArray();
-        return Post<Poll>("/api/v1/polls/" + id.ToString() + "/votes", data);
+        apiHttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AccessToken);
+
+        Accounts = RestService.For<IAccounts>(apiHttpClient, settings);
+        Proofs = RestService.For<IProofs>(apiHttpClient, settings);
+        FollowRequests = RestService.For<IFollowRequests>(apiHttpClient, settings);
+        Suggestions = RestService.For<ISuggestions>(apiHttpClient, settings);
+        Favourites = RestService.For<IFavourites>(apiHttpClient, settings);
+        Bookmarks = RestService.For<IBookmarks>(apiHttpClient, settings);
+        FeaturedTags = RestService.For<IFeaturedTags>(apiHttpClient, settings);
+        Instance = RestService.For<IInstance>(apiHttpClient, settings);
+        Trends = RestService.For<ITrends>(apiHttpClient, settings);
+        Directory = RestService.For<IDirectory>(apiHttpClient, settings);
+        Announcements = RestService.For<IAnnouncements>(apiHttpClient, settings);
+        Lists = RestService.For<ILists>(apiHttpClient, settings);
+        Media = RestService.For<IMedia>(apiHttpClient, settings);
+        CustomEmojis = RestService.For<ICustomEmojis>(apiHttpClient, settings);
+        Notifications = RestService.For<INotifications>(apiHttpClient, settings);
+        Reports = RestService.For<IReports>(apiHttpClient, settings);
+        SearchApi = RestService.For<ISearch>(apiHttpClient, settings);
+        Filters = RestService.For<IFilters>(apiHttpClient, settings);
+        Polls = RestService.For<IPolls>(apiHttpClient, settings);
+        Statuses = RestService.For<IStatuses>(apiHttpClient, settings);
+        ScheduledStatuses = RestService.For<IScheduledStatuses>(apiHttpClient, settings);
+        Timelines = RestService.For<ITimelines>(apiHttpClient, settings);
+        Conversations = RestService.For<IConversations>(apiHttpClient, settings);
+        Follows = RestService.For<IFollows>(apiHttpClient, settings);
+        Blocks = RestService.For<IBlocks>(apiHttpClient, settings);
+        Mutes = RestService.For<IMutes>(apiHttpClient, settings);
+        Endorsements = RestService.For<IEndorsements>(apiHttpClient, settings);
+        Markers = RestService.For<IMarkers>(apiHttpClient, settings);
+        DomainBlocks = RestService.For<IDomainBlocks>(apiHttpClient, settings);
+        Tags = RestService.For<ITags>(apiHttpClient, settings);
+        FollowedTags = RestService.For<IFollowedTags>(apiHttpClient, settings);
+        AdminAccounts = RestService.For<IAdminAccounts>(apiHttpClient, settings);
     }
 
     #endregion
@@ -693,9 +136,9 @@ public partial class Client: BaseHttpClient {
         }
     }
 
-    #endregion
-
-    protected override void OnResponseReceived(HttpResponseMessage response) {
+    protected void OnResponseReceived(HttpResponseMessage response) {
         UpdateRateLimits(response);
     }
+
+    #endregion
 }

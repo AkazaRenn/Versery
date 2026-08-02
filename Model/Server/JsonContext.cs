@@ -1,7 +1,9 @@
 using System.Text.Json.Serialization;
 
 namespace Model.Server;
+[JsonSerializable(typeof(Entities.AccountWarning))]
 [JsonSerializable(typeof(Entities.Account))]
+[JsonSerializable(typeof(Entities.Appeal))]
 [JsonSerializable(typeof(Entities.AdminAccount))]
 [JsonSerializable(typeof(Entities.AdminIp))]
 [JsonSerializable(typeof(Entities.Announcement))]
@@ -23,6 +25,7 @@ namespace Model.Server;
 [JsonSerializable(typeof(Entities.Marker))]
 [JsonSerializable(typeof(Entities.MediaAttachment))]
 [JsonSerializable(typeof(Entities.Notification))]
+[JsonSerializable(typeof(Entities.NotificationFallback))]
 [JsonSerializable(typeof(Entities.Poll))]
 [JsonSerializable(typeof(Entities.PreviewCard))]
 [JsonSerializable(typeof(Entities.PreviewCardAuthor))]
@@ -30,6 +33,7 @@ namespace Model.Server;
 [JsonSerializable(typeof(Entities.QuoteApproval))]
 [JsonSerializable(typeof(Entities.Reaction))]
 [JsonSerializable(typeof(Entities.Relationship))]
+[JsonSerializable(typeof(Entities.RelationshipSeveranceEvent))]
 [JsonSerializable(typeof(Entities.Report))]
 [JsonSerializable(typeof(Entities.Role))]
 [JsonSerializable(typeof(Entities.Rule))]
@@ -39,9 +43,9 @@ namespace Model.Server;
 [JsonSerializable(typeof(Entities.Status))]
 [JsonSerializable(typeof(Entities.Tag))]
 [JsonSerializable(typeof(Entities.Token))]
-[JsonSerializable(typeof(Methods.OAuth))]
-[JsonSerializable(typeof(Methods.WeeklyActivity))]
-
+[JsonSerializable(typeof(Methods.Entities.OAuth))]
+[JsonSerializable(typeof(Methods.Entities.Markers))]
+[JsonSerializable(typeof(Methods.Entities.WeeklyActivity))]
 [JsonSourceGenerationOptions(UseStringEnumConverter = true)]
 public partial class JsonContext: JsonSerializerContext {
 }

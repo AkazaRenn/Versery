@@ -7,7 +7,7 @@ namespace Model.Server.Entities;
 /// Version: 0.6.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/entities/Context/">Mastodon API Documentation</see>
-public class Context {
+public sealed class Context {
     /// <summary>
     /// Parents in the thread.
     /// </summary>

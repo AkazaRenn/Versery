@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Model.Server.Methods;
+namespace Model.Server.Methods.Entities;
 /// <summary>
 /// Version: 3.0.0
 /// </summary>
 /// <see href="https://docs.joinmastodon.org/methods/instance/#response-2">Mastodon API Documentation</see>
-public class WeeklyActivity {
+public sealed class WeeklyActivity {
     /// <summary>
     /// Midnight at the first day of the week.
     /// </summary>

@@ -48,7 +48,7 @@ public class Application {
     public string? VapidKey { get; set; } = null;
 }
 
-public class CredentialApplication: Application {
+public sealed class CredentialApplication: Application {
     /// <summary>
     /// Client ID key, to be used for obtaining OAuth tokens.
     /// </summary>
