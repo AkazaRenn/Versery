@@ -3,7 +3,7 @@ using Model;
 using Model.Access;
 using Model.Entities;
 using Model.Enumerations;
-using Model.Server.Entities.Enumerations;
+using Model.Server.Entities;
 
 namespace ViewModel.Controls;
 

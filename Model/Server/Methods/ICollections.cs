@@ -8,7 +8,7 @@ public interface ICollections {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#create">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#create"/>
     [Post("/api/v1/collections")]
     Task<WrappedCollection> Create(
         [AliasAs("name")] string name,
@@ -22,14 +22,14 @@ public interface ICollections {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#get_collection">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#get_collection"/>
     [Get("/api/v1/collections/{id}")]
     Task<CollectionWithAccounts> GetCollection(string id);
 
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#get_collections">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#get_collections"/>
     [Get("/api/v1/accounts/{accountId}/collections")]
     Task<Collections> GetCollections(
         string accountId,
@@ -39,7 +39,7 @@ public interface ICollections {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#in_collections">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#in_collections"/>
     [Get("/api/v1/accounts/{accountId}/in_collections")]
     Task<Collections> InCollections(
         string accountId,
@@ -49,7 +49,7 @@ public interface ICollections {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#update_collection">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#update_collection"/>
     [Patch("/api/v1/collections/{id}")]
     Task<WrappedCollection> UpdateCollection(
         string id,
@@ -63,14 +63,14 @@ public interface ICollections {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#delete_collection">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#delete_collection"/>
     [Delete("/api/v1/collections/{id}")]
     Task DeleteCollection(string id);
 
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#add_account">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#add_account"/>
     [Post("/api/v1/collections/{collectionId}/items")]
     Task<WrappedCollectionItem> AddAccount(
         string collectionId,
@@ -79,14 +79,14 @@ public interface ICollections {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#remove_account">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#remove_account"/>
     [Delete("/api/v1/collections/{collectionId}/items/{id}")]
     Task RemoveAccount(string collectionId, string id);
 
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/collections/#revoke_item">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/collections/#revoke_item"/>
     [Post("/api/v1/collections/{collectionId}/items/{id}/revoke")]
     Task RevokeItem(string collectionId, string id);
 }

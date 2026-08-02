@@ -7,7 +7,7 @@ public interface IDomainBlocks {
     /// <summary>
     /// Version: 3.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/domain_blocks/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/domain_blocks/#get"/>
     [Get("/api/v1/domain_blocks")]
     Task<List<string>> Get(
         [AliasAs("max_id")] string? maxId = null,
@@ -18,14 +18,14 @@ public interface IDomainBlocks {
     /// <summary>
     /// Version: 1.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/domain_blocks/#block">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/domain_blocks/#block"/>
     [Post("/api/v1/domain_blocks")]
     Task Block([AliasAs("domain")] string domain);
 
     /// <summary>
     /// Version: 1.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/domain_blocks/#unblock">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/domain_blocks/#unblock"/>
     [Delete("/api/v1/domain_blocks")]
     Task Unblock([AliasAs("domain")] string domain);
 }

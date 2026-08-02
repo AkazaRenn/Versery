@@ -7,7 +7,7 @@ public interface IEmails {
     /// <summary>
     /// Version: 3.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/emails/#confirmation">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/emails/#confirmation"/>
     [Post("/api/v1/emails/confirmations")]
     Task Confirmation([AliasAs("email")] string? email = null);
 }

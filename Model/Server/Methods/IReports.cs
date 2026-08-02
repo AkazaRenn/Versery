@@ -8,7 +8,7 @@ public interface IReports {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/reports/#post">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/reports/#post"/>
     [Post("/api/v1/reports")]
     Task<Report> Create(
         [AliasAs("account_id")] string accountId,

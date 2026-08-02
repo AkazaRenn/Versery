@@ -8,7 +8,7 @@ public interface IApps {
     /// <summary>
     /// Version: 4.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/apps/#create">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/apps/#create"/>
     [Post("/api/v1/apps")]
     Task<CredentialApplication> Create(
         [AliasAs("client_name")] string clientName,
@@ -20,7 +20,7 @@ public interface IApps {
     /// <summary>
     /// Version: 2.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/apps/#verify_credentials">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/apps/#verify_credentials"/>
     [Get("/api/v1/apps/verify_credentials")]
     Task<Application> VerifyCredentials();
 }

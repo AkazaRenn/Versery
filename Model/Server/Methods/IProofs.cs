@@ -8,7 +8,7 @@ public interface IProofs {
     /// <summary>
     /// Version: 2.8.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/proofs/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/proofs/#get"/>
     [Get("/api/proofs")]
     Task<ProofResponse> Get(
         [AliasAs("provider")] string provider,

@@ -1,16 +1,15 @@
-using Model.Server.Entities;
 using Refit;
 
 namespace Model.Server.Methods;
 
 /// <see href="https://docs.joinmastodon.org/methods/notifications_alpha/">Mastodon API Documentation</see>
-[System.Obsolete]
+[Obsolete("This page documents experimental API endpoints and is kept for historical purposes only. See the finalized version if you want to implement the grouped notifications feature in a client.")]
 public interface INotificationsAlpha {
     /// <summary>
     /// Version: 4.3.0-beta.2
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/notifications_alpha/#get-grouped">Mastodon API Documentation</see>
-    [System.Obsolete]
+    /// <seealso href="https://docs.joinmastodon.org/methods/notifications_alpha/#get-grouped"/>
+    [Obsolete("deprecated")]
     [Get("/api/v2_alpha/notifications")]
     Task<GroupedNotificationsResults> GetGrouped(
         [AliasAs("max_id")] string? maxId = null,
@@ -26,24 +25,24 @@ public interface INotificationsAlpha {
     /// <summary>
     /// Version: 4.3.0-beta.2
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/notifications_alpha/#get-notification-group">Mastodon API Documentation</see>
-    [System.Obsolete]
+    /// <seealso href="https://docs.joinmastodon.org/methods/notifications_alpha/#get-notification-group"/>
+    [Obsolete("deprecated")]
     [Get("/api/v2_alpha/notifications/{groupKey}")]
     Task<GroupedNotificationsResults> GetNotificationGroup(string groupKey);
 
     /// <summary>
     /// Version: 4.3.0-beta.2
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/notifications_alpha/#dismiss-group">Mastodon API Documentation</see>
-    [System.Obsolete]
+    /// <seealso href="https://docs.joinmastodon.org/methods/notifications_alpha/#dismiss-group"/>
+    [Obsolete("deprecated")]
     [Post("/api/v2_alpha/notifications/{groupKey}/dismiss")]
     Task DismissGroup(string groupKey);
 
     /// <summary>
     /// Version: 4.3.0-beta.2
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/notifications_alpha/#unread-group-count">Mastodon API Documentation</see>
-    [System.Obsolete]
+    /// <seealso href="https://docs.joinmastodon.org/methods/notifications_alpha/#unread-group-count"/>
+    [Obsolete("deprecated")]
     [Get("/api/v2_alpha/notifications/unread_count")]
     Task<GroupedNotificationUnreadCount> UnreadGroupCount(
         [AliasAs("limit")] int? limit = null,

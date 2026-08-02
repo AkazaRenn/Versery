@@ -8,7 +8,7 @@ public interface IOAuth {
     /// <summary>
     /// Version: 4.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/oauth/#authorize">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/oauth/#authorize"/>
     [Get("/oauth/authorize")]
     Task<string> Authorize(
         [AliasAs("response_type")] string responseType,
@@ -25,7 +25,7 @@ public interface IOAuth {
     /// <summary>
     /// Version: 4.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/oauth/#token">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/oauth/#token"/>
     [Post("/oauth/token")]
     Task<Token> Token(
         [AliasAs("grant_type")] string grantType,
@@ -40,7 +40,7 @@ public interface IOAuth {
     /// <summary>
     /// Version: 0.1.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/oauth/#revoke">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/oauth/#revoke"/>
     [Post("/oauth/revoke")]
     Task Revoke(
         [AliasAs("client_id")] string clientId,
@@ -51,21 +51,21 @@ public interface IOAuth {
     /// <summary>
     /// Version: 4.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/oauth/#userinfo">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/oauth/#userinfo"/>
     [Get("/oauth/userinfo")]
     Task<UserInfo> Userinfo();
 
     /// <summary>
     /// Version: 4.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/oauth/#userinfo">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/oauth/#userinfo"/>
     [Post("/oauth/userinfo")]
     Task<UserInfo> UserinfoPost();
 
     /// <summary>
     /// Version: 4.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/oauth/#authorization-server-metadata">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/oauth/#authorization-server-metadata"/>
     [Get("/.well-known/oauth-authorization-server")]
     Task<OAuthServerConfiguration> AuthorizationServerMetadata();
 }

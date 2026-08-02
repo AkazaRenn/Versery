@@ -8,7 +8,7 @@ public interface IEndorsements {
     /// <summary>
     /// Version: 2.5.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/endorsements/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/endorsements/#get"/>
     [Get("/api/v1/endorsements")]
     Task<List<Account>> Get(
         [AliasAs("max_id")] string? maxId = null,

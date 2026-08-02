@@ -9,21 +9,21 @@ public interface ILists {
     /// <summary>
     /// Version: 2.1.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#get"/>
     [Get("/api/v1/lists")]
     Task<List<ServerList>> Get();
 
     /// <summary>
     /// Version: 2.1.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#get-one">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#get-one"/>
     [Get("/api/v1/lists/{listId}")]
     Task<ServerList> GetOne(string listId);
 
     /// <summary>
     /// Version: 3.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#accounts">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#accounts"/>
     [Get("/api/v1/lists/{listId}/accounts")]
     Task<List<Account>> Accounts(
         string listId,
@@ -35,7 +35,7 @@ public interface ILists {
     /// <summary>
     /// Version: 4.2.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#create">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#create"/>
     [Post("/api/v1/lists")]
     Task<ServerList> Create(
         [AliasAs("title")] string title,
@@ -45,7 +45,7 @@ public interface ILists {
     /// <summary>
     /// Version: 4.2.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#update">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#update"/>
     [Put("/api/v1/lists/{listId}")]
     Task<ServerList> Update(
         string listId,
@@ -56,14 +56,14 @@ public interface ILists {
     /// <summary>
     /// Version: 2.1.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#delete">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#delete"/>
     [Delete("/api/v1/lists/{listId}")]
     Task Delete(string listId);
 
     /// <summary>
     /// Version: 2.1.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#accounts-add">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#accounts-add"/>
     [Post("/api/v1/lists/{listId}/accounts")]
     Task AccountsAdd(
         string listId,
@@ -72,7 +72,7 @@ public interface ILists {
     /// <summary>
     /// Version: 2.1.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/lists/#accounts-remove">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/lists/#accounts-remove"/>
     [Delete("/api/v1/lists/{listId}/accounts")]
     Task AccountsRemove(
         string listId,

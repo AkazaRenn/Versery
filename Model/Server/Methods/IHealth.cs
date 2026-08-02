@@ -8,7 +8,7 @@ public interface IHealth {
     /// <summary>
     /// Version: 3.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/health/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/health/#get"/>
     [Get("/health")]
     Task<HealthStatus> Get();
 }

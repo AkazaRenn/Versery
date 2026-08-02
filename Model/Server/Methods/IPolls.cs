@@ -8,14 +8,14 @@ public interface IPolls {
     /// <summary>
     /// Version: 2.8.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/polls/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/polls/#get"/>
     [Get("/api/v1/polls/{id}")]
     Task<Poll> Get(string id);
 
     /// <summary>
     /// Version: 2.8.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/polls/#vote">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/polls/#vote"/>
     [Post("/api/v1/polls/{id}/votes")]
     Task<Poll> Vote(string id, [AliasAs("choices[]")][Query(CollectionFormat.Multi)] IEnumerable<int> choices);
 }

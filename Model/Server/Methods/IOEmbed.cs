@@ -8,7 +8,7 @@ public interface IOEmbed {
     /// <summary>
     /// Version: 1.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/oembed/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/oembed/#get"/>
     [Get("/api/oembed")]
     Task<OEmbed> Get(
         [AliasAs("url")] string url,

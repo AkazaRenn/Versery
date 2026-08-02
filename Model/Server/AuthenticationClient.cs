@@ -1,4 +1,5 @@
 ﻿using Model.Server.Entities;
+using Model.Server.OauthScopes;
 using System.Net;
 
 namespace Model.Server;

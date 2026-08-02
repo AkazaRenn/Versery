@@ -8,14 +8,14 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#get"/>
     [Get("/api/v2/filters")]
     Task<List<Filter>> Get();
 
     /// <summary>
     /// Version: 4.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#create">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#create"/>
     [Post("/api/v2/filters")]
     Task<Filter> Create(
         [AliasAs("title")] string title,
@@ -28,14 +28,14 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#get-one">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#get-one"/>
     [Get("/api/v2/filters/{filterId}")]
     Task<Filter> GetOne(string filterId);
 
     /// <summary>
     /// Version: 4.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#update">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#update"/>
     [Put("/api/v2/filters/{filterId}")]
     Task<Filter> Update(
         string filterId,
@@ -51,21 +51,21 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#delete">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#delete"/>
     [Delete("/api/v2/filters/{filterId}")]
     Task Delete(string filterId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#keywords-get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#keywords-get"/>
     [Get("/api/v2/filters/{filterId}/keywords")]
     Task<List<FilterKeyword>> KeywordsGet(string filterId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#keywords-create">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#keywords-create"/>
     [Post("/api/v2/filters/{filterId}/keywords")]
     Task<FilterKeyword> KeywordsCreate(
         string filterId,
@@ -75,14 +75,14 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#keywords-get-one">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#keywords-get-one"/>
     [Get("/api/v2/filters/keywords/{keywordId}")]
     Task<FilterKeyword> KeywordsGetOne(string keywordId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#keywords-update">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#keywords-update"/>
     [Put("/api/v2/filters/keywords/{keywordId}")]
     Task<FilterKeyword> KeywordsUpdate(
         string keywordId,
@@ -92,21 +92,21 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#keywords-delete">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#keywords-delete"/>
     [Delete("/api/v2/filters/keywords/{keywordId}")]
     Task KeywordsDelete(string keywordId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#statuses-get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#statuses-get"/>
     [Get("/api/v2/filters/{filterId}/statuses")]
     Task<List<FilterStatus>> StatusesGet(string filterId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#statuses-add">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#statuses-add"/>
     [Post("/api/v2/filters/{filterId}/statuses")]
     Task<FilterStatus> StatusesAdd(
         string filterId,
@@ -115,28 +115,28 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#statuses-get-one">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#statuses-get-one"/>
     [Get("/api/v2/filters/statuses/{statusFilterId}")]
     Task<FilterStatus> StatusesGetOne(string statusFilterId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#statuses-remove">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#statuses-remove"/>
     [Delete("/api/v2/filters/statuses/{statusFilterId}")]
     Task<FilterStatus> StatusesRemove(string statusFilterId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#get-v1">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#get-v1"/>
     [Get("/api/v1/filters")]
     Task<List<V1Filter>> GetV1();
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#create-v1">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#create-v1"/>
     [Post("/api/v1/filters")]
     Task<V1Filter> CreateV1(
         [AliasAs("phrase")] string phrase,
@@ -148,14 +148,14 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#get-one-v1">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#get-one-v1"/>
     [Get("/api/v1/filters/{filterId}")]
     Task<V1Filter> GetOneV1(string filterId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#update-v1">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#update-v1"/>
     [Put("/api/v1/filters/{filterId}")]
     Task<V1Filter> UpdateV1(
         string filterId,
@@ -168,7 +168,7 @@ public interface IFilters {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/filters/#delete-v1">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/filters/#delete-v1"/>
     [Delete("/api/v1/filters/{filterId}")]
     Task DeleteV1(string filterId);
 }

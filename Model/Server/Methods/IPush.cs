@@ -8,7 +8,7 @@ public interface IPush {
     /// <summary>
     /// Version: 4.5.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/push/#create">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/push/#create"/>
     [Post("/api/v1/push/subscription")]
     Task<WebPushSubscription> Create(
         [AliasAs("subscription[endpoint]")] string endpoint,
@@ -32,14 +32,14 @@ public interface IPush {
     /// <summary>
     /// Version: 2.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/push/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/push/#get"/>
     [Get("/api/v1/push/subscription")]
     Task<WebPushSubscription> Get();
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/push/#update">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/push/#update"/>
     [Put("/api/v1/push/subscription")]
     Task<WebPushSubscription> Update(
         [AliasAs("data[alerts][mention]")] bool? mention = null,
@@ -57,7 +57,7 @@ public interface IPush {
     /// <summary>
     /// Version: 2.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/push/#delete">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/push/#delete"/>
     [Delete("/api/v1/push/subscription")]
     Task Delete();
 }

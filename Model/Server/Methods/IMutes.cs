@@ -8,7 +8,7 @@ public interface IMutes {
     /// <summary>
     /// Version: 3.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/mutes/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/mutes/#get"/>
     [Get("/api/v1/mutes")]
     Task<List<MutedAccount>> Get(
         [AliasAs("max_id")] string? maxId = null,

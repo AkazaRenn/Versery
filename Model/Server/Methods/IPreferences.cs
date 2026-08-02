@@ -8,7 +8,7 @@ public interface IPreferences {
     /// <summary>
     /// Version: 4.5.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/preferences/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/preferences/#get"/>
     [Get("/api/v1/preferences")]
     Task<Preferences> Get();
 }

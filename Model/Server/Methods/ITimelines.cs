@@ -8,7 +8,7 @@ public interface ITimelines {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/timelines/#home">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/timelines/#home"/>
     [Get("/api/v1/timelines/home")]
     Task<List<Status>> Home(
         [AliasAs("max_id")] string? maxId = null,
@@ -19,7 +19,7 @@ public interface ITimelines {
     /// <summary>
     /// Version: 4.5.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/timelines/#public">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/timelines/#public"/>
     [Get("/api/v1/timelines/public")]
     Task<List<Status>> Public(
         [AliasAs("local")] bool? local = null,
@@ -33,7 +33,7 @@ public interface ITimelines {
     /// <summary>
     /// Version: 4.5.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/timelines/#link">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/timelines/#link"/>
     [Get("/api/v1/timelines/link")]
     Task<List<Status>> Link(
         [AliasAs("url")] string url,
@@ -45,7 +45,7 @@ public interface ITimelines {
     /// <summary>
     /// Version: 4.5.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/timelines/#tag">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/timelines/#tag"/>
     [Get("/api/v1/timelines/tag/{hashtag}")]
     Task<List<Status>> Tag(
         string hashtag,
@@ -63,7 +63,7 @@ public interface ITimelines {
     /// <summary>
     /// Version: 3.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/timelines/#direct">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/timelines/#direct"/>
     [Get("/api/v1/timelines/direct")]
     Task<List<Status>> Direct(
         [AliasAs("max_id")] string? maxId = null,
@@ -74,7 +74,7 @@ public interface ITimelines {
     /// <summary>
     /// Version: 3.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/timelines/#list">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/timelines/#list"/>
     [Get("/api/v1/timelines/list/{listId}")]
     Task<List<Status>> List(
         string listId,

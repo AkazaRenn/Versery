@@ -8,7 +8,7 @@ public interface IBlocks {
     /// <summary>
     /// Version: 3.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/blocks/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/blocks/#get"/>
     [Get("/api/v1/blocks")]
     Task<List<Account>> Get(
         [AliasAs("max_id")] string? maxId = null,

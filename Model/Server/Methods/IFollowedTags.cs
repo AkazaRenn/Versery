@@ -8,7 +8,7 @@ public interface IFollowedTags {
     /// <summary>
     /// Version: 4.1.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/followed_tags/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/followed_tags/#get"/>
     [Get("/api/v1/followed_tags")]
     Task<List<Tag>> Get(
         [AliasAs("max_id")] string? maxId = null,

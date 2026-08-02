@@ -2,29 +2,40 @@ using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
 
-/// <summary>
 /// <see href="https://docs.joinmastodon.org/entities/Suggestion/">Mastodon API Documentation</see>
 public sealed class Suggestion {
     /// <summary>
-    /// Version: 3.4.0
+    /// Version: 4.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/entities/Suggestion/#source">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/entities/Suggestion/#source"/>
+    [Obsolete("deprecated, use sources instead")]
     [JsonPropertyName("source")]
-    public string Source { get; set; } = string.Empty;
+    public SuggestionReason Source { get; set; } = SuggestionReason.Staff;
 
     /// <summary>
     /// Version: 4.3.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/entities/Suggestion/#sources">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/entities/Suggestion/#sources"/>
     [JsonPropertyName("sources")]
     public List<SuggestionSource> Sources { get; set; } = [];
 
     /// <summary>
     /// Version: 3.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/entities/Suggestion/#account">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/entities/Suggestion/#account"/>
     [JsonPropertyName("account")]
     public Account Account { get; set; } = new();
+}
+
+public enum SuggestionReason {
+    [JsonStringEnumMemberName("staff")]
+    Staff,
+
+    [JsonStringEnumMemberName("past_interactions")]
+    PastInteractions,
+
+    [JsonStringEnumMemberName("global")]
+    Global,
 }
 
 public enum SuggestionSource {

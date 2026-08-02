@@ -9,9 +9,9 @@ namespace Model;
 public static class Extensions {
     extension(Server.Client client) {
         public async Task<string> GetFullUserId() {
-            var account = await client.Accounts.GetVerifyCredentials();
-            var instance = await client.Instance.Get();
-            return $"{account.UserName}@{instance.Domain}";
+            var account = await client.Accounts.VerifyCredentials();
+            var instance = await client.Instance.V2();
+            return $"{account.Username}@{instance.Domain}";
         }
     }
 

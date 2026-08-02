@@ -9,7 +9,7 @@ public interface ISearch {
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/search/#v2">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/search/#v2"/>
     [Get("/api/v2/search")]
     Task<Search> V2(
         [AliasAs("q")] string q,
@@ -26,7 +26,7 @@ public interface ISearch {
     /// <summary>
     /// Version: 3.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/search/#v1">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/search/#v1"/>
     [Get("/api/v1/search")]
     Task<SearchV1> V1(
         [AliasAs("q")] string q,

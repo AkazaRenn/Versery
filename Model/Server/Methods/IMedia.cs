@@ -8,7 +8,7 @@ public interface IMedia {
     /// <summary>
     /// Version: 3.2.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/media/#v1">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/media/#v1"/>
     [Multipart]
     [Post("/api/v1/media")]
     Task<MediaAttachment> V1(
@@ -20,14 +20,14 @@ public interface IMedia {
     /// <summary>
     /// Version: 3.1.3
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/media/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/media/#get"/>
     [Get("/api/v1/media/{mediaId}")]
     Task<MediaAttachment> Get(string mediaId);
 
     /// <summary>
     /// Version: 4.0.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/media/#v2">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/media/#v2"/>
     [Multipart]
     [Post("/api/v2/media")]
     Task<MediaAttachment> V2(
@@ -39,7 +39,7 @@ public interface IMedia {
     /// <summary>
     /// Version: 3.2.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/media/#update">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/media/#update"/>
     [Multipart]
     [Put("/api/v1/media/{mediaId}")]
     Task<MediaAttachment> Update(
@@ -51,7 +51,7 @@ public interface IMedia {
     /// <summary>
     /// Version: 4.4.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/media/#delete">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/media/#delete"/>
     [Delete("/api/v1/media/{mediaId}")]
     Task Delete(string mediaId);
 }

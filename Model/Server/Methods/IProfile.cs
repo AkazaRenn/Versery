@@ -8,14 +8,14 @@ public interface IProfile {
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/profile/#get">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/profile/#get"/>
     [Get("/api/v1/profile")]
     Task<Profile> Get();
 
     /// <summary>
     /// Version: 4.6.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/profile/#update">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/profile/#update"/>
     [Multipart]
     [Patch("/api/v1/profile")]
     Task<Profile> Update(
@@ -40,14 +40,14 @@ public interface IProfile {
     /// <summary>
     /// Version: 4.2.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/profile/#delete-avatar">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/profile/#delete-avatar"/>
     [Delete("/api/v1/profile/avatar")]
     Task<CredentialAccount> DeleteAvatar();
 
     /// <summary>
     /// Version: 4.2.0
     /// </summary>
-    /// <see href="https://docs.joinmastodon.org/methods/profile/#delete-header">Mastodon API Documentation</see>
+    /// <seealso href="https://docs.joinmastodon.org/methods/profile/#delete-header"/>
     [Delete("/api/v1/profile/header")]
     Task<CredentialAccount> DeleteHeader();
 }

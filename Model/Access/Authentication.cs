@@ -1,6 +1,7 @@
 ﻿using Model.DataPersistence;
 using Model.Server;
 using Model.Server.Entities;
+using Model.Server.OauthScopes;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
