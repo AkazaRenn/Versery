@@ -19,11 +19,11 @@ public interface IFilters {
     [Post("/api/v2/filters")]
     Task<Filter> Create(
         [AliasAs("title")] string title,
-        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string> contexts,
+        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string> context,
         [AliasAs("filter_action")] string? filterAction = null,
         [AliasAs("expires_in")] uint? expiresIn = null,
-        [AliasAs("keywords_attributes[][keyword]")][Query(CollectionFormat.Multi)] IEnumerable<string>? keywords = null,
-        [AliasAs("keywords_attributes[][whole_word]")][Query(CollectionFormat.Multi)] IEnumerable<bool>? wholeWords = null);
+        [AliasAs("keywords_attributes[][keyword]")][Query(CollectionFormat.Multi)] IEnumerable<string>? keywordsAttributesKeyword = null,
+        [AliasAs("keywords_attributes[][whole_word]")][Query(CollectionFormat.Multi)] IEnumerable<bool>? keywordsAttributesWholeWord = null);
 
     /// <summary>
     /// Version: 4.0.0
@@ -40,13 +40,13 @@ public interface IFilters {
     Task<Filter> Update(
         string filterId,
         [AliasAs("title")] string? title = null,
-        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? contexts = null,
+        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? context = null,
         [AliasAs("filter_action")] string? filterAction = null,
         [AliasAs("expires_in")] uint? expiresIn = null,
-        [AliasAs("keywords_attributes[][keyword]")][Query(CollectionFormat.Multi)] IEnumerable<string>? keywords = null,
-        [AliasAs("keywords_attributes[][whole_word]")][Query(CollectionFormat.Multi)] IEnumerable<bool>? wholeWords = null,
-        [AliasAs("keywords_attributes[][id]")][Query(CollectionFormat.Multi)] IEnumerable<string>? keywordIds = null,
-        [AliasAs("keywords_attributes[][_destroy]")][Query(CollectionFormat.Multi)] IEnumerable<bool>? keywordDestroy = null);
+        [AliasAs("keywords_attributes[][keyword]")][Query(CollectionFormat.Multi)] IEnumerable<string>? keywordsAttributesKeyword = null,
+        [AliasAs("keywords_attributes[][whole_word]")][Query(CollectionFormat.Multi)] IEnumerable<bool>? keywordsAttributesWholeWord = null,
+        [AliasAs("keywords_attributes[][id]")][Query(CollectionFormat.Multi)] IEnumerable<string>? keywordsAttributesId = null,
+        [AliasAs("keywords_attributes[][_destroy]")][Query(CollectionFormat.Multi)] IEnumerable<bool>? keywordsAttributesDestroy = null);
 
     /// <summary>
     /// Version: 4.0.0
@@ -140,7 +140,7 @@ public interface IFilters {
     [Post("/api/v1/filters")]
     Task<V1Filter> CreateV1(
         [AliasAs("phrase")] string phrase,
-        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string> contexts,
+        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string> context,
         [AliasAs("irreversible")] bool? irreversible = null,
         [AliasAs("whole_word")] bool? wholeWord = null,
         [AliasAs("expires_in")] uint? expiresIn = null);
@@ -160,7 +160,7 @@ public interface IFilters {
     Task<V1Filter> UpdateV1(
         string filterId,
         [AliasAs("phrase")] string phrase,
-        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string> contexts,
+        [AliasAs("context[]")][Query(CollectionFormat.Multi)] IEnumerable<string> context,
         [AliasAs("irreversible")] bool? irreversible = null,
         [AliasAs("whole_word")] bool? wholeWord = null,
         [AliasAs("expires_in")] uint? expiresIn = null);

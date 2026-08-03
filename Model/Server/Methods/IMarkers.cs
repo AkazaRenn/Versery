@@ -11,7 +11,7 @@ public interface IMarkers {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/methods/markers/#get"/>
     [Get("/api/v1/markers")]
-    Task<Markers> Get([AliasAs("timeline[]")][Query(CollectionFormat.Multi)] IEnumerable<string> timelines);
+    Task<Markers> Get([AliasAs("timeline[]")][Query(CollectionFormat.Multi)] IEnumerable<string> timeline);
 
     /// <summary>
     /// Version: 3.0.0

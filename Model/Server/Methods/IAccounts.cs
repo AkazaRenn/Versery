@@ -18,7 +18,7 @@ public interface IAccounts {
         [AliasAs("email")] string email,
         [AliasAs("password")] string password,
         [AliasAs("agreement")] bool agreement,
-        [AliasAs("locale")] string locale,
+        [AliasAs("locale")] CultureInfo locale,
         [AliasAs("reason")] string? reason = null,
         [AliasAs("date_of_birth")] DateOnly? dateOfBirth = null);
 
@@ -253,8 +253,8 @@ public interface IAccounts {
         [AliasAs("hide_collections")] bool? hideCollections = null,
         [AliasAs("indexable")] bool? indexable = null,
         [AliasAs("attribution_domains[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? attributionDomains = null,
-        [AliasAs("fields_attributes[][name]")] IEnumerable<string>? fieldNames = null,
-        [AliasAs("fields_attributes[][value]")] IEnumerable<string>? fieldValues = null,
+        [AliasAs("fields_attributes[][name]")] IEnumerable<string>? fieldAttributesName = null,
+        [AliasAs("fields_attributes[][value]")] IEnumerable<string>? fieldAttributesValue = null,
         [AliasAs("source[privacy]")] string? sourcePrivacy = null,
         [AliasAs("source[sensitive]")] bool? sourceSensitive = null,
         [AliasAs("source[language]")] string? sourceLanguage = null,

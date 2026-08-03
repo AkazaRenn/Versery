@@ -34,8 +34,8 @@ public interface IProfile {
         [AliasAs("show_media_replies")] bool? showMediaReplies = null,
         [AliasAs("show_featured")] bool? showFeatured = null,
         [AliasAs("attribution_domains[]")][Query(CollectionFormat.Multi)] IEnumerable<string>? attributionDomains = null,
-        [AliasAs("fields_attributes[][name]")][Query(CollectionFormat.Multi)] IEnumerable<string>? fieldNames = null,
-        [AliasAs("fields_attributes[][value]")][Query(CollectionFormat.Multi)] IEnumerable<string>? fieldValues = null);
+        [AliasAs("fields_attributes[][name]")][Query(CollectionFormat.Multi)] IEnumerable<string>? fieldAttributesName = null,
+        [AliasAs("fields_attributes[][value]")][Query(CollectionFormat.Multi)] IEnumerable<string>? fieldAttributesValue = null);
 
     /// <summary>
     /// Version: 4.2.0
