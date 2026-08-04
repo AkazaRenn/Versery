@@ -1,5 +1,8 @@
+using FluentIcons.Common;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace View.Controls;
 
@@ -27,4 +30,17 @@ internal sealed partial class Status: Grid {
     private CornerRadius AvatarButtonCornerRadius => new(AvatarButtonSize / 2);
     private double RebloggerAvatarSize => ColumnDefinitions[0].Width.Value / 2;
     private CornerRadius RebloggerAvatarCornerRadius => new(RebloggerAvatarSize / 2);
+    private double PosterIdFontSize => DisplayNameTextBlock.FontSize * 0.85;
+
+    private readonly Brush reactButtonBackground = new SolidColorBrush(Colors.Transparent);
+    private readonly Brush reactButtonBorderBrush = new SolidColorBrush(Colors.Transparent);
+    private readonly Thickness reactButtonBorderThickness = new(0, 0, 0, 0);
+    private readonly Thickness reactButtonPadding = new(4, 4, 4, 4);
+    private readonly double reactButtonFontSize = 16;
+    private Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
+    private Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
+    private IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
+
+    private Thickness LoadMoreButtonBorderThickness => new(0, BorderThickness.Bottom, 0, 0);
+    private Thickness LoadMoreButtonMargin => new(-Padding.Left, Padding.Bottom, -Padding.Right, -Padding.Bottom);
 }

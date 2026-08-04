@@ -16,28 +16,34 @@ public sealed partial class Status: ObservableObject {
     public string ContentId { get; } = string.Empty;
     public int Index { get; set; } = -1;
 
-    [ObservableProperty]
-    public partial StatusComponents.AvatarButton AvatarButton { get; set; } = new();
-    [ObservableProperty]
-    public partial StatusComponents.PosterInfo PosterInfo { get; set; } = new();
-    [ObservableProperty]
-    public partial StatusComponents.ReactButtons ReactButtons { get; set; } = new();
-    [ObservableProperty]
-    public partial RichTextRenderer.Html Html { get; set; } = new();
+    public RichTextRenderer.TextWithEmoji PosterDisplayName { get; set; } = new();
+    public RichTextRenderer.Html Html { get; set; } = new();
 
-
-    [ObservableProperty]
-    public partial string? RebloggerId { get; set; } = null;
-    [ObservableProperty]
-    public partial string? RebloggerDisplayName { get; set; } = null;
+    public string? RebloggerId { get; } = null;
+    public string? RebloggerDisplayName { get; } = null;
     [ObservableProperty]
     public partial Uri? RebloggerAvatar { get; set; } = null;
+
+    public string PosterId { get; }= String.Empty;
+    public string PosterAccount { get; }= String.Empty;
     [ObservableProperty]
-    public partial DateTime CreatedAt { get; set; } = DateTime.MinValue;
-    [ObservableProperty]
-    public partial Uri? Uri { get; set; } = null;
+    public partial Uri? PosterAvatar { get; set; } = null;
+
+    public DateTime CreatedAt { get; } = DateTime.MinValue;
+    public Uri? Uri { get; } = null;
     [ObservableProperty]
     public partial bool FollowedByGap { get; set; } = false;
+
+    [ObservableProperty]
+    public partial bool HasReplies { get; set; } = false;
+    [ObservableProperty]
+    public partial bool CanBeReblogged { get; set; } = true;
+    [ObservableProperty]
+    public partial bool IsReblogged { get; set; } = false;
+    [ObservableProperty]
+    public partial bool IsFavourited { get; set; } = false;
+    [ObservableProperty]
+    public partial bool IsBookmarked { get; set; } = false;
 
     public Status(Timeline timeline) {
         Id = timeline.Id;
@@ -48,8 +54,6 @@ public sealed partial class Status: ObservableObject {
         if (status.ReblogId != null) {
             _ = DownloadRebloggerAvatar(account.Avatar);
 
-            AvatarButton.IsReblog = true;
-
             RebloggerId = account.Id;
             RebloggerDisplayName = account.DisplayName;
 
@@ -59,18 +63,17 @@ public sealed partial class Status: ObservableObject {
 
         _ = DownloadAvatar(account.Avatar);
 
-        AvatarButton.ContentPosterId = account.Id;
+        PosterId = account.Id;
+        PosterAccount = account.AccountName;
 
-        PosterInfo.AccountId = account.Id;
-        PosterInfo.DisplayNameInfo.RawText = account.DisplayName;
-        PosterInfo.DisplayNameInfo.Emojis = account.Emojis;
-        PosterInfo.AccountName = account.AccountName;
+        PosterDisplayName.RawText = account.DisplayName;
+        PosterDisplayName.Emojis = account.Emojis;
 
-        ReactButtons.CanBeReblogged = status.Visibility < StatusVisibility.Private;
-        ReactButtons.HasReplies = status.RepliesCount > 0;
-        ReactButtons.IsReblogged = status.Reblogged;
-        ReactButtons.IsFavourited = status.Favourited;
-        ReactButtons.IsBookmarked = status.Bookmarked;
+        CanBeReblogged = status.Visibility < StatusVisibility.Private;
+        HasReplies = status.RepliesCount > 0;
+        IsReblogged = status.Reblogged;
+        IsFavourited = status.Favourited;
+        IsBookmarked = status.Bookmarked;
 
         Html.RawText = status.Content;
         Html.Emojis = status.Emojis;
@@ -97,7 +100,7 @@ public sealed partial class Status: ObservableObject {
     private async Task DownloadAvatar(Uri? uri) {
         if (uri is not null) {
             var downloaded = await Cache.Get(uri);
-            AvatarButton.ContentPosterAvatar = downloaded;
+            PosterAvatar = downloaded;
         }
     }
 
