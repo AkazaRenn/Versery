@@ -40,6 +40,10 @@ public enum FeatureApprovalPolicy {
 
     [JsonStringEnumMemberName("unsupported_policy")]
     UnsupportedPolicy,
+
+    // Not a part of the document but exists in the response
+    [JsonStringEnumMemberName("disabled")]
+    Disabled,
 }
 
 public enum UserFeatureOption {

@@ -88,7 +88,7 @@ public sealed class ScheduledStatusParams {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/ScheduledStatus/#params-language"/>
     [JsonPropertyName("language")]
-    public CultureInfo? Language { get; set; } = null;
+    public string? Language { get; set; } = null;
 
     /// <summary>
     /// Version: 2.7.0

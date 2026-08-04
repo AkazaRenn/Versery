@@ -25,7 +25,7 @@ public sealed class Preferences {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Preferences/#posting-default-language"/>
     [JsonPropertyName("posting:default:language")]
-    public CultureInfo? PostingDefaultLanguage { get; set; } = null;
+    public string? PostingDefaultLanguage { get; set; } = null;
 
     /// <summary>
     /// Version: 2.8.0

@@ -24,7 +24,7 @@ public sealed class Translation {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Translation/#language"/>
     [JsonPropertyName("language")]
-    public CultureInfo Language { get; set; } = CultureInfo.InvariantCulture;
+    public string Language { get; set; }= String.Empty;
 
     /// <summary>
     /// Version: 4.2.0
@@ -45,7 +45,7 @@ public sealed class Translation {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Translation/#detected_source_language"/>
     [JsonPropertyName("detected_source_language")]
-    public CultureInfo DetectedSourceLanguage { get; set; } = CultureInfo.InvariantCulture;
+    public string DetectedSourceLanguage { get; set; }= String.Empty;
 
     /// <summary>
     /// Version: 4.0.0

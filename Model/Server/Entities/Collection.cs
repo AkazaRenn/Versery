@@ -51,7 +51,7 @@ public sealed class Collection {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Collection/#language"/>
     [JsonPropertyName("language")]
-    public CultureInfo? Language { get; set; } = null;
+    public string? Language { get; set; } = null;
 
     /// <summary>
     /// Version: 4.6.0

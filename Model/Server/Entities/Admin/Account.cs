@@ -59,7 +59,7 @@ public sealed class Account {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Admin_Account/#locale"/>
     [JsonPropertyName("locale")]
-    public CultureInfo Locale { get; set; } = CultureInfo.InvariantCulture;
+    public string Locale { get; set; }= String.Empty;
 
     /// <summary>
     /// Version: 2.9.1

@@ -269,7 +269,7 @@ public sealed class CredentialAccount {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Account/#source-language"/>
     [JsonPropertyName("language")]
-    public CultureInfo Language { get; set; } = CultureInfo.InvariantCulture;
+    public string Language { get; set; }= String.Empty;
 
     /// <summary>
     /// Version: 3.0.0

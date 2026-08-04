@@ -201,7 +201,8 @@ public sealed class Status {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Status/#language"/>
     [JsonPropertyName("language")]
-    public CultureInfo? Language { get; set; } = null;
+    // Should be CultureInfo? but not supported by System.Text.Json
+    public string? Language { get; set; } = null;
 
     /// <summary>
     /// Version: 2.9.0
