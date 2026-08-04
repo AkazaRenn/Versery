@@ -89,6 +89,9 @@ internal sealed partial class Emoji: SwapChainPanel {
     }
 
     private void SwapChainPanel_Loaded(object sender, RoutedEventArgs e) {
+        if (isLoaded) {
+            return;
+        }
         isLoaded = true;
         if ((window is null) && (Application.Current is IWindowHelper windowHelper)) {
             if (windowHelper.TryGetWindow(this, out window) && (window is ICompositionGraphicsDeviceProvider provider)) {
@@ -107,6 +110,9 @@ internal sealed partial class Emoji: SwapChainPanel {
     }
 
     private void SwapChainPanel_Unloaded(object sender, RoutedEventArgs e) {
+        if (!isLoaded) {
+            return;
+        }
         isLoaded = false;
         canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
