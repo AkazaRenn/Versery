@@ -98,6 +98,7 @@ internal sealed partial class Emoji: SwapChainPanel {
                 InitComposition(provider);
             }
         }
+        canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
         window?.Activated += Window_Activated;
@@ -110,6 +111,11 @@ internal sealed partial class Emoji: SwapChainPanel {
     }
 
     private void SwapChainPanel_Unloaded(object sender, RoutedEventArgs e) {
+        // Workaround, Unloaded may be fired on resizing when inside a InlineUIContainer
+        // https://github.com/microsoft/microsoft-ui-xaml/issues/5976#issuecomment-2174129763
+        if (IsLoaded) {
+            return;
+        }
         if (!isLoaded) {
             return;
         }
