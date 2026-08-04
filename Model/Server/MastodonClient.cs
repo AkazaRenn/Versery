@@ -4,12 +4,6 @@ using Refit;
 namespace Model.Server;
 
 public class Client {
-    private readonly RefitSettings settings = new() {
-        ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options),
-        UrlParameterFormatter = new UrlParameterFormatter()
-    };
-    private readonly HttpClient apiHttpClient;
-
     public string InstanceUrl { get; }
     public string AccessToken { get; }
 
@@ -21,13 +15,14 @@ public class Client {
         InstanceUrl = instance;
         AccessToken = accessToken;
 
-        apiHttpClient = new() {
-            BaseAddress = new Uri($"https://{InstanceUrl}")
+        var httpClient = new HttpClient() {
+            BaseAddress = new($"https://{InstanceUrl}")
         };
-        apiHttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AccessToken);
+        httpClient.DefaultRequestHeaders.Authorization = new("Bearer", AccessToken);
+        var refitSettings = Services.Get<RefitSettings>();
 
-        Accounts = RestService.For<IAccounts>(apiHttpClient, settings);
-        Instance = RestService.For<IInstance>(apiHttpClient, settings);
-        Timelines = RestService.For<ITimelines>(apiHttpClient, settings);
+        Accounts = RestService.For<IAccounts>(httpClient, refitSettings);
+        Instance = RestService.For<IInstance>(httpClient, refitSettings);
+        Timelines = RestService.For<ITimelines>(httpClient, refitSettings);
     }
 }

@@ -4,12 +4,6 @@ using Refit;
 namespace Model.Server;
 
 internal class AuthenticationClient {
-    private static readonly RefitSettings settings = new() {
-        ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options),
-        UrlParameterFormatter = new UrlParameterFormatter()
-    };
-    private readonly HttpClient httpClient = Services.Get<HttpClient>();
-
     public IApps Apps { get; }
     public IOAuth OAuth { get; }
 
@@ -17,9 +11,13 @@ internal class AuthenticationClient {
 
     public AuthenticationClient(string instance) {
         Instance = instance;
-        httpClient.BaseAddress = new Uri($"https://{instance}");
 
-        Apps = RestService.For<IApps>(httpClient, settings);
-        OAuth = RestService.For<IOAuth>(httpClient, settings);
+        var httpClient = new HttpClient() {
+            BaseAddress = new Uri($"https://{instance}"),
+        };
+        var refitSettings = Services.Get<RefitSettings>();
+
+        Apps = RestService.For<IApps>(httpClient, refitSettings);
+        OAuth = RestService.For<IOAuth>(httpClient, refitSettings);
     }
 }

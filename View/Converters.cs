@@ -3,7 +3,7 @@
 namespace View;
 
 internal static class Converters {
-    public static bool NullableObjectToBoolReversed(object? value) {
+    public static bool IsNotNull(object? value) {
         return value != null;
     }
 

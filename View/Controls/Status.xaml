@@ -12,8 +12,7 @@
     Padding="8 8 8 2"
     ColumnDefinitions="40, *"
     ColumnSpacing="8"
-    RowDefinitions="40, Auto"
-    RowSpacing="8">
+    RowDefinitions="Auto, 40, 8, Auto">
 
     <Rectangle
         x:Name="AboveLine"
@@ -22,8 +21,8 @@
         Grid.Row="0"
         Grid.RowSpan="2"
         Width="{x:Bind lineWidth}"
-        Height="{x:Bind GetAboveLineHeight(Padding, RowDefinitions[0].Height.Value), Mode=OneWay}"
-        Margin="{x:Bind GetAboveLineMargin(Padding), Mode=OneWay}"
+        Height="{x:Bind AboveLineHeight}"
+        Margin="{x:Bind AboveLineMargin}"
         VerticalAlignment="Top"
         Fill="{x:Bind BorderBrush}"/>
 
@@ -31,51 +30,51 @@
         x:Name="BelowLine"
         x:Load="False"
         Grid.Column="0"
-        Grid.Row="0"
-        Grid.RowSpan="{x:Bind GetBelowLineRowSpan(RowDefinitions.Count), Mode=OneWay}"
+        Grid.Row="1"
+        Grid.RowSpan="{x:Bind BelowLineRowSpan}"
         Width="{x:Bind lineWidth}"
-        Margin="{x:Bind GetBelowLineMargin(Padding, RowDefinitions[0].Height.Value), Mode=OneWay}"
+        Margin="{x:Bind BelowLineMargin}"
         VerticalAlignment="Stretch"
         Fill="{x:Bind BorderBrush}"/>
 
     <components:AvatarButton
         Grid.Column="0"
-        Grid.Row="0"
+        Grid.Row="1"
         VerticalAlignment="Top"
         HorizontalAlignment="Left"
-        Height="{x:Bind GetAvatarButtonSize(ViewModel.RebloggerId, ColumnDefinitions[0].Width.Value), Mode=OneWay}"
-        Width="{x:Bind GetAvatarButtonSize(ViewModel.RebloggerId, ColumnDefinitions[0].Width.Value), Mode=OneWay}"
-        CornerRadius="{x:Bind GetAvatarButtonCornerRadius(ViewModel.RebloggerId, ColumnDefinitions[0].Width.Value), Mode=OneWay}"
-        ViewModel="{x:Bind ViewModel.AvatarButton, Mode=OneWay}">
+        Height="{x:Bind AvatarButtonSize}"
+        Width="{x:Bind AvatarButtonSize}"
+        CornerRadius="{x:Bind AvatarButtonCornerRadius}"
+        ViewModel="{x:Bind ViewModel.AvatarButton}">
     </components:AvatarButton>
 
     <Border
         x:Name="RebloggerAvatarBorder"
-        x:Load="{x:Bind local:Converters.NullableObjectToBoolReversed(ViewModel.RebloggerId), Mode=OneWay}"
+        x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.RebloggerId)}"
         Grid.Column="0"
-        Grid.Row="0"
+        Grid.Row="1"
         VerticalAlignment="Bottom"
         HorizontalAlignment="Right"
         IsHitTestVisible="False"
-        Height="{x:Bind GetRebloggerAvatarSize(ViewModel.RebloggerId, ColumnDefinitions[0].Width.Value), Mode=OneWay}"
-        Width="{x:Bind GetRebloggerAvatarSize(ViewModel.RebloggerId, ColumnDefinitions[0].Width.Value), Mode=OneWay}"
-        CornerRadius="{x:Bind GetRebloggerAvatarCornerRadius(ViewModel.RebloggerId, ColumnDefinitions[0].Width.Value), Mode=OneWay}">
+        Height="{x:Bind RebloggerAvatarSize}"
+        Width="{x:Bind RebloggerAvatarSize}"
+        CornerRadius="{x:Bind RebloggerAvatarCornerRadius}">
         <Image>
             <Image.Source>
-                <BitmapImage UriSource="{x:Bind ViewModel.RebloggerAvatar, Mode=OneWay}"/>
+                <BitmapImage UriSource="{x:Bind ViewModel.RebloggerAvatar}"/>
             </Image.Source>
         </Image>
     </Border>
 
     <Grid
         Grid.Column="1"
-        Grid.Row="0"
+        Grid.Row="1"
         ColumnDefinitions="*, Auto"
         ColumnSpacing="2">
         <components:PosterInfo
             Grid.Column="0"
             Grid.Row="0"
-            ViewModel="{x:Bind ViewModel.PosterInfo, Mode=OneWay}"/>
+            ViewModel="{x:Bind ViewModel.PosterInfo}"/>
         <TextBlock
             Grid.Column="1"
             Grid.Row="0"
@@ -85,16 +84,16 @@
 
     <StackPanel
         Grid.Column="1"
-        Grid.Row="1"
-        Spacing="{x:Bind RowSpacing, Mode=OneWay}">
+        Grid.Row="3"
+        Spacing="{x:Bind RowDefinitions[2].Height.Value}">
         <RichTextBlock
             TextWrapping="WrapWholeWords"
             IsTextSelectionEnabled="False"
-            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Html, Mode=OneWay}">
+            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Html}">
         </RichTextBlock>
 
         <components:ReactButtons
-            ViewModel="{x:Bind ViewModel.ReactButtons, Mode=OneWay}">
+            ViewModel="{x:Bind ViewModel.ReactButtons}">
         </components:ReactButtons>
     </StackPanel>
 </Grid>
