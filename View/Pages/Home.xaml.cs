@@ -14,7 +14,7 @@ internal sealed partial class Home: Page, INavigationPage {
 
     public void OnNavigationReInvoke() {
         if (ScrollView.VerticalOffset == 0) {
-            _ = viewModel.LoadLatestTimelines();
+            RefreshContainer.RequestRefresh();
         } else {
             // ScrollView.ScrollTo(0, 0);
             // https://github.com/microsoft/microsoft-ui-xaml/issues/9368
@@ -33,5 +33,11 @@ internal sealed partial class Home: Page, INavigationPage {
             status.ViewModel?.Index = args.Index;
             _ = viewModel.OnStatusRealized(args.Index);
         }
+    }
+
+    private async void RefreshContainer_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) {
+        var deferral = args.GetDeferral();
+        await viewModel.LoadLatestTimelines();
+        deferral.Complete();
     }
 }

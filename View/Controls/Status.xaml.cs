@@ -3,10 +3,13 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using View.Interfaces;
 
 namespace View.Controls;
 
 internal sealed partial class Status: Grid {
+    private Window? window;
+
     public ViewModel.Controls.Status? ViewModel {
         get;
         set {
@@ -19,6 +22,32 @@ internal sealed partial class Status: Grid {
 
     public Status() {
         InitializeComponent();
+    }
+
+    private void Grid_Loaded(object sender, RoutedEventArgs e) {
+        if ((window is null) && (Application.Current is IWindowHelper windowHelper)) {
+            if (windowHelper.TryGetWindow(this, out window)) {
+                window?.Activated -= Window_Activated;
+                window?.Activated += Window_Activated;
+            }
+        }
+    }
+
+    private void Grid_Unloaded(object sender, RoutedEventArgs e) {
+        window?.Activated -= Window_Activated;
+    }
+
+    private void Window_Activated(object sender, WindowActivatedEventArgs args) {
+        switch (args.WindowActivationState) {
+        case WindowActivationState.Deactivated:
+            PosterAvatarBitmapImage?.Stop();
+            RebloggerAvatarBitmapImage?.Stop();
+            break;
+        default:
+            PosterAvatarBitmapImage?.Play();
+            RebloggerAvatarBitmapImage?.Play();
+            break;
+        }
     }
 
     private readonly double lineWidth = 4;

@@ -12,7 +12,9 @@
     Padding="8 8 8 2"
     ColumnDefinitions="40, *"
     ColumnSpacing="8"
-    RowDefinitions="Auto, 40, 8, Auto, Auto">
+    RowDefinitions="Auto, 40, 8, Auto, Auto"
+    Loaded="Grid_Loaded"
+    Unloaded="Grid_Unloaded">
 
     <Rectangle
         x:Name="AboveLine"
@@ -47,7 +49,9 @@
         CornerRadius="{x:Bind AvatarButtonCornerRadius}">
         <Image>
             <Image.Source>
-                <BitmapImage UriSource="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}"/>
+                <BitmapImage 
+                    x:Name="PosterAvatarBitmapImage"
+                    UriSource="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}"/>
             </Image.Source>
         </Image>
         <Button 
@@ -70,7 +74,9 @@
         CornerRadius="{x:Bind RebloggerAvatarCornerRadius}">
         <Image>
             <Image.Source>
-                <BitmapImage UriSource="{x:Bind ViewModel.RebloggerAvatar, Mode=OneWay}"/>
+                <BitmapImage
+                    x:Name="RebloggerAvatarBitmapImage"
+                    UriSource="{x:Bind ViewModel.RebloggerAvatar, Mode=OneWay}"/>
             </Image.Source>
         </Image>
     </Border>
