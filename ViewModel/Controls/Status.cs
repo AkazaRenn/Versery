@@ -31,6 +31,8 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial string? RebloggerDisplayName { get; set; } = null;
     [ObservableProperty]
+    public partial Uri? RebloggerAvatar { get; set; } = null;
+    [ObservableProperty]
     public partial DateTime CreatedAt { get; set; } = DateTime.MinValue;
     [ObservableProperty]
     public partial Uri? Uri { get; set; } = null;
@@ -102,7 +104,7 @@ public sealed partial class Status: ObservableObject {
     private async Task DownloadRebloggerAvatar(Uri? uri) {
         if (uri is not null) {
             var downloaded = await Cache.Get(uri);
-            AvatarButton.RebloggerAvatar = downloaded;
+            RebloggerAvatar = downloaded;
         }
     }
 }

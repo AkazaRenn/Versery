@@ -8,7 +8,5 @@ public sealed partial class AvatarButton: ObservableObject {
     [ObservableProperty]
     public partial Uri? ContentPosterAvatar { get; set; }
     [ObservableProperty]
-    public partial Uri? RebloggerAvatar { get; set; }
-    [ObservableProperty]
     public partial bool IsReblog { get; set; } = false;
 }
