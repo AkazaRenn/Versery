@@ -14,7 +14,7 @@ using View.Interfaces;
 
 namespace View.Controls.RichTextRenderer;
 
-internal sealed partial class Emoji: SwapChainPanel {
+internal sealed partial class Emoji: Panel {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
     private static readonly MemoryCache imageCache = new(nameof(Emoji));
     private static readonly CacheItemPolicy imageCachePolicy = new() {
@@ -88,7 +88,7 @@ internal sealed partial class Emoji: SwapChainPanel {
         Draw();
     }
 
-    private void SwapChainPanel_Loaded(object sender, RoutedEventArgs e) {
+    private void Panel_Loaded(object sender, RoutedEventArgs e) {
         if (isLoaded) {
             return;
         }
@@ -110,7 +110,7 @@ internal sealed partial class Emoji: SwapChainPanel {
 
     }
 
-    private void SwapChainPanel_Unloaded(object sender, RoutedEventArgs e) {
+    private void Panel_Unloaded(object sender, RoutedEventArgs e) {
         // Workaround, Unloaded may be fired on resizing when inside a InlineUIContainer
         // https://github.com/microsoft/microsoft-ui-xaml/issues/5976#issuecomment-2174129763
         if (IsLoaded) {
@@ -125,7 +125,7 @@ internal sealed partial class Emoji: SwapChainPanel {
         Reset();
     }
 
-    private void SwapChainPanel_SizeChanged(object sender, SizeChangedEventArgs e) {
+    private void Panel_SizeChanged(object sender, SizeChangedEventArgs e) {
         visual?.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
     }
 
