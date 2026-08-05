@@ -1,5 +1,4 @@
 ﻿using Raiqub.Generators.EnumUtilities;
-using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;
@@ -269,7 +268,7 @@ public sealed class CredentialAccount {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Account/#source-language"/>
     [JsonPropertyName("language")]
-    public string Language { get; set; }= String.Empty;
+    public string Language { get; set; } = String.Empty;
 
     /// <summary>
     /// Version: 3.0.0

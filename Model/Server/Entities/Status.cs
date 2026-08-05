@@ -1,5 +1,4 @@
 ﻿using Raiqub.Generators.EnumUtilities;
-using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities;

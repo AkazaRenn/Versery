@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Model.Server.Entities.Admin;
 
@@ -59,7 +58,7 @@ public sealed class Account {
     /// </summary>
     /// <seealso href="https://docs.joinmastodon.org/entities/Admin_Account/#locale"/>
     [JsonPropertyName("locale")]
-    public string Locale { get; set; }= String.Empty;
+    public string Locale { get; set; } = String.Empty;
 
     /// <summary>
     /// Version: 2.9.1

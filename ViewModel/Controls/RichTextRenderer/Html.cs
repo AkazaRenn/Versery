@@ -21,7 +21,7 @@ public sealed class Html {
         }
     } = string.Empty;
     public ContentToken ContentToken { get; private set; } = new([]);
-    public Dictionary<string, Uri> Emojis { get; set; } = [];
+    public Dictionary<string, Task<Uri?>> Emojis { get; set; } = [];
     public bool IsPlainText { get; init; } = false;
 
     private void UpdateTokens() {

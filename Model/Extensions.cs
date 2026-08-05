@@ -64,7 +64,7 @@ public static class Extensions {
 
     extension(HttpStatusCode httpStatusCode) {
         public bool Retriable {
-            get => httpStatusCode switch  {
+            get => httpStatusCode switch {
                 HttpStatusCode.RequestTimeout => true,      // 408
                 (HttpStatusCode)429 => true,                // Too Many Requests
                 HttpStatusCode.InternalServerError => true, // 500

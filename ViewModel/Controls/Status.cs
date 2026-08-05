@@ -25,11 +25,13 @@ public sealed partial class Status: ObservableObject {
 
     public string? RebloggerId { get; } = null;
     public string? RebloggerDisplayName { get; } = null;
+    public Uri? RebloggerAvatarRemote { get; } = null;
     [ObservableProperty]
     public partial Uri? RebloggerAvatar { get; set; } = null;
 
-    public string PosterId { get; }= String.Empty;
-    public string PosterAccount { get; }= String.Empty;
+    public string PosterId { get; } = String.Empty;
+    public string PosterAccount { get; } = String.Empty;
+    public Uri? PosterAvatarRemote { get; } = null;
     [ObservableProperty]
     public partial Uri? PosterAvatar { get; set; } = null;
 
@@ -56,22 +58,22 @@ public sealed partial class Status: ObservableObject {
         var account = client.GetAccount(status.AccountId)!;
 
         if (status.ReblogId != null) {
-            _ = DownloadRebloggerAvatar(account.Avatar);
-
             RebloggerId = account.Id;
             RebloggerDisplayName = account.DisplayName;
+            RebloggerAvatarRemote = account.Avatar;
 
             status = client.GetStatus(status.ReblogId)!;
             account = client.GetAccount(status.AccountId)!;
         }
 
-        _ = DownloadAvatar(account.Avatar);
-
         PosterId = account.Id;
         PosterAccount = account.AccountName;
+        PosterAvatarRemote = account.Avatar;
 
         PosterDisplayName.RawText = account.DisplayName;
-        PosterDisplayName.Emojis = account.Emojis;
+        foreach (var emoji in account.Emojis) {
+            PosterDisplayName.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+        }
 
         CanBeReblogged = status.Visibility < StatusVisibility.Private;
         HasReplies = status.RepliesCount > 0;
@@ -80,7 +82,9 @@ public sealed partial class Status: ObservableObject {
         IsBookmarked = status.Bookmarked;
 
         Html.RawText = status.Content;
-        Html.Emojis = status.Emojis;
+        foreach (var emoji in status.Emojis) {
+            Html.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+        }
 
         ContentId = status.Id;
         CreatedAt = status.CreatedAt;
@@ -101,17 +105,12 @@ public sealed partial class Status: ObservableObject {
         MoreLoaded?.Invoke(Index, timelines);
     }
 
-    private async Task DownloadAvatar(Uri? uri) {
-        if (uri is not null) {
-            var downloaded = await Cache.Get(uri);
-            PosterAvatar = downloaded;
+    public async Task DownloadMedias() {
+        if (PosterAvatarRemote is not null) {
+            PosterAvatar = await Cache.Get(PosterAvatarRemote);
         }
-    }
-
-    private async Task DownloadRebloggerAvatar(Uri? uri) {
-        if (uri is not null) {
-            var downloaded = await Cache.Get(uri);
-            RebloggerAvatar = downloaded;
+        if (RebloggerAvatarRemote is not null) {
+            RebloggerAvatar = await Cache.Get(RebloggerAvatarRemote);
         }
     }
 }

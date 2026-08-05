@@ -1,7 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
-using Model.Access;
 using ViewModel.Controls.RichTextRenderer;
 
 namespace View.Controls.RichTextRenderer;
@@ -38,7 +37,7 @@ internal static class Html {
         }
     }
 
-    private static void RenderContent(RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Uri> emojis) {
+    private static void RenderContent(RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Task<Uri?>> emojis) {
         var blocks = richTextBlock.Blocks;
 
         foreach (var paragraphToken in content.Paragraphs) {
@@ -51,7 +50,7 @@ internal static class Html {
         }
     }
 
-    private static Paragraph RenderParagraph(ParagraphToken paragraphToken, Dictionary<string, Uri> emojis, double fontSize) {
+    private static Paragraph RenderParagraph(ParagraphToken paragraphToken, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
         var paragraph = new Paragraph();
 
         foreach (var inlineToken in paragraphToken.Inlines) {
@@ -64,16 +63,20 @@ internal static class Html {
         return paragraph;
     }
 
-    private static Inline? RenderInline(InlineToken token, Dictionary<string, Uri> emojis, double fontSize) {
+    private static Inline? RenderInline(InlineToken token, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
         switch (token) {
         case TextToken text:
             return new Run { Text = text.Text };
-        case EmojiToken emoji when emojis.TryGetValue(emoji.ShortCode, out var source): {
+        case EmojiToken emoji when emojis.TryGetValue(emoji.ShortCode, out var sourceTask): {
             var emojiControl = new Emoji {
                 Width = fontSize,
                 Height = fontSize,
             };
-            _ = DownloadEmoji(emojiControl, source);
+            if (sourceTask.IsCompletedSuccessfully) {
+                emojiControl.Source = sourceTask.Result;
+            } else {
+                _ = WaitForDownloadComplete(emojiControl, sourceTask);
+            }
             return new InlineUIContainer {
                 Child = emojiControl,
             };
@@ -97,7 +100,7 @@ internal static class Html {
         }
     }
 
-    private static Span RenderInlineChildren(Span span, IReadOnlyCollection<InlineToken> tokens, Dictionary<string, Uri> emojis, double fontSize) {
+    private static Span RenderInlineChildren(Span span, IReadOnlyCollection<InlineToken> tokens, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
         foreach (var token in tokens) {
             var inline = RenderInline(token, emojis, fontSize);
             if (inline != null) {
@@ -108,8 +111,8 @@ internal static class Html {
         return span;
     }
 
-    private static async Task DownloadEmoji(Emoji control, Uri uri) {
-        var downloaded = await Cache.Get(uri);
+    private static async Task WaitForDownloadComplete(Emoji control, Task<Uri?> task) {
+        var downloaded = await task;
         control.Source = downloaded;
     }
 }

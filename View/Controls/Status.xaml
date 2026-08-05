@@ -9,7 +9,7 @@
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
     BorderThickness="0 0 0 0.5"
-    Padding="8 8 8 2"
+    Padding="8 8 8 8"
     ColumnDefinitions="40, *"
     ColumnSpacing="8"
     RowDefinitions="Auto, 40, 8, Auto, Auto"
@@ -122,7 +122,6 @@
         </RichTextBlock>
 
         <Grid ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
-
             <Button
                 Grid.Column="0"
                 Background="{x:Bind reactButtonBackground}"

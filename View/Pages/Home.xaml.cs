@@ -19,8 +19,6 @@ internal sealed partial class Home: Page, INavigationPage {
         if (scrollViewer?.VerticalOffset == 0) {
             RefreshContainer.RequestRefresh();
         } else {
-            //ScrollView.ScrollTo(0, 0);
-            // https://github.com/microsoft/microsoft-ui-xaml/issues/9368
             if ((ListView.ContainerFromIndex(0) is not null) &&
                 (ListView.ContainerFromIndex(1) is not null)) {
                 scrollViewer?.ChangeView(null, 0, null, false);
@@ -28,7 +26,7 @@ internal sealed partial class Home: Page, INavigationPage {
                 if (scrollViewer is not null) {
                     RefreshContainer.Opacity = 0;
                     await Task.Delay(RefreshContainer.OpacityTransition.Duration);
-                    scrollViewer.ScrollToVerticalOffset(0);
+                    scrollViewer?.ChangeView(null, 0, null, true);
                     RefreshContainer.Opacity = 1;
                 }
             }
@@ -38,7 +36,7 @@ internal sealed partial class Home: Page, INavigationPage {
     private async void RefreshContainer_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) {
         var deferral = args.GetDeferral();
         await viewModel.LoadLatestTimelines();
-        scrollViewer?.ScrollToVerticalOffset(0);
+        scrollViewer?.ChangeView(null, 0, null, true);
         deferral.Complete();
     }
 

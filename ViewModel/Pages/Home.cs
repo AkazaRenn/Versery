@@ -2,7 +2,6 @@
 using Model;
 using Model.Access;
 using Model.Enumerations;
-using Model.Server.Entities;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -51,6 +50,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
                 contentIdToStatusesDict[status.ContentId] = list;
             }
             list.Add(status);
+            _ = status.DownloadMedias();
         }
     }
 
@@ -125,9 +125,4 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         }
         loadingOldStatuses = false;
     }
-
-    //[RelayCommand]
-    //void Load() {
-    //    if (!client.Ready)
-    //}
 }
