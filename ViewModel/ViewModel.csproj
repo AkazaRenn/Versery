@@ -4,6 +4,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
+    <PackageReference Include="AngleSharp" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="System.Runtime.Caching" />
   </ItemGroup>
 </Project>

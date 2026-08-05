@@ -16,8 +16,12 @@ public sealed partial class Status: ObservableObject {
     public string ContentId { get; } = string.Empty;
     public int Index { get; set; } = -1;
 
-    public RichTextRenderer.TextWithEmoji PosterDisplayName { get; set; } = new();
-    public RichTextRenderer.Html Html { get; set; } = new();
+    public RichTextRenderer.Html PosterDisplayName { get; set; } = new() {
+        IsPlainText = true,
+    };
+    public RichTextRenderer.Html Html { get; set; } = new() {
+        IsPlainText = false,
+    };
 
     public string? RebloggerId { get; } = null;
     public string? RebloggerDisplayName { get; } = null;

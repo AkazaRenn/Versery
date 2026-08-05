@@ -96,7 +96,7 @@
                 FontSize="16"
                 TextTrimming="CharacterEllipsis"
                 IsTextSelectionEnabled="False"
-                richtextrenderer:TextWithEmoji.ViewModel="{x:Bind ViewModel.PosterDisplayName}"/>
+                richtextrenderer:Html.ViewModel="{x:Bind ViewModel.PosterDisplayName}"/>
             <TextBlock
                 FontSize="{x:Bind PosterIdFontSize}"
                 Foreground="{ThemeResource TextFillColorSecondary}"
