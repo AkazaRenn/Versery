@@ -14,6 +14,9 @@
         x:Name="RefreshContainer"
         MaxWidth="600"
         RefreshRequested="RefreshContainer_RefreshRequested">
+        <RefreshContainer.OpacityTransition>
+            <ScalarTransition Duration="0:0:0.25"/>
+        </RefreshContainer.OpacityTransition>
         <ListView
             x:Name="ListView"
             ItemsSource="{x:Bind viewModel.Statuses}"

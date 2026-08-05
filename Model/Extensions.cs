@@ -1,6 +1,7 @@
 ﻿using LiteDB;
 using Model.Server.Entities;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -58,6 +59,20 @@ public static class Extensions {
                 byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(str));
                 return Convert.ToHexString(hash).ToLowerInvariant();
             }
+        }
+    }
+
+    extension(HttpStatusCode httpStatusCode) {
+        public bool Retriable {
+            get => httpStatusCode switch  {
+                HttpStatusCode.RequestTimeout => true,      // 408
+                (HttpStatusCode)429 => true,                // Too Many Requests
+                HttpStatusCode.InternalServerError => true, // 500
+                HttpStatusCode.BadGateway => true,          // 502
+                HttpStatusCode.ServiceUnavailable => true,  // 503
+                HttpStatusCode.GatewayTimeout => true,      // 504
+                _ => false
+            };
         }
     }
 }

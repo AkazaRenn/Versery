@@ -25,7 +25,7 @@ internal sealed partial class SignIn: Page, INavigationPage {
         }
     }
 
-    public void OnNavigationReInvoke() { }
+    public async Task OnNavigationReInvoke() { }
 
     public static Type Type => typeof(SignIn);
 

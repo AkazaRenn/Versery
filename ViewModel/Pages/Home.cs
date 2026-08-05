@@ -2,6 +2,7 @@
 using Model;
 using Model.Access;
 using Model.Enumerations;
+using Model.Server.Entities;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
