@@ -8,25 +8,34 @@
     mc:Ignorable="d"
     xmlns:controls="using:View.Controls"
     xmlns:vm.controls="using:ViewModel.Controls"
+    Loaded="Page_Loaded"
     NavigationCacheMode="Required">
     <RefreshContainer
         x:Name="RefreshContainer"
+        MaxWidth="600"
         RefreshRequested="RefreshContainer_RefreshRequested">
-        <ScrollViewer
-            x:Name="ScrollView"
-            VerticalScrollBarVisibility="Hidden"
-            CornerRadius="0"
-            MaxWidth="600">
-            <ItemsRepeater
-                ItemsSource="{x:Bind viewModel.Statuses}"
-                ElementPrepared="ItemsRepeater_ElementPrepared"
-                ElementIndexChanged="ItemsRepeater_ElementIndexChanged">
-                <ItemsRepeater.ItemTemplate>
-                    <DataTemplate x:DataType="vm.controls:Status">
-                        <controls:Status ViewModel="{x:Bind}" />
-                    </DataTemplate>
-                </ItemsRepeater.ItemTemplate>
-            </ItemsRepeater>
-        </ScrollViewer>
+        <ListView
+            x:Name="ListView"
+            ItemsSource="{x:Bind viewModel.Statuses}"
+            SelectionMode="None"
+            ScrollViewer.VerticalScrollBarVisibility="Hidden"
+            ContainerContentChanging="ListView_ContainerContentChanging">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="vm.controls:Status">
+                    <controls:Status ViewModel="{x:Bind}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </RefreshContainer>
 </Page>
