@@ -24,9 +24,9 @@ internal sealed partial class Home: Page, INavigationPage {
                 scrollViewer?.ChangeView(null, 0, null, false);
             } else {
                 if (scrollViewer is not null) {
-                    RefreshContainer.Opacity = 0;
-                    await Task.Delay(RefreshContainer.OpacityTransition.Duration);
-                    scrollViewer?.ChangeView(null, 0, null, true);
+                    //RefreshContainer.Opacity = 0;
+                    //await Task.Delay(RefreshContainer.OpacityTransition.Duration);
+                    ScrollToTopItem();
                     RefreshContainer.Opacity = 1;
                 }
             }
@@ -36,7 +36,7 @@ internal sealed partial class Home: Page, INavigationPage {
     private async void RefreshContainer_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) {
         var deferral = args.GetDeferral();
         await viewModel.LoadLatestTimelines();
-        scrollViewer?.ChangeView(null, 0, null, true);
+        ScrollToTopItem();
         deferral.Complete();
     }
 
@@ -51,5 +51,13 @@ internal sealed partial class Home: Page, INavigationPage {
 
     private void Page_Loaded(object sender, RoutedEventArgs e) {
         scrollViewer = ListView.FindDescendant<ScrollViewer>();
+    }
+
+    private void ScrollToTopItem() {
+        if (viewModel.Statuses.Count == 0) {
+            return;
+        }
+
+        ListView.ScrollIntoView(viewModel.Statuses[0], ScrollIntoViewAlignment.Leading);
     }
 }
