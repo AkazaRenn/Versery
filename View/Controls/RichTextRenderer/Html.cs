@@ -64,40 +64,17 @@ internal static class Html {
     }
 
     private static Inline? RenderInline(InlineToken token, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
-        switch (token) {
-        case TextToken text:
-            return new Run { Text = text.Text };
-        case EmojiToken emoji when emojis.TryGetValue(emoji.ShortCode, out var sourceTask): {
-            var emojiControl = new Emoji {
-                Width = fontSize,
-                Height = fontSize,
-            };
-            if (sourceTask.IsCompletedSuccessfully) {
-                emojiControl.Source = sourceTask.Result;
-            } else {
-                _ = WaitForDownloadComplete(emojiControl, sourceTask);
-            }
-            return new InlineUIContainer {
-                Child = emojiControl,
-            };
-        }
-        case EmojiToken emoji:
-            return new Run { Text = emoji.ShortCode };
-        case LineBreakToken:
-            return new LineBreak();
-        case BoldToken bold:
-            return RenderInlineChildren(new Bold(), bold.Children, emojis, fontSize);
-        case ItalicToken italic:
-            return RenderInlineChildren(new Italic(), italic.Children, emojis, fontSize);
-        // Todo: replace by HyperlinkButton for tags
-        // https://github.com/microsoft/microsoft-ui-xaml/discussions/11251
-        case HyperlinkToken hyperlink:
-            return RenderInlineChildren(new Hyperlink {
+        return token switch {
+            TextToken text => new Run { Text = text.Text },
+            EmojiToken emoji => return CreateEmoji(emoji.ShortCode, emojis, fontSize),
+            LineBreakToken => return new LineBreak(),
+            BoldToken bold => return RenderInlineChildren(new Bold(), bold.Children, emojis, fontSize),
+            ItalicToken italic => return RenderInlineChildren(new Italic(), italic.Children, emojis, fontSize),
+            HyperlinkToken hyperlink => RenderInlineChildren(new Hyperlink {
                 NavigateUri = new Uri(hyperlink.Href),
-            }, hyperlink.Children, emojis, fontSize);
-        default:
-            return null;
-        }
+            }, hyperlink.Children, emojis, fontSize),
+            _ => null,
+        };
     }
 
     private static Span RenderInlineChildren(Span span, IReadOnlyCollection<InlineToken> tokens, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
@@ -114,5 +91,24 @@ internal static class Html {
     private static async Task WaitForDownloadComplete(Emoji control, Task<Uri?> task) {
         var downloaded = await task;
         control.Source = downloaded;
+    }
+
+    private static Inline CreateEmoji(string shortCode, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
+        if (emojis.TryGetValue(shortCode, out var sourceTask)) {
+            var emojiControl = new Emoji {
+                Width = fontSize,
+                Height = fontSize,
+            };
+            if (sourceTask.IsCompletedSuccessfully) {
+                emojiControl.Source = sourceTask.Result;
+            } else if (!sourceTask.IsCompleted) {
+                _ = WaitForDownloadComplete(emojiControl, sourceTask);
+            }
+            return new InlineUIContainer {
+                Child = emojiControl,
+            };
+        } else {
+            return new Run { Text = shortCode };
+        }
     }
 }

@@ -11,6 +11,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     private readonly Client client = Model.Services.Get<Client>();
     private readonly Dictionary<string, List<Controls.Status>> contentIdToStatusesDict = [];
     private bool loadingOldStatuses = false;
+    private bool hasMoreStatusesToLoad = true;
 
     public ObservableCollection<Controls.Status> Statuses { get; } = [];
 
@@ -111,7 +112,10 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     }
 
     public async Task OnStatusRealized(int index) {
-        if ((index < Statuses.Count - 5) || !Statuses.Any() || loadingOldStatuses) {
+        if ((index < Statuses.Count - 1) ||
+            !Statuses.Any() ||
+            loadingOldStatuses ||
+            !hasMoreStatusesToLoad) {
             return;
         }
 
@@ -120,8 +124,12 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
             var timelines = client.GetTimelineFromDatabase(Statuses.Last().Id);
             return Controls.Status.FromTimelines(timelines).ToArray();
         });
-        foreach (var status in statuses) {
-            Statuses.Add(status);
+        if (statuses.Count == 0) {
+            hasMoreStatusesToLoad = false;
+        } else {
+            foreach (var status in statuses) {
+                Statuses.Add(status);
+            }
         }
         loadingOldStatuses = false;
     }

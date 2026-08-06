@@ -24,8 +24,8 @@ internal sealed partial class Home: Page, INavigationPage {
                 scrollViewer?.ChangeView(null, 0, null, false);
             } else {
                 if (scrollViewer is not null) {
-                    //RefreshContainer.Opacity = 0;
-                    //await Task.Delay(RefreshContainer.OpacityTransition.Duration);
+                    RefreshContainer.Opacity = 0;
+                    await Task.Delay(RefreshContainer.OpacityTransition.Duration);
                     ScrollToTopItem();
                     RefreshContainer.Opacity = 1;
                 }
@@ -46,6 +46,7 @@ internal sealed partial class Home: Page, INavigationPage {
 
         if (args.Phase == 0 && args.Item is ViewModel.Controls.Status status) {
             status.Index = args.ItemIndex;
+            viewModel.OnStatusRealized(args.ItemsIndex);
         }
     }
 
