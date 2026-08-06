@@ -87,14 +87,12 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     }
 
     private async Task LoadInitialTimelines() {
-        var statuses = await Task.Run(async () => {
-            var timelines = client.GetTimelineFromDatabase(count: 10);
-            if (timelines.Length == 0) {
-                timelines = await client.GetTimelineFromServer(TimelineType.Home);
-            }
-            return Controls.Status.FromTimelines(timelines).ToArray();
-        });
+        var timelines = client.GetTimelineFromDatabase(count: 10);
+        if (timelines.Length == 0) {
+            timelines = await client.GetTimelineFromServer(TimelineType.Home);
+        }
 
+        var statuses = Controls.Status.FromTimelines(timelines).ToArray();
         foreach (var status in statuses) {
             Statuses.Add(status);
         }
