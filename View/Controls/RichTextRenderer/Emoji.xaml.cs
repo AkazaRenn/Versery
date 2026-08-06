@@ -31,8 +31,7 @@ internal sealed partial class Emoji: Panel {
     private uint loop = 0;
     private uint maxLoop = 0;
     private readonly DispatcherQueueTimer timer;
-    private CanvasBitmap[] gpuFrames = [];
-    private IReadOnlyList<double> frameDelaysMs = [];
+    private IReadOnlyCollection<FrameData> frameData = [];
 
     public Uri? Source {
         get;
@@ -45,7 +44,7 @@ internal sealed partial class Emoji: Panel {
     }
 
     public bool ShouldPlay =>
-        (gpuFrames.Length > 1) &&
+        (frameData.Count > 1) &&
         isLoaded &&
         ((maxLoop == 0) || (loop < maxLoop));
 
@@ -102,7 +101,7 @@ internal sealed partial class Emoji: Panel {
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
         window?.Activated += Window_Activated;
-        if (Source is not null && gpuFrames.Length == 0) {
+        if (Source is not null && frameData.Count == 0) {
             _ = LoadImage();
         } else {
             TryPlay();
@@ -147,10 +146,10 @@ internal sealed partial class Emoji: Panel {
         loop = 0;
         maxLoop = 0;
 
-        foreach (var frame in gpuFrames) {
-            frame.Dispose();
+        foreach (var data in frameData) {
+            data?.frame?.Dispose();
         }
-        gpuFrames = [];
+        frameData = [];
     }
 
     private async Task LoadImage() {
@@ -171,25 +170,25 @@ internal sealed partial class Emoji: Panel {
             imageCache.Add(cacheKey, data, imageCachePolicy);
         }
 
-        gpuFrames = data.CreateGpuFrames();
-        frameDelaysMs = data.FrameDelaysMs;
+        frameData = data.CreateGpuFrames();
         maxLoop = data.MaxLoop;
         surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
         Draw();
     }
 
     private void Draw() {
-        if ((gpuFrames.Length == 0) || (surface is null)) {
+        if ((frameData.Count == 0) || (surface is null)) {
             return;
         }
 
+        var data = frameData.ElementAt(currentFrame);
         using (var ds = CanvasComposition.CreateDrawingSession(surface)) {
             ds.Clear(Colors.Transparent);
-            ds.DrawImage(gpuFrames[currentFrame]);
+            ds.DrawImage(data.frame);
         }
 
-        timer.Interval = TimeSpan.FromMilliseconds(frameDelaysMs[currentFrame]);
-        currentFrame = (currentFrame + 1) % gpuFrames.Length;
+        timer.Interval = TimeSpan.FromMilliseconds(data.delayMs);
+        currentFrame = (currentFrame + 1) % frameData.Count;
         if ((currentFrame == 0) && (maxLoop > 0)) {
             loop++;
         }
@@ -208,6 +207,7 @@ internal sealed partial class Emoji: Panel {
         }
     }
 
+    private record FrameData(CanvasBitmap frame, double delayMs);
     private class ImageData {
         public uint MaxLoop { get; } // 0 = infinite
         public IReadOnlyList<double> FrameDelaysMs { get; }
@@ -273,24 +273,25 @@ internal sealed partial class Emoji: Panel {
             }
         }
 
-        internal CanvasBitmap[] CreateGpuFrames() {
-            var frames = new CanvasBitmap[Frames.Count];
+        internal IReadOnlyList<FrameData> CreateGpuFrames() {
+            var frameData = new FrameData[Frames.Count];
 
             try {
                 for (int i = 0; i < Frames.Count; i++) {
-                    frames[i] = CanvasBitmap.CreateFromBytes(
-                        canvasDevice,
-                        Frames[i],
-                        Width,
-                        Height,
-                        Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized
-                    );
+                    frameData[i] = new(
+                        CanvasBitmap.CreateFromBytes(
+                            canvasDevice,
+                            Frames[i],
+                            Width,
+                            Height,
+                            Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized),
+                        FrameDelaysMs[i]);
                 }
 
-                return frames;
+                return frameData;
             } catch {
-                foreach (var frame in frames) {
-                    frame?.Dispose();
+                foreach (var data in frameData) {
+                    data?.frame?.Dispose();
                 }
 
                 throw;

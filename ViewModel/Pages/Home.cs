@@ -124,7 +124,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
             var timelines = client.GetTimelineFromDatabase(Statuses.Last().Id);
             return Controls.Status.FromTimelines(timelines).ToArray();
         });
-        if (statuses.Count == 0) {
+        if (statuses.Length == 0) {
             hasMoreStatusesToLoad = false;
         } else {
             foreach (var status in statuses) {

@@ -66,10 +66,10 @@ internal static class Html {
     private static Inline? RenderInline(InlineToken token, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
         return token switch {
             TextToken text => new Run { Text = text.Text },
-            EmojiToken emoji => return CreateEmoji(emoji.ShortCode, emojis, fontSize),
-            LineBreakToken => return new LineBreak(),
-            BoldToken bold => return RenderInlineChildren(new Bold(), bold.Children, emojis, fontSize),
-            ItalicToken italic => return RenderInlineChildren(new Italic(), italic.Children, emojis, fontSize),
+            EmojiToken emoji => CreateEmoji(emoji.ShortCode, emojis, fontSize),
+            LineBreakToken => new LineBreak(),
+            BoldToken bold => RenderInlineChildren(new Bold(), bold.Children, emojis, fontSize),
+            ItalicToken italic => RenderInlineChildren(new Italic(), italic.Children, emojis, fontSize),
             HyperlinkToken hyperlink => RenderInlineChildren(new Hyperlink {
                 NavigateUri = new Uri(hyperlink.Href),
             }, hyperlink.Children, emojis, fontSize),

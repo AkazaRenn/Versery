@@ -46,7 +46,7 @@ internal sealed partial class Home: Page, INavigationPage {
 
         if (args.Phase == 0 && args.Item is ViewModel.Controls.Status status) {
             status.Index = args.ItemIndex;
-            viewModel.OnStatusRealized(args.ItemsIndex);
+            _ = viewModel.OnStatusRealized(args.ItemIndex);
         }
     }
 
