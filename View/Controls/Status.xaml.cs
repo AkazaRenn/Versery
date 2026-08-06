@@ -15,7 +15,11 @@ internal sealed partial class Status: Grid {
         set {
             if (field != value) {
                 field = value;
-                _ = DispatcherQueue.TryEnqueue(Bindings.Update);
+                if (DispatcherQueue.HasThreadAccess) {
+                    Bindings.Update();
+                } else {
+                    _ = DispatcherQueue.TryEnqueue(Bindings.Update);
+                }
             }
         }
     }
