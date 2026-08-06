@@ -13,7 +13,7 @@ internal sealed class Timeline {
         db.EnsureIndex(x => x.CreatedAt);
     }
 
-    internal IEnumerable<Entities.Timeline> Get(int count, string? after = null) {
+    internal IEnumerable<Entities.Timeline> Get(uint count, string? after = null) {
         var query = db.Query();
 
         if (!String.IsNullOrEmpty(after)) {
@@ -23,7 +23,7 @@ internal sealed class Timeline {
             }
         }
 
-        var statuses = query.OrderByDescending(x => x.CreatedAt).Limit(count).ToEnumerable();
+        var statuses = query.OrderByDescending(x => x.CreatedAt).Limit((int)count).ToEnumerable();
         foreach (var status in statuses) {
             if (accessedTimeline.Contains(status.Id)) {
                 continue;

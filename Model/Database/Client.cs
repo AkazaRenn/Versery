@@ -17,7 +17,7 @@ internal sealed class Client {
         //LocalTimeline = new(accountHash, "localtimeline");
     }
 
-    public Entities.Timeline[] GetTimeline(int count, string? afterId = null) {
+    public Entities.Timeline[] GetTimeline(uint count, string? afterId = null) {
         var timelines = Timeline.Get(count, afterId).ToArray();
         foreach (var timeline in timelines) {
             if (GetStatus(timeline.Id) is Entities.Status status) {

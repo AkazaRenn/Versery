@@ -85,11 +85,11 @@ public sealed class Client {
         return timeline;
     }
 
-    public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null) {
+    public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null, uint count = Constants.StatusesCountPerLoad) {
         if (!SignedIn) {
             throw new InvalidOperationException("Client is not signed in");
         }
-        return database!.GetTimeline(Constants.StatusesCountPerLoad, afterId);
+        return database!.GetTimeline(count, afterId);
     }
 
     public Entities.Status? GetStatus(string id) {
