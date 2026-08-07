@@ -116,9 +116,8 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
     private void Frame_Navigated(object sender, NavigationEventArgs e) {
         Navigation.IsBackEnabled = Frame.CanGoBack;
 
-        if (Navigation.SelectedItem is NavigationViewItem navigationViewItem &&
-            navigationViewItem.Tag as Type == e.SourcePageType) {
-        } else {
+        if ((Navigation.SelectedItem is not NavigationViewItem navigationViewItem) ||
+            (navigationViewItem.Tag as Type != e.SourcePageType)) {
             Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(item => item.Tag as Type == e.SourcePageType);
         }
         activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;

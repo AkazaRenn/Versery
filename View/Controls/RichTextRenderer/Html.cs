@@ -108,7 +108,7 @@ internal static class Html {
                 Child = emojiControl,
             };
         } else {
-            return new Run { Text = shortCode };
+            return new Run { Text = $":{shortCode}:" };
         }
     }
 }

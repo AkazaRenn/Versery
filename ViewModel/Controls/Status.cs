@@ -19,7 +19,7 @@ public sealed partial class Status: ObservableObject {
     public RichTextRenderer.Html PosterDisplayName { get; set; } = new() {
         IsPlainText = true,
     };
-    public RichTextRenderer.Html Html { get; set; } = new() {
+    public RichTextRenderer.Html PostBody { get; set; } = new() {
         IsPlainText = false,
     };
 
@@ -81,9 +81,9 @@ public sealed partial class Status: ObservableObject {
         IsFavourited = status.Favourited;
         IsBookmarked = status.Bookmarked;
 
-        Html.RawText = status.Content;
+        PostBody.RawText = status.Content;
         foreach (var emoji in status.Emojis) {
-            Html.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+            PostBody.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
         }
 
         ContentId = status.Id;

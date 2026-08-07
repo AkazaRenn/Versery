@@ -118,7 +118,7 @@
         <RichTextBlock
             TextWrapping="WrapWholeWords"
             IsTextSelectionEnabled="False"
-            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Html}">
+            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.PostBody}">
         </RichTextBlock>
 
         <Grid ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">

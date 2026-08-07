@@ -154,14 +154,14 @@ public sealed class Html {
         int index = 0;
         while (index < rawText.Length) {
             if ((rawText[index] != ':') ||
-                (!TryReadEmojiShortCode(rawText, ref index, out var placeholder, out var shortCode))) {
+                (!TryReadEmojiShortCode(rawText, ref index, out var shortCode))) {
                 text.Append(rawText[index]);
                 index++;
                 continue;
             }
 
             FlushText();
-            tokens.Add(new EmojiToken(shortCode, placeholder));
+            tokens.Add(new EmojiToken(shortCode));
         }
 
         FlushText();
@@ -177,8 +177,7 @@ public sealed class Html {
         }
     }
 
-    private static bool TryReadEmojiShortCode(string rawText, ref int index, out string placeholder, out string shortCode) {
-        placeholder = string.Empty;
+    private static bool TryReadEmojiShortCode(string rawText, ref int index, out string shortCode) {
         shortCode = string.Empty;
 
         int startIndex = index;
@@ -201,10 +200,8 @@ public sealed class Html {
             return false;
         }
 
-        var endIndex = cursor + 1;
-        placeholder = rawText[startIndex..endIndex];
         shortCode = rawText[(startIndex + 1)..cursor];
-        index = endIndex;
+        index = cursor + 1;
         return true;
     }
 }
