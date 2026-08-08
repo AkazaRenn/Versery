@@ -6,13 +6,10 @@ using System.Text;
 namespace ViewModel.Controls.RichTextRenderer;
 
 public sealed class Html {
-    private static readonly ConcurrentDictionary<string, ContentToken> cache = [];
-
     public string RawText {
         get;
         set {
             if (field != value) {
-                cache.TryRemove(field, out _);
                 field = value;
                 UpdateTokens();
             }
@@ -30,7 +27,7 @@ public sealed class Html {
             return;
         }
 
-        ContentToken = cache.GetOrAdd(RawText, rawText => TokenizeHtml(rawText, IsPlainText));
+        ContentToken = TokenizeHtml(RawText, IsPlainText);
     }
 
     private static ContentToken TokenizeHtml(string rawText, bool isPlainText) {
