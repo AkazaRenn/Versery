@@ -1,0 +1,1 @@
+Versery is a **WIP** [Fediverse](https://jointhefediverse.net/) microblogging services client based on [Mastodon API](https://docs.joinmastodon.org/api/) built natively for Windows 11.
