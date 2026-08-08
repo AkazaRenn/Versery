@@ -26,8 +26,8 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool FollowedByGap { get; set; } = false;
 
-    private Status(string id) {
-        Id = id;
+    private Status(Timeline timeline) {
+        Id = timeline.Id;
         var status = client.GetStatus(Id)!;
 
         if (status.ReblogId == null) {
@@ -44,7 +44,7 @@ public sealed partial class Status: ObservableObject {
     internal static IEnumerable<Status> FromTimelines(IEnumerable<Timeline> timelines) {
         timelines = timelines.ToCollection();
         for (int i = 0; i < timelines.Count(); i++) {
-            yield return Create(timelines.ElementAt(i).Id);
+            yield return Create(timelines.ElementAt(i));
         }
     }
 
@@ -64,13 +64,13 @@ public sealed partial class Status: ObservableObject {
         }
     }
 
-    internal static Status Create(string id) {
+    internal static Status Create(Timeline timeline) {
         lock (cache) {
-            if ((!cache.TryGetValue(id, out var reference)) ||
+            if ((!cache.TryGetValue(timeline.Id, out var reference)) ||
                 (!reference.TryGetTarget(out var obj))) {
-                obj = new(id);
+                obj = new(timeline);
                 reference = new(obj);
-                cache[id] = reference;
+                cache[timeline.Id] = reference;
             }
             return obj;
         }
