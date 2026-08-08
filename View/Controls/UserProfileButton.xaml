@@ -35,7 +35,7 @@
                     x:Uid="Controls_UserProfileButton_MenuFlyout_ManageAccounts_SignOut"
                     Command="{x:Bind viewModel.SignOutCommand}">
                     <MenuFlyoutItem.Icon>
-                        <fluenticons:FluentIcon Icon="SignOut"/>
+                        <fluenticons:FluentIcon Icon="ArrowExit"/>
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>

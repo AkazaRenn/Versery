@@ -8,5 +8,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Raiqub.Generators.EnumUtilities" />
     <PackageReference Include="Refit" />
+    <PackageReference Include="System.Runtime.Caching" />
   </ItemGroup>
 </Project>

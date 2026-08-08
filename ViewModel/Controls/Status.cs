@@ -1,16 +1,97 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Model;
 using Model.Access;
 using Model.Entities;
 using Model.Enumerations;
 using Model.Server.Entities;
+using ViewModel.Controls.RichTextRenderer;
 
 namespace ViewModel.Controls;
 
 public sealed partial class Status: ObservableObject {
     private static readonly Client client = Model.Services.Get<Client>();
+    private static readonly Dictionary<string, WeakReference<Status>> idToStatusMap = [];
+
+    private readonly Sentinel sentinel;
 
     public event Action<int, IEnumerable<Model.Entities.Timeline>>? MoreLoaded;
+
+    public string Id { get; }
+    public int Index { get; set; } = -1;
+
+    public Account? Reblogger { get; } = null;
+    public Content Content { get; }
+
+    [ObservableProperty]
+    public partial bool FollowedByGap { get; set; } = false;
+
+    private Status(Timeline timeline) {
+        Id = timeline.Id;
+        var status = client.GetStatus(Id)!;
+
+        if (status.ReblogId == null) {
+            Content = Content.Create(Id);
+        } else {
+            Reblogger = Account.Create(status.AccountId);
+            Content = Content.Create(status.ReblogId);
+        }
+        FollowedByGap = timeline.FollowedByGap;
+
+        sentinel = new(Id);
+    }
+
+    public static Status Create(Timeline timeline) {
+        lock (idToStatusMap) {
+            if ((!idToStatusMap.TryGetValue(timeline.Id, out var statusRef)) ||
+                (!statusRef.TryGetTarget(out var status))) {
+                status = new Status(timeline);
+                statusRef = new WeakReference<Status>(status);
+                idToStatusMap[timeline.Id] = statusRef;
+            }
+            return status;
+        }
+    }
+
+    public static IEnumerable<Status> FromTimelines(IEnumerable<Timeline> timelines) {
+        timelines = timelines.ToCollection();
+        for (int i = 0; i < timelines.Count(); i++) {
+            yield return Create(timelines.ElementAt(i));
+        }
+    }
+
+    [RelayCommand]
+    public async Task LoadMore() {
+        var timelines = await client.GetTimelineFromServer(TimelineType.Home, Id);
+        FollowedByGap = false;
+        MoreLoaded?.Invoke(Index, timelines);
+    }
+
+    public async Task DownloadMedias() {
+        if (Content.Poster.AvatarRemote is not null) {
+            Content.Poster.Avatar = await Cache.Get(Content.Poster.AvatarRemote);
+        }
+        if (Reblogger?.AvatarRemote is not null) {
+            Reblogger.Avatar = await Cache.Get(Reblogger.AvatarRemote);
+        }
+    }
+
+    private sealed class Sentinel(string id) {
+        ~Sentinel() {
+            lock (idToStatusMap) {
+                if (idToStatusMap.TryGetValue(id, out var statusRef) && !statusRef.TryGetTarget(out var _)) {
+                    idToStatusMap.Remove(id);
+                }
+            }
+        }
+    }
+}
+
+public sealed partial class Content: ObservableObject {
+    private static readonly Client client = Model.Services.Get<Client>();
+    private static readonly Dictionary<string, WeakReference<Content>> idToStatusMap = [];
+
+    private readonly Sentinel sentinel;
 
     public string Id { get; }
     public string ContentId { get; } = string.Empty;
@@ -23,22 +104,10 @@ public sealed partial class Status: ObservableObject {
         IsPlainText = false,
     };
 
-    public string? RebloggerId { get; } = null;
-    public string? RebloggerDisplayName { get; } = null;
-    public Uri? RebloggerAvatarRemote { get; } = null;
-    [ObservableProperty]
-    public partial Uri? RebloggerAvatar { get; set; } = null;
-
-    public string PosterId { get; } = String.Empty;
-    public string PosterAccount { get; } = String.Empty;
-    public Uri? PosterAvatarRemote { get; } = null;
-    [ObservableProperty]
-    public partial Uri? PosterAvatar { get; set; } = null;
+    public Account Poster { get; }
 
     public DateTime CreatedAt { get; } = DateTime.MinValue;
     public Uri? Uri { get; } = null;
-    [ObservableProperty]
-    public partial bool FollowedByGap { get; set; } = false;
 
     [ObservableProperty]
     public partial bool HasReplies { get; set; } = false;
@@ -51,29 +120,11 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool IsBookmarked { get; set; } = false;
 
-    public Status(Timeline timeline) {
-        Id = timeline.Id;
-
+    private Content(string id) {
+        Id = id;
         var status = client.GetStatus(Id)!;
-        var account = client.GetAccount(status.AccountId)!;
 
-        if (status.ReblogId != null) {
-            RebloggerId = account.Id;
-            RebloggerDisplayName = account.DisplayName;
-            RebloggerAvatarRemote = account.Avatar;
-
-            status = client.GetStatus(status.ReblogId)!;
-            account = client.GetAccount(status.AccountId)!;
-        }
-
-        PosterId = account.Id;
-        PosterAccount = account.AccountName;
-        PosterAvatarRemote = account.Avatar;
-
-        PosterDisplayName.RawText = account.DisplayName;
-        foreach (var emoji in account.Emojis) {
-            PosterDisplayName.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
-        }
+        Poster = Account.Create(status.AccountId);
 
         CanBeReblogged = status.Visibility < StatusVisibility.Private;
         HasReplies = status.RepliesCount > 0;
@@ -89,28 +140,79 @@ public sealed partial class Status: ObservableObject {
         ContentId = status.Id;
         CreatedAt = status.CreatedAt;
         Uri = status.Uri;
-        FollowedByGap = timeline.FollowedByGap;
+
+        sentinel = new(Id);
     }
 
-    public static IEnumerable<Status> FromTimelines(IEnumerable<Timeline> timelines) {
-        timelines = timelines.ToCollection();
-        for (int i = 0; i < timelines.Count(); i++) {
-            yield return new Status(timelines.ElementAt(i));
+    public static Content Create(string id) {
+        lock (idToStatusMap) {
+            if ((!idToStatusMap.TryGetValue(id, out var contentRef)) ||
+                (!contentRef.TryGetTarget(out var content))) {
+                content = new Content(id);
+                idToStatusMap[id] = new WeakReference<Content>(content);
+            }
+            return content;
         }
     }
 
-    public async Task LoadMore() {
-        var timelines = await client.GetTimelineFromServer(TimelineType.Home, Id);
-        FollowedByGap = false;
-        MoreLoaded?.Invoke(Index, timelines);
+    private sealed class Sentinel(string id) {
+        ~Sentinel() {
+            lock (idToStatusMap) {
+                if (idToStatusMap.TryGetValue(id, out var statusRef) && !statusRef.TryGetTarget(out var _)) {
+                    idToStatusMap.Remove(id);
+                }
+            }
+        }
+    }
+}
+
+public sealed partial class Account: ObservableObject {
+    private static readonly Client client = Model.Services.Get<Client>();
+    private static readonly Dictionary<string, WeakReference<Account>> idToAccountMap = [];
+
+    private readonly Sentinel sentinel;
+
+    public string Id { get; }
+    public string AccountName { get; }
+    public Uri? AvatarRemote { get; }
+    public Dictionary<string, Uri> Emojis { get; }
+    public Html DisplayName { get; } = new();
+
+    [ObservableProperty]
+    public partial Uri? Avatar { get; set; } = null;
+
+    private Account(string id) {
+        Id = id;
+        var account = client.GetAccount(id)!;
+        AccountName = account.AccountName;
+        AvatarRemote = account.Avatar;
+        Emojis = account.Emojis;
+        DisplayName.RawText = account.DisplayName;
+        foreach (var emoji in account.Emojis) {
+            DisplayName.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+        }
+
+        sentinel = new(id);
     }
 
-    public async Task DownloadMedias() {
-        if (PosterAvatarRemote is not null) {
-            PosterAvatar = await Cache.Get(PosterAvatarRemote);
+    public static Account Create(string id) {
+        lock (idToAccountMap) {
+            if ((!idToAccountMap.TryGetValue(id, out var accountRef)) ||
+                (!accountRef.TryGetTarget(out var account))) {
+                account = new Account(id);
+                idToAccountMap[id] = new WeakReference<Account>(account);
+            }
+            return account;
         }
-        if (RebloggerAvatarRemote is not null) {
-            RebloggerAvatar = await Cache.Get(RebloggerAvatarRemote);
+    }
+
+    private sealed class Sentinel(string id) {
+        ~Sentinel() {
+            lock (idToAccountMap) {
+                if (idToAccountMap.TryGetValue(id, out var accountRef) && !accountRef.TryGetTarget(out var _)) {
+                    idToAccountMap.Remove(id);
+                }
+            }
         }
     }
 }

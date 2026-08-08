@@ -30,7 +30,7 @@ public sealed class Html {
             return;
         }
 
-        ContentToken = cache.GetOrAdd(RawText, _ => TokenizeHtml(RawText, IsPlainText));
+        ContentToken = cache.GetOrAdd(RawText, rawText => TokenizeHtml(rawText, IsPlainText));
     }
 
     private static ContentToken TokenizeHtml(string rawText, bool isPlainText) {

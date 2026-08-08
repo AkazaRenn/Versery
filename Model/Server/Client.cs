@@ -3,7 +3,7 @@ using Refit;
 
 namespace Model.Server;
 
-public class Client {
+internal sealed class Client {
     public string InstanceUrl { get; }
     public string AccessToken { get; }
 

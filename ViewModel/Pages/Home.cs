@@ -9,7 +9,6 @@ namespace ViewModel.Pages;
 
 public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     private readonly Client client = Model.Services.Get<Client>();
-    private readonly Dictionary<string, List<Controls.Status>> contentIdToStatusesDict = [];
     private bool loadingOldStatuses = false;
     private bool hasMoreStatusesToLoad = true;
 
@@ -18,66 +17,22 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     public Home() {
         Statuses.CollectionChanged += Timelines_CollectionChanged;
 
-        _ = LoadInitialTimelines();
         WeakReferenceMessenger.Default.RegisterAll(this);
+        _ = LoadInitialTimelines();
     }
 
     private void Timelines_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
         switch (e.Action) {
         case NotifyCollectionChangedAction.Add:
-            AddToIdToTimelinesDict(e.NewItems);
-            break;
-        case NotifyCollectionChangedAction.Remove:
-            RemoveFromIdToTimelinesDict(e.OldItems);
-            break;
         case NotifyCollectionChangedAction.Replace:
-            RemoveFromIdToTimelinesDict(e.OldItems);
-            AddToIdToTimelinesDict(e.NewItems);
+            if (e.NewItems is null) {
+                return;
+            }
+
+            foreach (Controls.Status status in e.NewItems) {
+                _ = status.DownloadMedias();
+            }
             break;
-        case NotifyCollectionChangedAction.Reset:
-            ResetIdToTimelinesDict();
-            break;
-        }
-    }
-
-    private void AddToIdToTimelinesDict(System.Collections.IList? statuses) {
-        if (statuses is null) {
-            return;
-        }
-
-        foreach (Controls.Status status in statuses) {
-            if (!contentIdToStatusesDict.TryGetValue(status.ContentId, out var list)) {
-                list = [];
-                contentIdToStatusesDict[status.ContentId] = list;
-            }
-            list.Add(status);
-            _ = status.DownloadMedias();
-        }
-    }
-
-    private void RemoveFromIdToTimelinesDict(System.Collections.IList? statuses) {
-        if (statuses is null) {
-            return;
-        }
-
-        foreach (Controls.Status status in statuses) {
-            if (contentIdToStatusesDict.TryGetValue(status.ContentId, out var list)) {
-                list.Remove(status);
-                if (list.Count == 0) {
-                    contentIdToStatusesDict.Remove(status.ContentId);
-                }
-            }
-        }
-    }
-
-    private void ResetIdToTimelinesDict() {
-        contentIdToStatusesDict.Clear();
-        foreach (var status in Statuses) {
-            if (!contentIdToStatusesDict.TryGetValue(status.ContentId, out var list)) {
-                list = [];
-                contentIdToStatusesDict[status.ContentId] = list;
-            }
-            list.Add(status);
         }
     }
 

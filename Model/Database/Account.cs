@@ -1,13 +1,14 @@
 ﻿using LiteDB;
+using System.Runtime.Caching;
 
 namespace Model.Database;
 
 internal class Account(string hash) {
+    private static readonly MemoryCache cache = new(typeof(Account).FullName);
     private readonly ILiteCollection<Entities.Account> db = Services.Get<LiteDatabase>().GetCollection<Entities.Account>($"instance_{hash}_accounts");
-    private readonly Dictionary<string, Entities.Account> cache = [];
 
     public Entities.Account? Get(string id) {
-        if (cache.TryGetValue(id, out var account)) {
+        if (cache[id] is Entities.Account account) {
             return account;
         }
         account = db.FindById(id);

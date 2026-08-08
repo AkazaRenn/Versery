@@ -1,13 +1,14 @@
 ﻿using LiteDB;
+using System.Runtime.Caching;
 
 namespace Model.Database;
 
 internal class Status(string hash) {
+    private static readonly MemoryCache cache = new(typeof(Status).FullName);
     private readonly ILiteCollection<Entities.Status> db = Services.Get<LiteDatabase>().GetCollection<Entities.Status>($"instance_{hash}_statuses");
-    private readonly Dictionary<string, Entities.Status> cache = [];
 
     public Entities.Status? Get(string id) {
-        if (cache.TryGetValue(id, out var status)) {
+        if (cache[id] is Entities.Status status) {
             return status;
         }
         status = db.FindById(id);

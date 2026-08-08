@@ -51,7 +51,7 @@
             <Image.Source>
                 <BitmapImage
                     x:Name="PosterAvatarBitmapImage"
-                    UriSource="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}"/>
+                    UriSource="{x:Bind ViewModel.Content.Poster.Avatar, Mode=OneWay}"/>
             </Image.Source>
         </Image>
         <Button
@@ -63,7 +63,7 @@
 
     <Border
         x:Name="RebloggerAvatarBorder"
-        x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.RebloggerId)}"
+        x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger.Id)}"
         Grid.Column="0"
         Grid.Row="1"
         VerticalAlignment="Bottom"
@@ -76,7 +76,7 @@
             <Image.Source>
                 <BitmapImage
                     x:Name="RebloggerAvatarBitmapImage"
-                    UriSource="{x:Bind ViewModel.RebloggerAvatar, Mode=OneWay}"/>
+                    UriSource="{x:Bind ViewModel.Reblogger.Avatar, Mode=OneWay}"/>
             </Image.Source>
         </Image>
     </Border>
@@ -96,18 +96,18 @@
                 FontSize="16"
                 TextTrimming="CharacterEllipsis"
                 IsTextSelectionEnabled="False"
-                richtextrenderer:Html.ViewModel="{x:Bind ViewModel.PosterDisplayName}"/>
+                richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Content.Poster.DisplayName}"/>
             <TextBlock
                 FontSize="{x:Bind PosterIdFontSize}"
                 Foreground="{ThemeResource TextFillColorSecondary}"
                 TextTrimming="CharacterEllipsis"
                 IsTextSelectionEnabled="False"
-                Text="{x:Bind ViewModel.PosterAccount}"/>
+                Text="{x:Bind ViewModel.Content.Poster.AccountName}"/>
         </StackPanel>
         <TextBlock
             Grid.Column="1"
             Grid.Row="0"
-            Text="{x:Bind ViewModel.CreatedAt.ToShortDateString()}"
+            Text="{x:Bind ViewModel.Content.CreatedAt.ToShortDateString()}"
             HorizontalAlignment="Right"/>
     </Grid>
 
@@ -118,7 +118,7 @@
         <RichTextBlock
             TextWrapping="WrapWholeWords"
             IsTextSelectionEnabled="False"
-            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.PostBody}">
+            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Content.PostBody}">
         </RichTextBlock>
 
         <Grid ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
@@ -129,7 +129,7 @@
                 BorderThickness="{x:Bind ReactButtonBorderThickness}"
                 Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
-                    Icon="{x:Bind GetReplyIcon(ViewModel.HasReplies)}"
+                    Icon="{x:Bind GetReplyIcon(ViewModel.Content.HasReplies)}"
                     FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
@@ -139,7 +139,7 @@
                 BorderThickness="{x:Bind ReactButtonBorderThickness}"
                 Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
-                    Icon="{x:Bind GetReblogIcon(ViewModel.CanBeReblogged)}"
+                    Icon="{x:Bind GetReblogIcon(ViewModel.Content.CanBeReblogged)}"
                     FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
@@ -150,7 +150,7 @@
                 Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="Star"
-                    IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.IsFavourited)}"
+                    IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.Content.IsFavourited)}"
                     FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
