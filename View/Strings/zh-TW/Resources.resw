@@ -117,16 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Page_SignIn_InstanceTextBox.PlaceholderText" xml:space="preserve">
-    <value>實例？</value>
+  <data name="Controls_Status_LoadMoreButton.Content" xml:space="preserve">
+    <value>載入更多</value>
+  </data>
+  <data name="Controls_UserProfileButton_MenuFlyout_ManageAccounts.Text" xml:space="preserve">
+    <value>管理帳戶</value>
+  </data>
+  <data name="Controls_UserProfileButton_MenuFlyout_ManageAccounts_AddAccount.Text" xml:space="preserve">
+    <value>新增帳戶</value>
+  </data>
+  <data name="Controls_UserProfileButton_MenuFlyout_ManageAccounts_SignOut.Text" xml:space="preserve">
+    <value>登出</value>
   </data>
   <data name="MainWindow_NavigationViewItem_Home.Content" xml:space="preserve">
     <value>主頁</value>
   </data>
-  <data name="Page_SignIn_SignInButton.Content" xml:space="preserve">
-    <value>登入</value>
-  </data>
   <data name="MainWindow_NavigationViewItem_Notifications.Content" xml:space="preserve">
     <value>通知</value>
+  </data>
+  <data name="Pages_SignIn_InstanceTextBox.PlaceholderText" xml:space="preserve">
+    <value>實例？</value>
+  </data>
+  <data name="Pages_SignIn_SignInButton.Content" xml:space="preserve">
+    <value>登入</value>
   </data>
 </root>

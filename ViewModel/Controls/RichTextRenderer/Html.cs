@@ -1,20 +1,18 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
-using System.Runtime.Caching;
+using System.Collections.Concurrent;
 using System.Text;
 
 namespace ViewModel.Controls.RichTextRenderer;
 
 public sealed class Html {
-    private static readonly MemoryCache cache = new(nameof(Html));
-    private static readonly CacheItemPolicy cachePolicy = new() {
-        SlidingExpiration = TimeSpan.FromMinutes(30),
-    };
+    private static readonly ConcurrentDictionary<string, ContentToken> cache = [];
 
     public string RawText {
         get;
         set {
             if (field != value) {
+                cache.TryRemove(field, out _);
                 field = value;
                 UpdateTokens();
             }
@@ -32,11 +30,7 @@ public sealed class Html {
             return;
         }
 
-        if (cache.Get(RawText) is not ContentToken tokenizedContent) {
-            tokenizedContent = TokenizeHtml(RawText, IsPlainText);
-            cache.Add(RawText, tokenizedContent, cachePolicy);
-        }
-        ContentToken = tokenizedContent;
+        ContentToken = cache.GetOrAdd(RawText, _ => TokenizeHtml(RawText, IsPlainText));
     }
 
     private static ContentToken TokenizeHtml(string rawText, bool isPlainText) {

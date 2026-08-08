@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     xmlns:controls="using:View.Controls"
     xmlns:vm.controls="using:ViewModel.Controls"
-    Loaded="Page_Loaded"
+    Loaded="Pages_Loaded"
     NavigationCacheMode="Required">
     <RefreshContainer
         x:Name="RefreshContainer"

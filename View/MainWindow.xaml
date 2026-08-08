@@ -38,12 +38,6 @@
                 <NavigationViewItem
                     x:Uid="MainWindow_NavigationViewItem_Notifications"
                     Tag="{x:Bind pages:SignIn.Type}"/>
-                <NavigationViewItem
-                    Icon="Refresh"
-                    x:Name="TestPage"/>
-                <NavigationViewItem
-                    Icon="Download"
-                    Tag="SamplePage4"/>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItemHeader

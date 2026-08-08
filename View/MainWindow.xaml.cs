@@ -86,8 +86,6 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
                     Frame.Navigate(pageType);
                 }
             }
-
-            UpdateNonClientInputPassthrough();
         }
     }
 
@@ -121,6 +119,7 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
             Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(item => item.Tag as Type == e.SourcePageType);
         }
         activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;
+        UpdateNonClientInputPassthrough();
     }
 
     private void ViewModel_NavigationRequested(ViewModel.Enumerations.Page page, string? obj) {

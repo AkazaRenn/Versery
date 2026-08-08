@@ -22,7 +22,7 @@
         Grid.Column="0"
         Grid.Row="0"
         Grid.RowSpan="2"
-        Width="{x:Bind lineWidth}"
+        Width="{x:Bind LineWidth}"
         Height="{x:Bind AboveLineHeight}"
         Margin="{x:Bind AboveLineMargin}"
         VerticalAlignment="Top"
@@ -34,7 +34,7 @@
         Grid.Column="0"
         Grid.Row="1"
         Grid.RowSpan="{x:Bind BelowLineRowSpan}"
-        Width="{x:Bind lineWidth}"
+        Width="{x:Bind LineWidth}"
         Margin="{x:Bind BelowLineMargin}"
         VerticalAlignment="Stretch"
         Fill="{x:Bind BorderBrush}"/>
@@ -49,12 +49,12 @@
         CornerRadius="{x:Bind AvatarButtonCornerRadius}">
         <Image>
             <Image.Source>
-                <BitmapImage 
+                <BitmapImage
                     x:Name="PosterAvatarBitmapImage"
                     UriSource="{x:Bind ViewModel.PosterAvatar, Mode=OneWay}"/>
             </Image.Source>
         </Image>
-        <Button 
+        <Button
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
             BorderThickness="0"
@@ -124,56 +124,56 @@
         <Grid ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
             <Button
                 Grid.Column="0"
-                Background="{x:Bind reactButtonBackground}"
-                BorderBrush="{x:Bind reactButtonBorderBrush}"
-                BorderThickness="{x:Bind reactButtonBorderThickness}"
-                Padding="{x:Bind reactButtonPadding}">
+                Background="{x:Bind ReactButtonBackground}"
+                BorderBrush="{x:Bind ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind ReactButtonBorderThickness}"
+                Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="{x:Bind GetReplyIcon(ViewModel.HasReplies)}"
-                    FontSize="{x:Bind reactButtonFontSize}"/>
+                    FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="2"
-                Background="{x:Bind reactButtonBackground}"
-                BorderBrush="{x:Bind reactButtonBorderBrush}"
-                BorderThickness="{x:Bind reactButtonBorderThickness}"
-                Padding="{x:Bind reactButtonPadding}">
+                Background="{x:Bind ReactButtonBackground}"
+                BorderBrush="{x:Bind ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind ReactButtonBorderThickness}"
+                Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="{x:Bind GetReblogIcon(ViewModel.CanBeReblogged)}"
-                    FontSize="{x:Bind reactButtonFontSize}"/>
+                    FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="4"
-                Background="{x:Bind reactButtonBackground}"
-                BorderBrush="{x:Bind reactButtonBorderBrush}"
-                BorderThickness="{x:Bind reactButtonBorderThickness}"
-                Padding="{x:Bind reactButtonPadding}">
+                Background="{x:Bind ReactButtonBackground}"
+                BorderBrush="{x:Bind ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind ReactButtonBorderThickness}"
+                Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="Star"
                     IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.IsFavourited)}"
-                    FontSize="{x:Bind reactButtonFontSize}"/>
+                    FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="6"
-                Background="{x:Bind reactButtonBackground}"
-                BorderBrush="{x:Bind reactButtonBorderBrush}"
-                BorderThickness="{x:Bind reactButtonBorderThickness}"
-                Padding="{x:Bind reactButtonPadding}">
+                Background="{x:Bind ReactButtonBackground}"
+                BorderBrush="{x:Bind ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind ReactButtonBorderThickness}"
+                Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     x:Name="ShareIcon"
                     Icon="Share"
-                    FontSize="{x:Bind reactButtonFontSize}"/>
+                    FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="8"
-                Background="{x:Bind reactButtonBackground}"
-                BorderBrush="{x:Bind reactButtonBorderBrush}"
-                BorderThickness="{x:Bind reactButtonBorderThickness}"
-                Padding="{x:Bind reactButtonPadding}">
+                Background="{x:Bind ReactButtonBackground}"
+                BorderBrush="{x:Bind ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind ReactButtonBorderThickness}"
+                Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="MoreHorizontal"
                     RenderTransformOrigin="0.5, 0.5"
-                    FontSize="{x:Bind reactButtonFontSize}">
+                    FontSize="{x:Bind ReactButtonFontSize}">
                     <fluenticons:FluentIcon.RenderTransform>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
                     </fluenticons:FluentIcon.RenderTransform>
@@ -183,6 +183,7 @@
     </StackPanel>
 
     <Button
+        x:Uid="Controls_Status_LoadMoreButton"
         x:Name="LoadMoreButton"
         x:Load="{x:Bind ViewModel.FollowedByGap}"
         Grid.Column="0"
@@ -194,7 +195,5 @@
         BorderThickness="{x:Bind LoadMoreButtonBorderThickness}"
         BorderBrush="{x:Bind BorderBrush}"
         CornerRadius="0"
-        Margin="{x:Bind LoadMoreButtonMargin}">
-        Load More
-    </Button>
+        Margin="{x:Bind LoadMoreButtonMargin}"/>
 </Grid>

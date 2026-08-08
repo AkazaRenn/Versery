@@ -54,7 +54,7 @@ internal sealed partial class Status: Grid {
         }
     }
 
-    private readonly double lineWidth = 4;
+    private double LineWidth { get; } = 4;
     private double AboveLineHeight => Padding.Top + RowDefinitions[1].Height.Value / 2;
     private Thickness AboveLineMargin => new(0, -Padding.Top, 0, 0);
     private int BelowLineRowSpan => RowDefinitions.Count - 1;
@@ -65,11 +65,11 @@ internal sealed partial class Status: Grid {
     private CornerRadius RebloggerAvatarCornerRadius => new(RebloggerAvatarSize / 2);
     private double PosterIdFontSize => DisplayNameTextBlock.FontSize * 0.85;
 
-    private readonly Brush reactButtonBackground = new SolidColorBrush(Colors.Transparent);
-    private readonly Brush reactButtonBorderBrush = new SolidColorBrush(Colors.Transparent);
-    private readonly Thickness reactButtonBorderThickness = new(0, 0, 0, 0);
-    private readonly Thickness reactButtonPadding = new(4, 4, 4, 4);
-    private readonly double reactButtonFontSize = 16;
+    private Brush ReactButtonBackground { get; } = new SolidColorBrush(Colors.Transparent);
+    private Brush ReactButtonBorderBrush { get; } = new SolidColorBrush(Colors.Transparent);
+    private Thickness ReactButtonBorderThickness { get; } = new(0, 0, 0, 0);
+    private Thickness ReactButtonPadding { get; } = new(4, 4, 4, 4);
+    private double ReactButtonFontSize { get; } = 16;
     private Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
     private Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
     private IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;

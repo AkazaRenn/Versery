@@ -50,7 +50,7 @@ internal sealed partial class Home: Page, INavigationPage {
         }
     }
 
-    private void Page_Loaded(object sender, RoutedEventArgs e) {
+    private void Pages_Loaded(object sender, RoutedEventArgs e) {
         scrollViewer = ListView.FindDescendant<ScrollViewer>();
     }
 

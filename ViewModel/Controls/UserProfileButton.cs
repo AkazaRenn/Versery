@@ -17,8 +17,13 @@ public sealed partial class UserProfileButton: ObservableObject, IRecipient<Mess
     }
 
     [RelayCommand]
-    private void Login() {
+    private void AddAccount() {
         WeakReferenceMessenger.Default.Send(new Messages.SignInRequested());
+    }
+
+    [RelayCommand]
+    private void SignOut() {
+        //WeakReferenceMessenger.Default.Send(new Messages.SignInRequested());
     }
 
     private async Task UpdateUserInfo() {

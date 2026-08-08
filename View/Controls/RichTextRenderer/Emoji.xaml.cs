@@ -16,10 +16,7 @@ namespace View.Controls.RichTextRenderer;
 
 internal sealed partial class Emoji: Panel {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
-    private static readonly MemoryCache imageCache = new(nameof(Emoji));
-    private static readonly CacheItemPolicy imageCachePolicy = new() {
-        SlidingExpiration = TimeSpan.FromMinutes(30),
-    };
+    private static readonly MemoryCache imageCache = new(typeof(Emoji).FullName);
 
     private SpriteVisual? visual;
     private CompositionSurfaceBrush? brush;
@@ -167,7 +164,7 @@ internal sealed partial class Emoji: Panel {
         } else {
             using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Source.LocalPath);
             data = await Task.Run(() => new ImageData(image));
-            imageCache.Add(cacheKey, data, imageCachePolicy);
+            imageCache.Add(cacheKey, data, null);
         }
 
         frameData = data.CreateGpuFrames();

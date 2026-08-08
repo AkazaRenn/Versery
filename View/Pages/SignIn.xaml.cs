@@ -11,7 +11,7 @@ internal sealed partial class SignIn: Page, INavigationPage {
         InitializeComponent();
     }
 
-    private async void Page_Unloaded(object sender, RoutedEventArgs e) {
+    private async void Pages_Unloaded(object sender, RoutedEventArgs e) {
         var webView = WebView;
         if (webView.CoreWebView2 != null) {
             await webView.CoreWebView2.Profile.ClearBrowsingDataAsync();
