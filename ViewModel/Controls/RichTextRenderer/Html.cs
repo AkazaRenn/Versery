@@ -73,7 +73,7 @@ public sealed class Html {
                 return;
             }
 
-            paragraphs.Add(new ParagraphToken(currentParagraphInlines.ToList()));
+            paragraphs.Add(new ParagraphToken([.. currentParagraphInlines]));
             currentParagraphInlines.Clear();
         }
     }
@@ -104,7 +104,7 @@ public sealed class Html {
         return tokens;
     }
 
-    private static IEnumerable<InlineToken> TokenizeInline(INode node) {
+    private static List<InlineToken> TokenizeInline(INode node) {
         switch (node) {
         case IText text:
             return TokenizeTextWithEmoji(text.Text);

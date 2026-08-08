@@ -71,7 +71,7 @@ public sealed class Client {
 
         database!.AddTimeline(serverStatuses, afterId);
 
-        if (!serverStatuses.Any()) {
+        if (serverStatuses.Count == 0) {
             return [];
         }
 
