@@ -219,9 +219,13 @@ internal sealed partial class Emoji: Panel {
 
         public void Dispose() {
             cache.TryRemove(key, out _);
-            foreach (var frame in this) {
-                frame?.Bitmap?.Dispose();
-            }
+            var copy = ToArray();
+            Clear();
+            Task.Run(() => {
+                foreach (var frame in copy) {
+                    frame?.Bitmap?.Dispose();
+                }
+            });
         }
     }
 
@@ -253,6 +257,7 @@ internal sealed partial class Emoji: Panel {
         }
 
         try {
+            var pixels = new byte[Width * Height * 4];
             for (int i = 0; i < frameCount; i++) {
                 // Enforce a minimum delay of 20ms to avoid excessively fast frames
                 if (double.IsNaN(frameDelaysMs[i]) || (frameDelaysMs[i] < 20)) {
@@ -260,7 +265,6 @@ internal sealed partial class Emoji: Panel {
                 }
 
                 var frame = image.Frames[i];
-                var pixels = new byte[frame.Width * frame.Height * 4];
                 frame.CopyPixelDataTo(pixels);
 
                 collection.Add(new(
