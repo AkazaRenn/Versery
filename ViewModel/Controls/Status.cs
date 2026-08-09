@@ -5,6 +5,7 @@ using Model.Access;
 using Model.Entities;
 using Model.Enumerations;
 using Model.Server.Entities;
+using Model.Utilities;
 using ViewModel.Controls.RichTextRenderer;
 
 namespace ViewModel.Controls;
@@ -13,7 +14,7 @@ public sealed partial class Status: ObservableObject {
     private static readonly Client client = Model.Services.Get<Client>();
     private static readonly Dictionary<string, WeakReference<Status>> cache = [];
 
-    private readonly Sentinel sentinel;
+    private readonly Sentinel<string, Status> sentinel;
 
     public event Action<int, IEnumerable<Model.Entities.Timeline>>? MoreLoaded;
 
@@ -38,7 +39,7 @@ public sealed partial class Status: ObservableObject {
         }
         FollowedByGap = timeline.FollowedByGap;
 
-        sentinel = new(Id);
+        sentinel = new(Id, cache);
     }
 
     internal static IEnumerable<Status> FromTimelines(IEnumerable<Timeline> timelines) {
@@ -76,22 +77,11 @@ public sealed partial class Status: ObservableObject {
         }
     }
 
-    private sealed class Sentinel(string id) {
-        ~Sentinel() {
-            lock (cache) {
-                if (cache.TryGetValue(id, out var reference) &&
-                    !reference.TryGetTarget(out var _)) {
-                    cache.Remove(id);
-                }
-            }
-        }
-    }
-
     public sealed partial class StatusContent: ObservableObject {
         private static readonly Client client = Model.Services.Get<Client>();
         private static readonly Dictionary<string, WeakReference<StatusContent>> cache = [];
 
-        private readonly Sentinel sentinel;
+        private readonly Sentinel<string, StatusContent> sentinel;
 
         public string Id { get; }
         public int Index { get; set; } = -1;
@@ -138,7 +128,7 @@ public sealed partial class Status: ObservableObject {
             CreatedAt = status.CreatedAt;
             Uri = status.Uri;
 
-            sentinel = new(Id);
+            sentinel = new(Id, cache);
         }
 
         internal static StatusContent Create(string id) {
@@ -151,24 +141,13 @@ public sealed partial class Status: ObservableObject {
                 return obj;
             }
         }
-
-        private sealed class Sentinel(string id) {
-            ~Sentinel() {
-                lock (cache) {
-                    if (cache.TryGetValue(id, out var reference) &&
-                        !reference.TryGetTarget(out var _)) {
-                        cache.Remove(id);
-                    }
-                }
-            }
-        }
     }
 
     public sealed partial class Account: ObservableObject {
         private static readonly Client client = Model.Services.Get<Client>();
         private static readonly Dictionary<string, WeakReference<Account>> cache = [];
 
-        private readonly Sentinel sentinel;
+        private readonly Sentinel<string, Account> sentinel;
 
         public string Id { get; }
         public string AccountName { get; }
@@ -190,7 +169,7 @@ public sealed partial class Status: ObservableObject {
                 DisplayName.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
             }
 
-            sentinel = new(id);
+            sentinel = new(Id, cache);
         }
 
         internal static Account Create(string id) {
@@ -201,17 +180,6 @@ public sealed partial class Status: ObservableObject {
                     cache[id] = new(obj);
                 }
                 return obj;
-            }
-        }
-
-        private sealed class Sentinel(string id) {
-            ~Sentinel() {
-                lock (cache) {
-                    if (cache.TryGetValue(id, out var reference) &&
-                        !reference.TryGetTarget(out var _)) {
-                        cache.Remove(id);
-                    }
-                }
             }
         }
     }
