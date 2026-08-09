@@ -124,7 +124,7 @@ internal sealed partial class Emoji: Panel {
     }
 
     private void Panel_SizeChanged(object sender, SizeChangedEventArgs e) {
-        visual?.Size = new System.Numerics.Vector2((float)ActualWidth, (float)ActualHeight);
+        visual?.Size = new System.Numerics.Vector2((float)e.NewSize.Width, (float)e.NewSize.Height);
     }
 
     private void TryPlay() {

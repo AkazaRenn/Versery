@@ -38,6 +38,12 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
         viewModel.NavigationRequested += ViewModel_NavigationRequested;
     }
 
+    private void Navigate(Type type) {
+        if (Frame.Content?.GetType() != type) {
+            Frame.Navigate(type);
+        }
+    }
+
     private void UpdateNonClientInputPassthrough() {
         if (Content.XamlRoot == null) {
             return;
@@ -83,7 +89,7 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
         } else {
             if (args.InvokedItemContainer is NavigationViewItem item) {
                 if (item.Tag is Type pageType) {
-                    Frame.Navigate(pageType);
+                    Navigate(pageType);
                 }
             }
         }
@@ -104,11 +110,7 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
             item.Height = Navigation.CompactPaneLength - 8;
         }
 
-        Navigation.SizeChanged += (_, _) => {
-            UpdateNonClientInputPassthrough();
-        };
-
-        Frame.Navigate(typeof(Pages.Home));
+        Navigate(typeof(Pages.Home));
     }
 
     private void Frame_Navigated(object sender, NavigationEventArgs e) {
@@ -125,11 +127,15 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
     private void ViewModel_NavigationRequested(ViewModel.Enumerations.Page page, string? obj) {
         switch (page) {
         case ViewModel.Enumerations.Page.Home:
-            Frame.Navigate(typeof(Pages.Home));
+            Navigate(typeof(Pages.Home));
             break;
         case ViewModel.Enumerations.Page.SignIn:
-            Frame.Navigate(typeof(Pages.SignIn));
+            Navigate(typeof(Pages.SignIn));
             break;
         }
+    }
+
+    private void Navigation_SizeChanged(object sender, SizeChangedEventArgs e) {
+        UpdateNonClientInputPassthrough();
     }
 }

@@ -5,7 +5,6 @@ using Model.Enumerations;
 namespace Model.Access;
 
 public sealed class Client {
-    private static readonly HttpClient httpClient = Services.Get<HttpClient>();
     private readonly ApplicationStates applicationStates = Services.Get<ApplicationStates>();
     private Database.Client? database;
     private Server.Client? server;

@@ -30,6 +30,7 @@
             IsSettingsVisible="False"
             ItemInvoked="Navigation_ItemInvoked"
             BackRequested="Navigation_BackRequested"
+            SizeChanged="Navigation_SizeChanged"
             Loaded="Navigation_Loaded">
             <NavigationView.MenuItems>
                 <NavigationViewItem
