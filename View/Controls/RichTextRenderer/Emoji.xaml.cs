@@ -7,28 +7,28 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
+using Nito.Disposables;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.Runtime.Caching;
+using System.Collections.Concurrent;
 using View.Interfaces;
 
 namespace View.Controls.RichTextRenderer;
 
 internal sealed partial class Emoji: Panel {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
-    private static readonly MemoryCache imageCache = new(typeof(Emoji).FullName);
+    private static readonly ConcurrentDictionary<Uri, Task<IWeakReferenceCountedDisposable<FrameDataCollection>>> cache = [];
 
     private SpriteVisual? visual;
     private CompositionSurfaceBrush? brush;
     private CompositionDrawingSurface? surface;
     private Window? window;
 
+    private readonly DispatcherQueueTimer timer;
     private bool isLoaded = false;
     private int currentFrame = 0;
     private uint loop = 0;
-    private uint maxLoop = 0;
-    private readonly DispatcherQueueTimer timer;
-    private IReadOnlyCollection<FrameData> frameData = [];
+    private IReferenceCountedDisposable<FrameDataCollection>? frameData = null;
 
     public Uri? Source {
         get;
@@ -41,9 +41,10 @@ internal sealed partial class Emoji: Panel {
     }
 
     public bool ShouldPlay =>
-        (frameData.Count > 1) &&
         isLoaded &&
-        ((maxLoop == 0) || (loop < maxLoop));
+        (frameData?.Target is not null) &&
+        (frameData.Target.Count > 1) &&
+        ((frameData.Target.MaxLoop == 0) || (loop < frameData.Target.MaxLoop));
 
     public Emoji() {
         InitializeComponent();
@@ -98,7 +99,8 @@ internal sealed partial class Emoji: Panel {
         canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
         window?.Activated += Window_Activated;
-        if (Source is not null && frameData.Count == 0) {
+        if ((Source is not null) &&
+            ((frameData?.Target is null) || (frameData.Target.Count == 0))) {
             _ = LoadImage();
         } else {
             TryPlay();
@@ -141,12 +143,9 @@ internal sealed partial class Emoji: Panel {
         Stop();
         currentFrame = 0;
         loop = 0;
-        maxLoop = 0;
 
-        foreach (var data in frameData) {
-            data?.frame?.Dispose();
-        }
-        frameData = [];
+        frameData?.Dispose();
+        frameData = null;
     }
 
     private async Task LoadImage() {
@@ -156,37 +155,51 @@ internal sealed partial class Emoji: Panel {
             return;
         }
 
-        var cacheKey = Source.AbsoluteUri;
+        IReferenceCountedDisposable<FrameDataCollection>? strongReference = null;
+        var loadTask = cache.GetOrAdd(Source, _ =>
+            Task.Run(async () => {
+                strongReference = ReferenceCountedDisposable.Create(await Task.Run(() => CreateGpuFrames(Source)));
+                return strongReference.AddWeakReference();
+            })
+        );
 
-        ImageData data;
-        if (imageCache.Get(cacheKey) is ImageData cachedData) {
-            data = cachedData;
-        } else {
-            using var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(Source.LocalPath);
-            data = await Task.Run(() => new ImageData(image));
-            imageCache.Add(cacheKey, data, null);
+        try {
+            var cachedData = await loadTask;
+            if (cachedData.TryAddReference() is IReferenceCountedDisposable<FrameDataCollection> outData) {
+                frameData = outData;
+            } else {
+                frameData = null;
+            }
+            strongReference?.Dispose();
+        } catch {
+            cache.TryRemove(Source, out _);
+            throw;
         }
 
-        frameData = data.CreateGpuFrames();
-        maxLoop = data.MaxLoop;
-        surface.Resize(new Windows.Graphics.SizeInt32(data.Width, data.Height));
-        Draw();
+        if (frameData?.Target is not null) {
+            surface.Resize(new Windows.Graphics.SizeInt32(frameData.Target.Width, frameData.Target.Height));
+            Draw();
+        }
     }
 
     private void Draw() {
-        if ((frameData.Count == 0) || (surface is null)) {
+        if ((frameData is null) ||
+            (frameData.IsDisposeStarted == true) ||
+            (frameData.Target is null) ||
+            (frameData.Target.Count == 0) ||
+            (surface is null)) {
             return;
         }
 
-        var data = frameData.ElementAt(currentFrame);
+        var data = frameData.Target.ElementAt(currentFrame);
         using (var ds = CanvasComposition.CreateDrawingSession(surface)) {
             ds.Clear(Colors.Transparent);
-            ds.DrawImage(data.frame);
+            ds.DrawImage(data.Bitmap);
         }
 
-        timer.Interval = TimeSpan.FromMilliseconds(data.delayMs);
-        currentFrame = (currentFrame + 1) % frameData.Count;
-        if ((currentFrame == 0) && (maxLoop > 0)) {
+        timer.Interval = TimeSpan.FromMilliseconds(data.DelayMs);
+        currentFrame = (currentFrame + 1) % frameData.Target.Count;
+        if ((currentFrame == 0) && (frameData.Target.MaxLoop > 0)) {
             loop++;
         }
 
@@ -204,95 +217,83 @@ internal sealed partial class Emoji: Panel {
         }
     }
 
-    private record FrameData(CanvasBitmap frame, double delayMs);
-    private class ImageData {
-        public uint MaxLoop { get; } // 0 = infinite
-        public IReadOnlyList<double> FrameDelaysMs { get; }
-        public IReadOnlyList<byte[]> Frames { get; }
-        public int Width { get; }
-        public int Height { get; }
+    private partial record FrameData(CanvasBitmap Bitmap, double DelayMs);
+    private partial class FrameDataCollection(int capacity, Uri key): List<FrameData>(capacity), IDisposable {
+        public int Width { get; init; }
+        public int Height { get; init; }
+        public uint MaxLoop { get; init; }
 
-        public ImageData(Image<Rgba32> image) {
-            Width = image.Width;
-            Height = image.Height;
-
-            var frameCount = image.Frames.Count;
-            var delays = new double[frameCount];
-            var frames = new byte[frameCount][];
-
-            if (image.Metadata.TryGetGifMetadata(out var gifMeta)) {
-                MaxLoop = gifMeta.RepeatCount;
-                for (int i = 0; i < frameCount; i++) {
-                    var frameMeta = image.Frames[i].Metadata.GetGifMetadata();
-                    delays[i] = frameMeta.FrameDelay * 10; // GIF delay is in 10ms units
-                }
-            } else if (image.Metadata.TryGetWebpMetadata(out var webpMeta)) {
-                MaxLoop = webpMeta.RepeatCount;
-                for (int i = 0; i < frameCount; i++) {
-                    var frameMeta = image.Frames[i].Metadata.GetWebpMetadata();
-                    delays[i] = frameMeta.FrameDelay; // WebP delay is already in ms
-                }
-            } else if (image.Metadata.TryGetPngMetadata(out var pngMeta)) {
-                MaxLoop = pngMeta.RepeatCount;
-                for (int i = 0; i < frameCount; i++) {
-                    var frameMeta = image.Frames[i].Metadata.GetPngMetadata();
-                    delays[i] = frameMeta.FrameDelay.ToDouble() * 1000.0; // PNG delay is in seconds
-                }
-            } else {
-                MaxLoop = 0;
+        public void Dispose() {
+            cache.TryRemove(key, out _);
+            foreach (var frame in this) {
+                frame?.Bitmap?.Dispose();
             }
+        }
+    }
 
+    private static FrameDataCollection CreateGpuFrames(Uri source) {
+        using var image = SixLabors.ImageSharp.Image.Load<Rgba32>(source.LocalPath);
+
+        var frameCount = image.Frames.Count;
+        var Width = image.Width;
+        var Height = image.Height;
+        uint MaxLoop = 0;
+        var collection = new FrameDataCollection(frameCount, source) {
+            Width = Width,
+            Height = Height,
+            MaxLoop = MaxLoop,
+        };
+
+        double[] frameDelaysMs;
+        if (image.Metadata.TryGetGifMetadata(out var gifMeta)) {
+            MaxLoop = gifMeta.RepeatCount;
+            frameDelaysMs = [.. image.Frames.Select(x => x.Metadata.GetGifMetadata().FrameDelay * 10.0)]; // GIF delay is in 10ms units
+        } else if (image.Metadata.TryGetWebpMetadata(out var webpMeta)) {
+            MaxLoop = webpMeta.RepeatCount;
+            frameDelaysMs = [.. image.Frames.Select(x => x.Metadata.GetWebpMetadata().FrameDelay)]; // WebP delay is already in ms
+        } else if (image.Metadata.TryGetPngMetadata(out var pngMeta)) {
+            MaxLoop = pngMeta.RepeatCount;
+            frameDelaysMs = [.. image.Frames.Select(x => x.Metadata.GetPngMetadata().FrameDelay.ToDouble() * 1000.0)]; // PNG delay is in seconds
+        } else {
+            frameDelaysMs = new double[frameCount];
+        }
+
+        try {
             for (int i = 0; i < frameCount; i++) {
                 // Enforce a minimum delay of 20ms to avoid excessively fast frames
-                if (double.IsNaN(delays[i])) {
-                    delays[i] = 20;
-                } else if (delays[i] < 20) {
-                    delays[i] = 20;
+                if (double.IsNaN(frameDelaysMs[i]) || (frameDelaysMs[i] < 20)) {
+                    frameDelaysMs[i] = 20;
                 }
 
                 var frame = image.Frames[i];
                 var pixels = new byte[frame.Width * frame.Height * 4];
                 frame.CopyPixelDataTo(pixels);
-                PremultiplyAlphaInPlace(pixels);
-                frames[i] = pixels;
+
+                collection.Add(new(
+                    CanvasBitmap.CreateFromBytes(
+                        canvasDevice,
+                        PremultiplyAlphaInPlace(pixels),
+                        Width,
+                        Height,
+                        Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized),
+                    frameDelaysMs[i]));
             }
-
-            FrameDelaysMs = delays;
-            Frames = frames;
-        }
-
-        private static void PremultiplyAlphaInPlace(byte[] pixels) {
-            for (int i = 0; i < pixels.Length; i += 4) {
-                var a = pixels[i + 3];
-                pixels[i + 0] = (byte)((pixels[i + 0] * a + 127) / 255); // R
-                pixels[i + 1] = (byte)((pixels[i + 1] * a + 127) / 255); // G
-                pixels[i + 2] = (byte)((pixels[i + 2] * a + 127) / 255); // B
+            return collection;
+        } catch {
+            foreach (var frame in collection) {
+                frame?.Bitmap?.Dispose();
             }
+            throw;
         }
+    }
 
-        internal IReadOnlyList<FrameData> CreateGpuFrames() {
-            var frameData = new FrameData[Frames.Count];
-
-            try {
-                for (int i = 0; i < Frames.Count; i++) {
-                    frameData[i] = new(
-                        CanvasBitmap.CreateFromBytes(
-                            canvasDevice,
-                            Frames[i],
-                            Width,
-                            Height,
-                            Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized),
-                        FrameDelaysMs[i]);
-                }
-
-                return frameData;
-            } catch {
-                foreach (var data in frameData) {
-                    data?.frame?.Dispose();
-                }
-
-                throw;
-            }
+    private static byte[] PremultiplyAlphaInPlace(byte[] pixels) {
+        for (int i = 0; i < pixels.Length; i += 4) {
+            var a = pixels[i + 3];
+            pixels[i + 0] = (byte)((pixels[i + 0] * a + 127) / 255); // R
+            pixels[i + 1] = (byte)((pixels[i + 1] * a + 127) / 255); // G
+            pixels[i + 2] = (byte)((pixels[i + 2] * a + 127) / 255); // B
         }
+        return pixels;
     }
 }

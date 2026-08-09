@@ -12,6 +12,7 @@
     <PackageReference Include="FluentIcons.WinUI" />
     <PackageReference Include="Microsoft.Graphics.Win2D" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Nito.Disposables" />
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="System.Runtime.Caching" />
     <PackageReference Include="WinUIEx" />
