@@ -155,22 +155,16 @@ internal sealed partial class Emoji: Panel {
             return;
         }
 
-        IReferenceCountedDisposable<FrameDataCollection>? strongReference = null;
         var loadTask = cache.GetOrAdd(Source, _ =>
             Task.Run(async () => {
-                strongReference = ReferenceCountedDisposable.Create(await Task.Run(() => CreateGpuFrames(Source)));
-                return strongReference.AddWeakReference();
+                frameData = ReferenceCountedDisposable.Create(await Task.Run(() => CreateGpuFrames(Source)));
+                return frameData.AddWeakReference();
             })
         );
 
         try {
             var cachedData = await loadTask;
-            if (cachedData.TryAddReference() is IReferenceCountedDisposable<FrameDataCollection> outData) {
-                frameData = outData;
-            } else {
-                frameData = null;
-            }
-            strongReference?.Dispose();
+            frameData ??= cachedData.TryAddReference();
         } catch {
             cache.TryRemove(Source, out _);
             throw;
