@@ -18,7 +18,7 @@
 
     <Rectangle
         x:Name="AboveLine"
-        x:Load="False"
+        x:Load="{x:Bind LoadAboveLine}"
         Grid.Column="0"
         Grid.Row="0"
         Grid.RowSpan="2"
@@ -30,7 +30,7 @@
 
     <Rectangle
         x:Name="BelowLine"
-        x:Load="False"
+        x:Load="{x:Bind LoadBelowLine}"
         Grid.Column="0"
         Grid.Row="1"
         Grid.RowSpan="{x:Bind BelowLineRowSpan}"
@@ -121,7 +121,56 @@
             richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Content.PostBody}">
         </RichTextBlock>
 
-        <Grid ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
+        <Grid
+            x:Name="MediaAttachments"
+            x:Load="{x:Bind LoadMediaAttachments}"
+            ColumnDefinitions="1*, 1*"
+            ColumnSpacing="2"
+            RowDefinitions="1*, 1*"
+            RowSpacing="2">
+            <Image
+                Grid.Column="0"
+                Grid.ColumnSpan="{x:Bind MediaAttachment0ColumnSpan}"
+                Grid.Row="0"
+                Grid.RowSpan="{x:Bind MediaAttachment0RowSpan}">
+                <Image.Source>
+                    <BitmapImage UriSource="{x:Bind MediaAttachment0Source}"/>
+                </Image.Source>
+            </Image>
+            <Image
+                x:Name="MediaAttachment1"
+                x:Load="{x:Bind local:Converters.IsNotNull(MediaAttachment1Source)}"
+                Grid.Column="1"
+                Grid.Row="0"
+                Grid.RowSpan="{x:Bind MediaAttachment1RowSpan}">
+                <Image.Source>
+                    <BitmapImage UriSource="{x:Bind MediaAttachment1Source}"/>
+                </Image.Source>
+            </Image>
+            <Image
+                x:Name="MediaAttachment2"
+                x:Load="{x:Bind local:Converters.IsNotNull(MediaAttachment2Source)}"
+                Grid.Column="0"
+                Grid.Row="{x:Bind MediaAttachment2Row}">
+                <Image.Source>
+                    <BitmapImage UriSource="{x:Bind MediaAttachment2Source}"/>
+                </Image.Source>
+            </Image>
+            <Image
+                x:Name="MediaAttachment3"
+                x:Load="{x:Bind local:Converters.IsNotNull(MediaAttachment3Source)}"
+                Grid.Column="1"
+                Grid.Row="1">
+                <Image.Source>
+                    <BitmapImage UriSource="{x:Bind MediaAttachment3Source}"/>
+                </Image.Source>
+            </Image>
+        </Grid>
+
+        <Grid 
+            x:Name="ReactButtons"
+            x:Load="{x:Bind LoadReactButtons}"
+            ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
             <Button
                 Grid.Column="0"
                 Background="{x:Bind ReactButtonBackground}"

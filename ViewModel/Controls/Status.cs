@@ -6,6 +6,7 @@ using Model.Entities;
 using Model.Enumerations;
 using Model.Server.Entities;
 using Model.Utilities;
+using System.Collections.ObjectModel;
 using ViewModel.Controls.RichTextRenderer;
 
 namespace ViewModel.Controls;
@@ -96,6 +97,7 @@ public sealed partial class Status: ObservableObject {
         public Account Poster { get; }
         public DateTime CreatedAt { get; } = DateTime.MinValue;
         public Uri? Uri { get; } = null;
+        public ObservableCollection<Uri?> MediaAttachments { get; } = [];
 
         [ObservableProperty]
         public partial bool HasReplies { get; set; } = false;

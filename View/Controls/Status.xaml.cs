@@ -54,7 +54,9 @@ internal sealed partial class Status: Grid {
         }
     }
 
-    private double LineWidth { get; } = 4;
+    private bool LoadAboveLine => false;
+    private bool LoadBelowLine => false;
+    private double LineWidth => 4;
     private double AboveLineHeight => Padding.Top + RowDefinitions[1].Height.Value / 2;
     private Thickness AboveLineMargin => new(0, -Padding.Top, 0, 0);
     private int BelowLineRowSpan => RowDefinitions.Count - 1;
@@ -65,11 +67,22 @@ internal sealed partial class Status: Grid {
     private CornerRadius RebloggerAvatarCornerRadius => new(RebloggerAvatarSize / 2);
     private double PosterIdFontSize => DisplayNameTextBlock.FontSize * 0.85;
 
-    private Brush ReactButtonBackground { get; } = new SolidColorBrush(Colors.Transparent);
-    private Brush ReactButtonBorderBrush { get; } = new SolidColorBrush(Colors.Transparent);
-    private Thickness ReactButtonBorderThickness { get; } = new(0, 0, 0, 0);
-    private Thickness ReactButtonPadding { get; } = new(4, 4, 4, 4);
-    private double ReactButtonFontSize { get; } = 16;
+    private bool LoadMediaAttachments => ViewModel?.Content.MediaAttachments.Count > 0;
+    private int MediaAttachment0ColumnSpan => ViewModel?.Content.MediaAttachments.Count > 1 ? 1 : 2;
+    private int MediaAttachment0RowSpan => ViewModel?.Content.MediaAttachments.Count > 3 ? 1 : 2;
+    private Uri? MediaAttachment0Source => ViewModel?.Content.MediaAttachments.ElementAtOrDefault(0);
+    private int MediaAttachment1RowSpan => ViewModel?.Content.MediaAttachments.Count > 2 ? 1 : 2;
+    private Uri? MediaAttachment1Source => ViewModel?.Content.MediaAttachments.ElementAtOrDefault(1);
+    private int MediaAttachment2Row => ViewModel?.Content.MediaAttachments.Count > 3 ? 0 : 1;
+    private Uri? MediaAttachment2Source => ViewModel?.Content.MediaAttachments.ElementAtOrDefault(2);
+    private Uri? MediaAttachment3Source => ViewModel?.Content.MediaAttachments.ElementAtOrDefault(3);
+
+    private bool LoadReactButtons => true;
+    private Brush ReactButtonBackground => Utilities.Brush.Transparent;
+    private Brush ReactButtonBorderBrush => Utilities.Brush.Transparent;
+    private Thickness ReactButtonBorderThickness => new(0, 0, 0, 0);
+    private Thickness ReactButtonPadding => new(4, 4, 4, 4);
+    private double ReactButtonFontSize => 16;
     private Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
     private Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
     private IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
