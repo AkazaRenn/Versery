@@ -39,7 +39,7 @@
         VerticalAlignment="Stretch"
         Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
 
-    <Grid
+    <Border
         Grid.Column="0"
         Grid.Row="0"
         Grid.RowSpan="2"
@@ -55,12 +55,19 @@
                     UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
             </Image.Source>
         </Image>
-        <Button
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            BorderThickness="0"
-            Padding="0"/>
-    </Grid>
+    </Border>
+
+    <Button
+        Grid.Column="0"
+        Grid.Row="0"
+        Grid.RowSpan="2"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        Height="{x:Bind AvatarButtonSize}"
+        Width="{x:Bind AvatarButtonSize}"
+        CornerRadius="{x:Bind AvatarButtonCornerRadius}"
+        BorderThickness="0"
+        Padding="0"/>
 
     <RichTextBlock
         Grid.Column="2"
