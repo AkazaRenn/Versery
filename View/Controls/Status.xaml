@@ -39,35 +39,38 @@
         VerticalAlignment="Stretch"
         Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
 
-    <Border
+    <Grid
         Grid.Column="0"
         Grid.Row="0"
         Grid.RowSpan="2"
-        VerticalAlignment="Top"
-        HorizontalAlignment="Left"
-        Height="{x:Bind AvatarButtonSize}"
-        Width="{x:Bind AvatarButtonSize}"
+        Width="{x:Bind AvatarSize}"
+        Height="{x:Bind AvatarSize}"
         CornerRadius="{x:Bind AvatarButtonCornerRadius}">
-        <Image>
-            <Image.Source>
-                <BitmapImage
-                    x:Name="PosterAvatarBitmapImage"
-                    UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
-            </Image.Source>
-        </Image>
-    </Border>
+        <Border
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch">
+            <Image>
+                <Image.Source>
+                    <BitmapImage
+                        x:Name="PosterAvatarBitmapImage"
+                        UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
+                </Image.Source>
+            </Image>
+        </Border>
+        <Button
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch"
+            BorderThickness="0"
+            Padding="0">
+        </Button>
+        <Grid.RenderTransform>
+            <ScaleTransform 
+                x:Name="AvatarScaleTransform"
+                CenterX="0"
+                CenterY="0"/>
+        </Grid.RenderTransform>
+    </Grid>
 
-    <Button
-        Grid.Column="0"
-        Grid.Row="0"
-        Grid.RowSpan="2"
-        VerticalAlignment="Top"
-        HorizontalAlignment="Left"
-        Height="{x:Bind AvatarButtonSize}"
-        Width="{x:Bind AvatarButtonSize}"
-        CornerRadius="{x:Bind AvatarButtonCornerRadius}"
-        BorderThickness="0"
-        Padding="0"/>
 
     <RichTextBlock
         Grid.Column="2"

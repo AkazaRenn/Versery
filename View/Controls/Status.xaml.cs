@@ -21,7 +21,10 @@ internal sealed partial class Status: Grid {
     }
 
     public double AvatarSize { get; set; } = 40;
-    public double AvatarScale { get; set; } = 1.0;
+    public double AvatarScale { 
+        get => AvatarScaleTransform.ScaleX;
+        set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value;
+    }
     public double DisplayNameFontSize { get; set; } = 16;
     public bool PostBodyLeftPadding { get; set; } = false;
     public bool ShowQuote { get; set; } = true;
