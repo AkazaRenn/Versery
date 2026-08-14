@@ -50,6 +50,6 @@ internal sealed partial class Timeline: Grid {
     }
 
     private double PosterAvatarScale => ViewModel?.Reblogger is null ? 1 : 0.9;
-    //private string ReactorDisplayNameBeforeText => String.Empty;
+    private string ReactorDisplayNameBeforeText => ViewModel?.Reblogger is null ? String.Empty : Localization.L("Controls_Timeline_ReactorDisplayName_Before/Text_Reblog");
     private string ReactorDisplayNameAfterText => ViewModel?.Reblogger is null ? String.Empty : Localization.L("Controls_Timeline_ReactorDisplayName_After/Text_Reblog");
 }

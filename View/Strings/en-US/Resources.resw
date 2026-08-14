@@ -121,7 +121,7 @@
     <value>Load more</value>
   </data>
   <data name="Controls_Timeline_ReactorDisplayName_After.Text_Reblog" xml:space="preserve">
-    <value>boosted</value>
+    <value> boosted</value>
   </data>
   <data name="Controls_Timeline_ReactorDisplayName_Before.Text_Reblog" xml:space="preserve">
     <value />
