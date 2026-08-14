@@ -16,8 +16,8 @@
     <RichTextBlock
         x:Name="RebloggerDisplayName"
         x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
-        Grid.Row="0"
         Grid.Column="1"
+        Grid.Row="0"
         Margin="0,8,0,0"
         FontSize="12"
         Foreground="{ThemeResource TextFillColorTertiary}"
@@ -26,6 +26,7 @@
 
     <controls:Status
         x:Name="Status"
+        Grid.Column="0"
         Grid.ColumnSpan="99"
         Grid.Row="1"
         Padding="8 8 8 8"
@@ -40,8 +41,10 @@
     <Border
         x:Name="RebloggerAvatarBorder"
         x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
-        Grid.ColumnSpan="99"
+        Grid.Column="0"
         Grid.Row="1"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
         Margin="28, 28, 0, 0"
         IsHitTestVisible="False"
         Height="20"
@@ -60,6 +63,7 @@
         x:Uid="Controls_Status_LoadMoreButton"
         x:Name="LoadMoreButton"
         x:Load="{x:Bind ViewModel.FollowedByGap}"
+        Grid.Column="0"
         Grid.ColumnSpan="99"
         Grid.Row="2"
         Height="40"
