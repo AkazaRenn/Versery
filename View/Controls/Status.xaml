@@ -69,6 +69,7 @@
         FontSize="{x:Bind DisplayNameFontSize}"
         VerticalAlignment="Center"
         TextTrimming="CharacterEllipsis"
+        TextWrapping="NoWrap"
         IsTextSelectionEnabled="False"
         richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Poster.DisplayName}"/>
 
@@ -79,6 +80,7 @@
         Foreground="{ThemeResource TextFillColorSecondary}"
         VerticalAlignment="Center"
         TextTrimming="CharacterEllipsis"
+        TextWrapping="NoWrap"
         IsTextSelectionEnabled="False"
         Text="{x:Bind ViewModel.Poster.AccountName}"/>
 

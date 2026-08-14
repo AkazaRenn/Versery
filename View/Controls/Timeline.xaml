@@ -8,15 +8,29 @@
     xmlns:richtextrenderer="using:View.Controls.RichTextRenderer"
     Loaded="Grid_Loaded"
     Unloaded="Grid_Unloaded"
-    BorderThickness="0 0 0 0.5"
-    Padding="8 8 8 8"
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-    BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+    ColumnDefinitions="48, *"
+    ColumnSpacing="8"
     RowDefinitions="Auto, Auto, Auto">
 
+    <RichTextBlock
+        x:Name="RebloggerDisplayName"
+        x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
+        Grid.Row="0"
+        Grid.Column="1"
+        Margin="0,8,0,0"
+        FontSize="12"
+        Foreground="{ThemeResource TextFillColorTertiary}"
+        IsTextSelectionEnabled="False"
+        richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Reblogger.DisplayName}"/>
+
     <controls:Status
+        x:Name="Status"
+        Grid.ColumnSpan="99"
         Grid.Row="1"
-        Grid.RowSpan="2"
+        Padding="8 8 8 8"
+        BorderThickness="0 0 0 0.5"
+        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
         AvatarSize="40"
         AvatarScale="{x:Bind PosterAvatarScale}"
         DisplayNameFontSize="16"
@@ -26,10 +40,9 @@
     <Border
         x:Name="RebloggerAvatarBorder"
         x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
+        Grid.ColumnSpan="99"
         Grid.Row="1"
-        Margin="20, 20, 0, 0"
-        VerticalAlignment="Top"
-        HorizontalAlignment="Left"
+        Margin="28, 28, 0, 0"
         IsHitTestVisible="False"
         Height="20"
         Width="20"
@@ -47,11 +60,12 @@
         x:Uid="Controls_Status_LoadMoreButton"
         x:Name="LoadMoreButton"
         x:Load="{x:Bind ViewModel.FollowedByGap}"
+        Grid.ColumnSpan="99"
         Grid.Row="2"
         Height="40"
         HorizontalAlignment="Stretch"
         Background="Transparent"
-        BorderThickness="0 0.5 0 0"
+        BorderThickness="0 0 0 0.5"
         BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
         CornerRadius="0"/>
 </Grid>

@@ -17,7 +17,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     public Home() {
         Statuses.CollectionChanged += Timelines_CollectionChanged;
 
-        WeakReferenceMessenger.Default.RegisterAll(this);
+        StrongReferenceMessenger.Default.RegisterAll(this);
         _ = LoadInitialTimelines();
     }
 
