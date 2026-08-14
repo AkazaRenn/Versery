@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Controls_Status_LoadMoreButton.Content" xml:space="preserve">
+  <data name="Controls_Timeline_LoadMoreButton.Content" xml:space="preserve">
     <value>Load more</value>
+  </data>
+  <data name="Controls_Timeline_ReactorDisplayName_After.Text_Reblog" xml:space="preserve">
+    <value>boosted</value>
+  </data>
+  <data name="Controls_Timeline_ReactorDisplayName_Before.Text_Reblog" xml:space="preserve">
+    <value />
   </data>
   <data name="Controls_UserProfileButton_MenuFlyout_ManageAccounts.Text" xml:space="preserve">
     <value>Manage accounts</value>

@@ -23,25 +23,37 @@ internal static class Html {
     }
 
     private static async void OnViewModelChangedAsync(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-        if (d is not RichTextBlock richTextBlock) {
+        if ((e.OldValue == e.NewValue) ||
+            (e.NewValue is not ViewModel.Controls.RichTextRenderer.Html newVm)) {
             return;
         }
 
-        if (e.OldValue == e.NewValue) {
-            return;
-        }
-
-        richTextBlock.Blocks.Clear();
-        if ((e.NewValue is ViewModel.Controls.RichTextRenderer.Html newVm)) {
-            RenderContent(richTextBlock, newVm.ContentToken, newVm.Emojis);
+        if (d is RichTextBlock richTextBlock) {
+            richTextBlock.Blocks.Clear();
+            RenderRichContent(richTextBlock, newVm.ContentToken, newVm.Emojis);
+        } else if (d is TextBlock textBlock) {
+            textBlock.Inlines.Clear();
+            if (newVm.ContentToken.Paragraphs.Count > 0) {
+                foreach (var inline in RenderParagraph(newVm.ContentToken.Paragraphs.First(), newVm.Emojis, textBlock.FontSize)) {
+                    textBlock.Inlines.Add(inline);
+                }
+            }
+        } else if ((d is Span span) && (newVm.ContentToken.Paragraphs.Count > 0)) {
+            foreach (var inline in RenderParagraph(newVm.ContentToken.Paragraphs.First(), newVm.Emojis, span.FontSize)) {
+                span.Inlines.Add(inline);
+            }
         }
     }
 
-    private static void RenderContent(RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Task<Uri?>> emojis) {
+    private static void RenderRichContent(RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Task<Uri?>> emojis) {
         var blocks = richTextBlock.Blocks;
 
         foreach (var paragraphToken in content.Paragraphs) {
-            blocks.Add(RenderParagraph(paragraphToken, emojis, richTextBlock.FontSize));
+            var paragraph = new Paragraph();
+            foreach (var inline in RenderParagraph(paragraphToken, emojis, richTextBlock.FontSize)) {
+                paragraph.Inlines.Add(inline);
+            }
+            blocks.Add(paragraph);
         }
 
         for (int i = 0; i < blocks.Count - 1; i++) {
@@ -50,17 +62,13 @@ internal static class Html {
         }
     }
 
-    private static Paragraph RenderParagraph(ParagraphToken paragraphToken, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
-        var paragraph = new Paragraph();
-
+    private static IEnumerable<Inline> RenderParagraph(ParagraphToken paragraphToken, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
         foreach (var inlineToken in paragraphToken.Inlines) {
             var inline = RenderInline(inlineToken, emojis, fontSize);
             if (inline != null) {
-                paragraph.Inlines.Add(inline);
+                yield return inline;
             }
         }
-
-        return paragraph;
     }
 
     private static Inline? RenderInline(InlineToken token, Dictionary<string, Task<Uri?>> emojis, double fontSize) {

@@ -13,16 +13,18 @@
     ColumnSpacing="8"
     RowDefinitions="Auto, Auto, Auto">
 
-    <RichTextBlock
-        x:Name="RebloggerDisplayName"
+    <TextBlock
+        x:Name="ReactorDisplayName"
         x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
         Grid.Column="1"
         Grid.Row="0"
         Margin="0,8,0,0"
         FontSize="12"
         Foreground="{ThemeResource TextFillColorTertiary}"
-        IsTextSelectionEnabled="False"
-        richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Reblogger.DisplayName}"/>
+        IsTextSelectionEnabled="False">
+        <Span richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Reblogger.DisplayName}"/>
+        <Run Text="{x:Bind ReactorDisplayNameAfterText}"/>
+    </TextBlock>
 
     <controls:Status
         x:Name="Status"
@@ -60,7 +62,7 @@
     </Border>
 
     <Button
-        x:Uid="Controls_Status_LoadMoreButton"
+        x:Uid="Controls_Timeline_LoadMoreButton"
         x:Name="LoadMoreButton"
         x:Load="{x:Bind ViewModel.FollowedByGap}"
         Grid.Column="0"
