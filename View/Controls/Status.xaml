@@ -4,44 +4,45 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:View"
+    xmlns:controls="using:View.Controls"
     xmlns:richtextrenderer="using:View.Controls.RichTextRenderer"
-    xmlns:fluenticons="using:FluentIcons.WinUI"
-    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-    BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
-    BorderThickness="0 0 0 0.5"
-    Padding="8 8 8 8"
-    ColumnDefinitions="40, *"
-    ColumnSpacing="8"
-    RowDefinitions="Auto, 40, 8, Auto, Auto"
-    Loaded="Grid_Loaded"
-    Unloaded="Grid_Unloaded">
+    xmlns:fluenticons="using:FluentIcons.WinUI">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="{x:Bind GridColumnWidth0}"/>
+        <ColumnDefinition Width="8"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="2"/>
+        <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="{x:Bind GridRowHeight0}"/>
+        <RowDefinition Height="{x:Bind GridRowHeight1}"/>
+        <RowDefinition Height="8"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
 
     <Rectangle
         x:Name="AboveLine"
         x:Load="{x:Bind LoadAboveLine}"
         Grid.Column="0"
         Grid.Row="0"
-        Grid.RowSpan="2"
         Width="{x:Bind LineWidth}"
-        Height="{x:Bind AboveLineHeight}"
-        Margin="{x:Bind AboveLineMargin}"
         VerticalAlignment="Top"
-        Fill="{x:Bind BorderBrush}"/>
+        Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
 
     <Rectangle
         x:Name="BelowLine"
         x:Load="{x:Bind LoadBelowLine}"
         Grid.Column="0"
-        Grid.Row="1"
-        Grid.RowSpan="{x:Bind BelowLineRowSpan}"
+        Grid.Row="0"
         Width="{x:Bind LineWidth}"
-        Margin="{x:Bind BelowLineMargin}"
         VerticalAlignment="Stretch"
-        Fill="{x:Bind BorderBrush}"/>
+        Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
 
     <Grid
         Grid.Column="0"
-        Grid.Row="1"
+        Grid.Row="0"
+        Grid.RowSpan="2"
         VerticalAlignment="Top"
         HorizontalAlignment="Left"
         Height="{x:Bind AvatarButtonSize}"
@@ -51,7 +52,7 @@
             <Image.Source>
                 <BitmapImage
                     x:Name="PosterAvatarBitmapImage"
-                    UriSource="{x:Bind ViewModel.Content.Poster.Avatar, Mode=OneWay}"/>
+                    UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
             </Image.Source>
         </Image>
         <Button
@@ -61,68 +62,53 @@
             Padding="0"/>
     </Grid>
 
-    <Border
-        x:Name="RebloggerAvatarBorder"
-        x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger.Id)}"
-        Grid.Column="0"
-        Grid.Row="1"
-        VerticalAlignment="Bottom"
-        HorizontalAlignment="Right"
-        IsHitTestVisible="False"
-        Height="{x:Bind RebloggerAvatarSize}"
-        Width="{x:Bind RebloggerAvatarSize}"
-        CornerRadius="{x:Bind RebloggerAvatarCornerRadius}">
-        <Image>
-            <Image.Source>
-                <BitmapImage
-                    x:Name="RebloggerAvatarBitmapImage"
-                    UriSource="{x:Bind ViewModel.Reblogger.Avatar, Mode=OneWay}"/>
-            </Image.Source>
-        </Image>
-    </Border>
+    <RichTextBlock
+        Grid.Column="2"
+        Grid.Row="0"
+        FontWeight="SemiBold"
+        FontSize="{x:Bind DisplayNameFontSize}"
+        VerticalAlignment="Center"
+        TextTrimming="CharacterEllipsis"
+        IsTextSelectionEnabled="False"
+        richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Poster.DisplayName}"/>
 
-    <Grid
-        Grid.Column="1"
+    <TextBlock
+        Grid.Column="2"
         Grid.Row="1"
-        ColumnDefinitions="*, Auto"
-        ColumnSpacing="2">
-        <StackPanel
-            Grid.Column="0"
-            Grid.Row="0"
-            Orientation="Vertical">
-            <RichTextBlock
-                x:Name="DisplayNameTextBlock"
-                FontWeight="SemiBold"
-                FontSize="16"
-                TextTrimming="CharacterEllipsis"
-                IsTextSelectionEnabled="False"
-                richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Content.Poster.DisplayName}"/>
-            <TextBlock
-                FontSize="{x:Bind PosterIdFontSize}"
-                Foreground="{ThemeResource TextFillColorSecondary}"
-                TextTrimming="CharacterEllipsis"
-                IsTextSelectionEnabled="False"
-                Text="{x:Bind ViewModel.Content.Poster.AccountName}"/>
-        </StackPanel>
-        <TextBlock
-            Grid.Column="1"
-            Grid.Row="0"
-            Text="{x:Bind ViewModel.Content.CreatedAt.ToShortDateString()}"
-            HorizontalAlignment="Right"/>
-    </Grid>
+        FontSize="{x:Bind PosterAccountFontSize}"
+        Foreground="{ThemeResource TextFillColorSecondary}"
+        VerticalAlignment="Center"
+        TextTrimming="CharacterEllipsis"
+        IsTextSelectionEnabled="False"
+        Text="{x:Bind ViewModel.Poster.AccountName}"/>
+
+    <TextBlock
+        Grid.Column="4"
+        Grid.Row="0"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Right"
+        Text="{x:Bind ViewModel.CreatedAt.ToShortDateString()}"/>
 
     <StackPanel
-        Grid.Column="1"
+        Grid.Column="{x:Bind ContentStackPanelGridColumn}"
+        Grid.ColumnSpan="99"
         Grid.Row="3"
-        Spacing="{x:Bind RowDefinitions[2].Height.Value}">
+        Spacing="8">
         <RichTextBlock
             TextWrapping="WrapWholeWords"
             IsTextSelectionEnabled="False"
-            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Content.PostBody}">
-        </RichTextBlock>
+            richtextrenderer:Html.ViewModel="{x:Bind ViewModel.PostBody}"/>
+
+        <controls:Status
+            x:Name="QuoteStatus"
+            x:Load="{x:Bind LoadQuote}"
+            ViewModel="{x:Bind ViewModel.Quote}"
+            PostBodyLeftPadding="False"
+            ShowQuote="False"
+            ReactButtons="False"/>
 
         <Grid
-            x:Name="MediaAttachments"
+            x:Name="MediaAttachmentsGrid"
             x:Load="{x:Bind LoadMediaAttachments}"
             ColumnDefinitions="1*, 1*"
             ColumnSpacing="2"
@@ -167,9 +153,9 @@
             </Image>
         </Grid>
 
-        <Grid 
-            x:Name="ReactButtons"
-            x:Load="{x:Bind LoadReactButtons}"
+        <Grid
+            x:Name="ReactButtonsGrid"
+            x:Load="{x:Bind ReactButtons}"
             ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
             <Button
                 Grid.Column="0"
@@ -178,7 +164,7 @@
                 BorderThickness="{x:Bind ReactButtonBorderThickness}"
                 Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
-                    Icon="{x:Bind GetReplyIcon(ViewModel.Content.HasReplies)}"
+                    Icon="{x:Bind GetReplyIcon(ViewModel.HasReplies)}"
                     FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
@@ -188,7 +174,7 @@
                 BorderThickness="{x:Bind ReactButtonBorderThickness}"
                 Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
-                    Icon="{x:Bind GetReblogIcon(ViewModel.Content.CanBeReblogged)}"
+                    Icon="{x:Bind GetReblogIcon(ViewModel.CanBeReblogged)}"
                     FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
@@ -199,7 +185,7 @@
                 Padding="{x:Bind ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="Star"
-                    IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.Content.IsFavourited)}"
+                    IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.IsFavourited)}"
                     FontSize="{x:Bind ReactButtonFontSize}"/>
             </Button>
             <Button
@@ -230,19 +216,4 @@
             </Button>
         </Grid>
     </StackPanel>
-
-    <Button
-        x:Uid="Controls_Status_LoadMoreButton"
-        x:Name="LoadMoreButton"
-        x:Load="{x:Bind ViewModel.FollowedByGap}"
-        Grid.Column="0"
-        Grid.ColumnSpan="2"
-        Grid.Row="4"
-        Height="32"
-        HorizontalAlignment="Stretch"
-        Background="Transparent"
-        BorderThickness="{x:Bind LoadMoreButtonBorderThickness}"
-        BorderBrush="{x:Bind BorderBrush}"
-        CornerRadius="0"
-        Margin="{x:Bind LoadMoreButtonMargin}"/>
 </Grid>

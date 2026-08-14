@@ -21,6 +21,7 @@ public record class Status() {
     public Dictionary<string, Uri> Emojis { get; set; } = [];
     public string? RepliedStatusId { get; set; } = null;
     public string? RepliedAccountId { get; set; } = null;
+    public string? QuotedStatusId { get; set; } = null;
 
     internal Status(Model.Server.Entities.Status serverStatus) : this() {
         Id = serverStatus.Id;
@@ -42,6 +43,9 @@ public record class Status() {
                     Emojis[emoji.Shortcode] = emoji.Url;
                 }
             }
+            RepliedStatusId = serverStatus.InReplyToId;
+            RepliedAccountId = serverStatus.InReplyToAccountId;
+            QuotedStatusId = serverStatus.Quote?.QuotedStatus?.Id;
         }
     }
 

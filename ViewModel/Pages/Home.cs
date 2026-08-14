@@ -12,7 +12,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     private bool loadingOldStatuses = false;
     private bool hasMoreStatusesToLoad = true;
 
-    public ObservableCollection<Controls.Status> Statuses { get; } = [];
+    public ObservableCollection<Controls.Timeline> Statuses { get; } = [];
 
     public Home() {
         Statuses.CollectionChanged += Timelines_CollectionChanged;
@@ -29,7 +29,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
                 return;
             }
 
-            foreach (Controls.Status status in e.NewItems) {
+            foreach (Controls.Timeline status in e.NewItems) {
                 _ = status.DownloadMedias();
             }
             break;
@@ -47,7 +47,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
             timelines = await client.GetTimelineFromServer(TimelineType.Home);
         }
 
-        var statuses = Controls.Status.FromTimelines(timelines).ToArray();
+        var statuses = Controls.Timeline.FromTimelines(timelines).ToArray();
         foreach (var status in statuses) {
             Statuses.Add(status);
         }
@@ -56,7 +56,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
     public async Task LoadLatestTimelines() {
         var statuses = await Task.Run(async () => {
             var timelines = await client.GetTimelineFromServer(TimelineType.Home);
-            return Controls.Status.FromTimelines(timelines).ToArray();
+            return Controls.Timeline.FromTimelines(timelines).ToArray();
         });
 
         for (int i = 0; i < statuses.Length; i++) {
@@ -75,7 +75,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         loadingOldStatuses = true;
         var statuses = await Task.Run(() => {
             var timelines = client.GetTimelineFromDatabase(Statuses.Last().Id);
-            return Controls.Status.FromTimelines(timelines).ToArray();
+            return Controls.Timeline.FromTimelines(timelines).ToArray();
         });
         if (statuses.Length == 0) {
             hasMoreStatusesToLoad = false;

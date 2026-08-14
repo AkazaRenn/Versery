@@ -44,7 +44,7 @@ internal sealed partial class Home: Page, INavigationPage {
         if (args.InRecycleQueue)
             return;
 
-        if (args.Phase == 0 && args.Item is ViewModel.Controls.Status status) {
+        if (args.Phase == 0 && args.Item is ViewModel.Controls.Timeline status) {
             status.Index = args.ItemIndex;
             _ = viewModel.OnStatusRealized(args.ItemIndex);
         }

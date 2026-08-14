@@ -29,8 +29,8 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="vm.controls:Status">
-                    <controls:Status ViewModel="{x:Bind}" />
+                <DataTemplate x:DataType="vm.controls:Timeline">
+                    <controls:Timeline ViewModel="{x:Bind}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>

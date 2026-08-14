@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Grid
+    x:Class="View.Controls.Timeline"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:View"
+    xmlns:controls="using:View.Controls"
+    xmlns:richtextrenderer="using:View.Controls.RichTextRenderer"
+    Loaded="Grid_Loaded"
+    Unloaded="Grid_Unloaded"
+    BorderThickness="0 0 0 0.5"
+    Padding="8 8 8 8"
+    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+    BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+    RowDefinitions="Auto, Auto, Auto">
+
+    <controls:Status
+        Grid.Row="1"
+        Grid.RowSpan="2"
+        AvatarSize="40"
+        AvatarScale="{x:Bind PosterAvatarScale}"
+        DisplayNameFontSize="16"
+        PostBodyLeftPadding="True"
+        ViewModel="{x:Bind ViewModel.Content}"/>
+
+    <Border
+        x:Name="RebloggerAvatarBorder"
+        x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
+        Grid.Row="1"
+        Margin="20, 20, 0, 0"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        IsHitTestVisible="False"
+        Height="20"
+        Width="20"
+        CornerRadius="10">
+        <Image>
+            <Image.Source>
+                <BitmapImage
+                    x:Name="RebloggerAvatarBitmapImage"
+                    UriSource="{x:Bind ViewModel.Reblogger.Avatar, Mode=OneWay}"/>
+            </Image.Source>
+        </Image>
+    </Border>
+
+    <Button
+        x:Uid="Controls_Status_LoadMoreButton"
+        x:Name="LoadMoreButton"
+        x:Load="{x:Bind ViewModel.FollowedByGap}"
+        Grid.Row="2"
+        Height="40"
+        HorizontalAlignment="Stretch"
+        Background="Transparent"
+        BorderThickness="0 0.5 0 0"
+        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+        CornerRadius="0"/>
+</Grid>
