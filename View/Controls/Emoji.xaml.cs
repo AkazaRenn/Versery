@@ -13,7 +13,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using System.Collections.Concurrent;
 using View.Interfaces;
 
-namespace View.Controls.RichTextRenderer;
+namespace View.Controls;
 
 internal sealed partial class Emoji: Panel {
     private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();

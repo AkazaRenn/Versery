@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 
 namespace ViewModel.Pages;
 
-public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
+public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
     private readonly Client client = Model.Services.Get<Client>();
     private bool loadingOldStatuses = false;
     private bool hasMoreStatusesToLoad = true;
@@ -36,7 +36,7 @@ public sealed partial class Home: IRecipient<Messages.SignInCompleted> {
         }
     }
 
-    public void Receive(Messages.SignInCompleted message) {
+    public void Receive(WeakMessages.SignInCompleted message) {
         Statuses.Clear();
         _ = LoadInitialTimelines();
     }

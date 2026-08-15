@@ -5,33 +5,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:View"
     xmlns:controls="using:View.Controls"
-    xmlns:richtextrenderer="using:View.Controls.RichTextRenderer"
+    xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
-    Loaded="Grid_Loaded"
-    Unloaded="Grid_Unloaded"
     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     ColumnDefinitions="48, *"
     ColumnSpacing="8"
     RowDefinitions="Auto, Auto, Auto">
 
-    <TextBlock
+    <RichTextBlock
         x:Name="ReactorDisplayName"
         x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
         Grid.Column="1"
         Grid.Row="0"
-        Margin="0,8,0,0"
+        Margin="0,4,0,-4"
         FontSize="12"
         Foreground="{ThemeResource TextFillColorTertiary}"
         IsTextSelectionEnabled="False">
-        <Run Text="{x:Bind ReactorDisplayNameBeforeText}"/><Span richtextrenderer:Html.ViewModel="{x:Bind ViewModel.Reblogger.DisplayName}"/><Run Text="{x:Bind ReactorDisplayNameAfterText}"/>
-    </TextBlock>
-    
+        <Paragraph>
+            <Run Text="{x:Bind ReactorDisplayNameBeforeText}"/><Span extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName}"/><Run Text="{x:Bind ReactorDisplayNameAfterText}"/>
+        </Paragraph>
+    </RichTextBlock>
+
     <fluenticons:FluentIcon
         x:Name="ReactorIcon"
         x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Reblogger)}"
         Grid.Column="0"
         Grid.Row="0"
-        Margin="0,8,0,0"
+        Margin="0,4,0,-4"
         HorizontalAlignment="Right"
         Foreground="{ThemeResource TextFillColorTertiary}"
         FontSize="12"
@@ -63,7 +63,7 @@
         Height="20"
         Width="20"
         CornerRadius="10">
-        <Image>
+        <Image extensions:Image.AutoPause="True">
             <Image.Source>
                 <BitmapImage
                     x:Name="RebloggerAvatarBitmapImage"

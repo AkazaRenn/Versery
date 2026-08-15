@@ -103,8 +103,7 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
 
     private void Navigation_Loaded(object sender, RoutedEventArgs e) {
         var ScaleUnawareRightInset = AppWindow.TitleBar.RightInset / Content.XamlRoot.RasterizationScale;
-        UserProfileButton.Margin = new Thickness(0, 0, ScaleUnawareRightInset + 16, 0);
-        Navigation_RightPadding.Width = UserProfileButton.Margin.Right;
+        UserProfileColumn.Width = new(ScaleUnawareRightInset + 16 + UserProfileButtonSize);
 
         foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>()) {
             item.Height = Navigation.CompactPaneLength - 8;
@@ -138,4 +137,7 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
     private void Navigation_SizeChanged(object sender, SizeChangedEventArgs e) {
         UpdateNonClientInputPassthrough();
     }
+
+    private double UserProfileButtonSize => 40;
+    private CornerRadius UserProfileButtonCornerRadius => new(UserProfileButtonSize / 2);
 }

@@ -44,7 +44,7 @@ public sealed class Client {
         Credentials.AddAccessToken(userId, server.AccessToken);
         applicationStates.ActiveUser = userId;
 
-        WeakReferenceMessenger.Default.Send(new Messages.SignInCompleted());
+        WeakReferenceMessenger.Default.Send(new WeakMessages.SignInCompleted());
     }
 
     public async Task<Entities.Account?> GetAccount() {

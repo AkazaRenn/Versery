@@ -2,10 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Model;
 using Model.Access;
-using Model.Entities;
 using Model.Enumerations;
 using Model.Utilities;
-using ViewModel.Controls.RichTextRenderer;
 
 namespace ViewModel.Controls;
 

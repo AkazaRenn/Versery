@@ -1,43 +1,35 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
-using ViewModel.Controls.RichTextRenderer;
+using View.Controls;
+using ViewModel.Extensions;
 
-namespace View.Controls.RichTextRenderer;
+namespace View.Extensions;
 
-internal static class Html {
-
-    public static readonly DependencyProperty ViewModelProperty = DependencyProperty.RegisterAttached(
-        "ViewModel",
-        typeof(ViewModel.Controls.RichTextRenderer.Html),
+internal static partial class RichTextBlock {
+    public static readonly DependencyProperty HtmlProperty = DependencyProperty.RegisterAttached(
+        "Html",
         typeof(Html),
-        new PropertyMetadata(null, OnViewModelChangedAsync)
+        typeof(RichTextBlock),
+        new PropertyMetadata(null, OnHtmlChangedAsync)
     );
 
-    public static ViewModel.Controls.RichTextRenderer.Html? GetViewModel(DependencyObject obj) {
-        return (ViewModel.Controls.RichTextRenderer.Html?)obj.GetValue(ViewModelProperty);
+    public static Html? GetHtml(DependencyObject obj) {
+        return (Html?)obj.GetValue(HtmlProperty);
     }
 
-    public static void SetViewModel(DependencyObject obj, ViewModel.Controls.RichTextRenderer.Html? value) {
-        obj.SetValue(ViewModelProperty, value);
+    public static void SetHtml(DependencyObject obj, Html? value) {
+        obj.SetValue(HtmlProperty, value);
     }
 
-    private static async void OnViewModelChangedAsync(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+    private static async void OnHtmlChangedAsync(DependencyObject d, DependencyPropertyChangedEventArgs e) {
         if ((e.OldValue == e.NewValue) ||
-            (e.NewValue is not ViewModel.Controls.RichTextRenderer.Html newVm)) {
+            (e.NewValue is not Html newVm)) {
             return;
         }
 
-        if (d is RichTextBlock richTextBlock) {
+        if (d is Microsoft.UI.Xaml.Controls.RichTextBlock richTextBlock) {
             richTextBlock.Blocks.Clear();
             RenderRichContent(richTextBlock, newVm.ContentToken, newVm.Emojis);
-        } else if (d is TextBlock textBlock) {
-            textBlock.Inlines.Clear();
-            if (newVm.ContentToken.Paragraphs.Count > 0) {
-                foreach (var inline in RenderParagraph(newVm.ContentToken.Paragraphs.First(), newVm.Emojis, textBlock.FontSize)) {
-                    textBlock.Inlines.Add(inline);
-                }
-            }
         } else if ((d is Span span) && (newVm.ContentToken.Paragraphs.Count > 0)) {
             foreach (var inline in RenderParagraph(newVm.ContentToken.Paragraphs.First(), newVm.Emojis, span.FontSize)) {
                 span.Inlines.Add(inline);
@@ -45,7 +37,7 @@ internal static class Html {
         }
     }
 
-    private static void RenderRichContent(RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Task<Uri?>> emojis) {
+    private static void RenderRichContent(Microsoft.UI.Xaml.Controls.RichTextBlock richTextBlock, ContentToken content, Dictionary<string, Task<Uri?>> emojis) {
         var blocks = richTextBlock.Blocks;
 
         foreach (var paragraphToken in content.Paragraphs) {

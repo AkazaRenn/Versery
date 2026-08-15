@@ -21,7 +21,7 @@ internal sealed partial class Status: Grid {
     }
 
     public double AvatarSize { get; set; } = 40;
-    public double AvatarScale { 
+    public double AvatarScale {
         get => AvatarScaleTransform.ScaleX;
         set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value;
     }

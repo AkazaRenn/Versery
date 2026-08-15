@@ -1,12 +1,8 @@
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using View.Interfaces;
 
 namespace View.Controls;
 
 internal sealed partial class Timeline: Grid {
-    private Window? window;
-
     public ViewModel.Controls.Timeline? ViewModel {
         get;
         set {
@@ -23,30 +19,6 @@ internal sealed partial class Timeline: Grid {
 
     public Timeline() {
         InitializeComponent();
-    }
-
-    private void Grid_Loaded(object sender, RoutedEventArgs e) {
-        if ((window is null) && (Application.Current is IWindowHelper windowHelper)) {
-            if (windowHelper.TryGetWindow(this, out window)) {
-                window?.Activated -= Window_Activated;
-                window?.Activated += Window_Activated;
-            }
-        }
-    }
-
-    private void Grid_Unloaded(object sender, RoutedEventArgs e) {
-        window?.Activated -= Window_Activated;
-    }
-
-    private void Window_Activated(object sender, WindowActivatedEventArgs args) {
-        switch (args.WindowActivationState) {
-        case WindowActivationState.Deactivated:
-            RebloggerAvatarBitmapImage?.Stop();
-            break;
-        default:
-            RebloggerAvatarBitmapImage?.Play();
-            break;
-        }
     }
 
     private double PosterAvatarScale => ViewModel?.Reblogger is null ? 1 : 0.9;

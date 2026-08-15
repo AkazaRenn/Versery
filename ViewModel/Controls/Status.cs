@@ -3,7 +3,7 @@ using Model.Access;
 using Model.Server.Entities;
 using Model.Utilities;
 using System.Collections.ObjectModel;
-using ViewModel.Controls.RichTextRenderer;
+using ViewModel.Extensions;
 
 namespace ViewModel.Controls;
 
@@ -16,10 +16,10 @@ public sealed partial class Status: ObservableObject {
     public string Id { get; }
     public int Index { get; set; } = -1;
 
-    public RichTextRenderer.Html PosterDisplayName { get; set; } = new() {
+    public Html PosterDisplayName { get; set; } = new() {
         IsPlainText = true,
     };
-    public RichTextRenderer.Html PostBody { get; set; } = new() {
+    public Html PostBody { get; set; } = new() {
         IsPlainText = false,
     };
 
