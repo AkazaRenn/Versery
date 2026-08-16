@@ -3,42 +3,20 @@
     x:Class="View.Pages.Home"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     xmlns:controls="using:View.Controls"
     xmlns:vm.controls="using:ViewModel.Controls"
-    Loaded="Page_Loaded"
+    xmlns:components="using:View.Controls.Components"
     NavigationCacheMode="Required">
-    <RefreshContainer
-        x:Name="RefreshContainer"
+    <components:RefreshListView
+        x:Name="RefreshListView"
         MaxWidth="600"
-        RefreshRequested="RefreshContainer_RefreshRequested">
-        <RefreshContainer.OpacityTransition>
-            <ScalarTransition Duration="0:0:0.25"/>
-        </RefreshContainer.OpacityTransition>
-        <ListView
-            x:Name="ListView"
-            ItemsSource="{x:Bind viewModel.Statuses}"
-            SelectionMode="None"
-            ScrollViewer.VerticalScrollBarVisibility="Hidden"
-            ContainerContentChanging="ListView_ContainerContentChanging">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsStackPanel/>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="vm.controls:Timeline">
-                    <controls:Timeline ViewModel="{x:Bind}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Padding" Value="0" />
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
-    </RefreshContainer>
+        ItemsSource="{x:Bind viewModel.Statuses}"
+        RefreshRequested="RefreshListView_RefreshRequested"
+        ContainerContentChanging="RefreshListView_ContainerContentChanging">
+        <components:RefreshListView.ItemTemplate>
+            <DataTemplate x:DataType="vm.controls:Timeline">
+                <controls:Timeline ViewModel="{x:Bind}" />
+            </DataTemplate>
+        </components:RefreshListView.ItemTemplate>
+    </components:RefreshListView>
 </Page>

@@ -1,5 +1,3 @@
-using CommunityToolkit.WinUI;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using View.Interfaces;
 
@@ -7,7 +5,6 @@ namespace View.Pages;
 
 internal sealed partial class Home: Page, INavigationPage {
     private readonly ViewModel.Pages.Home viewModel = new();
-    private ScrollViewer? scrollViewer = null;
 
     public Home() {
         InitializeComponent();
@@ -16,31 +13,21 @@ internal sealed partial class Home: Page, INavigationPage {
     public static Type Type => typeof(Home);
 
     public async Task OnNavigationReInvoke() {
-        if (scrollViewer?.VerticalOffset == 0) {
-            RefreshContainer.RequestRefresh();
+        if (RefreshListView.IsOnTop) {
+            RefreshListView.RequestRefresh();
         } else {
-            if ((ListView.ContainerFromIndex(0) is not null) &&
-                (ListView.ContainerFromIndex(1) is not null)) {
-                scrollViewer?.ChangeView(null, 0, null, false);
-            } else {
-                if (scrollViewer is not null) {
-                    RefreshContainer.Opacity = 0;
-                    await Task.Delay(RefreshContainer.OpacityTransition.Duration);
-                    ScrollToTopItem();
-                    RefreshContainer.Opacity = 1;
-                }
-            }
+            RefreshListView.ScrollToTop();
         }
     }
 
-    private async void RefreshContainer_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) {
+    private async void RefreshListView_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) {
         var deferral = args.GetDeferral();
         await viewModel.LoadLatestTimelines();
-        ScrollToTopItem();
+        RefreshListView.ScrollToTop();
         deferral.Complete();
     }
 
-    private void ListView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args) {
+    private void RefreshListView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args) {
         if (args.InRecycleQueue)
             return;
 
@@ -48,17 +35,5 @@ internal sealed partial class Home: Page, INavigationPage {
             status.Index = args.ItemIndex;
             _ = viewModel.OnStatusRealized(args.ItemIndex);
         }
-    }
-
-    private void Page_Loaded(object sender, RoutedEventArgs e) {
-        scrollViewer = ListView.FindDescendant<ScrollViewer>();
-    }
-
-    private void ScrollToTopItem() {
-        if (viewModel.Statuses.Count == 0) {
-            return;
-        }
-
-        ListView.ScrollIntoView(viewModel.Statuses[0], ScrollIntoViewAlignment.Leading);
     }
 }

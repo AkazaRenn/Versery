@@ -21,10 +21,7 @@ internal sealed partial class Status: Grid {
     }
 
     public double AvatarSize { get; set; } = 40;
-    public double AvatarScale {
-        get => AvatarScaleTransform.ScaleX;
-        set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value;
-    }
+    public double AvatarScale { set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value; }
     public double DisplayNameFontSize { get; set; } = 16;
     public bool PostBodyLeftPadding { get; set; } = false;
     public bool ShowQuote { get; set; } = true;
@@ -38,8 +35,7 @@ internal sealed partial class Status: Grid {
     private bool LoadBelowLine => false;
     private double LineWidth => 4;
 
-    private double AvatarButtonSize => AvatarSize * AvatarScale;
-    private CornerRadius AvatarButtonCornerRadius => new(AvatarButtonSize / 2);
+    private CornerRadius AvatarButtonCornerRadius => new(AvatarSize / 2);
 
     double PosterAccountFontSize => DisplayNameFontSize * 0.85;
 

@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Documents;
-using View.Controls;
+using View.Controls.Components;
 using ViewModel.Extensions;
 
 namespace View.Extensions;
