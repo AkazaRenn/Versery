@@ -3,7 +3,7 @@ using Model.Server.Entities;
 
 namespace Model.Entities;
 
-public record class Status() {
+public record Status() {
     [BsonId]
     public string Id { get; set; } = string.Empty;
     public string AccountId { get; set; } = string.Empty;
@@ -22,6 +22,7 @@ public record class Status() {
     public string? RepliedStatusId { get; set; } = null;
     public string? RepliedAccountId { get; set; } = null;
     public string? QuotedStatusId { get; set; } = null;
+    public List<Media> Medias { get; set; } = [];
 
     internal Status(Model.Server.Entities.Status serverStatus) : this() {
         Id = serverStatus.Id;
@@ -46,6 +47,14 @@ public record class Status() {
             RepliedStatusId = serverStatus.InReplyToId;
             RepliedAccountId = serverStatus.InReplyToAccountId;
             QuotedStatusId = serverStatus.Quote?.QuotedStatus?.Id;
+            foreach (var media in serverStatus.MediaAttachments) {
+                Medias.Add(new Media {
+                    Type = media.Type,
+                    Source = media.Url,
+                    Preview = media.PreviewUrl,
+                    Aspect = media.Meta?.Aspect ?? 1
+                });
+            }
         }
     }
 
@@ -54,4 +63,11 @@ public record class Status() {
             yield return new Status(serverStatus);
         }
     }
+}
+
+public record Media {
+    public MediaAttachmentType Type { get; set; } = MediaAttachmentType.Unknown;
+    public Uri? Source { get; set; } = null;
+    public Uri? Preview {  get; set; } = null;
+    public double Aspect { get; set; } = 1;
 }

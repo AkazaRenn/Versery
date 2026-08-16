@@ -2,7 +2,7 @@
 
 namespace Model.Entities;
 
-public record class Account() {
+public record Account() {
     [BsonId]
     public string Id { get; set; } = string.Empty;
     public string AccountName { get; set; } = string.Empty;

@@ -1,3 +1,4 @@
+using CommunityToolkit.WinUI.Controls;
 using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -43,15 +44,72 @@ internal sealed partial class Status: Grid {
 
     bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
-    bool LoadMediaAttachments => (ViewModel?.MediaAttachments is not null) && (ViewModel.MediaAttachments.Count > 0);
-    private int MediaAttachment0ColumnSpan => ViewModel?.MediaAttachments?.Count > 1 ? 1 : 2;
-    private int MediaAttachment0RowSpan => ViewModel?.MediaAttachments?.Count > 3 ? 1 : 2;
-    private Uri? MediaAttachment0Source => ViewModel?.MediaAttachments?.ElementAtOrDefault(0);
-    private int MediaAttachment1RowSpan => ViewModel?.MediaAttachments?.Count > 2 ? 1 : 2;
-    private Uri? MediaAttachment1Source => ViewModel?.MediaAttachments?.ElementAtOrDefault(1);
-    private int MediaAttachment2Row => ViewModel?.MediaAttachments?.Count > 3 ? 0 : 1;
-    private Uri? MediaAttachment2Source => ViewModel?.MediaAttachments?.ElementAtOrDefault(2);
-    private Uri? MediaAttachment3Source => ViewModel?.MediaAttachments?.ElementAtOrDefault(3);
+    bool LoadMediaAttachments => ViewModel?.MediaPreviewsRemote.Length > 0;
+    bool LoadMediaAttachment1 => ViewModel?.MediaPreviewsRemote.Length > 1;
+    bool LoadMediaAttachment2 => ViewModel?.MediaPreviewsRemote.Length > 2;
+    bool LoadMediaAttachment3 => ViewModel?.MediaPreviewsRemote.Length > 3;
+    bool LoadMediaAttachment3Overlay => ViewModel?.MediaPreviewsRemote.Length > 4;
+    AspectRatio MediaAttachmentsGridAspectRatio => ViewModel?.MediaPreviewsRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
+    Orientation MediaAttachmentsGridOrientation {
+        get {
+            if (ViewModel?.MediaPreviewsRemote?.Length >= 4) {
+                return Orientation.Horizontal;
+            } else if (ViewModel?.FirstImageAspect > 1) {
+                return Orientation.Horizontal;
+            } else {
+                return Orientation.Vertical;
+            }
+        }
+    }
+    private int MediaAttachment0ColumnSpan {
+        get {
+            if (ViewModel?.MediaPreviewsRemote?.Length == 1) {
+                return 2;
+            } else if (ViewModel?.MediaPreviewsRemote?.Length >= 4) {
+                return 1;
+            } else if (ViewModel?.FirstImageAspect <= 1) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+    }
+    private int MediaAttachment0RowSpan {
+        get {
+            if (ViewModel?.MediaPreviewsRemote?.Length == 1) {
+                return 2;
+            } else if (ViewModel?.MediaPreviewsRemote?.Length >= 4) {
+                return 1;
+            } else if (ViewModel?.FirstImageAspect <= 1) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+    }
+    private int MediaAttachment1ColumnSpan {
+        get {
+            if (ViewModel?.MediaPreviewsRemote?.Length > 2) {
+                return 1;
+            } else if (ViewModel?.FirstImageAspect <= 1) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+    }
+    private int MediaAttachment1RowSpan {
+        get {
+            if (ViewModel?.MediaPreviewsRemote?.Length > 2) {
+                return 1;
+            } else if (ViewModel?.FirstImageAspect <= 1) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+    }
+    string MediaAttachment3OverlayText => $"+ {ViewModel?.MediaPreviewsRemote.Length - 4}";
 
     private Brush ReactButtonBackground => Constants.Brush.Transparent;
     private Brush ReactButtonBorderBrush => Constants.Brush.Transparent;

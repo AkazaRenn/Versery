@@ -26,7 +26,6 @@ public sealed partial class Status: ObservableObject {
     public Account Poster { get; }
     public DateTime CreatedAt { get; } = DateTime.MinValue;
     public Uri? Uri { get; } = null;
-    public ObservableCollection<Uri?>? MediaAttachments { get; } = null;
     public Status? Quote { get; } = null;
 
     [ObservableProperty]
@@ -39,6 +38,18 @@ public sealed partial class Status: ObservableObject {
     public partial bool IsFavourited { get; set; } = false;
     [ObservableProperty]
     public partial bool IsBookmarked { get; set; } = false;
+
+    public double FirstImageAspect { get; set; } = 1.0;
+    public Uri[] MediaPreviewsRemote { get; set; } = [];
+    public Uri[] MediasRemote { get; set; } = [];
+    [ObservableProperty]
+    public partial Uri? Media0 { get; set; } = null;
+    [ObservableProperty]
+    public partial Uri? Media1 { get; set; } = null;
+    [ObservableProperty]
+    public partial Uri? Media2 { get; set; } = null;
+    [ObservableProperty]
+    public partial Uri? Media3 { get; set; } = null;
 
     private Status(string id) {
         Id = id;
@@ -64,6 +75,12 @@ public sealed partial class Status: ObservableObject {
 
         CreatedAt = status.CreatedAt;
         Uri = status.Uri;
+        MediaPreviewsRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Preview is not null)).Select(m => m.Preview!)];
+        MediasRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Source is not null)).Select(m => m.Source!)];
+        if (status.Medias.Count > 0) {
+            // Avoid the preview from taking too much space
+            FirstImageAspect = Math.Max(status.Medias[0].Aspect, 1);
+        }
 
         sentinel = new(Id, cache);
     }
@@ -76,6 +93,28 @@ public sealed partial class Status: ObservableObject {
                 cache[id] = new(obj);
             }
             return obj;
+        }
+    }
+
+    internal async Task DownloadMedias() {
+        if (Poster.Avatar is null && Poster.AvatarRemote is not null) {
+            Poster.Avatar = await Cache.Get(Poster.AvatarRemote);
+        }
+        switch (MediaPreviewsRemote.Length) {
+        case 0:
+            break;
+        case 1:
+            Media0 = await Cache.Get(MediaPreviewsRemote[0]);
+            break;
+        case 2:
+            Media1 = await Cache.Get(MediaPreviewsRemote[1]);
+            goto case 1;
+        case 3:
+            Media2 = await Cache.Get(MediaPreviewsRemote[2]);
+            goto case 2;
+        default:
+            Media3 = await Cache.Get(MediaPreviewsRemote[3]);
+            goto case 3;
         }
     }
 

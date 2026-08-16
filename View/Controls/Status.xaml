@@ -3,10 +3,10 @@
     x:Class="View.Controls.Status"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:View"
     xmlns:controls="using:View.Controls"
     xmlns:extensions="using:View.Extensions"
-    xmlns:fluenticons="using:FluentIcons.WinUI">
+    xmlns:fluenticons="using:FluentIcons.WinUI"
+    xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="{x:Bind GridColumnWidth0}"/>
         <ColumnDefinition Width="8"/>
@@ -119,51 +119,90 @@
             ShowQuote="False"
             ReactButtons="False"/>
 
-        <Grid
+        <communitytoolkit:ConstrainedBox
             x:Name="MediaAttachmentsGrid"
             x:Load="{x:Bind LoadMediaAttachments}"
-            ColumnDefinitions="1*, 1*"
-            ColumnSpacing="2"
-            RowDefinitions="1*, 1*"
-            RowSpacing="2">
-            <Image
-                Grid.Column="0"
-                Grid.ColumnSpan="{x:Bind MediaAttachment0ColumnSpan}"
-                Grid.Row="0"
-                Grid.RowSpan="{x:Bind MediaAttachment0RowSpan}">
-                <Image.Source>
-                    <BitmapImage UriSource="{x:Bind MediaAttachment0Source}"/>
-                </Image.Source>
-            </Image>
-            <Image
-                x:Name="MediaAttachment1"
-                x:Load="{x:Bind local:Converters.IsNotNull(MediaAttachment1Source)}"
-                Grid.Column="1"
-                Grid.Row="0"
-                Grid.RowSpan="{x:Bind MediaAttachment1RowSpan}">
-                <Image.Source>
-                    <BitmapImage UriSource="{x:Bind MediaAttachment1Source}"/>
-                </Image.Source>
-            </Image>
-            <Image
-                x:Name="MediaAttachment2"
-                x:Load="{x:Bind local:Converters.IsNotNull(MediaAttachment2Source)}"
-                Grid.Column="0"
-                Grid.Row="{x:Bind MediaAttachment2Row}">
-                <Image.Source>
-                    <BitmapImage UriSource="{x:Bind MediaAttachment2Source}"/>
-                </Image.Source>
-            </Image>
-            <Image
-                x:Name="MediaAttachment3"
-                x:Load="{x:Bind local:Converters.IsNotNull(MediaAttachment3Source)}"
-                Grid.Column="1"
-                Grid.Row="1">
-                <Image.Source>
-                    <BitmapImage UriSource="{x:Bind MediaAttachment3Source}"/>
-                </Image.Source>
-            </Image>
-        </Grid>
+            AspectRatio="{x:Bind MediaAttachmentsGridAspectRatio}"
+            CornerRadius="4">
+            <communitytoolkit:UniformGrid
+                Columns="2"
+                ColumnSpacing="4"
+                Rows="2"
+                RowSpacing="4"
+                Orientation="{x:Bind MediaAttachmentsGridOrientation}">
+                <Rectangle
+                    Grid.ColumnSpan="{x:Bind MediaAttachment0ColumnSpan}"
+                    Grid.RowSpan="{x:Bind MediaAttachment0RowSpan}">
+                    <Rectangle.Fill>
+                        <ImageBrush
+                            Stretch="UniformToFill"
+                            AlignmentX="Center"
+                            AlignmentY="Center">
+                            <ImageBrush.ImageSource>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Media0, Mode=OneWay}"/>
+                            </ImageBrush.ImageSource>
+                        </ImageBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Rectangle
+                    x:Name="MediaAttachment1"
+                    x:Load="{x:Bind LoadMediaAttachment1}"                  
+                    Grid.ColumnSpan="{x:Bind MediaAttachment1ColumnSpan}"
+                    Grid.RowSpan="{x:Bind MediaAttachment1RowSpan}">
+                    <Rectangle.Fill>
+                        <ImageBrush
+                            Stretch="UniformToFill"
+                            AlignmentX="Center"
+                            AlignmentY="Center">
+                            <ImageBrush.ImageSource>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Media1, Mode=OneWay}"/>
+                            </ImageBrush.ImageSource>
+                        </ImageBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Rectangle
+                    x:Name="MediaAttachment2"
+                    x:Load="{x:Bind LoadMediaAttachment2}">
+                    <Rectangle.Fill>
+                        <ImageBrush
+                            Stretch="UniformToFill"
+                            AlignmentX="Center"
+                            AlignmentY="Center">
+                            <ImageBrush.ImageSource>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Media2, Mode=OneWay}"/>
+                            </ImageBrush.ImageSource>
+                        </ImageBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Border
+                    x:Name="MediaAttachment3"
+                    x:Load="{x:Bind LoadMediaAttachment3}">
+                    <Border.Background>
+                        <ImageBrush
+                            Stretch="UniformToFill"
+                            AlignmentX="Center"
+                            AlignmentY="Center">
+                            <ImageBrush.ImageSource>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Media3, Mode=OneWay}"/>
+                            </ImageBrush.ImageSource>
+                        </ImageBrush>
+                    </Border.Background>
+                    <Border
+                        x:Name="MediaAttachment3Overlay"
+                        x:Load="{x:Bind LoadMediaAttachment3Overlay}"
+                        Background="#80000000">
+                        <TextBlock
+                            Foreground="White"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            FontSize="32"
+                            FontWeight="ExtraBold"
+                            Text="{x:Bind MediaAttachment3OverlayText}">
+                        </TextBlock>
+                    </Border>
+                </Border>
+            </communitytoolkit:UniformGrid>
+        </communitytoolkit:ConstrainedBox>
 
         <Grid
             x:Name="ReactButtonsGrid"
