@@ -259,9 +259,9 @@ internal sealed partial class Emoji: Panel {
         try {
             var pixels = new byte[Width * Height * 4];
             for (int i = 0; i < frameCount; i++) {
-                // Enforce a minimum delay of 20ms to avoid excessively fast frames
-                if (double.IsNaN(frameDelaysMs[i]) || (frameDelaysMs[i] < 20)) {
-                    frameDelaysMs[i] = 20;
+                // Enforce a minimum delay of 100ms to avoid excessively fast frames
+                if (double.IsNaN(frameDelaysMs[i]) || (frameDelaysMs[i] < 100)) {
+                    frameDelaysMs[i] = 100;
                 }
 
                 var frame = image.Frames[i];

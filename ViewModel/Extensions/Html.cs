@@ -123,14 +123,14 @@ public sealed class Html {
             case "a":
                 var href = element.GetAttribute("href");
                 if (string.IsNullOrEmpty(href)) {
-                    return TokenizeTextWithEmoji(element.TextContent);
+                    return TokenizeInlineChildren(element);
                 }
 
                 return [new HyperlinkToken(href, TokenizeInlineChildren(element))];
             case "br":
                 return [new LineBreakToken()];
             default:
-                return TokenizeTextWithEmoji(element.TextContent);
+                return TokenizeInlineChildren(element);
             }
         default:
             return [];
@@ -143,10 +143,15 @@ public sealed class Html {
 
         int index = 0;
         while (index < rawText.Length) {
-            if ((rawText[index] != ':') ||
-                (!TryReadEmojiShortCode(rawText, ref index, out var shortCode))) {
+            if (rawText[index] != ':') {
                 text.Append(rawText[index]);
                 index++;
+                continue;
+            }
+
+            var startIndex = index;
+            if (!TryReadEmojiShortCode(rawText, ref index, out var shortCode)) {
+                text.Append(rawText, startIndex, index - startIndex);
                 continue;
             }
 
@@ -181,12 +186,10 @@ public sealed class Html {
             cursor++;
         }
 
-        if (cursor == startIndex + 1) {
-            return false;
-        }
-
-        var hasTrailingColon = cursor < rawText.Length && rawText[cursor] == ':';
-        if (!hasTrailingColon) {
+        if (cursor == startIndex + 1 ||
+            cursor == rawText.Length ||
+            rawText[cursor] != ':') {
+            index = cursor;
             return false;
         }
 
