@@ -11,6 +11,8 @@ public record Status() {
     public string? ReblogId { get; set; } = null;
     public Uri? Uri { get; set; } = null;
     public string Content { get; set; } = string.Empty;
+    public string? Text { get; set; } = string.Empty;
+    public string SpoilerText { get; set; } = string.Empty;
     public StatusVisibility Visibility { get; set; } = StatusVisibility.Public;
     public long RepliesCount { get; set; } = 0;
     public bool Favourited { get; set; } = false;
@@ -32,6 +34,8 @@ public record Status() {
             ReblogId = serverStatus.Reblog.Id;
         } else {
             Content = serverStatus.Content;
+            Text = serverStatus.Text;
+            SpoilerText = serverStatus.SpoilerText;
             RepliesCount = serverStatus.RepliesCount;
             Favourited = serverStatus.Favourited ?? false;
             Reblogged = serverStatus.Reblogged ?? false;

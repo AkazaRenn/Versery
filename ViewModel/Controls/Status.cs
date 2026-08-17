@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Model.Access;
 using Model.Server.Entities;
 using Model.Utilities;
@@ -19,6 +20,7 @@ public sealed partial class Status: ObservableObject {
     public Html PosterDisplayName { get; set; } = new() {
         IsPlainText = true,
     };
+    public Html? SpoilerText { get; set; } = null;
     public Html PostBody { get; set; } = new() {
         IsPlainText = false,
     };
@@ -28,6 +30,8 @@ public sealed partial class Status: ObservableObject {
     public Uri? Uri { get; } = null;
     public Status? Quote { get; } = null;
 
+    [ObservableProperty]
+    public partial bool Collapsed { get; set; } = false;
     [ObservableProperty]
     public partial bool HasReplies { get; set; } = false;
     [ObservableProperty]
@@ -51,6 +55,11 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial Uri? Media3 { get; set; } = null;
 
+    [RelayCommand]
+    private void ToggleCollapsed() {
+        Collapsed = !Collapsed;
+    }
+
     private Status(string id) {
         Id = id;
         var status = client.GetStatus(Id)!;
@@ -71,6 +80,14 @@ public sealed partial class Status: ObservableObject {
         PostBody.RawText = status.Content;
         foreach (var emoji in status.Emojis) {
             PostBody.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+        }
+        if (!String.IsNullOrEmpty(status.SpoilerText)) {
+            Collapsed = true;
+            SpoilerText = new Html {
+                IsPlainText = true,
+                RawText = status.SpoilerText,
+                Emojis = PostBody.Emojis,
+            };
         }
 
         CreatedAt = status.CreatedAt;

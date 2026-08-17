@@ -42,6 +42,9 @@ internal sealed partial class Status: Grid {
 
     int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
+    bool LoadSpoilerTextRichTextBlock => ViewModel?.SpoilerText is not null;
+    string GetShowSpointerButtonContent(bool collapsed) => collapsed ? "Show more" : "Show less";
+
     bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
     bool LoadMediaAttachments => ViewModel?.MediaPreviewsRemote.Length > 0;

@@ -7,6 +7,10 @@ internal static class Converters {
         return value != null;
     }
 
+    public static Visibility BoolToVisibilityReversed(bool value) {
+        return value ? Visibility.Collapsed : Visibility.Visible;
+    }
+
     public static Visibility NullableObjectToVisibility(object? value) {
         return value != null ? Visibility.Visible : Visibility.Collapsed;
     }
