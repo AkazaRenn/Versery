@@ -7,12 +7,10 @@ internal sealed class Client {
     private Timeline Timeline { get; }
 
     public Client(string account, string instance) {
-        var instanceHash = instance.Sha256;
-        Status = new Status(instanceHash);
-        Account = new Account(instanceHash);
-
-        var accountHash = account.Sha256;
-        Timeline = new(accountHash, "hometimeline");
+        var hash = account.Sha256;
+        Status = new Status(hash);
+        Account = new Account(hash);
+        Timeline = new(hash, "hometimeline");
         //FederatedTimeline = new(accountHash, "federatedtimeline");
         //LocalTimeline = new(accountHash, "localtimeline");
     }

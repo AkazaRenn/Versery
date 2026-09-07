@@ -106,7 +106,7 @@
         Grid.ColumnSpan="99"
         Grid.Row="3"
         Spacing="8">
-        
+
         <RichTextBlock
             x:Name="SpoilerTextRichTextBlock"
             x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
@@ -130,9 +130,10 @@
             x:Name="QuoteStatus"
             x:Load="{x:Bind LoadQuote}"
             ViewModel="{x:Bind ViewModel.Quote}"
-            PostBodyLeftPadding="False"
-            ShowQuote="False"
-            ReactButtons="False"/>
+            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+            BorderThickness="0.5"
+            CornerRadius="4"
+            Padding="8"/>
 
         <communitytoolkit:ConstrainedBox
             x:Name="MediaAttachmentsGrid"
@@ -146,8 +147,7 @@
                 RowSpacing="4"
                 Orientation="{x:Bind MediaAttachmentsGridOrientation}">
                 <Rectangle
-                    Grid.ColumnSpan="{x:Bind MediaAttachment0ColumnSpan}"
-                    Grid.RowSpan="{x:Bind MediaAttachment0RowSpan}">
+                    x:Name="MediaAttachment0">
                     <Rectangle.Fill>
                         <ImageBrush
                             Stretch="UniformToFill"
@@ -161,9 +161,7 @@
                 </Rectangle>
                 <Rectangle
                     x:Name="MediaAttachment1"
-                    x:Load="{x:Bind LoadMediaAttachment1}"                  
-                    Grid.ColumnSpan="{x:Bind MediaAttachment1ColumnSpan}"
-                    Grid.RowSpan="{x:Bind MediaAttachment1RowSpan}">
+                    x:Load="{x:Bind LoadMediaAttachment1}">
                     <Rectangle.Fill>
                         <ImageBrush
                             Stretch="UniformToFill"

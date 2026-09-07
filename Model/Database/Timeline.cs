@@ -9,7 +9,7 @@ internal sealed class Timeline {
     public IReadOnlyCollection<string> AccessedTimeline => accessedTimeline;
 
     public Timeline(string hash, string name) {
-        db = Services.Get<LiteDatabase>().GetCollection<Entities.Timeline>($"account_{hash}_{name}");
+        db = Services.Get<LiteDatabase>().GetCollection<Entities.Timeline>($"{name}_{hash}");
         db.EnsureIndex(x => x.CreatedAt);
     }
 

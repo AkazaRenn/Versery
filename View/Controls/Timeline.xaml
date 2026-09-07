@@ -49,6 +49,8 @@
         AvatarScale="{x:Bind PosterAvatarScale}"
         DisplayNameFontSize="16"
         PostBodyLeftPadding="True"
+        ShowQuote="True"
+        ReactButtons="True"
         ViewModel="{x:Bind ViewModel.Content}"/>
 
     <Border

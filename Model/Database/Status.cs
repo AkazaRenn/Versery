@@ -5,7 +5,7 @@ namespace Model.Database;
 
 internal class Status(string hash) {
     private static readonly MemoryCache cache = new(typeof(Status).FullName);
-    private readonly ILiteCollection<Entities.Status> db = Services.Get<LiteDatabase>().GetCollection<Entities.Status>($"instance_{hash}_statuses");
+    private readonly ILiteCollection<Entities.Status> db = Services.Get<LiteDatabase>().GetCollection<Entities.Status>($"statuses_{hash}");
 
     public Entities.Status? Get(string id) {
         if (cache[id] is Entities.Status status) {

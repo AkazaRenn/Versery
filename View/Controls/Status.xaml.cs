@@ -14,8 +14,12 @@ internal sealed partial class Status: Grid {
                 field = value;
                 if (DispatcherQueue.HasThreadAccess) {
                     Bindings.Update();
+                     UpdateMediaSpans();
                 } else {
-                    _ = DispatcherQueue.TryEnqueue(Bindings.Update);
+                    _ = DispatcherQueue.TryEnqueue(() => {
+                        Bindings.Update();
+                        UpdateMediaSpans();
+                    });
                 }
             }
         }
@@ -25,8 +29,8 @@ internal sealed partial class Status: Grid {
     public double AvatarScale { set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value; }
     public double DisplayNameFontSize { get; set; } = 16;
     public bool PostBodyLeftPadding { get; set; } = false;
-    public bool ShowQuote { get; set; } = true;
-    public bool ReactButtons { get; set; } = true;
+    public bool ShowQuote { get; set; } = false;
+    public bool ReactButtons { get; set; } = false;
 
     private GridLength GridColumnWidth0 => new(AvatarSize);
     private GridLength GridRowHeight0 => new(AvatarSize / 2);
@@ -122,6 +126,17 @@ internal sealed partial class Status: Grid {
     private Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
     private Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
     private IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
+
+    private void UpdateMediaSpans() {
+        if (MediaAttachment0 is not null) {
+            Grid.SetColumnSpan(MediaAttachment0, MediaAttachment0ColumnSpan);
+            Grid.SetRowSpan(MediaAttachment0, MediaAttachment0RowSpan);
+        }
+        if (MediaAttachment1 is not null) {
+            Grid.SetColumnSpan(MediaAttachment1, MediaAttachment1ColumnSpan);
+            Grid.SetRowSpan(MediaAttachment1, MediaAttachment1RowSpan);
+        }
+    }
 
     public Status() {
         InitializeComponent();

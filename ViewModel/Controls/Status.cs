@@ -15,7 +15,6 @@ public sealed partial class Status: ObservableObject {
     private readonly Sentinel<string, Status> sentinel;
 
     public string Id { get; }
-    public int Index { get; set; } = -1;
 
     public Html PosterDisplayName { get; set; } = new() {
         IsPlainText = true,
