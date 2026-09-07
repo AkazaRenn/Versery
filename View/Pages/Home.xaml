@@ -10,7 +10,7 @@
     <components:RefreshListView
         x:Name="RefreshListView"
         MaxWidth="600"
-        ItemsSource="{x:Bind viewModel.Statuses}"
+        ItemsSource="{x:Bind viewModel.Timelines}"
         RefreshRequested="RefreshListView_RefreshRequested"
         ContainerContentChanging="RefreshListView_ContainerContentChanging">
         <components:RefreshListView.ItemTemplate>

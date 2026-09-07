@@ -12,10 +12,10 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
     private bool loadingOldStatuses = false;
     private bool hasMoreStatusesToLoad = true;
 
-    public ObservableCollection<Controls.Timeline> Statuses { get; } = [];
+    public ObservableCollection<Controls.Timeline> Timelines { get; } = [];
 
     public Home() {
-        Statuses.CollectionChanged += Timelines_CollectionChanged;
+        Timelines.CollectionChanged += Timelines_CollectionChanged;
 
         StrongReferenceMessenger.Default.RegisterAll(this);
         _ = LoadInitialTimelines();
@@ -37,7 +37,7 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
     }
 
     public void Receive(WeakMessages.SignInCompleted message) {
-        Statuses.Clear();
+        Timelines.Clear();
         _ = LoadInitialTimelines();
     }
 
@@ -49,24 +49,59 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
 
         var statuses = Controls.Timeline.FromTimelines(timelines).ToArray();
         foreach (var status in statuses) {
-            Statuses.Add(status);
+            Timelines.Add(status);
         }
     }
 
     public async Task LoadLatestTimelines() {
-        var statuses = await Task.Run(async () => {
+        var timelines = await Task.Run(async () => {
             var timelines = await client.GetTimelineFromServer(TimelineType.Home);
             return Controls.Timeline.FromTimelines(timelines).ToArray();
         });
 
-        for (int i = 0; i < statuses.Length; i++) {
-            Statuses.Insert(i, statuses[i]);
+        if (timelines.Length == 0) {
+            return;
+        }
+
+        var lastOverlapIndex = 0;
+        for (int i = 0; i < Math.Min(timelines.Length * 2, Timelines.Count); i++) {
+            if (Timelines[i] == timelines[^1]) {
+                lastOverlapIndex = i;
+                break;
+            }
+        }
+
+        // No overlapping, add to the beginning
+        if (lastOverlapIndex == 0) {
+            for (int i = 0; i < timelines.Length; i++) {
+                Timelines.Insert(i, timelines[i]);
+            }
+            return;
+        }
+
+        // Remove no-longer-existing ones, update overlapping ones
+        var newIds = timelines.Select(t => t.Id).ToHashSet();
+        for (int i = lastOverlapIndex; i >= 0; i--) {
+            if (newIds.Contains(Timelines[i].Id)) {
+                // try to update the existing entry
+            } else {
+                Timelines.RemoveAt(i);
+            }
+        }
+
+        // Add the rest to the beginning
+        var currentFirstId = Timelines[0].Id;
+        for (int i = 0; i < timelines.Length; i++) {
+            if (timelines[i].Id == currentFirstId) {
+                break;
+            }
+            Timelines.Insert(i, timelines[i]);
         }
     }
 
     public async Task OnStatusRealized(int index) {
-        if ((index < Statuses.Count - 1) ||
-            !Statuses.Any() ||
+        if ((index < Timelines.Count - 1) ||
+            !Timelines.Any() ||
             loadingOldStatuses ||
             !hasMoreStatusesToLoad) {
             return;
@@ -74,14 +109,14 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
 
         loadingOldStatuses = true;
         var statuses = await Task.Run(() => {
-            var timelines = client.GetTimelineFromDatabase(Statuses.Last().Id);
+            var timelines = client.GetTimelineFromDatabase(Timelines.Last().Id);
             return Controls.Timeline.FromTimelines(timelines).ToArray();
         });
         if (statuses.Length == 0) {
             hasMoreStatusesToLoad = false;
         } else {
             foreach (var status in statuses) {
-                Statuses.Add(status);
+                Timelines.Add(status);
             }
         }
         loadingOldStatuses = false;
