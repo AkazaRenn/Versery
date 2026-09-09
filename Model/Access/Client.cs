@@ -68,20 +68,7 @@ public sealed class Client {
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 
-        database!.AddTimeline(serverStatuses, afterId);
-
-        if (serverStatuses.Count == 0) {
-            return [];
-        }
-
-        var timeline = new Entities.Timeline[serverStatuses.Count];
-        for (int i = 0; i < serverStatuses.Count; i++) {
-            timeline[i] = new Entities.Timeline() {
-                Id = serverStatuses[i].Id,
-            };
-        }
-
-        return timeline;
+        return [.. database!.AddTimeline(serverStatuses, afterId)];
     }
 
     public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null, uint count = Constants.StatusesCountPerLoad) {

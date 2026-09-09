@@ -6,8 +6,6 @@ internal sealed class Timeline {
     private readonly ILiteCollection<Entities.Timeline> db;
     private readonly HashSet<string> accessedTimeline = [];
 
-    public IReadOnlyCollection<string> AccessedTimeline => accessedTimeline;
-
     public Timeline(string hash, string name) {
         db = Services.Get<LiteDatabase>().GetCollection<Entities.Timeline>($"{name}_{hash}");
         db.EnsureIndex(x => x.CreatedAt);
@@ -39,6 +37,9 @@ internal sealed class Timeline {
         }
 
         statuses = statuses.ToCollection();
+        if (statuses.Any() && db.FindById(statuses.Last().Id) is null) {
+            statuses.Last().FollowedByGap = true;
+        }
 
         db.Upsert(statuses);
         foreach (var status in statuses) {

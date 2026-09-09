@@ -54,48 +54,59 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
     }
 
     public async Task LoadLatestTimelines() {
-        var timelines = await Task.Run(async () => {
-            var timelines = await client.GetTimelineFromServer(TimelineType.Home);
-            return Controls.Timeline.FromTimelines(timelines).ToArray();
+        var serverTimelines = await Task.Run(async () => {
+            return await client.GetTimelineFromServer(TimelineType.Home);
         });
 
-        if (timelines.Length == 0) {
+        if (serverTimelines.Length == 0) {
             return;
         }
 
-        var lastOverlapIndex = 0;
-        for (int i = 0; i < Math.Min(timelines.Length * 2, Timelines.Count); i++) {
-            if (Timelines[i] == timelines[^1]) {
-                lastOverlapIndex = i;
-                break;
-            }
-        }
-
-        // No overlapping, add to the beginning
-        if (lastOverlapIndex == 0) {
-            for (int i = 0; i < timelines.Length; i++) {
-                Timelines.Insert(i, timelines[i]);
+        // No overlapping, add all to the beginning
+        if (serverTimelines[^1].FollowedByGap) {
+            var newTimelines = await Task.Run(() => {
+                return Controls.Timeline.FromTimelines(serverTimelines).ToArray();
+            });
+            for (int i = 0; i < newTimelines.Length; i++) {
+                Timelines.Insert(i, newTimelines[i]);
             }
             return;
         }
 
-        // Remove no-longer-existing ones, update overlapping ones
-        var newIds = timelines.Select(t => t.Id).ToHashSet();
-        for (int i = lastOverlapIndex; i >= 0; i--) {
-            if (newIds.Contains(Timelines[i].Id)) {
-                // try to update the existing entry
-            } else {
-                Timelines.RemoveAt(i);
+        { // Remove no-longer-existing ones, update overlapping ones
+            var newTimelineIds = serverTimelines.Select(t => t.Id).ToHashSet();
+            var indexToRemove = new List<int>();
+            for (int i = 0; i < Timelines.Count; i++) {
+                if (Timelines[i].Id == serverTimelines[^1].Id) {
+                    break;
+                }
+
+                if (newTimelineIds.Contains(Timelines[i].Id)) {
+                    // try to update the timeline
+                } else {
+                    indexToRemove.Add(i);
+                }
+            }
+
+            for (int i = indexToRemove.Count - 1; i >= 0; i--) {
+                Timelines.RemoveAt(indexToRemove[i]);
             }
         }
 
-        // Add the rest to the beginning
-        var currentFirstId = Timelines[0].Id;
-        for (int i = 0; i < timelines.Length; i++) {
-            if (timelines[i].Id == currentFirstId) {
-                break;
+        { // Add the rest to the beginning
+            var newTimelines = await Task.Run(() => {
+                var timelinesToAddEndIndex = Array.FindIndex(serverTimelines, x => x.Id == Timelines[0].Id);
+                Model.Entities.Timeline[] timelinesToAdd;
+                if (timelinesToAddEndIndex < 0) {
+                    timelinesToAdd = serverTimelines;
+                } else {
+                    timelinesToAdd = serverTimelines[..timelinesToAddEndIndex];
+                }
+                return Controls.Timeline.FromTimelines(timelinesToAdd).ToArray();
+            });
+            for (int i = 0; i < newTimelines.Length; i++) {
+                Timelines.Insert(i, newTimelines[i]);
             }
-            Timelines.Insert(i, timelines[i]);
         }
     }
 

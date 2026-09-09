@@ -28,21 +28,20 @@ internal sealed class Client {
         return timelines;
     }
 
-    public void AddTimeline(IEnumerable<Model.Server.Entities.Status> serverStatuses, string? afterId = null) {
+    public List<Entities.Timeline> AddTimeline(IEnumerable<Model.Server.Entities.Status> serverStatuses, string? afterId = null) {
         serverStatuses = serverStatuses.ToCollection();
 
         var dbTimeline = new List<Entities.Timeline>(serverStatuses.Count() + 1);
         foreach (var status in serverStatuses) {
             dbTimeline.Add(new Entities.Timeline(status));
         }
-        if (serverStatuses.Count() >= Constants.StatusesCountPerLoad) {
-            dbTimeline[^1].FollowedByGap = true;
-        }
-        Timeline.Add(dbTimeline, afterId);
 
+        Timeline.Add(dbTimeline, afterId);
         var flattened = serverStatuses.Flattened.DistinctBy(x => x.Id).ToCollection();
         Status.Add(Entities.Status.FromServer(flattened));
         Account.Add(Entities.Account.FromServer(flattened.Select(x => x.Account).DistinctBy(x => x.Id)));
+
+        return dbTimeline;
     }
 
     public Entities.Status? GetStatus(string id) {
