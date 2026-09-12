@@ -43,16 +43,16 @@ public sealed partial class Status: ObservableObject {
     public partial bool IsBookmarked { get; set; } = false;
 
     public double FirstImageAspect { get; set; } = 1.0;
-    public Uri[] MediaPreviewsRemote { get; set; } = [];
-    public Uri[] MediasRemote { get; set; } = [];
+    public Uri[] ImagePreviewsRemote { get; set; } = [];
+    public Uri[] ImagesRemote { get; set; } = [];
     [ObservableProperty]
-    public partial Uri? Media0 { get; set; } = null;
+    public partial Uri? Image0 { get; set; } = null;
     [ObservableProperty]
-    public partial Uri? Media1 { get; set; } = null;
+    public partial Uri? Image1 { get; set; } = null;
     [ObservableProperty]
-    public partial Uri? Media2 { get; set; } = null;
+    public partial Uri? Image2 { get; set; } = null;
     [ObservableProperty]
-    public partial Uri? Media3 { get; set; } = null;
+    public partial Uri? Image3 { get; set; } = null;
 
     [RelayCommand]
     private void ToggleCollapsed() {
@@ -91,8 +91,8 @@ public sealed partial class Status: ObservableObject {
 
         CreatedAt = status.CreatedAt;
         Uri = status.Uri;
-        MediaPreviewsRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Preview is not null)).Select(m => m.Preview!)];
-        MediasRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Source is not null)).Select(m => m.Source!)];
+        ImagePreviewsRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Preview is not null)).Select(m => m.Preview!)];
+        ImagesRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Source is not null)).Select(m => m.Source!)];
         if (status.Medias.Count > 0) {
             // Avoid the preview from taking too much space
             FirstImageAspect = Math.Max(status.Medias[0].Aspect, 1);
@@ -116,20 +116,20 @@ public sealed partial class Status: ObservableObject {
         if (Poster.Avatar is null && Poster.AvatarRemote is not null) {
             Poster.Avatar = await Cache.Get(Poster.AvatarRemote);
         }
-        switch (MediaPreviewsRemote.Length) {
+        switch (ImagePreviewsRemote.Length) {
         case 0:
             break;
         case 1:
-            Media0 = await Cache.Get(MediaPreviewsRemote[0]);
+            Image0 = await Cache.Get(ImagePreviewsRemote[0]);
             break;
         case 2:
-            Media1 = await Cache.Get(MediaPreviewsRemote[1]);
+            Image1 = await Cache.Get(ImagePreviewsRemote[1]);
             goto case 1;
         case 3:
-            Media2 = await Cache.Get(MediaPreviewsRemote[2]);
+            Image2 = await Cache.Get(ImagePreviewsRemote[2]);
             goto case 2;
         default:
-            Media3 = await Cache.Get(MediaPreviewsRemote[3]);
+            Image3 = await Cache.Get(ImagePreviewsRemote[3]);
             goto case 3;
         }
     }

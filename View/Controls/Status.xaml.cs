@@ -13,16 +13,19 @@ internal sealed partial class Status: Grid {
             if (field != value) {
                 field = value;
                 if (DispatcherQueue.HasThreadAccess) {
-                    Bindings.Update();
-                     UpdateMediaSpans();
+                    Update();
                 } else {
-                    _ = DispatcherQueue.TryEnqueue(() => {
-                        Bindings.Update();
-                        UpdateMediaSpans();
-                    });
+                    _ = DispatcherQueue.TryEnqueue(Update);
                 }
             }
         }
+    }
+
+    private void Update() {
+        PostBodyRichTextBlockExpandedManually = false;
+        Bindings.Update();
+        PostBodyRichTextBlock.MaxHeight = double.PositiveInfinity;
+        UpdateMediaSpans();
     }
 
     public double AvatarSize { get; set; } = 40;
@@ -47,19 +50,19 @@ internal sealed partial class Status: Grid {
     int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
     bool LoadSpoilerTextRichTextBlock => ViewModel?.SpoilerText is not null;
-    string GetShowSpointerButtonContent(bool collapsed) => collapsed ? "Show more" : "Show less";
+    string GetShowSpointerButtonContent(bool collapsed) => collapsed ? Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowMore") : Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowLess");
 
     bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
-    bool LoadMediaAttachments => ViewModel?.MediaPreviewsRemote.Length > 0;
-    bool LoadMediaAttachment1 => ViewModel?.MediaPreviewsRemote.Length > 1;
-    bool LoadMediaAttachment2 => ViewModel?.MediaPreviewsRemote.Length > 2;
-    bool LoadMediaAttachment3 => ViewModel?.MediaPreviewsRemote.Length > 3;
-    bool LoadMediaAttachment3Overlay => ViewModel?.MediaPreviewsRemote.Length > 4;
-    AspectRatio MediaAttachmentsGridAspectRatio => ViewModel?.MediaPreviewsRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
-    Orientation MediaAttachmentsGridOrientation {
+    bool LoadImages => ViewModel?.ImagePreviewsRemote.Length > 0;
+    bool LoadImage1 => ViewModel?.ImagePreviewsRemote.Length > 1;
+    bool LoadImage2 => ViewModel?.ImagePreviewsRemote.Length > 2;
+    bool LoadImage3 => ViewModel?.ImagePreviewsRemote.Length > 3;
+    bool LoadImage3Overlay => ViewModel?.ImagePreviewsRemote.Length > 4;
+    AspectRatio ImagesGridAspectRatio => ViewModel?.ImagePreviewsRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
+    Orientation ImagesGridOrientation {
         get {
-            if (ViewModel?.MediaPreviewsRemote?.Length >= 4) {
+            if (ViewModel?.ImagePreviewsRemote?.Length >= 4) {
                 return Orientation.Horizontal;
             } else if (ViewModel?.FirstImageAspect > 1) {
                 return Orientation.Horizontal;
@@ -68,11 +71,11 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    private int MediaAttachment0ColumnSpan {
+    private int Image0ColumnSpan {
         get {
-            if (ViewModel?.MediaPreviewsRemote?.Length == 1) {
+            if (ViewModel?.ImagePreviewsRemote?.Length == 1) {
                 return 2;
-            } else if (ViewModel?.MediaPreviewsRemote?.Length >= 4) {
+            } else if (ViewModel?.ImagePreviewsRemote?.Length >= 4) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 1;
@@ -81,11 +84,11 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    private int MediaAttachment0RowSpan {
+    private int Image0RowSpan {
         get {
-            if (ViewModel?.MediaPreviewsRemote?.Length == 1) {
+            if (ViewModel?.ImagePreviewsRemote?.Length == 1) {
                 return 2;
-            } else if (ViewModel?.MediaPreviewsRemote?.Length >= 4) {
+            } else if (ViewModel?.ImagePreviewsRemote?.Length >= 4) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 2;
@@ -94,9 +97,9 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    private int MediaAttachment1ColumnSpan {
+    private int Image1ColumnSpan {
         get {
-            if (ViewModel?.MediaPreviewsRemote?.Length > 2) {
+            if (ViewModel?.ImagePreviewsRemote?.Length > 2) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 1;
@@ -105,9 +108,9 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    private int MediaAttachment1RowSpan {
+    private int Image1RowSpan {
         get {
-            if (ViewModel?.MediaPreviewsRemote?.Length > 2) {
+            if (ViewModel?.ImagePreviewsRemote?.Length > 2) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 2;
@@ -116,7 +119,7 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    string MediaAttachment3OverlayText => $"+ {ViewModel?.MediaPreviewsRemote.Length - 4}";
+    string Image3OverlayText => $"+ {ViewModel?.ImagePreviewsRemote.Length - 4}";
 
     private Brush ReactButtonBackground => Constants.Brush.Transparent;
     private Brush ReactButtonBorderBrush => Constants.Brush.Transparent;
@@ -128,14 +131,37 @@ internal sealed partial class Status: Grid {
     private IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
 
     private void UpdateMediaSpans() {
-        if (MediaAttachment0 is not null) {
-            Grid.SetColumnSpan(MediaAttachment0, MediaAttachment0ColumnSpan);
-            Grid.SetRowSpan(MediaAttachment0, MediaAttachment0RowSpan);
+        if (Image0 is not null) {
+            Grid.SetColumnSpan(Image0, Image0ColumnSpan);
+            Grid.SetRowSpan(Image0, Image0RowSpan);
         }
-        if (MediaAttachment1 is not null) {
-            Grid.SetColumnSpan(MediaAttachment1, MediaAttachment1ColumnSpan);
-            Grid.SetRowSpan(MediaAttachment1, MediaAttachment1RowSpan);
+        if (Image1 is not null) {
+            Grid.SetColumnSpan(Image1, Image1ColumnSpan);
+            Grid.SetRowSpan(Image1, Image1RowSpan);
         }
+    }
+
+    bool PostBodyRichTextBlockExpandedManually = false;
+    private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
+        if (PostBodyRichTextBlockExpandedManually) {
+            return;
+        }
+        if (PostBodyRichTextBlock.MaxHeight != double.PositiveInfinity) {
+            return;
+        }
+
+        if (PostBodyRichTextBlock.ActualHeight > 400) {
+            PostBodyRichTextBlock.MaxHeight = 360;
+            CollapsePostBodyButton.Visibility = Visibility.Visible;
+        } else {
+            CollapsePostBodyButton.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {
+        PostBodyRichTextBlockExpandedManually = true;
+        PostBodyRichTextBlock.MaxHeight = double.PositiveInfinity;
+        CollapsePostBodyButton.Visibility = Visibility.Collapsed;
     }
 
     public Status() {

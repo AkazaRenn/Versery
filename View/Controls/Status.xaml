@@ -117,14 +117,30 @@
         <Button
             x:Name="ShowSpoilerButton"
             x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
+            Height="24"
+            FontSize="12"
+            Padding="16,0,16,0"
             Content="{x:Bind GetShowSpointerButtonContent(ViewModel.Collapsed), Mode=OneWay}"
             Command="{x:Bind ViewModel.ToggleCollapsedCommand}"/>
 
         <RichTextBlock
+            x:Name="PostBodyRichTextBlock"
             Visibility="{x:Bind local:Converters.BoolToVisibilityReversed(ViewModel.Collapsed), Mode=OneWay}"
             TextWrapping="WrapWholeWords"
             IsTextSelectionEnabled="False"
-            extensions:RichTextBlock.Html="{x:Bind ViewModel.PostBody}"/>
+            extensions:RichTextBlock.Html="{x:Bind ViewModel.PostBody}"
+            SizeChanged="PostBodyRichTextBlock_SizeChanged"
+            />
+
+        <Button
+            x:Name="CollapsePostBodyButton"
+            x:Uid="Controls_Status_CollapsePostBodyButton"
+            HorizontalAlignment="Center"
+            Height="24"
+            FontSize="12"
+            Padding="16,0,16,0"
+            Visibility="Collapsed"
+            Click="CollapsePostBodyButton_Click"/>
 
         <controls:Status
             x:Name="QuoteStatus"
@@ -136,73 +152,73 @@
             Padding="8"/>
 
         <communitytoolkit:ConstrainedBox
-            x:Name="MediaAttachmentsGrid"
-            x:Load="{x:Bind LoadMediaAttachments}"
-            AspectRatio="{x:Bind MediaAttachmentsGridAspectRatio}"
+            x:Name="ImagesGrid"
+            x:Load="{x:Bind LoadImages}"
+            AspectRatio="{x:Bind ImagesGridAspectRatio}"
             CornerRadius="4">
             <communitytoolkit:UniformGrid
                 Columns="2"
                 ColumnSpacing="4"
                 Rows="2"
                 RowSpacing="4"
-                Orientation="{x:Bind MediaAttachmentsGridOrientation}">
+                Orientation="{x:Bind ImagesGridOrientation}">
                 <Rectangle
-                    x:Name="MediaAttachment0">
+                    x:Name="Image0">
                     <Rectangle.Fill>
                         <ImageBrush
                             Stretch="UniformToFill"
                             AlignmentX="Center"
                             AlignmentY="Center">
                             <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Media0, Mode=OneWay}"/>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Image0, Mode=OneWay}"/>
                             </ImageBrush.ImageSource>
                         </ImageBrush>
                     </Rectangle.Fill>
                 </Rectangle>
                 <Rectangle
-                    x:Name="MediaAttachment1"
-                    x:Load="{x:Bind LoadMediaAttachment1}">
+                    x:Name="Image1"
+                    x:Load="{x:Bind LoadImage1}">
                     <Rectangle.Fill>
                         <ImageBrush
                             Stretch="UniformToFill"
                             AlignmentX="Center"
                             AlignmentY="Center">
                             <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Media1, Mode=OneWay}"/>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Image1, Mode=OneWay}"/>
                             </ImageBrush.ImageSource>
                         </ImageBrush>
                     </Rectangle.Fill>
                 </Rectangle>
                 <Rectangle
-                    x:Name="MediaAttachment2"
-                    x:Load="{x:Bind LoadMediaAttachment2}">
+                    x:Name="Image2"
+                    x:Load="{x:Bind LoadImage2}">
                     <Rectangle.Fill>
                         <ImageBrush
                             Stretch="UniformToFill"
                             AlignmentX="Center"
                             AlignmentY="Center">
                             <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Media2, Mode=OneWay}"/>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Image2, Mode=OneWay}"/>
                             </ImageBrush.ImageSource>
                         </ImageBrush>
                     </Rectangle.Fill>
                 </Rectangle>
                 <Border
-                    x:Name="MediaAttachment3"
-                    x:Load="{x:Bind LoadMediaAttachment3}">
+                    x:Name="Image3"
+                    x:Load="{x:Bind LoadImage3}">
                     <Border.Background>
                         <ImageBrush
                             Stretch="UniformToFill"
                             AlignmentX="Center"
                             AlignmentY="Center">
                             <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Media3, Mode=OneWay}"/>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Image3, Mode=OneWay}"/>
                             </ImageBrush.ImageSource>
                         </ImageBrush>
                     </Border.Background>
                     <Border
-                        x:Name="MediaAttachment3Overlay"
-                        x:Load="{x:Bind LoadMediaAttachment3Overlay}"
+                        x:Name="Image3Overlay"
+                        x:Load="{x:Bind LoadImage3Overlay}"
                         Background="#80000000">
                         <TextBlock
                             Foreground="White"
@@ -210,7 +226,7 @@
                             HorizontalAlignment="Center"
                             FontSize="32"
                             FontWeight="ExtraBold"
-                            Text="{x:Bind MediaAttachment3OverlayText}">
+                            Text="{x:Bind Image3OverlayText}">
                         </TextBlock>
                     </Border>
                 </Border>
@@ -236,7 +252,8 @@
                 Background="{x:Bind ReactButtonBackground}"
                 BorderBrush="{x:Bind ReactButtonBorderBrush}"
                 BorderThickness="{x:Bind ReactButtonBorderThickness}"
-                Padding="{x:Bind ReactButtonPadding}">
+                Padding="{x:Bind ReactButtonPadding}"
+                IsEnabled="{x:Bind ViewModel.CanBeReblogged}">
                 <fluenticons:FluentIcon
                     Icon="{x:Bind GetReblogIcon(ViewModel.CanBeReblogged)}"
                     FontSize="{x:Bind ReactButtonFontSize}"/>
