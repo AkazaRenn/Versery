@@ -83,7 +83,7 @@
         Grid.Row="2"
         Height="40"
         HorizontalAlignment="Stretch"
-        Background="Transparent"
+        Background="#80FFFFFF"
         BorderThickness="0 0 0 0.5"
         BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
         CornerRadius="0"/>

@@ -3,6 +3,7 @@ using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace View.Controls;
 
@@ -153,8 +154,12 @@ internal sealed partial class Status: Grid {
         if (PostBodyRichTextBlock.ActualHeight > 400) {
             PostBodyRichTextBlock.MaxHeight = 360;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
+            OpacityMaskView.OpacityMask = new Rectangle() {
+                Fill = Constants.Brush.CollapsedStatusBrush,
+            };
         } else {
             CollapsePostBodyButton.Visibility = Visibility.Collapsed;
+            OpacityMaskView.OpacityMask = null;
         }
     }
 
@@ -162,6 +167,7 @@ internal sealed partial class Status: Grid {
         PostBodyRichTextBlockExpandedManually = true;
         PostBodyRichTextBlock.MaxHeight = double.PositiveInfinity;
         CollapsePostBodyButton.Visibility = Visibility.Collapsed;
+        OpacityMaskView.OpacityMask = null;
     }
 
     public Status() {
