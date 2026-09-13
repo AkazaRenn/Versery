@@ -54,6 +54,14 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial Uri? Image3 { get; set; } = null;
 
+    public Uri? CardUrl { get; set; } = null;
+    public string CardTitle { get; set; } = string.Empty;
+    public string CardDescription { get; set; } = string.Empty;
+    public string CardProviderName { get; set; } = string.Empty;
+    public Uri? CardImageRemote { get; set; } = null;
+    [ObservableProperty]
+    public partial Uri? CardImage { get; set; } = null;
+
     [RelayCommand]
     private void ToggleCollapsed() {
         Collapsed = !Collapsed;
@@ -91,11 +99,19 @@ public sealed partial class Status: ObservableObject {
 
         CreatedAt = status.CreatedAt;
         Uri = status.Uri;
-        ImagePreviewsRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Preview is not null)).Select(m => m.Preview!)];
-        ImagesRemote = [.. status.Medias.Where(m => (m.Type == MediaAttachmentType.Image) && (m.Source is not null)).Select(m => m.Source!)];
-        if (status.Medias.Count > 0) {
+        ImagePreviewsRemote = [.. status.Images.Where(m => m.Preview is not null).Select(m => m.Preview!)];
+        ImagesRemote = [.. status.Images.Where(m => m.Source is not null).Select(m => m.Source!)];
+        if (status.Images.Count > 0) {
             // Avoid the preview from taking too much space
-            FirstImageAspect = Math.Max(status.Medias[0].Aspect, 1);
+            FirstImageAspect = Math.Max(status.Images[0].Aspect, 1);
+        }
+
+        if (status.Card is not null) {
+           CardUrl = status.Card.Url;
+           CardTitle = status.Card.Title;
+           CardDescription = status.Card.Description;
+           CardProviderName = status.Card.ProviderName;
+           CardImageRemote = status.Card.Image;
         }
 
         sentinel = new(Id, cache);
@@ -115,6 +131,9 @@ public sealed partial class Status: ObservableObject {
     internal async Task DownloadMedias() {
         if (Poster.Avatar is null && Poster.AvatarRemote is not null) {
             Poster.Avatar = await Cache.Get(Poster.AvatarRemote);
+        }
+        if (CardImage is null && CardImageRemote is not null) {
+            CardImage = await Cache.Get(CardImageRemote);
         }
         switch (ImagePreviewsRemote.Length) {
         case 0:

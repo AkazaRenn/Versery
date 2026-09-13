@@ -25,7 +25,6 @@ internal sealed partial class Status: Grid {
     private void Update() {
         PostBodyRichTextBlockExpandedManually = false;
         Bindings.Update();
-        PostBodyRichTextBlock.MaxHeight = double.PositiveInfinity;
         UpdateMediaSpans();
     }
 

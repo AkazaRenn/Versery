@@ -24,7 +24,9 @@ public record Status() {
     public string? RepliedStatusId { get; set; } = null;
     public string? RepliedAccountId { get; set; } = null;
     public string? QuotedStatusId { get; set; } = null;
-    public List<Media> Medias { get; set; } = [];
+    public List<Media> Images { get; set; } = [];
+    public Media? Video { get; set; } = null;
+    public Card? Card { get; set; } = null;
 
     internal Status(Model.Server.Entities.Status serverStatus) : this() {
         Id = serverStatus.Id;
@@ -51,13 +53,36 @@ public record Status() {
             RepliedStatusId = serverStatus.InReplyToId;
             RepliedAccountId = serverStatus.InReplyToAccountId;
             QuotedStatusId = serverStatus.Quote?.QuotedStatus?.Id;
+
             foreach (var media in serverStatus.MediaAttachments) {
-                Medias.Add(new Media {
-                    Type = media.Type,
-                    Source = media.Url,
-                    Preview = media.PreviewUrl,
-                    Aspect = media.Meta?.Aspect ?? 1
-                });
+                switch (media.Type) {
+                case MediaAttachmentType.Image:
+                    Images.Add(new() {
+                        Source = media.Url,
+                        Preview = media.PreviewUrl,
+                        Aspect = media.Meta?.Aspect ?? 1
+                    });
+                    break;
+                case MediaAttachmentType.Video:
+                    if (Video is null) {
+                        Video = new() {
+                            Source = media.Url,
+                            Preview = media.PreviewUrl,
+                            Aspect = media.Meta?.Aspect ?? 1
+                        };
+                    }
+                    break;
+                }
+            }
+
+            if (serverStatus.Card is not null) {
+                Card = new() {
+                    Url = serverStatus.Card.Url,
+                    Title = serverStatus.Card.Title,
+                    Description = serverStatus.Card.Description,
+                    ProviderName = serverStatus.Card.ProviderName,
+                    Image = serverStatus.Card.Image
+                };
             }
         }
     }
@@ -70,8 +95,15 @@ public record Status() {
 }
 
 public record Media {
-    public MediaAttachmentType Type { get; set; } = MediaAttachmentType.Unknown;
     public Uri? Source { get; set; } = null;
     public Uri? Preview {  get; set; } = null;
     public double Aspect { get; set; } = 1;
+}
+
+public record Card {
+    public Uri? Url { get; set; } = null;
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string ProviderName { get; set; } = string.Empty;
+    public Uri? Image { get; set; } = null;
 }

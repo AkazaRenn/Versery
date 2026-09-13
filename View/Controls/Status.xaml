@@ -245,6 +245,60 @@
             </communitytoolkit:UniformGrid>
         </communitytoolkit:ConstrainedBox>
 
+        <Button
+            x:Name="CardButton"
+            Height="96"
+            HorizontalAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Padding="0">
+            <Grid
+                ColumnDefinitions="96, *"
+                CornerRadius="4">
+                <Rectangle
+                    Grid.Column="0">
+                    <Rectangle.Fill>
+                        <ImageBrush
+                            Stretch="UniformToFill"
+                            AlignmentX="Center"
+                            AlignmentY="Center">
+                            <ImageBrush.ImageSource>
+                                <BitmapImage UriSource="{x:Bind ViewModel.CardImage, Mode=OneWay}"/>
+                            </ImageBrush.ImageSource>
+                        </ImageBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Grid
+                    Grid.Column="1"
+                    MaxHeight="96"
+                    VerticalAlignment="Center"
+                    RowDefinitions="Auto, Auto, *"
+                    Padding="8,4,4,4"
+                    RowSpacing="4">
+                    <TextBlock
+                        Grid.Row="0"
+                        TextTrimming="WordEllipsis"
+                        TextWrapping="NoWrap"
+                        IsTextSelectionEnabled="False"
+                        Text="{x:Bind ViewModel.CardProviderName}"/>
+                    <TextBlock
+                        Grid.Row="1"
+                        FontWeight="SemiBold"
+                        TextTrimming="WordEllipsis"
+                        TextWrapping="NoWrap"
+                        IsTextSelectionEnabled="False"
+                        MaxLines="2"
+                        Text="{x:Bind ViewModel.CardTitle}"/>
+                    <TextBlock
+                        Grid.Row="2"
+                        TextTrimming="WordEllipsis"
+                        TextWrapping="WrapWholeWords"
+                        IsTextSelectionEnabled="False"
+                        Text="{x:Bind ViewModel.CardDescription}"/>
+                </Grid>
+            </Grid>
+        </Button>
+
         <Grid
             x:Name="ReactButtonsGrid"
             x:Load="{x:Bind ReactButtons}"
