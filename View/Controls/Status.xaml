@@ -280,12 +280,13 @@
                         TextTrimming="WordEllipsis"
                         TextWrapping="NoWrap"
                         IsTextSelectionEnabled="False"
+                        Foreground="{ThemeResource TextFillColorSecondary}"
                         Text="{x:Bind ViewModel.CardProviderName}"/>
                     <TextBlock
                         Grid.Row="1"
                         FontWeight="SemiBold"
                         TextTrimming="WordEllipsis"
-                        TextWrapping="NoWrap"
+                        TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
                         MaxLines="2"
                         Text="{x:Bind ViewModel.CardTitle}"/>
@@ -294,6 +295,7 @@
                         TextTrimming="WordEllipsis"
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
+                        Foreground="{ThemeResource TextFillColorTertiary}"
                         Text="{x:Bind ViewModel.CardDescription}"/>
                 </Grid>
             </Grid>
