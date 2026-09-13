@@ -54,15 +54,15 @@ internal sealed partial class Status: Grid {
 
     bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
-    bool LoadImages => ViewModel?.ImagePreviewsRemote.Length > 0;
-    bool LoadImage1 => ViewModel?.ImagePreviewsRemote.Length > 1;
-    bool LoadImage2 => ViewModel?.ImagePreviewsRemote.Length > 2;
-    bool LoadImage3 => ViewModel?.ImagePreviewsRemote.Length > 3;
-    bool LoadImage3Overlay => ViewModel?.ImagePreviewsRemote.Length > 4;
-    AspectRatio ImagesGridAspectRatio => ViewModel?.ImagePreviewsRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
+    bool LoadImages => ViewModel?.ImagesRemote.Length > 0;
+    bool LoadImage1 => ViewModel?.ImagesRemote.Length > 1;
+    bool LoadImage2 => ViewModel?.ImagesRemote.Length > 2;
+    bool LoadImage3 => ViewModel?.ImagesRemote.Length > 3;
+    bool LoadImage3Overlay => ViewModel?.ImagesRemote.Length > 4;
+    AspectRatio ImagesGridAspectRatio => ViewModel?.ImagesRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
     Orientation ImagesGridOrientation {
         get {
-            if (ViewModel?.ImagePreviewsRemote?.Length >= 4) {
+            if (ViewModel?.ImagesRemote.Length >= 4) {
                 return Orientation.Horizontal;
             } else if (ViewModel?.FirstImageAspect > 1) {
                 return Orientation.Horizontal;
@@ -73,9 +73,9 @@ internal sealed partial class Status: Grid {
     }
     private int Image0ColumnSpan {
         get {
-            if (ViewModel?.ImagePreviewsRemote?.Length == 1) {
+            if (ViewModel?.ImagesRemote.Length == 1) {
                 return 2;
-            } else if (ViewModel?.ImagePreviewsRemote?.Length >= 4) {
+            } else if (ViewModel?.ImagesRemote.Length >= 4) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 1;
@@ -86,9 +86,9 @@ internal sealed partial class Status: Grid {
     }
     private int Image0RowSpan {
         get {
-            if (ViewModel?.ImagePreviewsRemote?.Length == 1) {
+            if (ViewModel?.ImagesRemote.Length == 1) {
                 return 2;
-            } else if (ViewModel?.ImagePreviewsRemote?.Length >= 4) {
+            } else if (ViewModel?.ImagesRemote.Length >= 4) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 2;
@@ -99,7 +99,7 @@ internal sealed partial class Status: Grid {
     }
     private int Image1ColumnSpan {
         get {
-            if (ViewModel?.ImagePreviewsRemote?.Length > 2) {
+            if (ViewModel?.ImagesRemote.Length > 2) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 1;
@@ -110,7 +110,7 @@ internal sealed partial class Status: Grid {
     }
     private int Image1RowSpan {
         get {
-            if (ViewModel?.ImagePreviewsRemote?.Length > 2) {
+            if (ViewModel?.ImagesRemote.Length > 2) {
                 return 1;
             } else if (ViewModel?.FirstImageAspect <= 1) {
                 return 2;
@@ -119,7 +119,7 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    string Image3OverlayText => $"+ {ViewModel?.ImagePreviewsRemote.Length - 4}";
+    string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
 
     private Brush ReactButtonBackground => Constants.Brush.Transparent;
     private Brush ReactButtonBorderBrush => Constants.Brush.Transparent;

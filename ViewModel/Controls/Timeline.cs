@@ -55,9 +55,7 @@ public sealed partial class Timeline: ObservableObject {
 
     internal async Task DownloadMedias() {
         _ = Content.DownloadMedias();
-        if (Reblogger?.Avatar is null && Reblogger?.AvatarRemote is not null) {
-            Reblogger.Avatar = await Cache.Get(Reblogger.AvatarRemote);
-        }
+        _ = Reblogger?.DownloadAvatar();
     }
 
     internal static Timeline Create(Model.Entities.Timeline timeline) {

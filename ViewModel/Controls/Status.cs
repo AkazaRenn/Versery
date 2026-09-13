@@ -16,11 +16,11 @@ public sealed partial class Status: ObservableObject {
 
     public string Id { get; }
 
-    public Html PosterDisplayName { get; set; } = new() {
+    public Html PosterDisplayName { get; } = new() {
         IsPlainText = true,
     };
-    public Html? SpoilerText { get; set; } = null;
-    public Html PostBody { get; set; } = new() {
+    public Html? SpoilerText { get; } = null;
+    public Html PostBody { get; } = new() {
         IsPlainText = false,
     };
 
@@ -30,37 +30,23 @@ public sealed partial class Status: ObservableObject {
     public Status? Quote { get; } = null;
 
     [ObservableProperty]
-    public partial bool Collapsed { get; set; } = false;
+    public partial bool Collapsed { get; private set; } = false;
     [ObservableProperty]
-    public partial bool HasReplies { get; set; } = false;
+    public partial bool HasReplies { get; private set; } = false;
     [ObservableProperty]
-    public partial bool CanBeReblogged { get; set; } = true;
+    public partial bool CanBeReblogged { get; private set; } = true;
     [ObservableProperty]
-    public partial bool IsReblogged { get; set; } = false;
+    public partial bool IsReblogged { get; private set; } = false;
     [ObservableProperty]
-    public partial bool IsFavourited { get; set; } = false;
+    public partial bool IsFavourited { get; private set; } = false;
     [ObservableProperty]
-    public partial bool IsBookmarked { get; set; } = false;
+    public partial bool IsBookmarked { get; private set; } = false;
 
-    public double FirstImageAspect { get; set; } = 1.0;
-    public Uri[] ImagePreviewsRemote { get; set; } = [];
-    public Uri[] ImagesRemote { get; set; } = [];
-    [ObservableProperty]
-    public partial Uri? Image0 { get; set; } = null;
-    [ObservableProperty]
-    public partial Uri? Image1 { get; set; } = null;
-    [ObservableProperty]
-    public partial Uri? Image2 { get; set; } = null;
-    [ObservableProperty]
-    public partial Uri? Image3 { get; set; } = null;
+    public double FirstImageAspect { get; } = 1.0;
+    public Uri[] ImagesRemote { get; } = [];
+    public MediaPreview?[] ImagePreviews { get; } = new MediaPreview?[4];
 
-    public Uri? CardUrl { get; set; } = null;
-    public string CardTitle { get; set; } = string.Empty;
-    public string CardDescription { get; set; } = string.Empty;
-    public string CardProviderName { get; set; } = string.Empty;
-    public Uri? CardImageRemote { get; set; } = null;
-    [ObservableProperty]
-    public partial Uri? CardImage { get; set; } = null;
+    public Card_? Card { get; } = null;
 
     [RelayCommand]
     private void ToggleCollapsed() {
@@ -99,19 +85,20 @@ public sealed partial class Status: ObservableObject {
 
         CreatedAt = status.CreatedAt;
         Uri = status.Uri;
-        ImagePreviewsRemote = [.. status.Images.Where(m => m.Preview is not null).Select(m => m.Preview!)];
-        ImagesRemote = [.. status.Images.Where(m => m.Source is not null).Select(m => m.Source!)];
+
         if (status.Images.Count > 0) {
             // Avoid the preview from taking too much space
             FirstImageAspect = Math.Max(status.Images[0].Aspect, 1);
         }
 
+        var validImages = status.Images.Where(x => x.Source is not null).ToArray();
+        ImagesRemote = [.. validImages.Select(x => x.Source!)];
+        for (int i = 0; i < Math.Min(ImagePreviews.Length, validImages.Length); i++) {
+            ImagePreviews[i] = new(validImages[i]);
+        }
+
         if (status.Card is not null) {
-           CardUrl = status.Card.Url;
-           CardTitle = status.Card.Title;
-           CardDescription = status.Card.Description;
-           CardProviderName = status.Card.ProviderName;
-           CardImageRemote = status.Card.Image;
+            Card = new(status.Card);
         }
 
         sentinel = new(Id, cache);
@@ -129,27 +116,10 @@ public sealed partial class Status: ObservableObject {
     }
 
     internal async Task DownloadMedias() {
-        if (Poster.Avatar is null && Poster.AvatarRemote is not null) {
-            Poster.Avatar = await Cache.Get(Poster.AvatarRemote);
-        }
-        if (CardImage is null && CardImageRemote is not null) {
-            CardImage = await Cache.Get(CardImageRemote);
-        }
-        switch (ImagePreviewsRemote.Length) {
-        case 0:
-            break;
-        case 1:
-            Image0 = await Cache.Get(ImagePreviewsRemote[0]);
-            break;
-        case 2:
-            Image1 = await Cache.Get(ImagePreviewsRemote[1]);
-            goto case 1;
-        case 3:
-            Image2 = await Cache.Get(ImagePreviewsRemote[2]);
-            goto case 2;
-        default:
-            Image3 = await Cache.Get(ImagePreviewsRemote[3]);
-            goto case 3;
+        _ = Poster.DownloadAvatar();
+        _ = Card?.DownloadImage();
+        foreach (var imagePreview in ImagePreviews) {
+            _ = imagePreview?.Download();
         }
     }
 
@@ -161,23 +131,28 @@ public sealed partial class Status: ObservableObject {
 
         public string Id { get; }
         public string AccountName { get; }
-        public Uri? AvatarRemote { get; }
         public Dictionary<string, Uri> Emojis { get; }
         public Html DisplayName { get; } = new();
 
+        public Uri? AvatarRemote { get; }
         [ObservableProperty]
-        public partial Uri? Avatar { get; set; } = null;
+        public partial Uri? Avatar { get; private set; } = null;
+        internal async Task DownloadAvatar() {
+            if ((Avatar == null) && (AvatarRemote is not null)) {
+                Avatar = await Cache.Get(AvatarRemote);
+            }
+        }
 
         private Account(string id) {
             Id = id;
             var account = client.GetAccount(id)!;
             AccountName = account.AccountName;
-            AvatarRemote = account.Avatar;
             Emojis = account.Emojis;
             DisplayName.RawText = account.DisplayName;
             foreach (var emoji in account.Emojis) {
                 DisplayName.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
             }
+            AvatarRemote = account.Avatar;
 
             sentinel = new(Id, cache);
         }
@@ -190,6 +165,35 @@ public sealed partial class Status: ObservableObject {
                     cache[id] = new(obj);
                 }
                 return obj;
+            }
+        }
+    }
+
+    public sealed partial class MediaPreview(Model.Entities.Media media): ObservableObject {
+        public string BlurHash { get; internal set; } = media.BlurHash;
+
+        public Uri? Remote { get; internal set; } = media.Preview;
+        [ObservableProperty]
+        public partial Uri? Uri { get; private set; } = null;
+        internal async Task Download() {
+            if (Uri is null && Remote is not null) {
+                Uri = await Cache.Get(Remote);
+            }
+        }
+    }
+
+    public sealed partial class Card_(Model.Entities.Card card): ObservableObject {
+        public Uri? Url { get; } = card.Url;
+        public string Title { get; } = card.Title;
+        public string Description { get; } = card.Description;
+        public string ProviderName { get; } = card.ProviderName;
+
+        public Uri? ImageRemote { get; } = card.Image;
+        [ObservableProperty]
+        public partial Uri? Image { get; private set; } = null;
+        internal async Task DownloadImage() {
+            if (Image is null && ImageRemote is not null) {
+                Image = await Cache.Get(ImageRemote);
             }
         }
     }

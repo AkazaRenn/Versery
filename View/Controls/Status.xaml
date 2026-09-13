@@ -247,6 +247,7 @@
 
         <Button
             x:Name="CardButton"
+            x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.CardUrl)}"
             Height="96"
             HorizontalAlignment="Stretch"
             VerticalContentAlignment="Stretch"

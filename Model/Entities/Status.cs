@@ -55,22 +55,25 @@ public record Status() {
             QuotedStatusId = serverStatus.Quote?.QuotedStatus?.Id;
 
             foreach (var media in serverStatus.MediaAttachments) {
+                if (media.Url is null) {
+                    continue;
+                }
                 switch (media.Type) {
                 case MediaAttachmentType.Image:
                     Images.Add(new() {
                         Source = media.Url,
                         Preview = media.PreviewUrl,
-                        Aspect = media.Meta?.Aspect ?? 1
+                        Aspect = media.Meta?.Aspect ?? 1,
+                        BlurHash = media.Blurhash ?? string.Empty,
                     });
                     break;
                 case MediaAttachmentType.Video:
-                    if (Video is null) {
-                        Video = new() {
-                            Source = media.Url,
-                            Preview = media.PreviewUrl,
-                            Aspect = media.Meta?.Aspect ?? 1
-                        };
-                    }
+                    Video ??= new() {
+                        Source = media.Url,
+                        Preview = media.PreviewUrl,
+                        Aspect = media.Meta?.Aspect ?? 1,
+                        BlurHash = media.Blurhash ?? string.Empty,
+                    };
                     break;
                 }
             }
@@ -98,6 +101,7 @@ public record Media {
     public Uri? Source { get; set; } = null;
     public Uri? Preview {  get; set; } = null;
     public double Aspect { get; set; } = 1;
+    public string BlurHash { get; set; } = string.Empty;
 }
 
 public record Card {
