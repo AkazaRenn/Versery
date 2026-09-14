@@ -7,7 +7,6 @@
     xmlns:controls="using:View.Controls"
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
-    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
     ColumnDefinitions="48, *"
     ColumnSpacing="8"
     RowDefinitions="Auto, Auto, Auto">
@@ -74,7 +73,8 @@
         </Image>
     </Border>
 
-    <Border
+    <Button
+        x:Uid="Controls_Timeline_LoadMoreButton"
         x:Name="LoadMoreButton"
         x:Load="{x:Bind ViewModel.FollowedByGap}"
         Grid.Column="0"
@@ -82,15 +82,15 @@
         Grid.Row="2"
         Height="40"
         HorizontalAlignment="Stretch"
-        Background="#40000000"
+        Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
+        Background="Transparent"
+        FontWeight="Bold"
         BorderThickness="0 0 0 0.5"
-        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}">
-        <TextBlock 
-            x:Uid="Controls_Timeline_LoadMoreButtonText"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            FontWeight="Bold"
-            Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
-            />
-    </Border>
+        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+        CornerRadius="0">
+        <Button.Resources>
+            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource ControlFillColorDisabled}"/>
+            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
+        </Button.Resources>
+    </Button>
 </Grid>

@@ -15,18 +15,9 @@
         <MicaBackdrop/>
     </winex:WindowEx.SystemBackdrop>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition x:Name="UserProfileColumn" Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid RowDefinitions="Auto, *">
         <NavigationView
             x:Name="Navigation"
-            Grid.Column="0"
             Grid.Row="0"
             PaneDisplayMode="Top"
             IsBackButtonVisible="Visible"
@@ -43,14 +34,18 @@
                     x:Uid="MainWindow_NavigationViewItem_Notifications"
                     Tag="{x:Bind pages:SignIn.Type}"/>
             </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItemHeader
+                    x:Name="Navigation_RightPadding"/>
+            </NavigationView.FooterMenuItems>
         </NavigationView>
         <Border
-            Grid.Column="1"
+            x:Name="UserProfileImage"
             Grid.Row="0"
             Width="{x:Bind UserProfileButtonSize}"
             Height="{x:Bind UserProfileButtonSize}"
             CornerRadius="{x:Bind UserProfileButtonCornerRadius}"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Right"
             VerticalAlignment="Center">
             <Image extensions:Image.AutoPause="True">
                 <Image.Source>
@@ -60,7 +55,6 @@
         </Border>
         <controls:UserProfileButton
             x:Name="UserProfileButton"
-            Grid.Column="1"
             Grid.Row="0"
             Width="{x:Bind UserProfileButtonSize}"
             Height="{x:Bind UserProfileButtonSize}"
@@ -68,13 +62,12 @@
             Padding="0"
             BorderThickness="0"
             Background="Transparent"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Right"
             VerticalAlignment="Center"/>
         <Frame
             x:Name="Frame"
-            Grid.Column="0"
-            Grid.ColumnSpan="99"
             Grid.Row="1"
+            Background="{ThemeResource NavigationViewContentBackground }"
             Navigated="Frame_Navigated"/>
     </Grid>
 </winex:WindowEx>
