@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace View.Controls.Components;
 
-public sealed partial class ImagePreview: Grid, INotifyPropertyChanged {
+public sealed partial class MediaPreview: Grid, INotifyPropertyChanged {
     public Uri? UriSource {
         get => BitmapImage.UriSource;
         set => BitmapImage.UriSource = value;
@@ -39,7 +39,7 @@ public sealed partial class ImagePreview: Grid, INotifyPropertyChanged {
     } = string.Empty;
     static public bool LoadOverlay(string overlayText) => !String.IsNullOrEmpty(overlayText);
 
-    public ImagePreview() {
+    public MediaPreview() {
         InitializeComponent();
     }
     public event PropertyChangedEventHandler? PropertyChanged;

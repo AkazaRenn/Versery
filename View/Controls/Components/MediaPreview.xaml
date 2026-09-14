@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Grid
-    x:Class="View.Controls.Components.ImagePreview"
+    x:Class="View.Controls.Components.MediaPreview"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
-    Background="{x:Bind components:ImagePreview.GetBackground(BackgroundBlurHash)}">
+    Background="{x:Bind components:MediaPreview.GetBackground(BackgroundBlurHash)}">
     <Rectangle>
         <Rectangle.Fill>
             <ImageBrush
@@ -19,7 +19,7 @@
     </Rectangle>
     <Border
         x:Name="Overlay"
-        x:Load="{x:Bind components:ImagePreview.LoadOverlay(OverlayText)}"
+        x:Load="{x:Bind components:MediaPreview.LoadOverlay(OverlayText)}"
         Background="#80000000">
         <TextBlock
             Foreground="White"

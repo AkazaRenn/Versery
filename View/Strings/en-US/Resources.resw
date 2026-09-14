@@ -123,7 +123,7 @@
   <data name="Controls_Status_ShowSpoilerButton.Text_ShowMore" xml:space="preserve">
     <value>Show more</value>
   </data>
-  <data name="Controls_Timeline_LoadMoreButton.Content" xml:space="preserve">
+  <data name="Controls_Timeline_LoadMoreButtonText.Text" xml:space="preserve">
     <value>Load more</value>
   </data>
   <data name="Controls_Timeline_ReactorDisplayName_After.Text_Reblog" xml:space="preserve">
