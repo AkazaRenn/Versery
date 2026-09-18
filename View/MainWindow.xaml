@@ -39,35 +39,19 @@
                     x:Name="Navigation_RightPadding"/>
             </NavigationView.FooterMenuItems>
         </NavigationView>
-        <Border
-            x:Name="UserProfileImage"
-            Grid.Row="0"
-            Width="{x:Bind UserProfileButtonSize}"
-            Height="{x:Bind UserProfileButtonSize}"
-            CornerRadius="{x:Bind UserProfileButtonCornerRadius}"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center">
-            <Image extensions:Image.AutoPause="True">
-                <Image.Source>
-                    <BitmapImage UriSource="{x:Bind viewModel.Avatar, Mode=OneWay}"/>
-                </Image.Source>
-            </Image>
-        </Border>
         <controls:UserProfileButton
             x:Name="UserProfileButton"
             Grid.Row="0"
-            Width="{x:Bind UserProfileButtonSize}"
-            Height="{x:Bind UserProfileButtonSize}"
-            CornerRadius="{x:Bind UserProfileButtonCornerRadius}"
-            Padding="0"
-            BorderThickness="0"
-            Background="Transparent"
+            Width="40"
+            Height="40"
+            CornerRadius="20"
             HorizontalAlignment="Right"
-            VerticalAlignment="Center"/>
+            VerticalAlignment="Center"
+            AvatarUri="{x:Bind viewModel.Avatar, Mode=OneWay}"/>
         <Frame
             x:Name="Frame"
             Grid.Row="1"
-            Background="{ThemeResource NavigationViewContentBackground }"
+            Background="{ThemeResource NavigationViewContentBackground}"
             Navigated="Frame_Navigated"/>
     </Grid>
 </winex:WindowEx>

@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace View.Controls.Components;
 
-public sealed partial class RefreshListView: RefreshContainer {
+internal sealed partial class RefreshListView: RefreshContainer {
     private ScrollViewer? scrollViewer = null;
 
     public object ItemsSource { set => ListView.ItemsSource = value; }

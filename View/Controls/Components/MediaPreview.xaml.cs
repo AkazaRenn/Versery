@@ -1,24 +1,27 @@
 using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using System.ComponentModel;
 
 namespace View.Controls.Components;
 
-public sealed partial class MediaPreview: Grid, INotifyPropertyChanged {
+internal sealed partial class MediaPreview: UserControl {
     public Uri? UriSource {
         get => BitmapImage.UriSource;
         set => BitmapImage.UriSource = value;
     }
+    public bool HideImage {
+        get => ButtonWithImage.ImageVisibility == Visibility.Collapsed;
+        set => ButtonWithImage.ImageVisibility = value ? Visibility.Collapsed : Visibility.Visible;
+    }
 
-    public string BackgroundBlurHash { 
+    public string BackgroundBlurHash {
         get;
-        set { 
+        set {
             if (field != value) {
                 field = value;
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BackgroundBlurHash)));
             }
-        } 
+        }
     } = string.Empty;
     static public Brush GetBackground(string BackgroundBlurHash) {
         if (String.IsNullOrEmpty(BackgroundBlurHash)) {
@@ -28,19 +31,7 @@ public sealed partial class MediaPreview: Grid, INotifyPropertyChanged {
         }
     }
 
-    public string OverlayText { 
-        get; 
-        set {
-            if (field != value) {
-                field = value;
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OverlayText)));
-            }
-        }
-    } = string.Empty;
-    static public bool LoadOverlay(string overlayText) => !String.IsNullOrEmpty(overlayText);
-
     public MediaPreview() {
         InitializeComponent();
     }
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

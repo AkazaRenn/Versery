@@ -45,6 +45,12 @@ public sealed partial class Status: ObservableObject {
     public double FirstImageAspect { get; } = 1.0;
     public Uri[] ImagesRemote { get; } = [];
     public MediaPreview?[] ImagePreviews { get; } = new MediaPreview?[4];
+    [ObservableProperty]
+    public partial bool ImagePreviewsHidden { get; private set; } = false;
+    [RelayCommand]
+    private void ToggleImagePreviewsHidden() {
+        ImagePreviewsHidden = !ImagePreviewsHidden;
+    }
 
     public Card_? Card { get; } = null;
 
@@ -88,7 +94,7 @@ public sealed partial class Status: ObservableObject {
 
         if (status.Images.Count > 0) {
             // Avoid the preview from taking too much space
-            FirstImageAspect = Math.Max(status.Images[0].Aspect, 1);
+            FirstImageAspect = Math.Clamp(status.Images[0].Aspect, 0.5, 1.5);
         }
 
         var validImages = status.Images.Where(x => x.Source is not null).ToArray();
@@ -96,6 +102,7 @@ public sealed partial class Status: ObservableObject {
         for (int i = 0; i < Math.Min(ImagePreviews.Length, validImages.Length); i++) {
             ImagePreviews[i] = new(validImages[i]);
         }
+        ImagePreviewsHidden = status.Sensitive;
 
         if (status.Card is not null) {
             Card = new(status.Card);
@@ -170,7 +177,7 @@ public sealed partial class Status: ObservableObject {
     }
 
     public sealed partial class MediaPreview(Model.Entities.Media media): ObservableObject {
-        public string BlurHash { get; internal set; } = media.BlurHash;
+        public string BlurHash { get; internal set; } = media.BlurHash ?? String.Empty;
 
         public Uri? Remote { get; internal set; } = media.Preview;
         [ObservableProperty]

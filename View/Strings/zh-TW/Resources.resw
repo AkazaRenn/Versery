@@ -123,7 +123,7 @@
   <data name="Controls_Status_ShowSpoilerButton.Text_ShowMore" xml:space="preserve">
     <value>顯示更多</value>
   </data>
-  <data name="Controls_Timeline_LoadMoreButtonText.Text" xml:space="preserve">
+  <data name="Controls_Timeline_LoadMoreButton.Content" xml:space="preserve">
     <value>載入更多</value>
   </data>
   <data name="Controls_Timeline_ReactorDisplayName_After.Text_Reblog" xml:space="preserve">
@@ -156,5 +156,8 @@
   </data>
   <data name="Controls_Status_ShowSpoilerButton.Text_ShowLess" xml:space="preserve">
     <value>顯示更少</value>
+  </data>
+  <data name="Controls_Status_ShowMediaPreviewsButton.Content" xml:space="preserve">
+    <value>媒體被隱藏</value>
   </data>
 </root>

@@ -24,6 +24,7 @@ public record Status() {
     public string? RepliedStatusId { get; set; } = null;
     public string? RepliedAccountId { get; set; } = null;
     public string? QuotedStatusId { get; set; } = null;
+    public bool Sensitive { get; set; } = false;
     public List<Media> Images { get; set; } = [];
     public Media? Video { get; set; } = null;
     public Card? Card { get; set; } = null;
@@ -53,6 +54,7 @@ public record Status() {
             RepliedStatusId = serverStatus.InReplyToId;
             RepliedAccountId = serverStatus.InReplyToAccountId;
             QuotedStatusId = serverStatus.Quote?.QuotedStatus?.Id;
+            Sensitive = serverStatus.Sensitive;
 
             foreach (var media in serverStatus.MediaAttachments) {
                 if (media.Url is null) {
@@ -64,7 +66,8 @@ public record Status() {
                         Source = media.Url,
                         Preview = media.PreviewUrl,
                         Aspect = media.Meta?.Aspect ?? 1,
-                        BlurHash = media.Blurhash ?? string.Empty,
+                        BlurHash = media.Blurhash,
+                        Description = media.Description,
                     });
                     break;
                 case MediaAttachmentType.Video:
@@ -101,7 +104,8 @@ public record Media {
     public Uri? Source { get; set; } = null;
     public Uri? Preview {  get; set; } = null;
     public double Aspect { get; set; } = 1;
-    public string BlurHash { get; set; } = string.Empty;
+    public string? BlurHash { get; set; } = null;
+    public string? Description { get; set; } = null;
 }
 
 public record Card {

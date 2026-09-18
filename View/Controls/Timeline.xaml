@@ -80,17 +80,19 @@
         Grid.Column="0"
         Grid.ColumnSpan="99"
         Grid.Row="2"
-        Height="40"
+        Height="48"
         HorizontalAlignment="Stretch"
         Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
-        Background="Transparent"
+        Background="{x:Bind local:Brushes.TransparentBlackQuarter}"
         FontWeight="Bold"
         BorderThickness="0 0 0 0.5"
         BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
         CornerRadius="0">
         <Button.Resources>
-            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource ControlFillColorDisabled}"/>
-            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent"/>
+            <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="AccentTextFillColorSecondaryBrush"/>
+            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#30000000"/>
+            <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="AccentTextFillColorTertiaryBrush"/>
+            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#50000000"/>
         </Button.Resources>
     </Button>
 </Grid>

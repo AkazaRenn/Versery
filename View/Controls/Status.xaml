@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:View"
     xmlns:controls="using:View.Controls"
+    xmlns:components="using:View.Controls.Components"
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
     xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls">
@@ -40,37 +41,25 @@
         VerticalAlignment="Stretch"
         Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
 
-    <Grid
+    <components:ButtonWithImage
         Grid.Column="0"
         Grid.Row="0"
         Grid.RowSpan="2"
         Width="{x:Bind AvatarSize}"
         Height="{x:Bind AvatarSize}"
         CornerRadius="{x:Bind AvatarButtonCornerRadius}">
-        <Border
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch">
-            <Image extensions:Image.AutoPause="True">
-                <Image.Source>
-                    <BitmapImage
-                        x:Name="PosterAvatarBitmapImage"
-                        UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
-                </Image.Source>
-            </Image>
-        </Border>
-        <Button
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            BorderThickness="0"
-            Padding="0">
-        </Button>
-        <Grid.RenderTransform>
+        <components:ButtonWithImage.ImageSource>
+            <BitmapImage
+                x:Name="PosterAvatarButtonBitmapImage"
+                UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
+        </components:ButtonWithImage.ImageSource>
+        <components:ButtonWithImage.RenderTransform>
             <ScaleTransform
                 x:Name="AvatarScaleTransform"
                 CenterX="0"
                 CenterY="0"/>
-        </Grid.RenderTransform>
-    </Grid>
+        </components:ButtonWithImage.RenderTransform>
+    </components:ButtonWithImage>
 
     <RichTextBlock
         Grid.Column="2"
@@ -87,7 +76,7 @@
         Grid.Column="2"
         Grid.Row="1"
         FontSize="{x:Bind PosterAccountFontSize}"
-        Foreground="{ThemeResource TextFillColorSecondary}"
+        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
         VerticalAlignment="Center"
         TextTrimming="CharacterEllipsis"
         TextWrapping="NoWrap"
@@ -120,21 +109,11 @@
             Height="24"
             FontSize="12"
             Padding="16,0,16,0"
-            Content="{x:Bind GetShowSpointerButtonContent(ViewModel.Collapsed), Mode=OneWay}"
+            Content="{x:Bind controls:Status.GetShowSpointerButtonContent(ViewModel.Collapsed), Mode=OneWay}"
             Command="{x:Bind ViewModel.ToggleCollapsedCommand}"/>
 
         <communitytoolkit:OpacityMaskView
             x:Name="OpacityMaskView">
-            <communitytoolkit:OpacityMaskView.OpacityMask>
-                <Rectangle>
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0.8" EndPoint="0,1">
-                            <GradientStop Offset="0" Color="White"/>
-                            <GradientStop Offset="1" Color="Transparent"/>
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-            </communitytoolkit:OpacityMaskView.OpacityMask>
             <RichTextBlock
                 x:Name="PostBodyRichTextBlock"
                 Visibility="{x:Bind local:Converters.BoolToVisibilityReversed(ViewModel.Collapsed), Mode=OneWay}"
@@ -168,86 +147,73 @@
             x:Load="{x:Bind LoadImages}"
             AspectRatio="{x:Bind ImagesGridAspectRatio}"
             CornerRadius="4">
-            <communitytoolkit:UniformGrid
-                Columns="2"
-                ColumnSpacing="4"
-                Rows="2"
-                RowSpacing="4"
-                Orientation="{x:Bind ImagesGridOrientation}">
-                <Rectangle
-                    x:Name="Image0">
-                    <Rectangle.Fill>
-                        <ImageBrush
-                            Stretch="UniformToFill"
-                            AlignmentX="Center"
-                            AlignmentY="Center">
-                            <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Image0, Mode=OneWay}"/>
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <Rectangle
-                    x:Name="Image1"
-                    x:Load="{x:Bind LoadImage1}">
-                    <Rectangle.Fill>
-                        <ImageBrush
-                            Stretch="UniformToFill"
-                            AlignmentX="Center"
-                            AlignmentY="Center">
-                            <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Image1, Mode=OneWay}"/>
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <Rectangle
-                    x:Name="Image2"
-                    x:Load="{x:Bind LoadImage2}">
-                    <Rectangle.Fill>
-                        <ImageBrush
-                            Stretch="UniformToFill"
-                            AlignmentX="Center"
-                            AlignmentY="Center">
-                            <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Image2, Mode=OneWay}"/>
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <Border
-                    x:Name="Image3"
-                    x:Load="{x:Bind LoadImage3}">
-                    <Border.Background>
-                        <ImageBrush
-                            Stretch="UniformToFill"
-                            AlignmentX="Center"
-                            AlignmentY="Center">
-                            <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Image3, Mode=OneWay}"/>
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Border.Background>
-                    <Border
-                        x:Name="Image3Overlay"
-                        x:Load="{x:Bind LoadImage3Overlay}"
-                        Background="#80000000">
-                        <TextBlock
-                            Foreground="White"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            FontSize="32"
-                            FontWeight="ExtraBold"
-                            Text="{x:Bind Image3OverlayText}">
-                        </TextBlock>
-                    </Border>
-                </Border>
-            </communitytoolkit:UniformGrid>
+            <Grid>
+                <communitytoolkit:UniformGrid
+                    Columns="2"
+                    ColumnSpacing="4"
+                    Rows="2"
+                    RowSpacing="4"
+                    Orientation="{x:Bind ImagesGridOrientation}">
+                    <components:MediaPreview
+                        x:Name="Image0"
+                        UriSource="{x:Bind ViewModel.ImagePreviews[0].Uri, Mode=OneWay}"
+                        BackgroundBlurHash="ABC"
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"/>
+                    <components:MediaPreview
+                        x:Name="Image1"
+                        x:Load="{x:Bind LoadImage1}"
+                        UriSource="{x:Bind ViewModel.ImagePreviews[1].Uri, Mode=OneWay}"
+                        BackgroundBlurHash="ABC"
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"/>
+                    <components:MediaPreview
+                        x:Name="Image2"
+                        x:Load="{x:Bind LoadImage2}"
+                        UriSource="{x:Bind ViewModel.ImagePreviews[2].Uri, Mode=OneWay}"
+                        BackgroundBlurHash="ABC"
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"/>
+                    <components:MediaPreview
+                        x:Name="Image3"
+                        x:Load="{x:Bind LoadImage3}"
+                        UriSource="{x:Bind ViewModel.ImagePreviews[3].Uri, Mode=OneWay}"
+                        BackgroundBlurHash="ABC"
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}">
+                        <Border
+                            x:Name="Image3Overlay"
+                            x:Load="{x:Bind LoadImage3Overlay}"
+                            Background="{x:Bind local:Brushes.TransparentBlackHalf}">
+                                <TextBlock
+                                Foreground="White"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                FontSize="32"
+                                FontWeight="ExtraBold"
+                                Text="{x:Bind Image3OverlayText}">
+                            </TextBlock>
+                        </Border>
+                    </components:MediaPreview>
+                </communitytoolkit:UniformGrid>
+                <Button
+                    x:Name="ToggleMediaPreviewsButton"
+                    Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Margin="4,4,0,0"
+                    Padding="4"
+                    Background="{x:Bind local:Brushes.TransparentBlackHalf}">
+                    <fluenticons:FluentIcon
+                        Icon="{x:Bind controls:Status.GetToggleMediaPreviewsButtonIcon(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
+                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#60000000"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#A0000000"/>
+                    </Button.Resources>
+                </Button>
+            </Grid>
         </communitytoolkit:ConstrainedBox>
 
         <Button
             x:Name="CardButton"
-            x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.CardUrl)}"
+            x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Card)}"
             Height="96"
             HorizontalAlignment="Stretch"
             VerticalContentAlignment="Stretch"
@@ -264,7 +230,7 @@
                             AlignmentX="Center"
                             AlignmentY="Center">
                             <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.CardImage, Mode=OneWay}"/>
+                                <BitmapImage UriSource="{x:Bind ViewModel.Card.Image, Mode=OneWay}"/>
                             </ImageBrush.ImageSource>
                         </ImageBrush>
                     </Rectangle.Fill>
@@ -281,8 +247,8 @@
                         TextTrimming="WordEllipsis"
                         TextWrapping="NoWrap"
                         IsTextSelectionEnabled="False"
-                        Foreground="{ThemeResource TextFillColorSecondary}"
-                        Text="{x:Bind ViewModel.CardProviderName}"/>
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{x:Bind ViewModel.Card.ProviderName}"/>
                     <TextBlock
                         Grid.Row="1"
                         FontWeight="SemiBold"
@@ -290,14 +256,14 @@
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
                         MaxLines="2"
-                        Text="{x:Bind ViewModel.CardTitle}"/>
+                        Text="{x:Bind ViewModel.Card.Title}"/>
                     <TextBlock
                         Grid.Row="2"
                         TextTrimming="WordEllipsis"
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
-                        Foreground="{ThemeResource TextFillColorTertiary}"
-                        Text="{x:Bind ViewModel.CardDescription}"/>
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Text="{x:Bind ViewModel.Card.Description}"/>
                 </Grid>
             </Grid>
         </Button>
@@ -308,57 +274,57 @@
             ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
             <Button
                 Grid.Column="0"
-                Background="{x:Bind ReactButtonBackground}"
-                BorderBrush="{x:Bind ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind ReactButtonBorderThickness}"
-                Padding="{x:Bind ReactButtonPadding}">
+                Background="{x:Bind controls:Status.ReactButtonBackground}"
+                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
-                    Icon="{x:Bind GetReplyIcon(ViewModel.HasReplies)}"
-                    FontSize="{x:Bind ReactButtonFontSize}"/>
+                    Icon="{x:Bind controls:Status.GetReplyIcon(ViewModel.HasReplies)}"
+                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="2"
-                Background="{x:Bind ReactButtonBackground}"
-                BorderBrush="{x:Bind ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind ReactButtonBorderThickness}"
-                Padding="{x:Bind ReactButtonPadding}"
+                Background="{x:Bind controls:Status.ReactButtonBackground}"
+                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Padding="{x:Bind controls:Status.ReactButtonPadding}"
                 IsEnabled="{x:Bind ViewModel.CanBeReblogged}">
                 <fluenticons:FluentIcon
-                    Icon="{x:Bind GetReblogIcon(ViewModel.CanBeReblogged)}"
-                    FontSize="{x:Bind ReactButtonFontSize}"/>
+                    Icon="{x:Bind controls:Status.GetReblogIcon(ViewModel.CanBeReblogged)}"
+                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="4"
-                Background="{x:Bind ReactButtonBackground}"
-                BorderBrush="{x:Bind ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind ReactButtonBorderThickness}"
-                Padding="{x:Bind ReactButtonPadding}">
+                Background="{x:Bind controls:Status.ReactButtonBackground}"
+                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="Star"
-                    IconVariant="{x:Bind GetFavouriteIconVariant(ViewModel.IsFavourited)}"
-                    FontSize="{x:Bind ReactButtonFontSize}"/>
+                    IconVariant="{x:Bind controls:Status.GetFavouriteIconVariant(ViewModel.IsFavourited)}"
+                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="6"
-                Background="{x:Bind ReactButtonBackground}"
-                BorderBrush="{x:Bind ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind ReactButtonBorderThickness}"
-                Padding="{x:Bind ReactButtonPadding}">
+                Background="{x:Bind controls:Status.ReactButtonBackground}"
+                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     x:Name="ShareIcon"
                     Icon="Share"
-                    FontSize="{x:Bind ReactButtonFontSize}"/>
+                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
             </Button>
             <Button
                 Grid.Column="8"
-                Background="{x:Bind ReactButtonBackground}"
-                BorderBrush="{x:Bind ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind ReactButtonBorderThickness}"
-                Padding="{x:Bind ReactButtonPadding}">
+                Background="{x:Bind controls:Status.ReactButtonBackground}"
+                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
+                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="MoreHorizontal"
                     RenderTransformOrigin="0.5, 0.5"
-                    FontSize="{x:Bind ReactButtonFontSize}">
+                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}">
                     <fluenticons:FluentIcon.RenderTransform>
                         <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
                     </fluenticons:FluentIcon.RenderTransform>

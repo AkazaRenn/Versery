@@ -45,22 +45,22 @@ internal sealed partial class Status: Grid {
 
     private CornerRadius AvatarButtonCornerRadius => new(AvatarSize / 2);
 
-    double PosterAccountFontSize => DisplayNameFontSize * 0.85;
+    private double PosterAccountFontSize => DisplayNameFontSize * 0.85;
 
-    int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
+    private int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
-    bool LoadSpoilerTextRichTextBlock => ViewModel?.SpoilerText is not null;
-    string GetShowSpointerButtonContent(bool collapsed) => collapsed ? Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowMore") : Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowLess");
+    private bool LoadSpoilerTextRichTextBlock => ViewModel?.SpoilerText is not null;
+    internal static string GetShowSpointerButtonContent(bool collapsed) => collapsed ? Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowMore") : Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowLess");
 
-    bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
+    private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
-    bool LoadImages => ViewModel?.ImagesRemote.Length > 0;
-    bool LoadImage1 => ViewModel?.ImagesRemote.Length > 1;
-    bool LoadImage2 => ViewModel?.ImagesRemote.Length > 2;
-    bool LoadImage3 => ViewModel?.ImagesRemote.Length > 3;
-    bool LoadImage3Overlay => ViewModel?.ImagesRemote.Length > 4;
-    AspectRatio ImagesGridAspectRatio => ViewModel?.ImagesRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
-    Orientation ImagesGridOrientation {
+    private bool LoadImages => ViewModel?.ImagesRemote.Length > 0;
+    private bool LoadImage1 => ViewModel?.ImagesRemote.Length > 1;
+    private bool LoadImage2 => ViewModel?.ImagesRemote.Length > 2;
+    private bool LoadImage3 => ViewModel?.ImagesRemote.Length > 3;
+    private bool LoadImage3Overlay => ViewModel?.ImagesRemote.Length > 4;
+    private AspectRatio ImagesGridAspectRatio => ViewModel?.ImagesRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
+    private Orientation ImagesGridOrientation {
         get {
             if (ViewModel?.ImagesRemote.Length >= 4) {
                 return Orientation.Horizontal;
@@ -119,16 +119,17 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
+    private string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
+    internal static Icon GetToggleMediaPreviewsButtonIcon(bool imagePreviewHidden) => imagePreviewHidden ? Icon.EyeOff : Icon.Eye;
 
-    private Brush ReactButtonBackground => Constants.Brush.Transparent;
-    private Brush ReactButtonBorderBrush => Constants.Brush.Transparent;
-    private Thickness ReactButtonBorderThickness => new(0, 0, 0, 0);
-    private Thickness ReactButtonPadding => new(4, 4, 4, 4);
-    private double ReactButtonFontSize => 16;
-    private Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
-    private Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
-    private IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
+    internal static Brush ReactButtonBackground => Brushes.Transparent;
+    internal static Brush ReactButtonBorderBrush => Brushes.Transparent;
+    internal static Thickness ReactButtonBorderThickness => new(0, 0, 0, 0);
+    internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
+    internal static double ReactButtonFontSize => 16;
+    internal static Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
+    internal static Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
+    internal static IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
 
     private void UpdateMediaSpans() {
         if (Image0 is not null) {
@@ -141,7 +142,7 @@ internal sealed partial class Status: Grid {
         }
     }
 
-    bool PostBodyRichTextBlockExpandedManually = false;
+    private bool PostBodyRichTextBlockExpandedManually = false;
     private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
         if (PostBodyRichTextBlockExpandedManually) {
             return;
@@ -154,7 +155,7 @@ internal sealed partial class Status: Grid {
             PostBodyRichTextBlock.MaxHeight = 360;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
             OpacityMaskView.OpacityMask = new Rectangle() {
-                Fill = Constants.Brush.CollapsedStatusBrush,
+                Fill = Brushes.CollapsedStatusBrush,
             };
         } else {
             CollapsePostBodyButton.Visibility = Visibility.Collapsed;
