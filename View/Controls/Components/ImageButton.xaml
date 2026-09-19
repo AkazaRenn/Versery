@@ -17,12 +17,11 @@
                 AlignmentY="Center"/>
         </Rectangle.Fill>
     </Rectangle>
-    <components:TransparentButton
+    <Button
         x:Name="Button"
         VerticalAlignment="Stretch"
         HorizontalAlignment="Stretch"
-        BorderThickness="0"
         CornerRadius="0"
-        Padding="0">
-    </components:TransparentButton>
+        Padding="0"
+        Style="{StaticResource SubtleButtonStyle}"/>
 </Grid>
