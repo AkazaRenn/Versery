@@ -92,15 +92,14 @@ public sealed partial class Status: ObservableObject {
         CreatedAt = status.CreatedAt;
         Uri = status.Uri;
 
-        if (status.Images.Count > 0) {
-            // Avoid the preview from taking too much space
-            FirstImageAspect = Math.Clamp(status.Images[0].AspectRatio, 0.5, 1.5);
-        }
-
         var validImages = status.Images.Where(x => x.Source is not null).ToArray();
         ImagesRemote = [.. validImages.Select(x => x.Source!)];
         for (int i = 0; i < Math.Min(ImagePreviews.Length, validImages.Length); i++) {
             ImagePreviews[i] = new(validImages[i]);
+        }
+        if (ImagePreviews[0] is not null) {
+            // Avoid the preview from taking too much space
+            FirstImageAspect = Math.Clamp(ImagePreviews[0]!.AspectRatio, 0.5, 1.5);
         }
         ImagePreviewsHidden = status.Sensitive;
 
