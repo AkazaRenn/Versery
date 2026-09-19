@@ -94,7 +94,7 @@ public sealed partial class Status: ObservableObject {
 
         if (status.Images.Count > 0) {
             // Avoid the preview from taking too much space
-            FirstImageAspect = Math.Clamp(status.Images[0].Aspect, 0.5, 1.5);
+            FirstImageAspect = Math.Clamp(status.Images[0].AspectRatio, 0.5, 1.5);
         }
 
         var validImages = status.Images.Where(x => x.Source is not null).ToArray();
@@ -177,9 +177,10 @@ public sealed partial class Status: ObservableObject {
     }
 
     public sealed partial class MediaPreview(Model.Entities.Media media): ObservableObject {
-        public string BlurHash { get; internal set; } = media.BlurHash ?? String.Empty;
+        public double AspectRatio { get; } = media.AspectRatio;
+        public string BlurHash { get; } = media.BlurHash ?? String.Empty;
 
-        public Uri? Remote { get; internal set; } = media.Preview;
+        public Uri? Remote { get; } = media.Preview;
         [ObservableProperty]
         public partial Uri? Uri { get; private set; } = null;
         internal async Task Download() {

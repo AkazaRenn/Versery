@@ -7,7 +7,7 @@ using View.Interfaces;
 
 namespace View.Controls.Components;
 
-internal sealed partial class ButtonWithImage: Grid {
+internal sealed partial class ImageButton: Grid {
     private Window? window;
 
     public ImageSource? ImageSource {
@@ -23,7 +23,7 @@ internal sealed partial class ButtonWithImage: Grid {
         set => Button.Flyout = value;
     }
 
-    public ButtonWithImage() {
+    public ImageButton() {
         InitializeComponent();
     }
 

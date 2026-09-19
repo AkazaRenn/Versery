@@ -62,33 +62,16 @@ public record Status() {
                 }
                 switch (media.Type) {
                 case MediaAttachmentType.Image:
-                    Images.Add(new() {
-                        Source = media.Url,
-                        Preview = media.PreviewUrl,
-                        Aspect = media.Meta?.Aspect ?? 1,
-                        BlurHash = media.Blurhash,
-                        Description = media.Description,
-                    });
+                    Images.Add(new(media));
                     break;
                 case MediaAttachmentType.Video:
-                    Video ??= new() {
-                        Source = media.Url,
-                        Preview = media.PreviewUrl,
-                        Aspect = media.Meta?.Aspect ?? 1,
-                        BlurHash = media.Blurhash ?? string.Empty,
-                    };
+                    Video ??= new(media);
                     break;
                 }
             }
 
             if (serverStatus.Card is not null) {
-                Card = new() {
-                    Url = serverStatus.Card.Url,
-                    Title = serverStatus.Card.Title,
-                    Description = serverStatus.Card.Description,
-                    ProviderName = serverStatus.Card.ProviderName,
-                    Image = serverStatus.Card.Image
-                };
+                Card = new(serverStatus.Card);
             }
         }
     }
@@ -100,18 +83,34 @@ public record Status() {
     }
 }
 
-public record Media {
+public record Media() {
     public Uri? Source { get; set; } = null;
-    public Uri? Preview {  get; set; } = null;
-    public double Aspect { get; set; } = 1;
+    public Uri? Preview { get; set; } = null;
+    public double AspectRatio { get; set; } = 1;
     public string? BlurHash { get; set; } = null;
     public string? Description { get; set; } = null;
+
+    public Media(Server.Entities.MediaAttachment media) : this() {
+        Source = media.Url;
+        Preview = media.PreviewUrl;
+        AspectRatio = media.Meta?.Aspect ?? media.Meta?.Original?.Aspect ?? 1;
+        BlurHash = media.Blurhash;
+        Description = media.Description;
+    }
 }
 
-public record Card {
+public record Card() {
     public Uri? Url { get; set; } = null;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string ProviderName { get; set; } = string.Empty;
     public Uri? Image { get; set; } = null;
+
+    public Card(Server.Entities.PreviewCard card) : this() {
+        Url = card.Url;
+        Title = card.Title;
+        Description = card.Description;
+        ProviderName = card.ProviderName;
+        Image = card.Image;
+    }
 }

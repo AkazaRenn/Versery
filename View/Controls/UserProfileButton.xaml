@@ -5,8 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
     xmlns:fluenticons="using:FluentIcons.WinUI">
-    <components:ButtonWithImage x:Name="ButtonWithImage">
-        <components:ButtonWithImage.Flyout>
+    <components:ImageButton x:Name="ImageButton">
+        <components:ImageButton.Flyout>
             <MenuFlyout Placement="Bottom">
                 <MenuFlyoutItem Text="Settings">
                     <MenuFlyoutItem.Icon>
@@ -34,9 +34,9 @@
                     </MenuFlyoutItem>
                 </MenuFlyoutSubItem>
             </MenuFlyout>
-        </components:ButtonWithImage.Flyout>
-        <components:ButtonWithImage.ImageSource>
+        </components:ImageButton.Flyout>
+        <components:ImageButton.ImageSource>
             <BitmapImage x:Name="BitmapImage"/>
-        </components:ButtonWithImage.ImageSource>
-    </components:ButtonWithImage>
+        </components:ImageButton.ImageSource>
+    </components:ImageButton>
 </UserControl>

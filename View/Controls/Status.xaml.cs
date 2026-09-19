@@ -122,9 +122,6 @@ internal sealed partial class Status: Grid {
     private string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
     internal static Icon GetToggleMediaPreviewsButtonIcon(bool imagePreviewHidden) => imagePreviewHidden ? Icon.EyeOff : Icon.Eye;
 
-    internal static Brush ReactButtonBackground => Brushes.Transparent;
-    internal static Brush ReactButtonBorderBrush => Brushes.Transparent;
-    internal static Thickness ReactButtonBorderThickness => new(0, 0, 0, 0);
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
     internal static Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;

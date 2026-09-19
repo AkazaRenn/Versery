@@ -41,25 +41,25 @@
         VerticalAlignment="Stretch"
         Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
 
-    <components:ButtonWithImage
+    <components:ImageButton
         Grid.Column="0"
         Grid.Row="0"
         Grid.RowSpan="2"
         Width="{x:Bind AvatarSize}"
         Height="{x:Bind AvatarSize}"
         CornerRadius="{x:Bind AvatarButtonCornerRadius}">
-        <components:ButtonWithImage.ImageSource>
+        <components:ImageButton.ImageSource>
             <BitmapImage
                 x:Name="PosterAvatarButtonBitmapImage"
                 UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
-        </components:ButtonWithImage.ImageSource>
-        <components:ButtonWithImage.RenderTransform>
+        </components:ImageButton.ImageSource>
+        <components:ImageButton.RenderTransform>
             <ScaleTransform
                 x:Name="AvatarScaleTransform"
                 CenterX="0"
                 CenterY="0"/>
-        </components:ButtonWithImage.RenderTransform>
-    </components:ButtonWithImage>
+        </components:ImageButton.RenderTransform>
+    </components:ImageButton>
 
     <RichTextBlock
         Grid.Column="2"
@@ -157,26 +157,33 @@
                     <components:MediaPreview
                         x:Name="Image0"
                         UriSource="{x:Bind ViewModel.ImagePreviews[0].Uri, Mode=OneWay}"
-                        BackgroundBlurHash="ABC"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"/>
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        AspectRatio="{x:Bind ViewModel.ImagePreviews[0].AspectRatio}"
+                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[0].BlurHash}">
+                    </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image1"
                         x:Load="{x:Bind LoadImage1}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[1].Uri, Mode=OneWay}"
-                        BackgroundBlurHash="ABC"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"/>
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        AspectRatio="{x:Bind ViewModel.ImagePreviews[1].AspectRatio}"
+                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[1].BlurHash}">
+                    </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image2"
                         x:Load="{x:Bind LoadImage2}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[2].Uri, Mode=OneWay}"
-                        BackgroundBlurHash="ABC"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"/>
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        AspectRatio="{x:Bind ViewModel.ImagePreviews[2].AspectRatio}"
+                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[2].BlurHash}">
+                    </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image3"
                         x:Load="{x:Bind LoadImage3}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[3].Uri, Mode=OneWay}"
-                        BackgroundBlurHash="ABC"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}">
+                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        AspectRatio="{x:Bind ViewModel.ImagePreviews[3].AspectRatio}"
+                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[3].BlurHash}">
                         <Border
                             x:Name="Image3Overlay"
                             x:Load="{x:Bind LoadImage3Overlay}"
@@ -199,10 +206,11 @@
                     HorizontalAlignment="Left"
                     Margin="4,4,0,0"
                     Padding="4"
+                    Foreground="{x:Bind local:Brushes.White}"
                     Background="{x:Bind local:Brushes.TransparentBlackHalf}">
                     <fluenticons:FluentIcon
                         Icon="{x:Bind controls:Status.GetToggleMediaPreviewsButtonIcon(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
-                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
+                        FontSize="20"/>
                     <Button.Resources>
                         <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#60000000"/>
                         <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#A0000000"/>
@@ -274,9 +282,7 @@
             ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
             <Button
                 Grid.Column="0"
-                Background="{x:Bind controls:Status.ReactButtonBackground}"
-                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="{x:Bind controls:Status.GetReplyIcon(ViewModel.HasReplies)}"
@@ -284,9 +290,7 @@
             </Button>
             <Button
                 Grid.Column="2"
-                Background="{x:Bind controls:Status.ReactButtonBackground}"
-                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}"
                 IsEnabled="{x:Bind ViewModel.CanBeReblogged}">
                 <fluenticons:FluentIcon
@@ -295,9 +299,7 @@
             </Button>
             <Button
                 Grid.Column="4"
-                Background="{x:Bind controls:Status.ReactButtonBackground}"
-                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="Star"
@@ -306,9 +308,7 @@
             </Button>
             <Button
                 Grid.Column="6"
-                Background="{x:Bind controls:Status.ReactButtonBackground}"
-                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     x:Name="ShareIcon"
@@ -317,9 +317,7 @@
             </Button>
             <Button
                 Grid.Column="8"
-                Background="{x:Bind controls:Status.ReactButtonBackground}"
-                BorderBrush="{x:Bind controls:Status.ReactButtonBorderBrush}"
-                BorderThickness="{x:Bind controls:Status.ReactButtonBorderThickness}"
+                Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="MoreHorizontal"

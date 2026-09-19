@@ -11,8 +11,8 @@ internal sealed partial class UserProfileButton: UserControl {
         set => BitmapImage.UriSource = value;
     }
     new public CornerRadius CornerRadius {
-        get => ButtonWithImage.CornerRadius;
-        set => ButtonWithImage.CornerRadius = value;
+        get => ImageButton.CornerRadius;
+        set => ImageButton.CornerRadius = value;
     }
 
     public UserProfileButton() {
