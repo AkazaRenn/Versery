@@ -158,32 +158,28 @@
                         x:Name="Image0"
                         UriSource="{x:Bind ViewModel.ImagePreviews[0].Uri, Mode=OneWay}"
                         HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
-                        AspectRatio="{x:Bind ViewModel.ImagePreviews[0].AspectRatio}"
-                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[0].BlurHash}">
+                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[0])}">
                     </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image1"
                         x:Load="{x:Bind LoadImage1}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[1].Uri, Mode=OneWay}"
                         HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
-                        AspectRatio="{x:Bind ViewModel.ImagePreviews[1].AspectRatio}"
-                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[1].BlurHash}">
+                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[1])}">
                     </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image2"
                         x:Load="{x:Bind LoadImage2}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[2].Uri, Mode=OneWay}"
                         HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
-                        AspectRatio="{x:Bind ViewModel.ImagePreviews[2].AspectRatio}"
-                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[2].BlurHash}">
+                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[2])}">
                     </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image3"
                         x:Load="{x:Bind LoadImage3}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[3].Uri, Mode=OneWay}"
                         HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
-                        AspectRatio="{x:Bind ViewModel.ImagePreviews[3].AspectRatio}"
-                        BackgroundBlurHash="{x:Bind ViewModel.ImagePreviews[3].BlurHash}">
+                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[3])}">
                         <Border
                             x:Name="Image3Overlay"
                             x:Load="{x:Bind LoadImage3Overlay}"

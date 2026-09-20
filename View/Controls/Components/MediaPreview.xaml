@@ -6,7 +6,6 @@
     xmlns:components="using:View.Controls.Components">
     <components:ImageButton
         x:Name="ImageButton"
-        Loaded="ImageButton_Loaded"
         Background="{x:Bind components:MediaPreview.DefaultBackground}">
         <components:ImageButton.ImageSource>
             <BitmapImage 

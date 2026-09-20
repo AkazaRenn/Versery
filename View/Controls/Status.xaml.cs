@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using View.Controls.Components;
 
 namespace View.Controls;
 
@@ -71,6 +72,12 @@ internal sealed partial class Status: Grid {
             }
         }
     }
+    internal static MediaPreview.Blur? GetMediaPreviewBackgroundBlurHash(ViewModel.Controls.Status.MediaPreview? mediaPreview) {
+        if (mediaPreview is null) {
+            return null;
+        }
+        return new(mediaPreview.BlurHash, mediaPreview.AspectRatio);
+    }
     private int Image0ColumnSpan {
         get {
             if (ViewModel?.ImagesRemote.Length == 1) {
@@ -119,15 +126,6 @@ internal sealed partial class Status: Grid {
             }
         }
     }
-    private string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
-    internal static Icon GetToggleMediaPreviewsButtonIcon(bool imagePreviewHidden) => imagePreviewHidden ? Icon.EyeOff : Icon.Eye;
-
-    internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
-    internal static double ReactButtonFontSize => 16;
-    internal static Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
-    internal static Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
-    internal static IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
-
     private void UpdateMediaSpans() {
         if (Image0 is not null) {
             Grid.SetColumnSpan(Image0, Image0ColumnSpan);
@@ -138,6 +136,14 @@ internal sealed partial class Status: Grid {
             Grid.SetRowSpan(Image1, Image1RowSpan);
         }
     }
+    private string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
+    internal static Icon GetToggleMediaPreviewsButtonIcon(bool imagePreviewHidden) => imagePreviewHidden ? Icon.EyeOff : Icon.Eye;
+
+    internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
+    internal static double ReactButtonFontSize => 16;
+    internal static Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
+    internal static Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
+    internal static IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
 
     private bool PostBodyRichTextBlockExpandedManually = false;
     private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
