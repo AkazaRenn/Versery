@@ -9,67 +9,64 @@ internal static class DateTime {
     static readonly Type type = typeof(DateTime);
     static readonly ResourceLoader resourceLoader = new("resources.pri", $"{type.Namespace!.Split('.')[0]}/{type.Name}");
 
-    const long SecondInMillis = 1000;
-    const long MinuteInMillis = SecondInMillis * 60;
-    const long HourInMillis = MinuteInMillis * 60;
-    const long DayInMillis = HourInMillis * 24;
-    const long YearInMillis = DayInMillis * 365;
+    const double DaysPerYear = 365;
 
     extension(System.DateTime dateTime) {
         internal string ToRelativeStringShort() {
-            long span = (long)(System.DateTime.UtcNow - dateTime.ToUniversalTime()).TotalMilliseconds;
-            bool future = false;
-            if (Math.Abs(span) < SecondInMillis) {
+            TimeSpan span = System.DateTime.UtcNow - dateTime.ToUniversalTime();
+            if (span.Duration() < TimeSpan.FromSeconds(1)) {
                 return resourceLoader.GetString("Now");
-            } else if (span < 0) {
-                future = true;
-                span = -span;
             }
 
+            bool future = span < TimeSpan.Zero;
+            span = span.Duration();
+
             string key;
-            if (span < MinuteInMillis) {
-                span /= SecondInMillis;
+            uint value;
+            if (span.TotalMinutes < 1) {
+                value = (uint)span.TotalSeconds;
                 key = future ? "InSeconds" : "SecondsAgo";
-            } else if (span < HourInMillis) {
-                span /= MinuteInMillis;
+            } else if (span.TotalHours < 1) {
+                value = (uint)span.TotalMinutes;
                 key = future ? "InMinutes" : "MinutesAgo";
-            } else if (span < DayInMillis) {
-                span /= HourInMillis;
+            } else if (span.TotalDays < 1) {
+                value = (uint)span.TotalHours;
                 key = future ? "InHours" : "HoursAgo";
-            } else if (span < YearInMillis) {
-                span /= DayInMillis;
+            } else if (span.TotalDays < DaysPerYear) {
+                value = (uint)span.TotalDays;
                 key = future ? "InDays" : "DaysAgo";
             } else {
-                span /= YearInMillis;
+                value = (uint)(span.TotalDays / DaysPerYear);
                 key = future ? "InYears" : "YearsAgo";
             }
-            return string.Format(resourceLoader.GetString(key), span);
+            return string.Format(resourceLoader.GetString(key), value);
         }
     }
 
     extension(TimeSpan timeSpan) {
         internal string ToStringShort() {
-            long span = Math.Max((long)timeSpan.TotalMilliseconds, 0);
+            TimeSpan span = timeSpan < TimeSpan.Zero ? TimeSpan.Zero : timeSpan;
 
             string oneKey, otherKey;
-            if (span < MinuteInMillis) {
-                span /= SecondInMillis;
+            uint value;
+            if (span.TotalMinutes < 1) {
+                value = (uint)span.TotalSeconds;
                 oneKey = "DurationSecondOne";
                 otherKey = "DurationSecondOther";
-            } else if (span < HourInMillis) {
-                span /= MinuteInMillis;
+            } else if (span.TotalHours < 1) {
+                value = (uint)span.TotalMinutes;
                 oneKey = "DurationMinuteOne";
                 otherKey = "DurationMinuteOther";
-            } else if (span < DayInMillis) {
-                span /= HourInMillis;
+            } else if (span.TotalDays < 1) {
+                value = (uint)span.TotalHours;
                 oneKey = "DurationHourOne";
                 otherKey = "DurationHourOther";
             } else {
-                span /= DayInMillis;
+                value = (uint)span.TotalDays;
                 oneKey = "DurationDayOne";
                 otherKey = "DurationDayOther";
             }
-            return string.Format(resourceLoader.GetString(span == 1 ? oneKey : otherKey), span);
+            return string.Format(resourceLoader.GetString(value == 1 ? oneKey : otherKey), value);
         }
     }
 }
