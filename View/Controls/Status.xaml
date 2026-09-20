@@ -86,9 +86,13 @@
     <TextBlock
         Grid.Column="4"
         Grid.Row="0"
+        FontSize="{x:Bind PosterAccountFontSize}"
+        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
         VerticalAlignment="Center"
         HorizontalAlignment="Right"
-        Text="{x:Bind ViewModel.CreatedAt.ToShortDateString()}"/>
+        TextWrapping="NoWrap"
+        IsTextSelectionEnabled="False"
+        Text="{x:Bind controls:Status.GetStatusTimeString(ViewModel.CreatedAt)}"/>
 
     <StackPanel
         Grid.Column="{x:Bind ContentStackPanelGridColumn}"
@@ -281,7 +285,7 @@
                 Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
-                    Icon="{x:Bind controls:Status.GetReplyIcon(ViewModel.HasReplies)}"
+                    Icon="{x:Bind controls:Status.GetReplyIcon(ViewModel.IsReply)}"
                     FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
             </Button>
             <Button

@@ -16,9 +16,6 @@ public sealed partial class Status: ObservableObject {
 
     public string Id { get; }
 
-    public Html PosterDisplayName { get; } = new() {
-        IsPlainText = true,
-    };
     public Html? SpoilerText { get; } = null;
     public Html PostBody { get; } = new() {
         IsPlainText = false,
@@ -32,7 +29,7 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool Collapsed { get; private set; } = false;
     [ObservableProperty]
-    public partial bool HasReplies { get; private set; } = false;
+    public partial bool IsReply { get; private set; } = false;
     [ObservableProperty]
     public partial bool CanBeReblogged { get; private set; } = true;
     [ObservableProperty]
@@ -71,7 +68,7 @@ public sealed partial class Status: ObservableObject {
         }
 
         CanBeReblogged = status.Visibility < StatusVisibility.Private;
-        HasReplies = status.RepliesCount > 0;
+        IsReply = !String.IsNullOrWhiteSpace(status.RepliedStatusId);
         IsReblogged = status.Reblogged;
         IsFavourited = status.Favourited;
         IsBookmarked = status.Bookmarked;
@@ -152,7 +149,7 @@ public sealed partial class Status: ObservableObject {
         private Account(string id) {
             Id = id;
             var account = client.GetAccount(id)!;
-            AccountName = account.AccountName;
+            AccountName = $"@{account.AccountName}";
             Emojis = account.Emojis;
             DisplayName.RawText = account.DisplayName;
             foreach (var emoji in account.Emojis) {

@@ -41,7 +41,7 @@ internal sealed partial class ImageButton: Grid {
     }
 
     private void Window_Activated(object sender, WindowActivatedEventArgs args) {
-        if (ImageBrush.ImageSource is BitmapImage bitmapImage && bitmapImage.AutoPlay) {
+        if ((ImageBrush.ImageSource is BitmapImage bitmapImage) && bitmapImage.AutoPlay) {
             switch (args.WindowActivationState) {
             case WindowActivationState.Deactivated:
                 bitmapImage.Stop();

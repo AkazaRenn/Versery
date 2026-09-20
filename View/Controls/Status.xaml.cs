@@ -2,9 +2,9 @@ using CommunityToolkit.WinUI.Controls;
 using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using View.Controls.Components;
+using View.Strings;
 
 namespace View.Controls;
 
@@ -29,9 +29,9 @@ internal sealed partial class Status: Grid {
         UpdateMediaSpans();
     }
 
-    public double AvatarSize { get; set; } = 40;
+    public double AvatarSize { get; set; } = 36;
     public double AvatarScale { set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value; }
-    public double DisplayNameFontSize { get; set; } = 16;
+    public double DisplayNameFontSize { get; set; } = 14;
     public bool PostBodyLeftPadding { get; set; } = false;
     public bool ShowQuote { get; set; } = false;
     public bool ReactButtons { get; set; } = false;
@@ -48,10 +48,12 @@ internal sealed partial class Status: Grid {
 
     private double PosterAccountFontSize => DisplayNameFontSize * 0.85;
 
+    internal static string GetStatusTimeString(System.DateTime dateTime) => dateTime.ToRelativeStringShort();
+
     private int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
     private bool LoadSpoilerTextRichTextBlock => ViewModel?.SpoilerText is not null;
-    internal static string GetShowSpointerButtonContent(bool collapsed) => collapsed ? Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowMore") : Localization.L("Controls_Status_ShowSpoilerButton/Text_ShowLess");
+    internal static string GetShowSpointerButtonContent(bool collapsed) => collapsed ? Strings.Strings.L("Controls_Status_ShowSpoilerButton/Text_ShowMore") : Strings.Strings.L("Controls_Status_ShowSpoilerButton/Text_ShowLess");
 
     private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
@@ -141,7 +143,7 @@ internal sealed partial class Status: Grid {
 
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
-    internal static Icon GetReplyIcon(bool hasReplies) => hasReplies ? Icon.ArrowReplyAll : Icon.ArrowReply;
+    internal static Icon GetReplyIcon(bool isReply) => isReply ? Icon.ArrowReplyAll : Icon.ArrowReply;
     internal static Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
     internal static IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
 
