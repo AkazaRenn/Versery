@@ -23,6 +23,6 @@ internal sealed partial class Timeline: Grid {
     }
 
     private double PosterAvatarScale => ViewModel?.Reblogger is null ? 1 : 0.9;
-    private string ReactorDisplayNameBeforeText => ViewModel?.Reblogger is null ? string.Empty : Strings.Strings.L("Controls_Timeline_ReactorDisplayName_Before/Text_Reblog");
-    private string ReactorDisplayNameAfterText => ViewModel?.Reblogger is null ? string.Empty : Strings.Strings.L("Controls_Timeline_ReactorDisplayName_After/Text_Reblog");
+    private string ReactorDisplayNameBeforeText => ViewModel?.Reblogger is null ? string.Empty : Strings.Resources.L("Controls_Timeline_ReactorDisplayName_Before/Text_Reblog");
+    private string ReactorDisplayNameAfterText => ViewModel?.Reblogger is null ? string.Empty : Strings.Resources.L("Controls_Timeline_ReactorDisplayName_After/Text_Reblog");
 }
