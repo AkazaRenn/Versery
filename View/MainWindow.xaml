@@ -7,7 +7,7 @@
     xmlns:controls="using:View.Controls"
     xmlns:pages="using:View.Pages"
     xmlns:extensions="using:View.Extensions"
-    Title="MainWindow"
+    Title="Versery"
     MinWidth="300"
     MinHeight="400">
 
