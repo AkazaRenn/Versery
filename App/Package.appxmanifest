@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="Versery"
-    Publisher="CN=dev"
+    Name="AkazaRenn.Versery"
+    Publisher="CN=AkazaRenn"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="345d931a-3729-473a-84ca-15d727cfec0e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>App</DisplayName>
-    <PublisherDisplayName>dev</PublisherDisplayName>
+    <DisplayName>Versery</DisplayName>
+    <PublisherDisplayName>Akaza Renn</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -35,8 +35,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="App"
-        Description="App"
+        DisplayName="Versery"
+        Description="Versery"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">

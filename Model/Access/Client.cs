@@ -18,7 +18,7 @@ public sealed class Client {
             return;
         }
 
-        var token = Credentials.GetAccessToken(applicationStates.ActiveUser);
+        var token = Credentials.GetAccessToken(user);
         if (string.IsNullOrWhiteSpace(token)) {
             return;
         }
@@ -58,7 +58,7 @@ public sealed class Client {
 
     public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
-            throw new InvalidOperationException("Client is not signed in");
+            return [];
         }
 
         var serverStatuses = type switch {
@@ -73,7 +73,7 @@ public sealed class Client {
 
     public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null, uint count = Constants.StatusesCountPerLoad) {
         if (!SignedIn) {
-            throw new InvalidOperationException("Client is not signed in");
+            return [];
         }
         return database!.GetTimeline(count, afterId);
     }

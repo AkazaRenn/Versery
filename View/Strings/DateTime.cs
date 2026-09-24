@@ -9,7 +9,7 @@ internal static class DateTime {
     static readonly Type type = typeof(DateTime);
     static readonly ResourceLoader resourceLoader = new("resources.pri", $"{type.Namespace!.Split('.')[0]}/{type.Name}");
 
-    const double DaysPerYear = 365;
+    const uint DaysPerYear = 365;
 
     extension(System.DateTime dateTime) {
         internal string ToRelativeStringShort() {
@@ -47,26 +47,22 @@ internal static class DateTime {
         internal string ToStringShort() {
             TimeSpan span = timeSpan < TimeSpan.Zero ? TimeSpan.Zero : timeSpan;
 
-            string oneKey, otherKey;
+            string key;
             uint value;
             if (span.TotalMinutes < 1) {
                 value = (uint)span.TotalSeconds;
-                oneKey = "DurationSecondOne";
-                otherKey = "DurationSecondOther";
+                key = value == 1 ? "DurationSecondOne" : "DurationSecondOther";
             } else if (span.TotalHours < 1) {
                 value = (uint)span.TotalMinutes;
-                oneKey = "DurationMinuteOne";
-                otherKey = "DurationMinuteOther";
+                key = value == 1 ? "DurationMinuteOne" : "DurationMinuteOther";
             } else if (span.TotalDays < 1) {
                 value = (uint)span.TotalHours;
-                oneKey = "DurationHourOne";
-                otherKey = "DurationHourOther";
+                key = value == 1 ? "DurationHourOne" : "DurationHourOther";
             } else {
                 value = (uint)span.TotalDays;
-                oneKey = "DurationDayOne";
-                otherKey = "DurationDayOther";
+                key = value == 1 ? "DurationDayOne" : "DurationDayOther";
             }
-            return string.Format(resourceLoader.GetString(value == 1 ? oneKey : otherKey), value);
+            return string.Format(resourceLoader.GetString(key), value);
         }
     }
 }
