@@ -42,6 +42,10 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
     }
 
     private async Task LoadInitialTimelines() {
+        if (!client.SignedIn) {
+            return;
+        }
+
         var timelines = client.GetTimelineFromDatabase(count: 10);
         if (timelines.Length == 0) {
             timelines = await client.GetTimelineFromServer(TimelineType.Home);

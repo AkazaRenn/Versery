@@ -58,7 +58,7 @@ public sealed class Client {
 
     public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         if (!SignedIn) {
-            return [];
+            throw new InvalidOperationException("Client is not signed in");
         }
 
         var serverStatuses = type switch {
@@ -73,7 +73,7 @@ public sealed class Client {
 
     public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null, uint count = Constants.StatusesCountPerLoad) {
         if (!SignedIn) {
-            return [];
+            throw new InvalidOperationException("Client is not signed in");
         }
         return database!.GetTimeline(count, afterId);
     }
