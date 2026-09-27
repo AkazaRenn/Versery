@@ -12,8 +12,6 @@
     Publisher="CN=AkazaRenn"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="345d931a-3729-473a-84ca-15d727cfec0e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
-
   <Properties>
     <DisplayName>Versery</DisplayName>
     <PublisherDisplayName>Akaza Renn</PublisherDisplayName>
