@@ -8,7 +8,8 @@
     xmlns:components="using:View.Controls.Components"
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
-    xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls">
+    xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:numerics="using:System.Numerics">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="{x:Bind GridColumnWidth0}"/>
         <ColumnDefinition Width="8"/>
@@ -100,21 +101,34 @@
         Grid.Row="3"
         Spacing="8">
 
-        <RichTextBlock
-            x:Name="SpoilerTextRichTextBlock"
-            x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
-            TextWrapping="WrapWholeWords"
-            IsTextSelectionEnabled="False"
-            extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"/>
-
-        <Button
-            x:Name="ShowSpoilerButton"
-            x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
-            Height="24"
-            FontSize="12"
-            Padding="16,0,16,0"
-            Content="{x:Bind controls:Status.GetShowSpointerButtonContent(ViewModel.Collapsed), Mode=OneWay}"
-            Command="{x:Bind ViewModel.ToggleCollapsedCommand}"/>
+        <Grid
+            ColumnDefinitions="Auto, *, Auto"
+            ColumnSpacing="4">
+            <RichTextBlock
+                x:Name="SpoilerTextRichTextBlock"
+                x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
+                Grid.Column="0"
+                TextWrapping="WrapWholeWords"
+                IsTextSelectionEnabled="False"
+                extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"/>
+            <Button
+                x:Name="ShowSpoilerButton"
+                x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
+                Grid.Column="2"
+                FontSize="12"
+                Padding="8, 0, 8, 0"
+                Command="{x:Bind ViewModel.ToggleCollapsedCommand}">
+                <fluenticons:FluentIcon 
+                    x:Name="ShowSpoilerButtonIcon"
+                    Icon="ChevronDown"
+                    SizeChanged="ShowSpoilerButtonIcon_SizeChanged"
+                    Scale="{x:Bind controls:Status.GetShowSpoilerButtonScale(ViewModel.Collapsed), Mode=OneWay}">
+                    <fluenticons:FluentIcon.ScaleTransition>
+                        <Vector3Transition/>
+                    </fluenticons:FluentIcon.ScaleTransition>
+                </fluenticons:FluentIcon>
+            </Button>
+        </Grid>
 
         <communitytoolkit:OpacityMaskView
             x:Name="OpacityMaskView">

@@ -19,11 +19,8 @@
         Margin="0,4,0,-4"
         FontSize="12"
         Foreground="{ThemeResource TextFillColorTertiary}"
-        IsTextSelectionEnabled="False">
-        <Paragraph>
-            <Run Text="{x:Bind ReactorDisplayNameBeforeText}"/><Span extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName}"/><Run Text="{x:Bind ReactorDisplayNameAfterText}"/>
-        </Paragraph>
-    </RichTextBlock>
+        IsTextSelectionEnabled="False"
+        extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName}"/>
 
     <fluenticons:FluentIcon
         x:Name="ReactorIcon"

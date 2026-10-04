@@ -1,3 +1,6 @@
 [submodule "Model/Server/Documentations"]
 	path = Model/Server/Documentations
 	url = https://github.com/mastodon/documentation.git
+[submodule "Dependency/mastodon-openapi"]
+	path = Dependency/mastodon-openapi
+	url = https://github.com/abraham/mastodon-openapi.git

@@ -3,6 +3,7 @@ using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Shapes;
+using System.Numerics;
 using View.Controls.Components;
 using View.Strings;
 
@@ -53,7 +54,11 @@ internal sealed partial class Status: Grid {
     private int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
     private bool LoadSpoilerTextRichTextBlock => ViewModel?.SpoilerText is not null;
-    internal static string GetShowSpointerButtonContent(bool collapsed) => collapsed ? Strings.Resources.L("Controls_Status_ShowSpoilerButton/Text_ShowMore") : Strings.Resources.L("Controls_Status_ShowSpoilerButton/Text_ShowLess");
+
+    private void ShowSpoilerButtonIcon_SizeChanged(object sender, SizeChangedEventArgs e) {
+        ShowSpoilerButtonIcon.CenterPoint = new Vector3((float)ShowSpoilerButtonIcon.ActualWidth / 2, (float)ShowSpoilerButtonIcon.ActualHeight / 2, 0);
+    }
+    internal static Vector3 GetShowSpoilerButtonScale(bool collapsed) => collapsed ? new(1, 1, 1) : new(1, -1, 1);
 
     private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
