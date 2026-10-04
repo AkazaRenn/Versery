@@ -27,7 +27,7 @@ public sealed partial class Status: ObservableObject {
     public Status? Quote { get; } = null;
 
     [ObservableProperty]
-    public partial bool Collapsed { get; private set; } = false;
+    public partial bool Collapsed { get; set; } = false;
     [ObservableProperty]
     public partial bool IsReply { get; private set; } = false;
     [ObservableProperty]
@@ -50,11 +50,6 @@ public sealed partial class Status: ObservableObject {
     }
 
     public Card_? Card { get; } = null;
-
-    [RelayCommand]
-    private void ToggleCollapsed() {
-        Collapsed = !Collapsed;
-    }
 
     private Status(string id) {
         Id = id;

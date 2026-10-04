@@ -2,6 +2,7 @@ using CommunityToolkit.WinUI.Controls;
 using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using System.Numerics;
 using View.Controls.Components;
@@ -53,12 +54,84 @@ internal sealed partial class Status: Grid {
 
     private int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
-    private bool LoadSpoilerTextRichTextBlock => ViewModel?.SpoilerText is not null;
+    private bool LoadSpoilerTextGrid => ViewModel?.SpoilerText is not null;
 
     private void ShowSpoilerButtonIcon_SizeChanged(object sender, SizeChangedEventArgs e) {
         ShowSpoilerButtonIcon.CenterPoint = new Vector3((float)ShowSpoilerButtonIcon.ActualWidth / 2, (float)ShowSpoilerButtonIcon.ActualHeight / 2, 0);
     }
-    internal static Vector3 GetShowSpoilerButtonScale(bool collapsed) => collapsed ? new(1, 1, 1) : new(1, -1, 1);
+    internal static Vector3 GetShowSpoilerButtonIconScale(bool collapsed) => collapsed ? new(1, 1, 1) : new(1, -1, 1);
+    private void ShowSpoilerButton_Click(object sender, RoutedEventArgs e) {
+        if (ViewModel?.Collapsed is true) {
+            ViewModel?.Collapsed = false;
+            if (ShouldCollapsePostBodyRichTextBlock &&
+                (!PostBodyRichTextBlockExpandedManually)) {
+                AnimatePostBodyGridHeight(PostBodyGridCollapsedHeight);
+            } else {
+                AnimatePostBodyGridHeight(PostBodyRichTextBlock.ActualHeight);
+            }
+        } else {
+            ViewModel?.Collapsed = true;
+            AnimatePostBodyGridHeight(0);
+        }
+    }
+
+    internal static double GetPostBodyGridInitialHeight(bool collapsed) => collapsed ? 0 : double.NaN;
+    private bool PostBodyRichTextBlockExpandedManually = false;
+    private bool ShouldCollapsePostBodyRichTextBlock => PostBodyRichTextBlock.ActualHeight > 500;
+    private static readonly double PostBodyGridCollapsedHeight = 360;
+    private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
+        if (PostBodyRichTextBlockExpandedManually) {
+            if (PostBodyGrid.Height > 0) {
+                PostBodyGrid.Height = double.NaN;
+            }
+            return;
+        }
+
+        var transition = OpacityMaskViewMask.OpacityTransition;
+        OpacityMaskViewMask.OpacityTransition = null;
+
+        if (ShouldCollapsePostBodyRichTextBlock) {
+            if (double.IsNaN(PostBodyGrid.Height) || (PostBodyGrid.Height > 0)) {
+                PostBodyGrid.Height = PostBodyGridCollapsedHeight;
+            }
+            CollapsePostBodyButton.Visibility = Visibility.Visible;
+            OpacityMaskViewMask.Opacity = 0;
+        } else {
+            if (PostBodyGrid.Height > 0) {
+                PostBodyGrid.Height = double.NaN;
+            }
+            CollapsePostBodyButton.Visibility = Visibility.Collapsed;
+            OpacityMaskViewMask.Opacity = 1;
+        }
+
+        OpacityMaskViewMask.OpacityTransition = transition;
+    }
+    private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {
+        PostBodyRichTextBlockExpandedManually = true;
+        CollapsePostBodyButton.Visibility = Visibility.Collapsed;
+        OpacityMaskViewMask.Opacity = 1;
+        AnimatePostBodyGridHeight(PostBodyRichTextBlock.ActualHeight);
+    }
+    private readonly Storyboard PostBodyGridHeightStoryboard = new();
+    private readonly DoubleAnimation PostBodyGridHeightStoryboardAnimation = new() {
+        Duration = View.Transitions.Vector3Transition.Duration,
+        EnableDependentAnimation = true,
+        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut },
+    };
+    private void PostBodyGrid_Loaded(object sender, RoutedEventArgs e) {
+        PostBodyGridHeightStoryboard.Children.Add(PostBodyGridHeightStoryboardAnimation);
+        Storyboard.SetTarget(PostBodyGridHeightStoryboardAnimation, PostBodyGrid);
+        Storyboard.SetTargetProperty(PostBodyGridHeightStoryboardAnimation, "Height");
+    }
+    private void AnimatePostBodyGridHeight(double targetHeight) {
+        double currentHeight = PostBodyGrid.ActualHeight;
+        PostBodyGridHeightStoryboard.Stop();
+        PostBodyGrid.Height = currentHeight;
+
+        PostBodyGridHeightStoryboardAnimation.From = currentHeight;
+        PostBodyGridHeightStoryboardAnimation.To = targetHeight;
+        PostBodyGridHeightStoryboard.Begin();
+    }
 
     private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
@@ -151,34 +224,6 @@ internal sealed partial class Status: Grid {
     internal static Icon GetReplyIcon(bool isReply) => isReply ? Icon.ArrowReplyAll : Icon.ArrowReply;
     internal static Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
     internal static IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
-
-    private bool PostBodyRichTextBlockExpandedManually = false;
-    private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
-        if (PostBodyRichTextBlockExpandedManually) {
-            return;
-        }
-        if (PostBodyRichTextBlock.MaxHeight != double.PositiveInfinity) {
-            return;
-        }
-
-        if (PostBodyRichTextBlock.ActualHeight > 400) {
-            PostBodyRichTextBlock.MaxHeight = 360;
-            CollapsePostBodyButton.Visibility = Visibility.Visible;
-            OpacityMaskView.OpacityMask = new Rectangle() {
-                Fill = Brushes.CollapsedStatusBrush,
-            };
-        } else {
-            CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-            OpacityMaskView.OpacityMask = null;
-        }
-    }
-
-    private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {
-        PostBodyRichTextBlockExpandedManually = true;
-        PostBodyRichTextBlock.MaxHeight = double.PositiveInfinity;
-        CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-        OpacityMaskView.OpacityMask = null;
-    }
 
     public Status() {
         InitializeComponent();

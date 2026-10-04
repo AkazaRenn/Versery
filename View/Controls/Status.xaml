@@ -8,7 +8,7 @@
     xmlns:components="using:View.Controls.Components"
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
-    xmlns:communitytoolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls"
     xmlns:numerics="using:System.Numerics">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="{x:Bind GridColumnWidth0}"/>
@@ -102,58 +102,69 @@
         Spacing="8">
 
         <Grid
+            x:Name="SpoilerTextGrid"
+            x:Load="{x:Bind LoadSpoilerTextGrid}"
             ColumnDefinitions="Auto, *, Auto"
             ColumnSpacing="4">
             <RichTextBlock
-                x:Name="SpoilerTextRichTextBlock"
-                x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 TextWrapping="WrapWholeWords"
                 IsTextSelectionEnabled="False"
                 extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"/>
             <Button
-                x:Name="ShowSpoilerButton"
-                x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
                 Grid.Column="2"
                 VerticalAlignment="Center"
                 FontSize="12"
                 Padding="8, 0, 8, 0"
-                Command="{x:Bind ViewModel.ToggleCollapsedCommand}">
-                <fluenticons:FluentIcon 
+                Click="ShowSpoilerButton_Click">
+                <fluenticons:FluentIcon
                     x:Name="ShowSpoilerButtonIcon"
                     Icon="ChevronDown"
                     SizeChanged="ShowSpoilerButtonIcon_SizeChanged"
-                    Scale="{x:Bind controls:Status.GetShowSpoilerButtonScale(ViewModel.Collapsed), Mode=OneWay}">
-                    <!-- Comment out until body can be animated too
-                    <fluenticons:FluentIcon.ScaleTransition>
-                        <Vector3Transition/>
-                    </fluenticons:FluentIcon.ScaleTransition>
-                    -->
+                    Scale="{x:Bind controls:Status.GetShowSpoilerButtonIconScale(ViewModel.Collapsed), Mode=OneWay}"
+                    ScaleTransition="{x:Bind local:Transitions.Vector3Transition}">
                 </fluenticons:FluentIcon>
             </Button>
         </Grid>
 
-        <communitytoolkit:OpacityMaskView
-            x:Name="OpacityMaskView">
-            <RichTextBlock
-                x:Name="PostBodyRichTextBlock"
-                Visibility="{x:Bind local:Converters.BoolToVisibilityReversed(ViewModel.Collapsed), Mode=OneWay}"
-                TextWrapping="WrapWholeWords"
-                IsTextSelectionEnabled="False"
-                extensions:RichTextBlock.Html="{x:Bind ViewModel.PostBody}"
-                SizeChanged="PostBodyRichTextBlock_SizeChanged"/>
-        </communitytoolkit:OpacityMaskView>
-
-        <Button
-            x:Name="CollapsePostBodyButton"
-            x:Uid="Controls_Status_CollapsePostBodyButton"
-            HorizontalAlignment="Center"
-            Height="24"
-            FontSize="12"
-            Padding="16,0,16,0"
-            Visibility="Collapsed"
-            Click="CollapsePostBodyButton_Click"/>
+        <Grid
+            x:Name="PostBodyGrid"
+            Loaded="PostBodyGrid_Loaded"
+            Height="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
+            <ctcontrols:OpacityMaskView >
+                <ctcontrols:OpacityMaskView.OpacityMask>
+                    <Border Background="{x:Bind local:Brushes.CollapsedStatusBrush}">
+                        <Rectangle
+                            x:Name="OpacityMaskViewMask"
+                            Fill="{x:Bind local:Brushes.White}"
+                            Opacity="1"
+                            OpacityTransition="{x:Bind local:Transitions.ScalarTransition}">
+                        </Rectangle>
+                    </Border>
+                </ctcontrols:OpacityMaskView.OpacityMask>
+                <ScrollView
+                    VerticalScrollMode="Disabled"
+                    HorizontalScrollMode="Disabled">
+                    <RichTextBlock
+                        x:Name="PostBodyRichTextBlock"
+                        TextWrapping="WrapWholeWords"
+                        IsTextSelectionEnabled="False"
+                        extensions:RichTextBlock.Html="{x:Bind ViewModel.PostBody}"
+                        SizeChanged="PostBodyRichTextBlock_SizeChanged"/>
+                </ScrollView>
+            </ctcontrols:OpacityMaskView>
+            <Button
+                x:Name="CollapsePostBodyButton"
+                x:Uid="Controls_Status_CollapsePostBodyButton"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Height="24"
+                FontSize="12"
+                Padding="16,0,16,0"
+                Visibility="Collapsed"
+                Click="CollapsePostBodyButton_Click"/>
+        </Grid>
 
         <controls:Status
             x:Name="QuoteStatus"
@@ -164,13 +175,13 @@
             CornerRadius="4"
             Padding="8"/>
 
-        <communitytoolkit:ConstrainedBox
+        <ctcontrols:ConstrainedBox
             x:Name="ImagesGrid"
             x:Load="{x:Bind LoadImages}"
             AspectRatio="{x:Bind ImagesGridAspectRatio}"
             CornerRadius="4">
             <Grid>
-                <communitytoolkit:UniformGrid
+                <ctcontrols:UniformGrid
                     Columns="2"
                     ColumnSpacing="4"
                     Rows="2"
@@ -216,7 +227,7 @@
                             </TextBlock>
                         </Border>
                     </components:MediaPreview>
-                </communitytoolkit:UniformGrid>
+                </ctcontrols:UniformGrid>
                 <Button
                     x:Name="ToggleMediaPreviewsButton"
                     Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
@@ -235,7 +246,7 @@
                     </Button.Resources>
                 </Button>
             </Grid>
-        </communitytoolkit:ConstrainedBox>
+        </ctcontrols:ConstrainedBox>
 
         <Button
             x:Name="CardButton"
