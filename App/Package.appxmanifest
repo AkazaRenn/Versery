@@ -9,7 +9,7 @@
 
   <Identity
     Name="AkazaRenn.Versery"
-    Publisher="CN=AkazaRenn"
+    Publisher="CN=Akaza Renn"
     Version="1.0.0.0" />
 
   <Properties>
