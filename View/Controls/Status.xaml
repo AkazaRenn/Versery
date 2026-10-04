@@ -108,6 +108,7 @@
                 x:Name="SpoilerTextRichTextBlock"
                 x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
                 Grid.Column="0"
+                VerticalAlignment="Center"
                 TextWrapping="WrapWholeWords"
                 IsTextSelectionEnabled="False"
                 extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"/>
@@ -115,6 +116,7 @@
                 x:Name="ShowSpoilerButton"
                 x:Load="{x:Bind LoadSpoilerTextRichTextBlock}"
                 Grid.Column="2"
+                VerticalAlignment="Center"
                 FontSize="12"
                 Padding="8, 0, 8, 0"
                 Command="{x:Bind ViewModel.ToggleCollapsedCommand}">
@@ -123,9 +125,11 @@
                     Icon="ChevronDown"
                     SizeChanged="ShowSpoilerButtonIcon_SizeChanged"
                     Scale="{x:Bind controls:Status.GetShowSpoilerButtonScale(ViewModel.Collapsed), Mode=OneWay}">
+                    <!-- Comment out until body can be animated too
                     <fluenticons:FluentIcon.ScaleTransition>
                         <Vector3Transition/>
                     </fluenticons:FluentIcon.ScaleTransition>
+                    -->
                 </fluenticons:FluentIcon>
             </Button>
         </Grid>
