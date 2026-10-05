@@ -216,10 +216,11 @@
                         BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[3])}">
                         <Border
                             x:Name="Image3Overlay"
-                            x:Load="{x:Bind LoadImage3Overlay}"
-                            Background="{x:Bind local:Brushes.TransparentBlackHalf}">
-                                <TextBlock
-                                Foreground="White"
+                            x:Load="{x:Bind LoadImage3Overlay}">
+                            <Border.Background>
+                                <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
+                            </Border.Background>
+                            <TextBlock
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 FontSize="32"
@@ -257,7 +258,8 @@
             HorizontalAlignment="Stretch"
             VerticalContentAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
-            Padding="0">
+            Padding="0"
+            Command="{x:Bind ViewModel.Card.InvokeCommand}">
             <Grid
                 ColumnDefinitions="Auto, *"
                 CornerRadius="4">

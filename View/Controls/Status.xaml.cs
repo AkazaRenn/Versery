@@ -3,7 +3,6 @@ using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
 using System.Numerics;
 using View.Controls.Components;
 using View.Strings;
@@ -81,11 +80,11 @@ internal sealed partial class Status: Grid {
         if (PostBodyRichTextBlock.ActualHeight > 500) {
             PostBodyGrid.Height = 360;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
-             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 0;
+            PostBodyRichTextBlockOpacityMaskForeground.Opacity = 0;
         } else {
             PostBodyGrid.Height = double.NaN;
             CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
+            PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
         }
     }
     private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {

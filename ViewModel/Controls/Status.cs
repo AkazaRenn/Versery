@@ -186,6 +186,12 @@ public sealed partial class Status: ObservableObject {
         public string Title { get; } = card.Title;
         public string Description { get; } = card.Description;
         public string ProviderName { get; } = card.ProviderName;
+        [RelayCommand]
+        private void Invoke() {
+            if (Url is not null) {
+                _ = Windows.System.Launcher.LaunchUriAsync(Url);
+            }
+        }
 
         public Uri? ImageRemote { get; } = card.Image;
         [ObservableProperty]
