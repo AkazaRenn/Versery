@@ -8,8 +8,7 @@
     xmlns:components="using:View.Controls.Components"
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
-    xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls"
-    xmlns:numerics="using:System.Numerics">
+    xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="{x:Bind GridColumnWidth0}"/>
         <ColumnDefinition Width="8"/>
@@ -118,11 +117,11 @@
                 VerticalAlignment="Center"
                 FontSize="12"
                 Padding="8, 0, 8, 0"
+                Style="{StaticResource AccentButtonStyle}"
                 Click="ShowSpoilerButton_Click">
                 <fluenticons:FluentIcon
                     x:Name="ShowSpoilerButtonIcon"
                     Icon="ChevronDown"
-                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                     SizeChanged="ShowSpoilerButtonIcon_SizeChanged"
                     Scale="{x:Bind controls:Status.GetShowSpoilerButtonIconScale(ViewModel.Collapsed), Mode=OneWay}"
                     ScaleTransition="{x:Bind local:Transitions.Vector3Transition}">
@@ -236,15 +235,16 @@
                     VerticalAlignment="Top"
                     HorizontalAlignment="Left"
                     Margin="4,4,0,0"
-                    Padding="4"
-                    Foreground="{x:Bind local:Brushes.White}"
-                    Background="{x:Bind local:Brushes.TransparentBlackHalf}">
+                    Padding="4">
                     <fluenticons:FluentIcon
                         Icon="{x:Bind controls:Status.GetToggleMediaPreviewsButtonIcon(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
                         FontSize="20"/>
+                    <Button.Background>
+                        <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
+                    </Button.Background>
                     <Button.Resources>
-                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#60000000"/>
-                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#A0000000"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
                     </Button.Resources>
                 </Button>
             </Grid>

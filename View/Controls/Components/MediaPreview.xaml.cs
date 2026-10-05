@@ -36,19 +36,13 @@ internal sealed partial class MediaPreview: UserControl {
             (BackgroundBlur.AspectRatio <= 0)) {
             ImageButton.Background = DefaultBackground;
         } else {
-            var (width, height, pixels) = await Task.Run(() => {
-                int width, height;
-                if (BackgroundBlur.AspectRatio > 1) {
-                    width = (int)(32 * BackgroundBlur.AspectRatio);
-                    height = 32;
-                } else {
-                    width = 32;
-                    height = (int)(32 / BackgroundBlur.AspectRatio);
-                }
+            int width = 32;
+            int height = 32;
+            var pixels = await Task.Run(() => {
                 using var image = Blurhasher.Decode(BackgroundBlur.Hash, width, height);
                 var buffer = new byte[image.Width * image.Height * 4];
                 image.CloneAs<Bgra32>().CopyPixelDataTo(buffer);
-                return (image.Width, image.Height, buffer);
+                return buffer;
             });
 
             var bitmap = new WriteableBitmap(width, height);
