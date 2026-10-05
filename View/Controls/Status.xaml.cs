@@ -54,8 +54,6 @@ internal sealed partial class Status: Grid {
 
     private int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
-    private bool LoadSpoilerTextGrid => ViewModel?.SpoilerText is not null;
-
     private void ShowSpoilerButtonIcon_SizeChanged(object sender, SizeChangedEventArgs e) {
         ShowSpoilerButtonIcon.CenterPoint = new Vector3((float)ShowSpoilerButtonIcon.ActualWidth / 2, (float)ShowSpoilerButtonIcon.ActualHeight / 2, 0);
     }
@@ -63,12 +61,7 @@ internal sealed partial class Status: Grid {
     private void ShowSpoilerButton_Click(object sender, RoutedEventArgs e) {
         if (ViewModel?.Collapsed is true) {
             ViewModel?.Collapsed = false;
-            if (ShouldCollapsePostBodyRichTextBlock &&
-                (!PostBodyRichTextBlockExpandedManually)) {
-                AnimatePostBodyGridHeight(PostBodyGridCollapsedHeight);
-            } else {
-                AnimatePostBodyGridHeight(PostBodyRichTextBlock.ActualHeight);
-            }
+            AnimatePostBodyGridHeight(PostBodyRichTextBlock.ActualHeight);
         } else {
             ViewModel?.Collapsed = true;
             AnimatePostBodyGridHeight(0);
@@ -77,39 +70,30 @@ internal sealed partial class Status: Grid {
 
     internal static double GetPostBodyGridInitialHeight(bool collapsed) => collapsed ? 0 : double.NaN;
     private bool PostBodyRichTextBlockExpandedManually = false;
-    private bool ShouldCollapsePostBodyRichTextBlock => PostBodyRichTextBlock.ActualHeight > 500;
-    private static readonly double PostBodyGridCollapsedHeight = 360;
     private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
+        if (ViewModel?.SpoilerText is not null) {
+            return;
+        }
         if (PostBodyRichTextBlockExpandedManually) {
-            if (PostBodyGrid.Height > 0) {
-                PostBodyGrid.Height = double.NaN;
-            }
             return;
         }
 
-        var transition = OpacityMaskViewMask.OpacityTransition;
-        OpacityMaskViewMask.OpacityTransition = null;
-
-        if (ShouldCollapsePostBodyRichTextBlock) {
-            if (double.IsNaN(PostBodyGrid.Height) || (PostBodyGrid.Height > 0)) {
-                PostBodyGrid.Height = PostBodyGridCollapsedHeight;
-            }
+        if (PostBodyRichTextBlock.ActualHeight > 500) {
+            PostBodyGrid.Height = 360;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
-            OpacityMaskViewMask.Opacity = 0;
+             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 0;
         } else {
-            if (PostBodyGrid.Height > 0) {
-                PostBodyGrid.Height = double.NaN;
-            }
+            PostBodyGrid.Height = double.NaN;
             CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-            OpacityMaskViewMask.Opacity = 1;
+             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
         }
-
-        OpacityMaskViewMask.OpacityTransition = transition;
     }
     private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {
         PostBodyRichTextBlockExpandedManually = true;
         CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-        OpacityMaskViewMask.Opacity = 1;
+        PostBodyRichTextBlockOpacityMaskForeground.OpacityTransition = View.Transitions.ScalarTransition;
+        PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
+        PostBodyRichTextBlockOpacityMaskForeground.OpacityTransition = null;
         AnimatePostBodyGridHeight(PostBodyRichTextBlock.ActualHeight);
     }
     private readonly Storyboard PostBodyGridHeightStoryboard = new();
@@ -118,7 +102,14 @@ internal sealed partial class Status: Grid {
         EnableDependentAnimation = true,
         EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut },
     };
+    private void PostBodyGridHeightStoryboard_Completed(object? sender, object e) {
+        if (PostBodyGrid.Height > 0) {
+            PostBodyGrid.Height = double.NaN;
+        }
+    }
     private void PostBodyGrid_Loaded(object sender, RoutedEventArgs e) {
+        PostBodyGridHeightStoryboard.Completed -= PostBodyGridHeightStoryboard_Completed;
+        PostBodyGridHeightStoryboard.Completed += PostBodyGridHeightStoryboard_Completed;
         PostBodyGridHeightStoryboard.Children.Add(PostBodyGridHeightStoryboardAnimation);
         Storyboard.SetTarget(PostBodyGridHeightStoryboardAnimation, PostBodyGrid);
         Storyboard.SetTargetProperty(PostBodyGridHeightStoryboardAnimation, "Height");

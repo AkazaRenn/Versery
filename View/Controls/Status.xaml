@@ -103,7 +103,7 @@
 
         <Grid
             x:Name="SpoilerTextGrid"
-            x:Load="{x:Bind LoadSpoilerTextGrid}"
+            x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.SpoilerText)}"
             ColumnDefinitions="Auto, *, Auto"
             ColumnSpacing="4">
             <RichTextBlock
@@ -111,6 +111,7 @@
                 VerticalAlignment="Center"
                 TextWrapping="WrapWholeWords"
                 IsTextSelectionEnabled="False"
+                Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                 extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"/>
             <Button
                 Grid.Column="2"
@@ -121,6 +122,7 @@
                 <fluenticons:FluentIcon
                     x:Name="ShowSpoilerButtonIcon"
                     Icon="ChevronDown"
+                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
                     SizeChanged="ShowSpoilerButtonIcon_SizeChanged"
                     Scale="{x:Bind controls:Status.GetShowSpoilerButtonIconScale(ViewModel.Collapsed), Mode=OneWay}"
                     ScaleTransition="{x:Bind local:Transitions.Vector3Transition}">
@@ -134,13 +136,12 @@
             Height="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
             <ctcontrols:OpacityMaskView >
                 <ctcontrols:OpacityMaskView.OpacityMask>
-                    <Border Background="{x:Bind local:Brushes.CollapsedStatusBrush}">
+                    <Border
+                        Background="{x:Bind local:Brushes.CollapsedStatusBrush}">
                         <Rectangle
-                            x:Name="OpacityMaskViewMask"
+                            x:Name="PostBodyRichTextBlockOpacityMaskForeground"
                             Fill="{x:Bind local:Brushes.White}"
-                            Opacity="1"
-                            OpacityTransition="{x:Bind local:Transitions.ScalarTransition}">
-                        </Rectangle>
+                            Opacity="1"/>
                     </Border>
                 </ctcontrols:OpacityMaskView.OpacityMask>
                 <ScrollView
@@ -156,6 +157,7 @@
             </ctcontrols:OpacityMaskView>
             <Button
                 x:Name="CollapsePostBodyButton"
+                x:Load="{x:Bind local:Converters.IsNull(ViewModel.SpoilerText)}"
                 x:Uid="Controls_Status_CollapsePostBodyButton"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
@@ -257,10 +259,12 @@
             HorizontalContentAlignment="Stretch"
             Padding="0">
             <Grid
-                ColumnDefinitions="96, *"
+                ColumnDefinitions="Auto, *"
                 CornerRadius="4">
-                <Rectangle
-                    Grid.Column="0">
+                <Rectangle 
+                    x:Name="CardImageRectangle"
+                    x:Load="{x:Bind local:Converters.IsNotNull(ViewModel.Card.ImageRemote)}"
+                    Width="96">
                     <Rectangle.Fill>
                         <ImageBrush
                             Stretch="UniformToFill"
@@ -276,18 +280,11 @@
                     Grid.Column="1"
                     MaxHeight="96"
                     VerticalAlignment="Center"
-                    RowDefinitions="Auto, Auto, *"
-                    Padding="8,4,4,4"
-                    RowSpacing="4">
+                    RowDefinitions="Auto, *, Auto"
+                    Padding="8,4,8,4">
                     <TextBlock
                         Grid.Row="0"
-                        TextTrimming="WordEllipsis"
-                        TextWrapping="NoWrap"
-                        IsTextSelectionEnabled="False"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.Card.ProviderName}"/>
-                    <TextBlock
-                        Grid.Row="1"
+                        FontSize="14"
                         FontWeight="SemiBold"
                         TextTrimming="WordEllipsis"
                         TextWrapping="WrapWholeWords"
@@ -295,12 +292,25 @@
                         MaxLines="2"
                         Text="{x:Bind ViewModel.Card.Title}"/>
                     <TextBlock
-                        Grid.Row="2"
+                        Grid.Row="1"
+                        Margin="0, 4, 0, 0"
+                        FontSize="12"
                         TextTrimming="WordEllipsis"
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
-                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                         Text="{x:Bind ViewModel.Card.Description}"/>
+                    <TextBlock
+                        x:Name="CardProviderNameTextBlock"
+                        x:Load="{x:Bind local:Converters.StringIsNotNullOrEmpty(ViewModel.Card.ProviderName)}"
+                        Grid.Row="2"
+                        Margin="0, 4, 0, 0"
+                        FontSize="12"
+                        TextTrimming="WordEllipsis"
+                        TextWrapping="NoWrap"
+                        IsTextSelectionEnabled="False"
+                        Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
+                        Text="{x:Bind ViewModel.Card.ProviderName}"/>
                 </Grid>
             </Grid>
         </Button>
