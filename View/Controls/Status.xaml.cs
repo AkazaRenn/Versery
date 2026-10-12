@@ -67,7 +67,7 @@ internal sealed partial class Status: Grid {
         }
     }
 
-    internal static double GetPostBodyGridInitialHeight(bool collapsed) => collapsed ? 0 : double.NaN;
+    internal static double GetPostBodyGridInitialHeight(bool collapsed) => collapsed ? 0 : double.PositiveInfinity;
     private bool PostBodyRichTextBlockExpandedManually = false;
     private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
         if (ViewModel?.SpoilerText is not null) {
@@ -78,11 +78,11 @@ internal sealed partial class Status: Grid {
         }
 
         if (PostBodyRichTextBlock.ActualHeight > 500) {
-            PostBodyGrid.Height = 360;
+            PostBodyGrid.MaxHeight = 360;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 0;
         } else {
-            PostBodyGrid.Height = double.NaN;
+            PostBodyGrid.MaxHeight = double.PositiveInfinity;
             CollapsePostBodyButton.Visibility = Visibility.Collapsed;
             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
         }
@@ -99,11 +99,11 @@ internal sealed partial class Status: Grid {
     private readonly DoubleAnimation PostBodyGridHeightStoryboardAnimation = new() {
         Duration = View.Transitions.Vector3Transition.Duration,
         EnableDependentAnimation = true,
-        EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut },
+        EasingFunction = new CubicEase(),
     };
     private void PostBodyGridHeightStoryboard_Completed(object? sender, object e) {
-        if (PostBodyGrid.Height > 0) {
-            PostBodyGrid.Height = double.NaN;
+        if (PostBodyGrid.MaxHeight > 0) {
+            PostBodyGrid.MaxHeight = double.PositiveInfinity;
         }
     }
     private void PostBodyGrid_Loaded(object sender, RoutedEventArgs e) {
@@ -111,15 +111,23 @@ internal sealed partial class Status: Grid {
         PostBodyGridHeightStoryboard.Completed += PostBodyGridHeightStoryboard_Completed;
         PostBodyGridHeightStoryboard.Children.Add(PostBodyGridHeightStoryboardAnimation);
         Storyboard.SetTarget(PostBodyGridHeightStoryboardAnimation, PostBodyGrid);
-        Storyboard.SetTargetProperty(PostBodyGridHeightStoryboardAnimation, "Height");
+        Storyboard.SetTargetProperty(PostBodyGridHeightStoryboardAnimation, "MaxHeight");
     }
     private void AnimatePostBodyGridHeight(double targetHeight) {
+        const double PostBodyGridHeightAnimationMaxDelta = 360;
         double currentHeight = PostBodyGrid.ActualHeight;
         PostBodyGridHeightStoryboard.Stop();
-        PostBodyGrid.Height = currentHeight;
 
-        PostBodyGridHeightStoryboardAnimation.From = currentHeight;
-        PostBodyGridHeightStoryboardAnimation.To = targetHeight;
+        if (targetHeight > 0) {
+            PostBodyGridHeightStoryboardAnimation.From = currentHeight;
+            PostBodyGridHeightStoryboardAnimation.To = Math.Min(targetHeight, currentHeight + PostBodyGridHeightAnimationMaxDelta);
+            PostBodyGridHeightStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
+        } else {
+            PostBodyGridHeightStoryboardAnimation.From = Math.Min(currentHeight, PostBodyGridHeightAnimationMaxDelta);
+            PostBodyGridHeightStoryboardAnimation.To = 0;
+            PostBodyGridHeightStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
+        }
+
         PostBodyGridHeightStoryboard.Begin();
     }
 

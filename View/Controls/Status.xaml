@@ -132,7 +132,7 @@
         <Grid
             x:Name="PostBodyGrid"
             Loaded="PostBodyGrid_Loaded"
-            Height="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
+            MaxHeight="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
             <ctcontrols:OpacityMaskView >
                 <ctcontrols:OpacityMaskView.OpacityMask>
                     <Border
