@@ -11,7 +11,7 @@ public sealed partial class UserProfileButton: ObservableObject {
 
     [RelayCommand]
     private void AddAccount() {
-        WeakReferenceMessenger.Default.Send(new WeakMessages.SignInRequested());
+        WeakReferenceMessenger.Default.Send(new Messages.SignInRequested());
     }
 
     [RelayCommand]

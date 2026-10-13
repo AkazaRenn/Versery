@@ -15,14 +15,14 @@ public record Status() {
     public string SpoilerText { get; set; } = string.Empty;
     public StatusVisibility Visibility { get; set; } = StatusVisibility.Public;
     public long RepliesCount { get; set; } = 0;
-    public bool Favourited { get; set; } = false;
-    public bool Reblogged { get; set; } = false;
-    public bool Muted { get; set; } = false;
-    public bool Bookmarked { get; set; } = false;
-    public bool Pinned { get; set; } = false;
+    public bool? Favourited { get; set; } = null;
+    public bool? Reblogged { get; set; } = null;
+    public bool? Muted { get; set; } = null;
+    public bool? Bookmarked { get; set; } = null;
+    public bool? Pinned { get; set; } = null;
     public Dictionary<string, Uri> Emojis { get; set; } = [];
-    public string? RepliedStatusId { get; set; } = null;
-    public string? RepliedAccountId { get; set; } = null;
+    public string? InReplyToId { get; set; } = null;
+    public string? InReplyToAccountId { get; set; } = null;
     public string? QuotedStatusId { get; set; } = null;
     public bool Sensitive { get; set; } = false;
     public List<Media> Images { get; set; } = [];
@@ -40,19 +40,19 @@ public record Status() {
             Text = serverStatus.Text;
             SpoilerText = serverStatus.SpoilerText;
             RepliesCount = serverStatus.RepliesCount;
-            Favourited = serverStatus.Favourited ?? false;
-            Reblogged = serverStatus.Reblogged ?? false;
-            Muted = serverStatus.Muted ?? false;
-            Bookmarked = serverStatus.Bookmarked ?? false;
-            Pinned = serverStatus.Pinned ?? false;
+            Favourited = serverStatus.Favourited;
+            Reblogged = serverStatus.Reblogged;
+            Muted = serverStatus.Muted;
+            Bookmarked = serverStatus.Bookmarked;
+            Pinned = serverStatus.Pinned;
             Uri = serverStatus.Uri;
             foreach (var emoji in serverStatus.Emojis) {
                 if (emoji.Url is not null) {
                     Emojis[emoji.Shortcode] = emoji.Url;
                 }
             }
-            RepliedStatusId = serverStatus.InReplyToId;
-            RepliedAccountId = serverStatus.InReplyToAccountId;
+            InReplyToId = serverStatus.InReplyToId;
+            InReplyToAccountId = serverStatus.InReplyToAccountId;
             QuotedStatusId = serverStatus.Quote?.QuotedStatus?.Id;
             Sensitive = serverStatus.Sensitive;
 

@@ -10,8 +10,8 @@
     <components:RefreshListView
         x:Name="RefreshListView"
         MaxWidth="600"
-        ItemsSource="{x:Bind viewModel.Timelines}"
-        LoadLatest="{x:Bind viewModel.LoadLatestTimelines}"
+        ItemsSource="{x:Bind viewModel.ViewModels}"
+        LoadLatest="{x:Bind viewModel.LoadLatestItems}"
         OnItemRealized="RefreshListView_OnItemRealized">
         <components:RefreshListView.ItemTemplate>
             <DataTemplate x:DataType="vm.controls:Timeline">

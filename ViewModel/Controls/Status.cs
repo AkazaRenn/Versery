@@ -63,10 +63,10 @@ public sealed partial class Status: ObservableObject {
         }
 
         CanBeReblogged = status.Visibility < StatusVisibility.Private;
-        IsReply = !String.IsNullOrWhiteSpace(status.RepliedStatusId);
-        IsReblogged = status.Reblogged;
-        IsFavourited = status.Favourited;
-        IsBookmarked = status.Bookmarked;
+        IsReply = !String.IsNullOrWhiteSpace(status.InReplyToId);
+        IsReblogged = status.Reblogged is true;
+        IsFavourited = status.Favourited is true;
+        IsBookmarked = status.Bookmarked is true;
 
         PostBody.RawText = status.Content;
         foreach (var emoji in status.Emojis) {

@@ -1,6 +1,6 @@
 ﻿namespace Model;
 
-public static class WeakMessages {
+public static class Messages {
     public record SignInRequested();
     public record SignInCompleted();
 }

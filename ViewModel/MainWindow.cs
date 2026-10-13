@@ -5,7 +5,7 @@ using Model.Access;
 
 namespace ViewModel;
 
-public sealed partial class MainWindow: ObservableObject, IRecipient<WeakMessages.SignInRequested>, IRecipient<WeakMessages.SignInCompleted> {
+public sealed partial class MainWindow: ObservableObject, IRecipient<Messages.SignInRequested>, IRecipient<Messages.SignInCompleted> {
     private readonly Client client = Model.Services.Get<Client>();
 
     public event Action<Enumerations.Page, string?>? NavigationRequested;
@@ -13,11 +13,11 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<WeakMessage
     [ObservableProperty]
     public partial Uri? Avatar { get; set; }
 
-    void IRecipient<WeakMessages.SignInRequested>.Receive(WeakMessages.SignInRequested _) {
+    void IRecipient<Messages.SignInRequested>.Receive(Messages.SignInRequested _) {
         NavigationRequested?.Invoke(Enumerations.Page.SignIn, null);
     }
 
-    void IRecipient<WeakMessages.SignInCompleted>.Receive(WeakMessages.SignInCompleted _) {
+    void IRecipient<Messages.SignInCompleted>.Receive(Messages.SignInCompleted _) {
         NavigationRequested?.Invoke(Enumerations.Page.Home, null);
     }
 
@@ -33,7 +33,7 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<WeakMessage
         }
     }
 
-    public void Receive(WeakMessages.SignInCompleted message) {
+    public void Receive(Messages.SignInCompleted message) {
         _ = UpdateUserInfo();
     }
 }

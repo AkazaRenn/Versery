@@ -4,10 +4,11 @@ using Model;
 using Model.Access;
 using Model.Enumerations;
 using Model.Utilities;
+using ViewModel.Interfaces;
 
 namespace ViewModel.Controls;
 
-public sealed partial class Timeline: ObservableObject {
+public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Timeline, Model.Entities.Timeline> {
     private static readonly Client client = Model.Services.Get<Client>();
     private static readonly Dictionary<string, WeakReference<Timeline>> cache = [];
 
@@ -39,7 +40,11 @@ public sealed partial class Timeline: ObservableObject {
         sentinel = new(Id, cache);
     }
 
-    internal static IEnumerable<Timeline> FromTimelines(IEnumerable<Model.Entities.Timeline> timelines) {
+    public void Update(Model.Entities.Timeline entity) {
+        //throw new NotImplementedException();
+    }
+
+    public static IEnumerable<Timeline> FromEntities(IEnumerable<Model.Entities.Timeline> timelines) {
         timelines = timelines.ToCollection();
         for (int i = 0; i < timelines.Count(); i++) {
             yield return Create(timelines.ElementAt(i));
