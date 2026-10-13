@@ -143,7 +143,7 @@ internal sealed partial class Status: Grid {
     private bool LoadImage2 => ViewModel?.ImagesRemote.Length > 2;
     private bool LoadImage3 => ViewModel?.ImagesRemote.Length > 3;
     private bool LoadImage3Overlay => ViewModel?.ImagesRemote.Length > 4;
-    private AspectRatio ImagesGridAspectRatio => ViewModel?.ImagesRemote.Length > 1 ? ViewModel.FirstImageAspect : 1;
+    private AspectRatio ImagesGridAspectRatio => ViewModel?.ImagesRemote.Length <= 1 ? ViewModel.FirstImageAspect : 1;
     private Orientation ImagesGridOrientation {
         get {
             if (ViewModel?.ImagesRemote.Length >= 4) {
