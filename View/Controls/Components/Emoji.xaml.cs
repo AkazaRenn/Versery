@@ -52,6 +52,8 @@ internal sealed partial class Emoji: Panel {
         timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
         timer.Tick += Timer_Tick;
         timer.IsRepeating = false;
+
+        canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
     }
 
     private void InitComposition(ICompositionGraphicsDeviceProvider provider) {
@@ -95,8 +97,6 @@ internal sealed partial class Emoji: Panel {
                 InitComposition(provider);
             }
         }
-        canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
-        canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
         window?.Activated += Window_Activated;
         if ((Source is not null) &&

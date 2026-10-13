@@ -109,8 +109,7 @@ internal sealed partial class Status: Grid {
             PostBodyGrid.MaxHeight = double.PositiveInfinity;
         }
     }
-    private void PostBodyGrid_Loaded(object sender, RoutedEventArgs e) {
-        PostBodyGridHeightStoryboard.Completed -= PostBodyGridHeightStoryboard_Completed;
+    private void InitializePostBodyGridHeightStoryboard() {
         PostBodyGridHeightStoryboard.Completed += PostBodyGridHeightStoryboard_Completed;
         PostBodyGridHeightStoryboard.Children.Add(PostBodyGridHeightStoryboardAnimation);
         Storyboard.SetTarget(PostBodyGridHeightStoryboardAnimation, PostBodyGrid);
@@ -228,5 +227,6 @@ internal sealed partial class Status: Grid {
 
     public Status() {
         InitializeComponent();
+        InitializePostBodyGridHeightStoryboard();
     }
 }
