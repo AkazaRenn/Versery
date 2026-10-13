@@ -21,6 +21,6 @@ internal sealed partial class Home: Page, INavigationPage {
     }
 
     private void RefreshListView_OnItemRealized(int index) {
-        _ = viewModel.OnTimelineRealized(index);
+        _ = viewModel.OnItemRealized(index);
     }
 }

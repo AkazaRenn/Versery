@@ -4,7 +4,7 @@ using ViewModel.Interfaces;
 
 namespace ViewModel.Abstractions;
 
-public abstract partial class PaginatedViewModelList<ViewModel, Entity>
+public abstract class PaginatedViewModelList<ViewModel, Entity>
     where ViewModel : IPaginatedViewModel<ViewModel, Entity>
     where Entity : Model.Interfaces.IPaginatedEntity {
     protected abstract void OnAddToViewModelsCollection(ViewModel viewModel);
@@ -107,7 +107,7 @@ public abstract partial class PaginatedViewModelList<ViewModel, Entity>
         }
     }
 
-    public async Task OnTimelineRealized(int index) {
+    public async Task OnItemRealized(int index) {
         if ((index < ViewModels.Count - 1) ||
             !ViewModels.Any() ||
             loadingOldEntities ||
