@@ -119,6 +119,7 @@ public sealed partial class Status: ObservableObject {
         foreach (var imagePreview in ImagePreviews) {
             _ = imagePreview?.Download();
         }
+        _ = Quote?.DownloadMedias();
     }
 
     public sealed partial class Account: ObservableObject {

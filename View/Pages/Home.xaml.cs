@@ -20,20 +20,7 @@ internal sealed partial class Home: Page, INavigationPage {
         }
     }
 
-    private async void RefreshListView_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) {
-        var deferral = args.GetDeferral();
-        await viewModel.LoadLatestTimelines();
-        RefreshListView.ScrollToTop();
-        deferral.Complete();
-    }
-
-    private void RefreshListView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args) {
-        if (args.InRecycleQueue)
-            return;
-
-        if (args.Phase == 0 && args.Item is ViewModel.Controls.Timeline status) {
-            status.Index = args.ItemIndex;
-            _ = viewModel.OnStatusRealized(args.ItemIndex);
-        }
+    private void RefreshListView_OnItemRealized(int index) {
+        _ = viewModel.OnTimelineRealized(index);
     }
 }

@@ -16,16 +16,30 @@ public static class Extensions {
         }
     }
 
+    extension(Status serverStatus) {
+        private IEnumerable<Status> Flattened {
+            get {
+                yield return serverStatus;
+                if (serverStatus.Reblog is not null) {
+                    foreach (var flattened in serverStatus.Reblog.Flattened) {
+                        yield return flattened;
+                    }
+                }
+                if (serverStatus.Quote?.QuotedStatus is not null) {
+                    foreach (var flattened in serverStatus.Quote.QuotedStatus.Flattened) {
+                        yield return flattened;
+                    }
+                }
+            }
+        }
+    }
+
     extension(IEnumerable<Status> serverStatuses) {
         public IEnumerable<Status> Flattened {
             get {
                 foreach (var status in serverStatuses) {
-                    yield return status;
-                    if (status.Reblog is not null) {
-                        yield return status.Reblog;
-                    }
-                    if (status.Quote?.QuotedStatus is not null) {
-                        yield return status.Quote.QuotedStatus;
+                    foreach (var flattened in status.Flattened) {
+                        yield return flattened;
                     }
                 }
             }

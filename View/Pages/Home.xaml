@@ -11,8 +11,8 @@
         x:Name="RefreshListView"
         MaxWidth="600"
         ItemsSource="{x:Bind viewModel.Timelines}"
-        RefreshRequested="RefreshListView_RefreshRequested"
-        ContainerContentChanging="RefreshListView_ContainerContentChanging">
+        LoadLatest="{x:Bind viewModel.LoadLatestTimelines}"
+        OnItemRealized="RefreshListView_OnItemRealized">
         <components:RefreshListView.ItemTemplate>
             <DataTemplate x:DataType="vm.controls:Timeline">
                 <controls:Timeline ViewModel="{x:Bind}" />

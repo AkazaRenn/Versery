@@ -6,19 +6,12 @@ using Windows.Foundation;
 namespace View.Controls.Components;
 
 internal sealed partial class RefreshListView: RefreshContainer {
-    private ScrollViewer? scrollViewer = null;
-
     public object ItemsSource { set => ListView.ItemsSource = value; }
     public DataTemplate ItemTemplate { set => ListView.ItemTemplate = value; }
-    public event TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> ContainerContentChanging {
-        add => ListView.ContainerContentChanging += value;
-        remove => ListView.ContainerContentChanging -= value;
-    }
+    public Func<Task>? LoadLatest { get; set; } = null;
+    public event Action<int>? OnItemRealized;
 
-    public RefreshListView() {
-        InitializeComponent();
-    }
-
+    private ScrollViewer? scrollViewer = null;
     public bool IsOnTop => scrollViewer?.VerticalOffset == 0;
 
     public void ScrollToTop() {
@@ -40,5 +33,31 @@ internal sealed partial class RefreshListView: RefreshContainer {
 
     private void ListView_Loaded(object sender, RoutedEventArgs e) {
         scrollViewer = ListView.FindDescendant<ScrollViewer>();
+    }
+
+    private async void RefreshListView_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args) {
+        if (LoadLatest is null) {
+            return;
+        }
+
+        var deferral = args.GetDeferral();
+        await LoadLatest();
+        ScrollToTop();
+        deferral.Complete();
+    }
+
+    private void ListView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args) {
+        if (args.InRecycleQueue) {
+            return;
+        }
+
+        if (args.Phase == 0 && args.Item is ViewModel.Controls.Timeline status) {
+            status.Index = args.ItemIndex;
+            OnItemRealized?.Invoke(args.ItemIndex);
+        }
+    }
+
+    public RefreshListView() {
+        InitializeComponent();
     }
 }

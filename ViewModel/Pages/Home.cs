@@ -57,7 +57,8 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
         }
     }
 
-    public async Task LoadLatestTimelines() {
+    public Func<Task> LoadLatestTimelines => LoadLatestTimelinesInternal;
+    private async Task LoadLatestTimelinesInternal() {
         var serverTimelines = await Task.Run(async () => {
             return await client.GetTimelineFromServer(TimelineType.Home);
         });
@@ -114,7 +115,7 @@ public sealed partial class Home: IRecipient<WeakMessages.SignInCompleted> {
         }
     }
 
-    public async Task OnStatusRealized(int index) {
+    public async Task OnTimelineRealized(int index) {
         if ((index < Timelines.Count - 1) ||
             !Timelines.Any() ||
             loadingOldStatuses ||

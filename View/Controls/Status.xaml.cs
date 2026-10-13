@@ -77,8 +77,11 @@ internal sealed partial class Status: Grid {
             return;
         }
 
-        if (PostBodyRichTextBlock.ActualHeight > 500) {
-            PostBodyGrid.MaxHeight = 360;
+        const double MaxPostBodyHeight = 500;
+        const double CollapsedPostBodyHeight = 360;
+
+        if (PostBodyRichTextBlock.ActualHeight > MaxPostBodyHeight) {
+            PostBodyGrid.MaxHeight = CollapsedPostBodyHeight;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 0;
         } else {
