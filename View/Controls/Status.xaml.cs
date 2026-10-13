@@ -61,13 +61,16 @@ internal sealed partial class Status: Grid {
         if (ViewModel?.Collapsed is true) {
             ViewModel?.Collapsed = false;
             AnimatePostBodyGridHeight(PostBodyRichTextBlock.ActualHeight);
+            PostBodyGrid.Opacity = 1;
         } else {
             ViewModel?.Collapsed = true;
             AnimatePostBodyGridHeight(0);
+            PostBodyGrid.Opacity = 0;
         }
     }
 
     internal static double GetPostBodyGridInitialHeight(bool collapsed) => collapsed ? 0 : double.PositiveInfinity;
+    internal static double GetPostBodyGridInitialOpacity(bool collapsed) => collapsed ? 0 : 1;
     private bool PostBodyRichTextBlockExpandedManually = false;
     private void PostBodyRichTextBlock_SizeChanged(object sender, SizeChangedEventArgs e) {
         if (ViewModel?.SpoilerText is not null) {

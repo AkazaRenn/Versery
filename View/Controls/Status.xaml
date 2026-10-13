@@ -131,6 +131,8 @@
 
         <Grid
             x:Name="PostBodyGrid"
+            Opacity="{x:Bind controls:Status.GetPostBodyGridInitialOpacity(ViewModel.Collapsed)}"
+            OpacityTransition="{x:Bind local:Transitions.ScalarTransition}"
             MaxHeight="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
             <ctcontrols:OpacityMaskView >
                 <ctcontrols:OpacityMaskView.OpacityMask>
