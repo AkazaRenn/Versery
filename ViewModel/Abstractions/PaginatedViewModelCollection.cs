@@ -4,7 +4,7 @@ using ViewModel.Interfaces;
 
 namespace ViewModel.Abstractions;
 
-public abstract class PaginatedViewModelList<ViewModel, Entity>
+public abstract class PaginatedViewModelCollection<ViewModel, Entity>
     where ViewModel : IPaginatedViewModel<ViewModel, Entity>
     where Entity : Model.Interfaces.IPaginatedEntity {
     protected abstract void OnAddToViewModelsCollection(ViewModel viewModel);
@@ -16,7 +16,7 @@ public abstract class PaginatedViewModelList<ViewModel, Entity>
 
     public ObservableCollection<ViewModel> ViewModels { get; } = [];
 
-    public PaginatedViewModelList() {
+    public PaginatedViewModelCollection() {
         ViewModels.CollectionChanged += Items_CollectionChanged;
 
         _ = LoadInitialItems();

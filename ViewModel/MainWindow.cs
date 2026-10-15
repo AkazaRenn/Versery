@@ -22,7 +22,7 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<Messages.Si
     }
 
     public MainWindow() {
-        WeakReferenceMessenger.Default.RegisterAll(this);
+        StrongReferenceMessenger.Default.RegisterAll(this);
         _ = UpdateUserInfo();
     }
 

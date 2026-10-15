@@ -7,7 +7,7 @@ using ViewModel.Controls;
 
 namespace ViewModel.Pages;
 
-public sealed partial class Home: PaginatedViewModelList<Timeline, Model.Entities.Timeline>, IRecipient<Messages.SignInCompleted> {
+public sealed partial class Home: PaginatedViewModelCollection<Timeline, Model.Entities.Timeline>, IRecipient<Messages.SignInCompleted> {
     private readonly Client client = Model.Services.Get<Client>();
 
     public Home() {
