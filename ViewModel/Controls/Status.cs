@@ -91,7 +91,7 @@ public sealed partial class Status: ObservableObject {
         }
         if (ImagePreviews[0] is not null) {
             // Avoid the preview from taking too much space
-            FirstImageAspect = Math.Clamp(ImagePreviews[0]!.AspectRatio, 0.5, 1.5);
+            FirstImageAspect = Math.Clamp(ImagePreviews[0]!.AspectRatio, 0.5, 2);
         }
         ImagePreviewsHidden = status.Sensitive;
 
