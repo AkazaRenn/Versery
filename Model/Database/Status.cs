@@ -1,34 +1,34 @@
-﻿using LiteDB;
-using System.Runtime.Caching;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace Model.Database;
 
-internal class Status(string hash) {
-    private static readonly MemoryCache cache = new(typeof(Status).FullName);
-    private readonly ILiteCollection<Entities.Status> db = Services.Get<LiteDatabase>().GetCollection<Entities.Status>($"statuses_{hash}");
+internal sealed class Status(string id): IDisposable {
+    private readonly MemoryCache cache = new(new MemoryCacheOptions { SizeLimit = 2048 });
+    private readonly MemoryCacheEntryOptions entryOptions = new() { Size = 1 };
+    private readonly Store<Entities.Status> db = new(id, "Statuses", StoreJsonContext.Default.Status);
 
     public Entities.Status? Get(string id) {
-        if (cache[id] is Entities.Status status) {
-            return status;
+        if (cache.TryGetValue(id, out Entities.Status? cached)) {
+            return cached;
         }
-        status = db.FindById(id);
-        if (status != null) {
-            cache[id] = status;
+        if (db.TryGet(id, out var status)) {
+            cache.Set(id, status, entryOptions);
         }
         return status;
     }
 
     public void Add(Entities.Status status) {
-        db.Upsert(status);
-        cache[status.Id] = status;
+        db.Upsert(status.Id, status);
+        cache.Set(status.Id, status, entryOptions);
     }
 
     public void Add(IEnumerable<Entities.Status> statuses) {
-        statuses = statuses.ToCollection();
-
-        db.Upsert(statuses);
         foreach (var status in statuses) {
-            cache[status.Id] = status;
+            Add(status);
         }
+    }
+
+    public void Dispose() {
+        db.Dispose();
     }
 }

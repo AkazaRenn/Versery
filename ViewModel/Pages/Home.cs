@@ -11,7 +11,7 @@ public sealed partial class Home: PaginatedViewModelCollection<Timeline, Model.E
     private readonly Client client = Model.Services.Get<Client>();
 
     public Home() {
-        StrongReferenceMessenger.Default.RegisterAll(this);
+        StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
     }
 
     protected override void OnAddToViewModelsCollection(Timeline viewModel) {

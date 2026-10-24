@@ -1,9 +1,6 @@
-﻿using LiteDB;
-
-namespace Model.Entities;
+﻿namespace Model.Entities;
 
 public record Account() {
-    [BsonId]
     public string Id { get; set; } = string.Empty;
     public string AccountName { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;

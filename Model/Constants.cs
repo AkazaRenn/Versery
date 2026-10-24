@@ -9,5 +9,5 @@ public static class Constants {
     public static string AppVersionString { get; } = $"{AppVersion.Major}.{AppVersion.Minor}.{AppVersion.Build}.{AppVersion.Revision}";
     public const string ProjectLink = "https://github.com/AkazaRenn/Versery/";
 
-    public const int StatusesCountPerLoad = 30;
+    public const int StatusesCountPerLoad = 40;
 }

@@ -1,6 +1,4 @@
-﻿using LiteDB;
-using Model.Server.Entities;
-using System.Diagnostics.CodeAnalysis;
+﻿using Model.Server.Entities;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -49,21 +47,6 @@ public static class Extensions {
     extension<T>(IEnumerable<T> enumerable) {
         public ICollection<T> ToCollection() {
             return enumerable is ICollection<T> collection ? collection : [.. enumerable];
-        }
-    }
-
-    extension<T>(ILiteCollection<T> collection) {
-        public bool TryFindById(BsonValue id, [NotNullWhen(true)] out T? result) {
-            result = collection.FindById(id);
-            return result is not null;
-        }
-
-        public bool TryUpdate(BsonValue id, Action<T> update) {
-            if (collection.TryFindById(id, out var item)) {
-                update(item);
-                return collection.Update(item);
-            }
-            return false;
         }
     }
 

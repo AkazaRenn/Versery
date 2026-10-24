@@ -32,6 +32,7 @@ namespace Model.Server;
 [JsonSerializable(typeof(Entities.Collection))]
 [JsonSerializable(typeof(Entities.CollectionItem))]
 [JsonSerializable(typeof(Entities.CollectionWithAccounts))]
+[JsonSerializable(typeof(Entities.CredentialApplication))]
 [JsonSerializable(typeof(Entities.Context))]
 [JsonSerializable(typeof(Entities.Conversation))]
 [JsonSerializable(typeof(Entities.CustomEmoji))]

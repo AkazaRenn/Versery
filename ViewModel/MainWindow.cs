@@ -22,7 +22,8 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<Messages.Si
     }
 
     public MainWindow() {
-        StrongReferenceMessenger.Default.RegisterAll(this);
+        StrongReferenceMessenger.Default.Register<Messages.SignInRequested>(this);
+        StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
         _ = UpdateUserInfo();
     }
 

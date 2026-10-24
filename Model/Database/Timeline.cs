@@ -1,49 +1,32 @@
-﻿using LiteDB;
+﻿namespace Model.Database;
 
-namespace Model.Database;
-
-internal sealed class Timeline {
-    private readonly ILiteCollection<Entities.Timeline> db;
-    private readonly HashSet<string> accessedTimeline = [];
-
-    public Timeline(string hash, string name) {
-        db = Services.Get<LiteDatabase>().GetCollection<Entities.Timeline>($"{name}_{hash}");
-        db.EnsureIndex(x => x.CreatedAt);
-    }
+internal sealed class Timeline(string id): IDisposable {
+    private readonly Store<Entities.Timeline> db = new(id, "Timelines", StoreJsonContext.Default.Timeline);
 
     internal IEnumerable<Entities.Timeline> Get(uint count, string? after = null) {
-        var query = db.Query();
-
-        if (!String.IsNullOrEmpty(after)) {
-            var afterEntry = db.FindById(after);
-            if (afterEntry is not null) {
-                query = query.Where(x => x.CreatedAt <= afterEntry.CreatedAt);
-            }
-        }
-
-        var statuses = query.OrderByDescending(x => x.CreatedAt).Limit((int)count).ToEnumerable();
-        foreach (var status in statuses) {
-            if (accessedTimeline.Contains(status.Id)) {
-                continue;
-            }
-            accessedTimeline.Add(status.Id);
+        var timelines = db.GetDescending(after).Take((int)count);
+        foreach (var status in timelines) {
             yield return status;
         }
     }
 
-    internal void Add(IEnumerable<Entities.Timeline> statuses, string? afterId) {
-        if (afterId is not null) {
-            db.TryUpdate(afterId, x => x.FollowedByGap = false);
+    internal void Add(IEnumerable<Entities.Timeline> timelines, string? afterId) {
+        if ((afterId is not null) && db.TryGet(afterId, out var afterEntry)) {
+            afterEntry.FollowedByGap = false;
+            db.Upsert(afterEntry.Id, afterEntry);
         }
 
-        statuses = statuses.ToCollection();
-        if (statuses.Any() && db.FindById(statuses.Last().Id) is null) {
-            statuses.Last().FollowedByGap = true;
+        timelines = timelines.ToCollection();
+        if (timelines.Any() && !db.Contains(timelines.Last().Id)) {
+            timelines.Last().FollowedByGap = true;
         }
 
-        db.Upsert(statuses);
-        foreach (var status in statuses) {
-            accessedTimeline.Add(status.Id);
+        foreach (var timeline in timelines) {
+            db.Upsert(timeline.Id, timeline);
         }
+    }
+
+    public void Dispose() {
+        db.Dispose();
     }
 }

@@ -4,10 +4,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentSettings.Generator" />
-    <PackageReference Include="LiteDB" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Raiqub.Generators.EnumUtilities" />
     <PackageReference Include="Refit" />
-    <PackageReference Include="System.Runtime.Caching" />
+    <PackageReference Include="ZoneTree" />
   </ItemGroup>
 </Project>

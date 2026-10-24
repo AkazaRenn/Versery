@@ -1,18 +1,15 @@
 ﻿
 namespace Model.Database;
 
-internal sealed class Client {
+internal sealed class Client: IDisposable {
     private Account Account { get; }
     private Status Status { get; }
     private Timeline Timeline { get; }
 
-    public Client(string account, string instance) {
-        var hash = account.Sha256;
-        Status = new Status(hash);
-        Account = new Account(hash);
-        Timeline = new(hash, "hometimeline");
-        //FederatedTimeline = new(accountHash, "federatedtimeline");
-        //LocalTimeline = new(accountHash, "localtimeline");
+    public Client(string account) {
+        Status = new(account);
+        Account = new(account);
+        Timeline = new(account);
     }
 
     public Entities.Timeline[] GetTimeline(uint count, string? afterId = null) {
@@ -56,5 +53,11 @@ internal sealed class Client {
         var account = new Entities.Account(serverAccount);
         Account.Add(account);
         return account;
+    }
+
+    public void Dispose() {
+        Timeline.Dispose();
+        Status.Dispose();
+        Account.Dispose();
     }
 }

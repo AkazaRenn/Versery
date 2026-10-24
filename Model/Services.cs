@@ -1,5 +1,4 @@
-﻿using LiteDB;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Model.DataPersistence;
 using Model.Server;
 using Refit;
@@ -16,10 +15,6 @@ public static class Services {
         });
         services.AddSingleton<Access.Client>();
         services.AddSingleton<ApplicationStates>();
-        services.AddSingleton<LiteDatabase>(sp => {
-            var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, "data.db");
-            return new LiteDatabase(path);
-        });
         services.AddSingleton<RefitSettings>(sp => {
             return new() {
                 ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options),

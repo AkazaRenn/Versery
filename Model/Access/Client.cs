@@ -30,17 +30,20 @@ public sealed class Client {
 
         var instance = split.Last();
         server = new(instance, token);
-        database = new(user, instance);
+        database = new(user);
     }
 
     internal async Task NewUser(string instance, string accessToken) {
         server = new(instance, accessToken);
         var serverAccount = await server.Accounts.VerifyCredentials();
-        var username = serverAccount.Username;
-        database = new Database.Client(serverAccount.Username, instance);
+        var instanceInfo = await server.Instance.V2();
+        var canonicalInstance = instanceInfo.Domain.Trim().ToLowerInvariant();
+        var userId = $"{serverAccount.Username}@{canonicalInstance}";
+
+        database?.Dispose();
+        database = new Database.Client(userId);
         account = database.AddAccount(serverAccount);
 
-        var userId = $"{username}@{instance}";
         Credentials.AddAccessToken(userId, server.AccessToken);
         applicationStates.ActiveUser = userId;
 

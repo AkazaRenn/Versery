@@ -19,7 +19,6 @@
     <PackageReference Include="Microsoft.Graphics.Win2D" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Nito.Disposables" />
-    <PackageReference Include="System.Runtime.Caching" />
     <PackageReference Include="WinUIEx" />
   </ItemGroup>
   <ItemGroup>

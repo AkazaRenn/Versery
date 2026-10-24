@@ -1,10 +1,8 @@
-﻿using LiteDB;
-using Model.Server.Entities;
+﻿using Model.Server.Entities;
 
 namespace Model.Entities;
 
 public record Status() {
-    [BsonId]
     public string Id { get; set; } = string.Empty;
     public string AccountId { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.MinValue;
