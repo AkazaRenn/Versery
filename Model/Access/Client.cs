@@ -13,6 +13,9 @@ public sealed class Client {
     public bool SignedIn => server is not null && database is not null;
 
     public Client() {
+        // Flushes the stores so the next launch doesn't rely on write-ahead log replay.
+        AppDomain.CurrentDomain.ProcessExit += (_, _) => database?.Dispose();
+
         var user = applicationStates.ActiveUser;
         if (string.IsNullOrWhiteSpace(user)) {
             return;
@@ -35,8 +38,8 @@ public sealed class Client {
 
     internal async Task NewUser(string instance, string accessToken) {
         server = new(instance, accessToken);
-        var serverAccount = await server.Accounts.VerifyCredentials();
-        var instanceInfo = await server.Instance.V2();
+        var serverAccount = await server.Accounts.GetAccountVerifyCredentials();
+        var instanceInfo = await server.Instance.GetInstanceV2();
         var canonicalInstance = instanceInfo.Domain.Trim().ToLowerInvariant();
         var userId = $"{serverAccount.Username}@{canonicalInstance}";
 
@@ -52,7 +55,7 @@ public sealed class Client {
 
     public async Task<Entities.Account?> GetAccount() {
         if ((account is null) && SignedIn) {
-            var serverAccount = await server!.Accounts.VerifyCredentials();
+            var serverAccount = await server!.Accounts.GetAccountVerifyCredentials();
             account = database!.AddAccount(serverAccount);
         }
 
@@ -65,9 +68,9 @@ public sealed class Client {
         }
 
         var serverStatuses = type switch {
-            TimelineType.Home => await server!.Timelines.Home(maxId: afterId, limit: Constants.StatusesCountPerLoad),
-            TimelineType.Federated => await server!.Timelines.Public(maxId: afterId, limit: Constants.StatusesCountPerLoad, local: false),
-            TimelineType.Local => await server!.Timelines.Public(maxId: afterId, limit: Constants.StatusesCountPerLoad, local: true),
+            TimelineType.Home => await server!.Timelines.GetTimelineHome(limit: Constants.StatusesCountPerLoad, max_id: afterId),
+            TimelineType.Federated => await server!.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: false, max_id: afterId),
+            TimelineType.Local => await server!.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: true, max_id: afterId),
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 

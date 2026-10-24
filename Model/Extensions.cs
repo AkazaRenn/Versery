@@ -8,8 +8,8 @@ namespace Model;
 public static class Extensions {
     extension(Server.Client client) {
         internal async Task<string> GetFullUserId() {
-            var account = await client.Accounts.VerifyCredentials();
-            var instance = await client.Instance.V2();
+            var account = await client.Accounts.GetAccountVerifyCredentials();
+            var instance = await client.Instance.GetInstanceV2();
             return $"{account.Username}@{instance.Domain}";
         }
     }

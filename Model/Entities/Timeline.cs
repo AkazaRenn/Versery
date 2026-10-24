@@ -15,6 +15,6 @@ public record Timeline(): IPaginatedEntity {
 
     internal Timeline(Model.Server.Entities.Status serverStatus) : this() {
         Id = serverStatus.Id;
-        CreatedAt = serverStatus.CreatedAt;
+        CreatedAt = serverStatus.CreatedAt.UtcDateTime;
     }
 }

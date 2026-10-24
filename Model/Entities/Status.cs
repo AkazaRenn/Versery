@@ -11,7 +11,7 @@ public record Status() {
     public string Content { get; set; } = string.Empty;
     public string? Text { get; set; } = string.Empty;
     public string SpoilerText { get; set; } = string.Empty;
-    public StatusVisibility Visibility { get; set; } = StatusVisibility.Public;
+    public StatusVisibilityEnum Visibility { get; set; } = StatusVisibilityEnum.Public;
     public long RepliesCount { get; set; } = 0;
     public bool? Favourited { get; set; } = null;
     public bool? Reblogged { get; set; } = null;
@@ -30,7 +30,8 @@ public record Status() {
     internal Status(Model.Server.Entities.Status serverStatus) : this() {
         Id = serverStatus.Id;
         AccountId = serverStatus.Account.Id;
-        CreatedAt = serverStatus.CreatedAt;
+        CreatedAt = serverStatus.CreatedAt.UtcDateTime;
+        Visibility = serverStatus.Visibility;
         if (serverStatus.Reblog != null) {
             ReblogId = serverStatus.Reblog.Id;
         } else {
@@ -43,7 +44,7 @@ public record Status() {
             Muted = serverStatus.Muted;
             Bookmarked = serverStatus.Bookmarked;
             Pinned = serverStatus.Pinned;
-            Uri = serverStatus.Uri;
+            Uri = Uri.TryCreate(serverStatus.Uri, UriKind.Absolute, out var uri) ? uri : null;
             foreach (var emoji in serverStatus.Emojis) {
                 if (emoji.Url is not null) {
                     Emojis[emoji.Shortcode] = emoji.Url;
@@ -59,10 +60,10 @@ public record Status() {
                     continue;
                 }
                 switch (media.Type) {
-                case MediaAttachmentType.Image:
+                case MediaAttachmentTypeEnum.Image:
                     Images.Add(new(media));
                     break;
-                case MediaAttachmentType.Video:
+                case MediaAttachmentTypeEnum.Video:
                     Video ??= new(media);
                     break;
                 }
@@ -91,7 +92,7 @@ public record Media() {
     public Media(Server.Entities.MediaAttachment media) : this() {
         Source = media.Url;
         Preview = media.PreviewUrl;
-        AspectRatio = media.Meta?.Aspect ?? media.Meta?.Original?.Aspect ?? 1;
+        AspectRatio = media.Meta?.Original?.Aspect ?? media.Meta?.Small?.Aspect ?? 1;
         BlurHash = media.Blurhash;
         Description = media.Description;
     }

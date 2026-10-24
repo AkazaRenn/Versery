@@ -1,0 +1,16 @@
+{
+  "openApiPath": "../../Dependency/mastodon-openapi/dist/schema.json",
+  "namespace": "Model.Server",
+  "contractsNamespace": "Model.Server.Entities",
+  "outputFolder": "./Generated",
+  "contractsOutputFolder": "./Generated",
+  "generateMultipleFiles": true,
+  "multipleInterfaces": "ByTag",
+  "useCancellationTokens": true,
+  "optionalParameters": true,
+  "generateJsonSerializerContext": false,
+  "generateDefaultAdditionalProperties": false,
+  "codeGeneratorSettings": {
+    "generateNullableReferenceTypes": true
+  }
+}

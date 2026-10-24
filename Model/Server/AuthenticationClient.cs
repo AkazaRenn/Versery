@@ -1,11 +1,10 @@
-﻿using Model.Server.Methods;
-using Refit;
+﻿using Refit;
 
 namespace Model.Server;
 
 internal class AuthenticationClient {
-    public IApps Apps { get; }
-    public IOAuth OAuth { get; }
+    public IAppsApi Apps { get; }
+    public IOauthApi OAuth { get; }
 
     public string Instance { get; }
 
@@ -17,7 +16,7 @@ internal class AuthenticationClient {
         };
         var refitSettings = Services.Get<RefitSettings>();
 
-        Apps = RestService.For<IApps>(httpClient, refitSettings);
-        OAuth = RestService.For<IOAuth>(httpClient, refitSettings);
+        Apps = RestService.ForGenerated<IAppsApi>(httpClient, refitSettings);
+        OAuth = RestService.ForGenerated<IOauthApi>(httpClient, refitSettings);
     }
 }

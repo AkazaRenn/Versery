@@ -1,5 +1,4 @@
-﻿using Model.Server.Methods;
-using Refit;
+﻿using Refit;
 
 namespace Model.Server;
 
@@ -7,9 +6,9 @@ internal sealed class Client {
     public string InstanceUrl { get; }
     public string AccessToken { get; }
 
-    public IAccounts Accounts { get; }
-    public IInstance Instance { get; }
-    public ITimelines Timelines { get; }
+    public IAccountsApi Accounts { get; }
+    public IInstanceApi Instance { get; }
+    public ITimelinesApi Timelines { get; }
 
     public Client(string instance, string accessToken) {
         InstanceUrl = instance;
@@ -21,8 +20,8 @@ internal sealed class Client {
         httpClient.DefaultRequestHeaders.Authorization = new("Bearer", AccessToken);
         var refitSettings = Services.Get<RefitSettings>();
 
-        Accounts = RestService.For<IAccounts>(httpClient, refitSettings);
-        Instance = RestService.For<IInstance>(httpClient, refitSettings);
-        Timelines = RestService.For<ITimelines>(httpClient, refitSettings);
+        Accounts = RestService.ForGenerated<IAccountsApi>(httpClient, refitSettings);
+        Instance = RestService.ForGenerated<IInstanceApi>(httpClient, refitSettings);
+        Timelines = RestService.ForGenerated<ITimelinesApi>(httpClient, refitSettings);
     }
 }

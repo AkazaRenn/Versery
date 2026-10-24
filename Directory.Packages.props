@@ -23,8 +23,8 @@
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
     <PackageVersion Include="Nito.Disposables" Version="2.5.0" />
-    <PackageVersion Include="Raiqub.Generators.EnumUtilities" Version="1.13.4" />
     <PackageVersion Include="Refit" Version="15.2.0" />
+    <PackageVersion Include="Refitter.MSBuild" Version="2.3.1" />
     <PackageVersion Include="WinUIEx" Version="2.9.3" />
     <PackageVersion Include="ZoneTree" Version="2.0.3" />
   </ItemGroup>

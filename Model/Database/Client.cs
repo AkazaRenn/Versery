@@ -49,7 +49,7 @@ internal sealed class Client: IDisposable {
         return Account.Get(id);
     }
 
-    public Entities.Account AddAccount(Model.Server.Entities.Account serverAccount) {
+    public Entities.Account AddAccount(Model.Server.Entities.CredentialAccount serverAccount) {
         var account = new Entities.Account(serverAccount);
         Account.Add(account);
         return account;

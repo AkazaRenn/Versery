@@ -1,13 +1,14 @@
 ﻿using Model.DataPersistence;
 using Model.Server;
 using Model.Server.Entities;
-using Model.Server.OauthScopes;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Model.Access;
 
 public sealed partial class Authentication(string instance) {
+    private const string Scopes = "read write follow";
+    private const string RedirectUri = "urn:ietf:wg:oauth:2.0:oob";
     private static readonly Regex oAuthRegex = OAuthRegex();
 
     private readonly AuthenticationClient authenticationClient = new(instance);
@@ -24,13 +25,14 @@ public sealed partial class Authentication(string instance) {
             var code = match.Groups[1].Value;
             var appRegistration = GetStoredAppRegistration() ?? throw new InvalidOperationException("The app must be registered before you can connect");
 
-            var auth = await authenticationClient.OAuth.Token(
-                "authorization_code",
-                code,
-                appRegistration.ClientId,
-                appRegistration.ClientSecret,
-                new Uri("urn:ietf:wg:oauth:2.0:oob")
-            );
+            var auth = await authenticationClient.OAuth.PostOauthToken(new Body27 {
+                GrantType = "authorization_code",
+                Code = code,
+                ClientId = appRegistration.ClientId,
+                ClientSecret = appRegistration.ClientSecret,
+                RedirectUri = RedirectUri,
+                Scope = Scopes,
+            });
             await client.NewUser(instance, auth.AccessToken);
         }
     }
@@ -41,7 +43,7 @@ public sealed partial class Authentication(string instance) {
             return null;
         }
 
-        return JsonSerializer.Deserialize(appRegistrationJson, JsonContext.Default.CredentialApplication);
+        return JsonSerializer.Deserialize(appRegistrationJson, ApiJsonContext.Default.CredentialApplication);
     }
 
     private async Task<CredentialApplication> GetOrCreateAppRegistration() {
@@ -50,23 +52,18 @@ public sealed partial class Authentication(string instance) {
             return storedAppRegistration;
         }
 
-        var scopes = FormatScopes([Scope.Read, Scope.Write, Scope.Follow]);
-        var newAppRegistration = await authenticationClient.Apps.Create(
-            Constants.AppName,
-            ["urn:ietf:wg:oauth:2.0:oob"],
-            scopes,
-            Constants.ProjectLink
-        );
+        var newAppRegistration = await authenticationClient.Apps.CreateApp(new Body6 {
+            ClientName = Constants.AppName,
+            RedirectUris = [new Uri(RedirectUri)],
+            Scopes = Scopes,
+            Website = Constants.ProjectLink,
+        });
 
-        Credentials.AddAppRegistration(instance, JsonSerializer.Serialize(newAppRegistration, JsonContext.Default.CredentialApplication));
+        Credentials.AddAppRegistration(instance, JsonSerializer.Serialize(newAppRegistration, ApiJsonContext.Default.CredentialApplication));
         return newAppRegistration;
     }
 
-    private static string FormatScopes(IEnumerable<Scope> scopes) {
-        return string.Join(" ", scopes.Select(s => s.ToJsonString()));
-    }
-
-    private static string BuildOAuthUrl(string instance, CredentialApplication credentialApplication, string redirectUri = "urn:ietf:wg:oauth:2.0:oob") {
+    private static string BuildOAuthUrl(string instance, CredentialApplication credentialApplication, string redirectUri = RedirectUri) {
         if (string.IsNullOrWhiteSpace(instance)) {
             throw new InvalidOperationException("The instance must be set before you can connect");
         }
@@ -74,7 +71,7 @@ public sealed partial class Authentication(string instance) {
         var queryParameters = new Dictionary<string, string> {
             ["response_type"] = "code",
             ["client_id"] = credentialApplication.ClientId,
-            ["scope"] = string.Join(" ", credentialApplication.Scopes),
+            ["scope"] = Scopes,
             ["redirect_uri"] = redirectUri
         };
 

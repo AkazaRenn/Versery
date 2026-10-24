@@ -17,8 +17,9 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<Messages.Si
         NavigationRequested?.Invoke(Enumerations.Page.SignIn, null);
     }
 
-    void IRecipient<Messages.SignInCompleted>.Receive(Messages.SignInCompleted _) {
+    void IRecipient<Messages.SignInCompleted>.Receive(Messages.SignInCompleted message) {
         NavigationRequested?.Invoke(Enumerations.Page.Home, null);
+        _ = UpdateUserInfo();
     }
 
     public MainWindow() {
@@ -32,9 +33,5 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<Messages.Si
         if (uri is not null) {
             Avatar = await Cache.Get(uri);
         }
-    }
-
-    public void Receive(Messages.SignInCompleted message) {
-        _ = UpdateUserInfo();
     }
 }

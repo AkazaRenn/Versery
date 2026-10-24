@@ -2,5 +2,5 @@
 
 namespace Model.Server;
 
-public class ServerErrorException(Error error): Exception(error.Error_) {
+public class ServerErrorException(Error error): Exception(error.Error2) {
 }

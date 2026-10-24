@@ -7,13 +7,21 @@ public record Account() {
     public Uri? Avatar { get; set; } = null;
     public Dictionary<string, Uri> Emojis { get; set; } = [];
 
-    internal Account(Model.Server.Entities.Account serverAccount) : this() {
-        Id = serverAccount.Id;
-        AccountName = serverAccount.Acct;
-        DisplayName = serverAccount.DisplayName;
-        Avatar = serverAccount.Avatar;
+    internal Account(Model.Server.Entities.Account serverAccount)
+        : this(serverAccount.Id, serverAccount.Acct, serverAccount.DisplayName, serverAccount.Avatar, serverAccount.Emojis) {
+    }
 
-        foreach (var emoji in serverAccount.Emojis) {
+    internal Account(Model.Server.Entities.CredentialAccount serverAccount)
+        : this(serverAccount.Id, serverAccount.Acct, serverAccount.DisplayName, serverAccount.Avatar, serverAccount.Emojis) {
+    }
+
+    private Account(string id, string acct, string displayName, Uri? avatar, IEnumerable<Model.Server.Entities.CustomEmoji> emojis) : this() {
+        Id = id;
+        AccountName = acct;
+        DisplayName = displayName;
+        Avatar = avatar;
+
+        foreach (var emoji in emojis) {
             if (emoji.Url is not null) {
                 Emojis[emoji.Shortcode] = emoji.Url;
             }

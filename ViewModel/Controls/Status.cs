@@ -62,7 +62,7 @@ public sealed partial class Status: ObservableObject {
             Quote = Create(status.QuotedStatusId);
         }
 
-        CanBeReblogged = status.Visibility < StatusVisibility.Private;
+        CanBeReblogged = status.Visibility < StatusVisibilityEnum.Private;
         IsReply = !String.IsNullOrWhiteSpace(status.InReplyToId);
         IsReblogged = status.Reblogged is true;
         IsFavourited = status.Favourited is true;

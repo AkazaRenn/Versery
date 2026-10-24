@@ -17,8 +17,7 @@ public static class Services {
         services.AddSingleton<ApplicationStates>();
         services.AddSingleton<RefitSettings>(sp => {
             return new() {
-                ContentSerializer = new SystemTextJsonContentSerializer(JsonContext.Default.Options),
-                UrlParameterFormatter = new UrlParameterFormatter(),
+                ContentSerializer = new SystemTextJsonContentSerializer(ApiJsonContext.Default.Options),
             };
         });
     }
