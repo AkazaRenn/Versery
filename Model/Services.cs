@@ -9,7 +9,11 @@ namespace Model;
 
 public static class Services {
     public static void Configure(IServiceCollection services) {
-        services.AddSingleton<HttpClient>();
+        services.AddSingleton<HttpClient>(sp => {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.ParseAdd($"{Constants.AppName}/{Constants.AppVersionString} (+{Constants.ProjectLink})");
+            return client;
+        });
         services.AddSingleton<Access.Client>();
         services.AddSingleton<ApplicationStates>();
         services.AddSingleton<LiteDatabase>(sp => {

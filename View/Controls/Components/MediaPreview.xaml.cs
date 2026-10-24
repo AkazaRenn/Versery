@@ -1,10 +1,9 @@
-using Blurhash.ImageSharp;
+using Blurhash;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using SixLabors.ImageSharp.PixelFormats;
 using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace View.Controls.Components;
@@ -20,14 +19,14 @@ internal sealed partial class MediaPreview: UserControl {
     }
 
     internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
-    public Blur? BackgroundBlur { 
-        get; 
+    public Blur? BackgroundBlur {
+        get;
         set {
             if (field != value) {
                 field = value;
                 _ = UpdateBackground();
             }
-        } 
+        }
     } = null;
 
     private async Task UpdateBackground() {
@@ -39,9 +38,19 @@ internal sealed partial class MediaPreview: UserControl {
             int width = 32;
             int height = 32;
             var pixels = await Task.Run(() => {
-                using var image = Blurhasher.Decode(BackgroundBlur.Hash, width, height);
-                var buffer = new byte[image.Width * image.Height * 4];
-                image.CloneAs<Bgra32>().CopyPixelDataTo(buffer);
+                var decoded = new Pixel[width, height];
+                Core.Decode(BackgroundBlur.Hash, decoded);
+                var buffer = new byte[width * height * 4];
+                for (var y = 0; y < height; y++) {
+                    for (var x = 0; x < width; x++) {
+                        var pixel = decoded[x, y];
+                        var i = ((y * width) + x) * 4;
+                        buffer[i + 0] = (byte)MathUtils.LinearTosRgb(pixel.Blue);
+                        buffer[i + 1] = (byte)MathUtils.LinearTosRgb(pixel.Green);
+                        buffer[i + 2] = (byte)MathUtils.LinearTosRgb(pixel.Red);
+                        buffer[i + 3] = 255;
+                    }
+                }
                 return buffer;
             });
 

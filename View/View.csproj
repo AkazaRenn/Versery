@@ -8,14 +8,17 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Blurhash.ImageSharp" />
+    <PackageReference Include="Blurhash.Core" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.OpacityMaskView" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
+    <PackageReference Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-arm64" />
+    <PackageReference Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-x64" />
+    <PackageReference Include="FFmpeg.AutoGen.Abstractions" />
+    <PackageReference Include="FFmpeg.AutoGen.Bindings.DynamicallyLinked" />
     <PackageReference Include="FluentIcons.WinUI" />
     <PackageReference Include="Microsoft.Graphics.Win2D" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Nito.Disposables" />
-    <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="System.Runtime.Caching" />
     <PackageReference Include="WinUIEx" />
   </ItemGroup>

@@ -1,3 +1,5 @@
+using FFmpeg.AutoGen.Abstractions;
+using FFmpeg.AutoGen.Bindings.DynamicallyLinked;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Composition;
 using Microsoft.Graphics.DirectX;
@@ -8,8 +10,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Nito.Disposables;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 using System.Collections.Concurrent;
 using View.Interfaces;
 
@@ -27,7 +27,6 @@ internal sealed partial class Emoji: Panel {
     private readonly DispatcherQueueTimer timer;
     private bool isLoaded = false;
     private int currentFrame = 0;
-    private uint loop = 0;
     private IReferenceCountedDisposable<FrameDataCollection>? frameData = null;
 
     public Uri? Source {
@@ -43,8 +42,11 @@ internal sealed partial class Emoji: Panel {
     public bool ShouldPlay =>
         isLoaded &&
         (frameData?.Target is not null) &&
-        (frameData.Target.Count > 1) &&
-        ((frameData.Target.MaxLoop == 0) || (loop < frameData.Target.MaxLoop));
+        (frameData.Target.Count > 1);
+
+    static Emoji() {
+        DynamicallyLinkedBindings.Initialize();
+    }
 
     public Emoji() {
         InitializeComponent();
@@ -142,7 +144,6 @@ internal sealed partial class Emoji: Panel {
     private void Reset() {
         Stop();
         currentFrame = 0;
-        loop = 0;
 
         frameData?.Dispose();
         frameData = null;
@@ -193,9 +194,6 @@ internal sealed partial class Emoji: Panel {
 
         timer.Interval = TimeSpan.FromMilliseconds(data.DelayMs);
         currentFrame = (currentFrame + 1) % frameData.Target.Count;
-        if ((currentFrame == 0) && (frameData.Target.MaxLoop > 0)) {
-            loop++;
-        }
 
         TryPlay();
     }
@@ -215,7 +213,6 @@ internal sealed partial class Emoji: Panel {
     private partial class FrameDataCollection(int capacity, Uri key): List<FrameData>(capacity), IDisposable {
         public int Width { get; init; }
         public int Height { get; init; }
-        public uint MaxLoop { get; init; }
 
         public void Dispose() {
             cache.TryRemove(key, out _);
@@ -229,59 +226,112 @@ internal sealed partial class Emoji: Panel {
         }
     }
 
-    private static FrameDataCollection CreateGpuFrames(Uri source) {
-        using var image = SixLabors.ImageSharp.Image.Load<Rgba32>(source.LocalPath);
+    private static unsafe FrameDataCollection CreateGpuFrames(Uri source) {
+        var path = source.LocalPath;
 
-        var frameCount = image.Frames.Count;
-        var Width = image.Width;
-        var Height = image.Height;
-        uint MaxLoop = 0;
-        var collection = new FrameDataCollection(frameCount, source) {
-            Width = Width,
-            Height = Height,
-            MaxLoop = MaxLoop,
-        };
-
-        double[] frameDelaysMs;
-        if (image.Metadata.TryGetGifMetadata(out var gifMeta)) {
-            MaxLoop = gifMeta.RepeatCount;
-            frameDelaysMs = [.. image.Frames.Select(x => x.Metadata.GetGifMetadata().FrameDelay * 10.0)]; // GIF delay is in 10ms units
-        } else if (image.Metadata.TryGetWebpMetadata(out var webpMeta)) {
-            MaxLoop = webpMeta.RepeatCount;
-            frameDelaysMs = [.. image.Frames.Select(x => x.Metadata.GetWebpMetadata().FrameDelay)]; // WebP delay is already in ms
-        } else if (image.Metadata.TryGetPngMetadata(out var pngMeta)) {
-            MaxLoop = pngMeta.RepeatCount;
-            frameDelaysMs = [.. image.Frames.Select(x => x.Metadata.GetPngMetadata().FrameDelay.ToDouble() * 1000.0)]; // PNG delay is in seconds
-        } else {
-            frameDelaysMs = new double[frameCount];
-        }
+        AVFormatContext* format = null;
+        AVCodecContext* codecContext = null;
+        var sws = ffmpeg.sws_alloc_context();
+        var packet = ffmpeg.av_packet_alloc();
+        var frame = ffmpeg.av_frame_alloc();
+        var rgba = ffmpeg.av_frame_alloc();
+        FrameDataCollection? collection = null;
 
         try {
-            var pixels = new byte[Width * Height * 4];
-            for (int i = 0; i < frameCount; i++) {
-                // Enforce a minimum delay of 100ms to avoid excessively fast frames
-                if (double.IsNaN(frameDelaysMs[i]) || (frameDelaysMs[i] < 100)) {
-                    frameDelaysMs[i] = 100;
+            if ((ffmpeg.avformat_open_input(&format, path, null, null) < 0) ||
+                (ffmpeg.avformat_find_stream_info(format, null) < 0)) {
+                return new(0, source);
+            }
+
+            AVCodec* codec = null;
+            var streamIndex = ffmpeg.av_find_best_stream(format, AVMediaType.AVMEDIA_TYPE_VIDEO, -1, -1, &codec, 0);
+            if (streamIndex < 0) {
+                return new(0, source);
+            }
+            var stream = format->streams[streamIndex];
+            codecContext = ffmpeg.avcodec_alloc_context3(codec);
+            if ((ffmpeg.avcodec_parameters_to_context(codecContext, stream->codecpar) < 0) ||
+                (ffmpeg.avcodec_open2(codecContext, codec, null) < 0)) {
+                return new(0, source);
+            }
+
+            var width = codecContext->width;
+            var height = codecContext->height;
+            var timeBase = ffmpeg.av_q2d(stream->time_base);
+            collection = new FrameDataCollection(4, source) {
+                Width = width,
+                Height = height,
+            };
+
+            var pixels = new byte[width * height * 4];
+            var flushing = false;
+            while (true) {
+                if (!flushing) {
+                    if (ffmpeg.av_read_frame(format, packet) < 0) {
+                        flushing = true;
+                        ffmpeg.avcodec_send_packet(codecContext, null);
+                    } else {
+                        if (packet->stream_index == streamIndex) {
+                            ffmpeg.avcodec_send_packet(codecContext, packet);
+                        }
+                        ffmpeg.av_packet_unref(packet);
+                    }
                 }
 
-                var frame = image.Frames[i];
-                frame.CopyPixelDataTo(pixels);
+                while (ffmpeg.avcodec_receive_frame(codecContext, frame) == 0) {
+                    rgba->format = (int)AVPixelFormat.AV_PIX_FMT_RGBA;
+                    rgba->width = width;
+                    rgba->height = height;
+                    if (ffmpeg.sws_scale_frame(sws, rgba, frame) < 0) {
+                        ffmpeg.av_frame_unref(rgba);
+                        ffmpeg.av_frame_unref(frame);
+                        continue;
+                    }
 
-                collection.Add(new(
-                    CanvasBitmap.CreateFromBytes(
-                        canvasDevice,
-                        PremultiplyAlphaInPlace(pixels),
-                        Width,
-                        Height,
-                        Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized),
-                    frameDelaysMs[i]));
+                    var stride = rgba->linesize[0];
+                    var rowBytes = width * 4;
+                    for (var y = 0; y < height; y++) {
+                        new ReadOnlySpan<byte>(rgba->data[0] + ((long)y * stride), rowBytes).CopyTo(pixels.AsSpan(y * rowBytes));
+                    }
+
+                    // Enforce a minimum delay of 100ms to avoid excessively fast frames
+                    var delayMs = frame->duration * timeBase * 1000.0;
+                    if (double.IsNaN(delayMs) || (delayMs < 100)) {
+                        delayMs = 100;
+                    }
+
+                    collection.Add(new(
+                        CanvasBitmap.CreateFromBytes(
+                            canvasDevice,
+                            PremultiplyAlphaInPlace(pixels),
+                            width,
+                            height,
+                            Windows.Graphics.DirectX.DirectXPixelFormat.R8G8B8A8UIntNormalized),
+                        delayMs));
+
+                    ffmpeg.av_frame_unref(rgba);
+                    ffmpeg.av_frame_unref(frame);
+                }
+
+                if (flushing) {
+                    break;
+                }
             }
             return collection;
         } catch {
-            foreach (var frame in collection) {
-                frame?.Bitmap?.Dispose();
+            if (collection is not null) {
+                foreach (var data in collection) {
+                    data?.Bitmap?.Dispose();
+                }
             }
             throw;
+        } finally {
+            ffmpeg.av_frame_free(&rgba);
+            ffmpeg.av_frame_free(&frame);
+            ffmpeg.av_packet_free(&packet);
+            ffmpeg.sws_freeContext(sws);
+            ffmpeg.avcodec_free_context(&codecContext);
+            ffmpeg.avformat_close_input(&format);
         }
     }
 
