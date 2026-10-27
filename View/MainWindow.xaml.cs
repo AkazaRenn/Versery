@@ -1,11 +1,16 @@
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Composition;
+using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Shapes;
+using View.Controls;
 using View.Interfaces;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -63,7 +68,8 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
 
         var nonClientInput = InputNonClientPointerSource.GetForWindowId(AppWindow.Id);
         nonClientInput.ClearRegionRects(NonClientRegionKind.Passthrough);
-        nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [.. regionRects]);
+        //nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [.. regionRects]);
+        //nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [new RectInt32(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue)]);
     }
 
     private RectInt32 GetRegionRect(FrameworkElement element, double offset = 0) {
@@ -137,5 +143,11 @@ public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProv
 
     private void Navigation_SizeChanged(object sender, SizeChangedEventArgs e) {
         UpdateNonClientInputPassthrough();
+    }
+
+    private void Button_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) {
+        _ = new PostPanel() {
+            XamlRoot = Content.XamlRoot,
+        }.ShowAsync();
     }
 }

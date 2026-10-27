@@ -80,7 +80,7 @@
         Height="48"
         HorizontalAlignment="Stretch"
         Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
-        Background="{x:Bind local:Brushes.TransparentBlackQuarter}"
+        Background="{x:Bind local:Brushes.TransparentBlack025}"
         FontWeight="Bold"
         BorderThickness="0 0 0 0.5"
         BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"

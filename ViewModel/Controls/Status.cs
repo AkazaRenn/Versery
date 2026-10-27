@@ -70,7 +70,7 @@ public sealed partial class Status: ObservableObject {
 
         PostBody.RawText = status.Content;
         foreach (var emoji in status.Emojis) {
-            PostBody.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+            PostBody.Emojis.Add(emoji.Key, Cache.Get("https://upload.wikimedia.org/wikipedia/commons/1/14/Animated_PNG_example_bouncing_beach_ball.png"));
         }
         if (!String.IsNullOrEmpty(status.SpoilerText)) {
             Collapsed = true;
@@ -149,7 +149,7 @@ public sealed partial class Status: ObservableObject {
             Emojis = account.Emojis;
             DisplayName.RawText = account.DisplayName;
             foreach (var emoji in account.Emojis) {
-                DisplayName.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+                DisplayName.Emojis.Add(emoji.Key, Cache.Get("https://upload.wikimedia.org/wikipedia/commons/1/14/Animated_PNG_example_bouncing_beach_ball.png"));
             }
             AvatarRemote = account.Avatar;
 

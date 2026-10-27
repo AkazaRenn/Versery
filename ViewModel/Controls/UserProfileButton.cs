@@ -6,9 +6,6 @@ using Model;
 namespace ViewModel.Controls;
 
 public sealed partial class UserProfileButton: ObservableObject {
-    public UserProfileButton() {
-    }
-
     [RelayCommand]
     private void AddAccount() {
         StrongReferenceMessenger.Default.Send(new Messages.SignInRequested());
