@@ -25,7 +25,7 @@ public sealed partial class Authentication(string instance) {
             var code = match.Groups[1].Value;
             var appRegistration = GetStoredAppRegistration() ?? throw new InvalidOperationException("The app must be registered before you can connect");
 
-            var auth = await authenticationClient.OAuth.PostOauthToken(new Body27 {
+            var auth = await authenticationClient.OAuth.PostOauthToken(new PostOauthTokenRequest {
                 GrantType = "authorization_code",
                 Code = code,
                 ClientId = appRegistration.ClientId,
@@ -52,7 +52,7 @@ public sealed partial class Authentication(string instance) {
             return storedAppRegistration;
         }
 
-        var newAppRegistration = await authenticationClient.Apps.CreateApp(new Body6 {
+        var newAppRegistration = await authenticationClient.Apps.CreateApp(new CreateAppRequest {
             ClientName = Constants.AppName,
             RedirectUris = [new Uri(RedirectUri)],
             Scopes = Scopes,

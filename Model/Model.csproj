@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Refitter.MSBuild" PrivateAssets="all" />
     <RefitterInput Include="$(MSBuildProjectFullPath);Server\Mastodon.refitter;..\Dependency\mastodon-openapi\dist\schema.json" />
+    <UpToDateCheckInput Include="@(RefitterInput)" />
     <Compile Remove="Server\Generated\**" />
   </ItemGroup>
   <Target Name="GenerateMastodonApi" BeforeTargets="CoreCompile" Inputs="@(RefitterInput)" Outputs="$(IntermediateOutputPath)refitter.stamp">
