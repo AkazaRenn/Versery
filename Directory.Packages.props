@@ -3,29 +3,29 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AngleSharp" Version="1.8.1" />
+    <PackageVersion Include="AngleSharp" Version="1.8.6" />
     <PackageVersion Include="Blurhash.Core" Version="4.2.1" />
     <PackageVersion Include="CommunityToolkit.Labs.WinUI.Controls.OpacityMaskView" Version="0.1.251217-build.2433" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Converters" Version="8.2.251219" />
-    <PackageVersion Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-arm64" Version="9.0.2.600" />
-    <PackageVersion Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-x64" Version="9.0.2.600" />
+    <PackageVersion Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-arm64" Version="9.0.2.1100" />
+    <PackageVersion Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-x64" Version="9.0.2.1100" />
     <PackageVersion Include="FFmpeg.AutoGen.Abstractions" Version="9.0.1.1" />
     <PackageVersion Include="FFmpeg.AutoGen.Bindings.DynamicallyLinked" Version="9.0.1.1" />
     <PackageVersion Include="FluentIcons.WinUI" Version="2.2.344" />
     <PackageVersion Include="FluentSettings.Generator" Version="1.0.10" />
     <PackageVersion Include="Mastonet" Version="3.1.3" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.14" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
     <PackageVersion Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
     <PackageVersion Include="Nito.Disposables" Version="2.5.0" />
-    <PackageVersion Include="Refit" Version="15.2.0" />
+    <PackageVersion Include="Refit" Version="16.4.0" />
     <PackageVersion Include="Refitter.MSBuild" Version="2.3.1" />
     <PackageVersion Include="WinUIEx" Version="2.9.3" />
-    <PackageVersion Include="ZoneTree" Version="2.0.3" />
+    <PackageVersion Include="ZoneTree" Version="2.0.5" />
   </ItemGroup>
 </Project>
