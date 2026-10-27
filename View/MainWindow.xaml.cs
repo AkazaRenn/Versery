@@ -19,16 +19,18 @@ using WinUIEx;
 
 namespace View;
 
-public sealed partial class MainWindow: WindowEx, ICompositionGraphicsDeviceProvider {
+public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     private NavigationViewItemBase? activeNavigationItem = null;
     private readonly ViewModel.MainWindow viewModel = new();
 
+    public CanvasDevice CanvasDevice { get; }
     public CompositionGraphicsDevice CompositionGraphicsDevice { get; }
 
     public MainWindow() {
         InitializeComponent();
 
-        CompositionGraphicsDevice = CanvasComposition.CreateCompositionGraphicsDevice(Compositor, CanvasDevice.GetSharedDevice());
+        CanvasDevice = CanvasDevice.GetSharedDevice();
+        CompositionGraphicsDevice = CanvasComposition.CreateCompositionGraphicsDevice(Compositor, CanvasDevice);
 
         ExtendsContentIntoTitleBar = true;
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;

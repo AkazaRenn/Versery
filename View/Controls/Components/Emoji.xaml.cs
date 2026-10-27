@@ -16,12 +16,12 @@ using View.Interfaces;
 namespace View.Controls.Components;
 
 internal sealed partial class Emoji: Panel {
-    private static readonly CanvasDevice canvasDevice = CanvasDevice.GetSharedDevice();
     private static readonly ConcurrentDictionary<Uri, Task<IWeakReferenceCountedDisposable<FrameDataCollection>>> cache = [];
 
     private SpriteVisual? visual;
     private CompositionSurfaceBrush? brush;
     private CompositionDrawingSurface? surface;
+    private CanvasDevice? canvasDevice;
     private Window? window;
 
     private readonly DispatcherQueueTimer timer;
@@ -54,13 +54,11 @@ internal sealed partial class Emoji: Panel {
         timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
         timer.Tick += Timer_Tick;
         timer.IsRepeating = false;
-
-        canvasDevice.DeviceLost += CanvasDevice_DeviceLost;
     }
 
-    private void InitComposition(ICompositionGraphicsDeviceProvider provider) {
-        var graphicsDevice = provider.CompositionGraphicsDevice;
-        surface = graphicsDevice.CreateDrawingSurface(
+    private void InitComposition(IGraphicsDeviceProvider provider) {
+        canvasDevice = provider.CanvasDevice;
+        surface = provider.CompositionGraphicsDevice.CreateDrawingSurface(
             new Windows.Foundation.Size(0, 0),
             DirectXPixelFormat.R8G8B8A8UIntNormalized,
             DirectXAlphaMode.Premultiplied);
@@ -95,12 +93,14 @@ internal sealed partial class Emoji: Panel {
         }
         isLoaded = true;
         if ((window is null) && (Application.Current is IWindowHelper windowHelper)) {
-            if (windowHelper.TryGetWindow(this, out window) && (window is ICompositionGraphicsDeviceProvider provider)) {
+            if (windowHelper.TryGetWindow(this, out window) && (window is IGraphicsDeviceProvider provider)) {
                 InitComposition(provider);
             }
         }
         window?.Activated -= Window_Activated;
         window?.Activated += Window_Activated;
+        canvasDevice?.DeviceLost -= CanvasDevice_DeviceLost;
+        canvasDevice?.DeviceLost += CanvasDevice_DeviceLost;
         if ((Source is not null) &&
             ((frameData?.Target is null) || (frameData.Target.Count == 0))) {
             _ = LoadImage();
@@ -120,7 +120,7 @@ internal sealed partial class Emoji: Panel {
             return;
         }
         isLoaded = false;
-        canvasDevice.DeviceLost -= CanvasDevice_DeviceLost;
+        canvasDevice?.DeviceLost -= CanvasDevice_DeviceLost;
         window?.Activated -= Window_Activated;
         Reset();
     }
@@ -152,13 +152,13 @@ internal sealed partial class Emoji: Panel {
     private async Task LoadImage() {
         Reset();
 
-        if ((Source is null) || (surface is null)) {
+        if ((Source is null) || (surface is null) || (canvasDevice is null)) {
             return;
         }
 
         var loadTask = cache.GetOrAdd(Source, _ =>
             Task.Run(async () => {
-                frameData = ReferenceCountedDisposable.Create(await Task.Run(() => CreateGpuFrames(Source)));
+                frameData = ReferenceCountedDisposable.Create(await Task.Run(() => CreateGpuFrames(canvasDevice, Source)));
                 return frameData.AddWeakReference();
             })
         );
@@ -226,7 +226,7 @@ internal sealed partial class Emoji: Panel {
         }
     }
 
-    private static unsafe FrameDataCollection CreateGpuFrames(Uri source) {
+    private static unsafe FrameDataCollection CreateGpuFrames(CanvasDevice canvasDevice, Uri source) {
         var path = source.LocalPath;
 
         AVFormatContext* format = null;
