@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
-    xmlns:local="using:View">
+    xmlns:utils="using:View.Utilities">
     <Rectangle
         x:Name="ImageRectangle"
         Loaded="ImageRectangle_Loaded"

@@ -15,12 +15,11 @@ public sealed partial class App: Application, View.Interfaces.IWindowHelper {
         Host = Microsoft.Extensions.Hosting.Host
             .CreateDefaultBuilder()
             .ConfigureServices((context, services) => {
-                ViewModel.Services.Configure(services);
-                Model.Services.Configure(services);
+                Services.Configure(services);
             })
             .Build();
 
-        Model.Services.Provider = Host.Services;
+        Services.Provider = Host.Services;
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args) {

@@ -3,18 +3,21 @@
     x:Class="View.Controls.PostPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:View"
+    xmlns:utils="using:View.Utilities"
     Visibility="Collapsed"
-    Loaded="ContentDialog_Loaded">
+    Opened="ContentDialog_Opened">
     <Popup
         x:Name="Popup"
         IsOpen="False">
-        <Grid x:Name="Grid">
+        <Grid
+            x:Name="Grid"
+            Loaded="Grid_Loaded"
+            Unloaded="Grid_Unloaded">
             <Rectangle
                 x:Name="SmokeLayerBackground"
                 Fill="{ThemeResource SmokeFillColorDefaultBrush}"
                 Opacity="0"
-                OpacityTransition="{x:Bind local:Transitions.ScalarTransition}"/>
+                OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
             <Border
                 x:Name="Dialog"
                 Background="Red"

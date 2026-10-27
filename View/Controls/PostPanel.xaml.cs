@@ -3,10 +3,13 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
+using View.Utilities;
 
 namespace View.Controls;
 
 internal sealed partial class PostPanel: ContentDialog {
+    private readonly DialogService dialogService = Services.Get<DialogService>();
+
     public ViewModel.Controls.PostPanel? ViewModel { get; set; } = null;
 
     public PostPanel() {
@@ -15,29 +18,19 @@ internal sealed partial class PostPanel: ContentDialog {
         InitializeDialogTranslationStoryboard();
     }
 
-    private void ContentDialog_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) {
+    private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args) {
         // ContentDialog's smoke popup is the open root popup whose child is a bare Rectangle.
-        var smoke = VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot)
+        VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot)
             .Select(p => p.Child)
             .OfType<Rectangle>()
-            .LastOrDefault();
+            .FirstOrDefault()?.Visibility = Visibility.Collapsed;
 
-        if (smoke is not null) {
-            smoke.Scale = new(0);
-            smoke.SizeChanged += Smoke_SizeChanged;
+        Grid.Height = XamlRoot.Size.Height;
+        Grid.Width = XamlRoot.Size.Width;
+        DialogTranslateTransform.Y = Grid.Height;
 
-            Grid.Height = smoke.Height;
-            Grid.Width = smoke.Width;
-            DialogTranslateTransform.Y = smoke.Height;
-
-            Popup.XamlRoot = XamlRoot;
-            Popup.IsOpen = true;
-        }
-    }
-
-    private void Smoke_SizeChanged(object sender, SizeChangedEventArgs e) {
-        Grid.Width = e.NewSize.Width;
-        Grid.Height = e.NewSize.Height;
+        Popup.XamlRoot = XamlRoot;
+        Popup.IsOpen = true;
     }
 
     private void Dialog_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -47,9 +40,39 @@ internal sealed partial class PostPanel: ContentDialog {
         }
     }
 
+    private async void Dialog_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) {
+        _ = await dialogService.Show(
+            new ContentDialog() {
+                XamlRoot = XamlRoot,
+                Title = "Save your work?",
+                PrimaryButtonText = "Save",
+                SecondaryButtonText = "Don't Save",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+            }
+        );
+
+        Hide();
+        Popup.IsOpen = false;
+    }
+
+    private void Grid_Loaded(object sender, RoutedEventArgs e) {
+        XamlRoot.Changed -= XamlRoot_Changed;
+        XamlRoot.Changed += XamlRoot_Changed;
+    }
+
+    private void Grid_Unloaded(object sender, RoutedEventArgs e) {
+        XamlRoot.Changed -= XamlRoot_Changed;
+    }
+
+    private void XamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args) {
+        Grid.Height = sender.Size.Height;
+        Grid.Width = sender.Size.Width;
+    }
+
     private readonly Storyboard DialogTranslationStoryboard = new();
     private readonly DoubleAnimation DialogTranslationStoryboardAnimation = new() {
-        Duration = View.Transitions.DefaultDuration,
+        Duration = Utilities.Transitions.DefaultDuration,
         EasingFunction = new CubicEase(),
     };
     private void InitializeDialogTranslationStoryboard() {
@@ -71,10 +94,5 @@ internal sealed partial class PostPanel: ContentDialog {
         }
 
         DialogTranslationStoryboard.Begin();
-    }
-
-    private void Dialog_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) {
-        Hide();
-        Popup.IsOpen = false;
     }
 }

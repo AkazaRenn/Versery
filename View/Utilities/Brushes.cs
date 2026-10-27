@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml.Media;
 
-namespace View;
+namespace View.Utilities;
 
 internal static class Brushes {
     public static readonly SolidColorBrush Transparent = new(Colors.Transparent);

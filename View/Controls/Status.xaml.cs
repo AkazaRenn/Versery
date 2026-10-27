@@ -96,14 +96,14 @@ internal sealed partial class Status: Grid {
     private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {
         PostBodyRichTextBlockExpandedManually = true;
         CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-        PostBodyRichTextBlockOpacityMaskForeground.OpacityTransition = View.Transitions.ScalarTransition;
+        PostBodyRichTextBlockOpacityMaskForeground.OpacityTransition = Utilities.Transitions.ScalarTransition;
         PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
         PostBodyRichTextBlockOpacityMaskForeground.OpacityTransition = null;
         AnimatePostBodyGridHeight(PostBodyRichTextBlock.ActualHeight);
     }
     private readonly Storyboard PostBodyGridMaxHeightStoryboard = new();
     private readonly DoubleAnimation PostBodyGridMaxHeightStoryboardAnimation = new() {
-        Duration = View.Transitions.DefaultDuration,
+        Duration = Utilities.Transitions.DefaultDuration,
         EnableDependentAnimation = true,
         EasingFunction = new CubicEase(),
     };

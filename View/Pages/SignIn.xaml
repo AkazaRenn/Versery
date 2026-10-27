@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:local="using:View"
+    xmlns:utils="using:View.Utilities"
     Unloaded="Pages_Unloaded">
     <Grid>
         <StackPanel
@@ -23,7 +23,7 @@
                 HorizontalAlignment="Stretch"/>
         </StackPanel>
         <Grid
-            Visibility="{x:Bind local:Converters.NullableObjectToVisibility(viewModel.OAuthUri), Mode=OneWay}">
+            Visibility="{x:Bind utils:Converters.NullableObjectToVisibility(viewModel.OAuthUri), Mode=OneWay}">
             <ProgressBar
                 x:Name="ProgressBar"
                 VerticalAlignment="Top"

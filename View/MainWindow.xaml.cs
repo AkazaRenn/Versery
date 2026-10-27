@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using View.Controls;
 using View.Interfaces;
+using View.Utilities;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
@@ -21,6 +22,7 @@ namespace View;
 
 public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     private NavigationViewItemBase? activeNavigationItem = null;
+    private readonly DialogService dialogService = Services.Get<DialogService>();
     private readonly ViewModel.MainWindow viewModel = new();
 
     public CanvasDevice CanvasDevice { get; }
@@ -148,8 +150,10 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     }
 
     private void Button_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
-        _ = new PostPanel() {
-            XamlRoot = Content.XamlRoot,
-        }.ShowAsync();
+        _ = dialogService.Show(
+            new PostPanel() {
+                XamlRoot = Content.XamlRoot,
+            }
+        );
     }
 }

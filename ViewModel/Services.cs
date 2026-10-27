@@ -2,7 +2,8 @@
 
 namespace ViewModel;
 
-public static class Services {
-    public static void Configure(IServiceCollection services) {
+public class Services: Model.Services {
+    public new static void Configure(IServiceCollection services) {
+        Model.Services.Configure(services);
     }
 }

@@ -6,7 +6,7 @@ using Windows.Storage;
 
 namespace Model;
 
-public static class Services {
+public class Services {
     public static void Configure(IServiceCollection services) {
         services.AddSingleton<HttpClient>(sp => {
             var client = new HttpClient();

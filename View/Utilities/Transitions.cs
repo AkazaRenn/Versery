@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 
-namespace View;
+namespace View.Utilities;
 
 internal static class Transitions {
     public static readonly ScalarTransition ScalarTransition = new();

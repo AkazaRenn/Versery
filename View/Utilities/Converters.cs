@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 
-namespace View;
+namespace View.Utilities;
 
 internal static class Converters {
     public static bool IsNull(object? value) {
