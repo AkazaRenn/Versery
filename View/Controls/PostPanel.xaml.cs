@@ -11,6 +11,8 @@ internal sealed partial class PostPanel: ContentDialog {
 
     public PostPanel() {
         InitializeComponent();
+        Bindings.Initialize();
+        InitializeDialogTranslationStoryboard();
     }
 
     private void ContentDialog_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) {
@@ -26,6 +28,7 @@ internal sealed partial class PostPanel: ContentDialog {
 
             Grid.Height = smoke.Height;
             Grid.Width = smoke.Width;
+            DialogTranslateTransform.Y = smoke.Height;
 
             Popup.XamlRoot = XamlRoot;
             Popup.IsOpen = true;
@@ -35,11 +38,6 @@ internal sealed partial class PostPanel: ContentDialog {
     private void Smoke_SizeChanged(object sender, SizeChangedEventArgs e) {
         Grid.Width = e.NewSize.Width;
         Grid.Height = e.NewSize.Height;
-    }
-
-    private void Dialog_Loaded(object sender, RoutedEventArgs e) {
-        InitializeDialogTranslationStoryboard();
-        DialogTranslateTransform.Y = Grid.Height;
     }
 
     private void Dialog_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -65,11 +63,11 @@ internal sealed partial class PostPanel: ContentDialog {
         if (targetTranslation > 0) {
             DialogTranslationStoryboardAnimation.From = DialogTranslateTransform.Y;
             DialogTranslationStoryboardAnimation.To = 0;
-            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
+            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
         } else {
             DialogTranslationStoryboardAnimation.From = Dialog.ActualHeight;
             DialogTranslationStoryboardAnimation.To = 0;
-            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
+            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
         }
 
         DialogTranslationStoryboard.Begin();

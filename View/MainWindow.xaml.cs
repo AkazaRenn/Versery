@@ -147,7 +147,7 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
         UpdateNonClientInputPassthrough();
     }
 
-    private void Button_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) {
+    private void Button_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
         _ = new PostPanel() {
             XamlRoot = Content.XamlRoot,
         }.ShowAsync();
