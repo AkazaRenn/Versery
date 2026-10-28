@@ -25,9 +25,9 @@ internal sealed partial class PostPanel: ContentDialog {
             .OfType<Rectangle>()
             .FirstOrDefault()?.Visibility = Visibility.Collapsed;
 
-        Grid.Height = XamlRoot.Size.Height;
-        Grid.Width = XamlRoot.Size.Width;
-        DialogTranslateTransform.Y = Grid.Height;
+        SmokeLayer.Height = XamlRoot.Size.Height;
+        SmokeLayer.Width = XamlRoot.Size.Width;
+        DialogTranslateTransform.Y = SmokeLayer.Height;
 
         Popup.XamlRoot = XamlRoot;
         Popup.IsOpen = true;
@@ -35,39 +35,28 @@ internal sealed partial class PostPanel: ContentDialog {
 
     private void Dialog_SizeChanged(object sender, SizeChangedEventArgs e) {
         if (e.PreviousSize.Height == 0) {
-            AnimateDialogTranslation(0);
+            AnimateDialogTranslation(true);
             SmokeLayerBackground.Opacity = 1;
         }
     }
 
     private async void Dialog_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) {
-        _ = await dialogService.Show(
-            new ContentDialog() {
-                XamlRoot = XamlRoot,
-                Title = "Save your work?",
-                PrimaryButtonText = "Save",
-                SecondaryButtonText = "Don't Save",
-                CloseButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Primary,
-            }
-        );
-
-        Hide();
-        Popup.IsOpen = false;
+        AnimateDialogTranslation(false);
+        SmokeLayerBackground.Opacity = 0;
     }
 
-    private void Grid_Loaded(object sender, RoutedEventArgs e) {
+    private void SmokeLayer_Loaded(object sender, RoutedEventArgs e) {
         XamlRoot.Changed -= XamlRoot_Changed;
         XamlRoot.Changed += XamlRoot_Changed;
     }
 
-    private void Grid_Unloaded(object sender, RoutedEventArgs e) {
+    private void SmokeLayer_Unloaded(object sender, RoutedEventArgs e) {
         XamlRoot.Changed -= XamlRoot_Changed;
     }
 
     private void XamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args) {
-        Grid.Height = sender.Size.Height;
-        Grid.Width = sender.Size.Width;
+        SmokeLayer.Height = sender.Size.Height;
+        SmokeLayer.Width = sender.Size.Width;
     }
 
     private readonly Storyboard DialogTranslationStoryboard = new();
@@ -76,21 +65,28 @@ internal sealed partial class PostPanel: ContentDialog {
         EasingFunction = new CubicEase(),
     };
     private void InitializeDialogTranslationStoryboard() {
+        DialogTranslationStoryboardAnimation.Completed += DialogTranslationStoryboardAnimation_Completed;
         DialogTranslationStoryboard.Children.Add(DialogTranslationStoryboardAnimation);
         Storyboard.SetTarget(DialogTranslationStoryboardAnimation, DialogTranslateTransform);
         Storyboard.SetTargetProperty(DialogTranslationStoryboardAnimation, "Y");
     }
-    private void AnimateDialogTranslation(double targetTranslation) {
+    private void DialogTranslationStoryboardAnimation_Completed(object? sender, object e) {
+        if (DialogTranslateTransform.Y != 0) {
+            Hide();
+            Popup.IsOpen = false;
+        }
+    }
+    private void AnimateDialogTranslation(bool enter) {
         DialogTranslationStoryboard.Stop();
 
-        if (targetTranslation > 0) {
-            DialogTranslationStoryboardAnimation.From = DialogTranslateTransform.Y;
-            DialogTranslationStoryboardAnimation.To = 0;
-            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
-        } else {
+        if (enter) {
             DialogTranslationStoryboardAnimation.From = Dialog.ActualHeight;
             DialogTranslationStoryboardAnimation.To = 0;
             DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
+        } else {
+            DialogTranslationStoryboardAnimation.From = 0;
+            DialogTranslationStoryboardAnimation.To = Dialog.ActualHeight;
+            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
         }
 
         DialogTranslationStoryboard.Begin();

@@ -119,16 +119,15 @@ internal sealed partial class Status: Grid {
         Storyboard.SetTargetProperty(PostBodyGridMaxHeightStoryboardAnimation, "MaxHeight");
     }
     private void AnimatePostBodyGridHeight(double targetHeight) {
-        const double PostBodyGridHeightAnimationMaxDelta = 360;
         double currentHeight = PostBodyGrid.ActualHeight;
         PostBodyGridMaxHeightStoryboard.Stop();
 
         if (targetHeight > 0) {
             PostBodyGridMaxHeightStoryboardAnimation.From = currentHeight;
-            PostBodyGridMaxHeightStoryboardAnimation.To = Math.Min(targetHeight, currentHeight + PostBodyGridHeightAnimationMaxDelta);
+            PostBodyGridMaxHeightStoryboardAnimation.To = Math.Min(targetHeight, currentHeight + Utilities.Transitions.MaxTransitionDistance);
             PostBodyGridMaxHeightStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
         } else {
-            PostBodyGridMaxHeightStoryboardAnimation.From = Math.Min(currentHeight, PostBodyGridHeightAnimationMaxDelta);
+            PostBodyGridMaxHeightStoryboardAnimation.From = Math.Min(currentHeight, Utilities.Transitions.MaxTransitionDistance);
             PostBodyGridMaxHeightStoryboardAnimation.To = 0;
             PostBodyGridMaxHeightStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
         }

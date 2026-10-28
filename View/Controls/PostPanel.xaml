@@ -10,9 +10,9 @@
         x:Name="Popup"
         IsOpen="False">
         <Grid
-            x:Name="Grid"
-            Loaded="Grid_Loaded"
-            Unloaded="Grid_Unloaded">
+            x:Name="SmokeLayer"
+            Loaded="SmokeLayer_Loaded"
+            Unloaded="SmokeLayer_Unloaded">
             <Rectangle
                 x:Name="SmokeLayerBackground"
                 Fill="{ThemeResource SmokeFillColorDefaultBrush}"
