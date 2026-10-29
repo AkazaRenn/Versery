@@ -8,6 +8,10 @@ namespace View.Controls;
 
 internal sealed partial class PostPanel: ContentDialog {
     public ViewModel.Controls.PostPanel? ViewModel { get; set; } = null;
+    public new UIElement? Content {
+       get => Container.Child;
+       set => Container.Child = value;
+    }
 
     public PostPanel() {
         InitializeComponent();
@@ -86,7 +90,7 @@ internal sealed partial class PostPanel: ContentDialog {
         if (enter) {
             containerTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
 
-            containerTranslationStoryboardAnimation.From = Content.ActualHeight;
+            containerTranslationStoryboardAnimation.From = ContentInternal.ActualHeight + ContentInternal.Margin.Bottom;
             containerTranslationStoryboardAnimation.To = 0;
 
             smokeLayerOpacityStoryboardAnimation.From = 0;
@@ -95,7 +99,7 @@ internal sealed partial class PostPanel: ContentDialog {
             containerTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
 
             containerTranslationStoryboardAnimation.From = 0;
-            containerTranslationStoryboardAnimation.To = Content.ActualHeight;
+            containerTranslationStoryboardAnimation.To = ContentInternal.ActualHeight + ContentInternal.Margin.Bottom;
 
             smokeLayerOpacityStoryboardAnimation.From = 1;
             smokeLayerOpacityStoryboardAnimation.To = 0;

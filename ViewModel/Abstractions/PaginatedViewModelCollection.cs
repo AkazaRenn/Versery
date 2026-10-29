@@ -60,7 +60,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
         }
 
         // No overlapping, add all to the beginning
-        if (entities.Last().IsFollowedByGap()) {
+        if (entities.Last().FollowedByGap) {
             var newEntities = await Task.Run(() => {
                 return ViewModel.FromEntities(entities).ToArray();
             });
@@ -71,7 +71,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
         }
 
         { // Remove no-longer-existing ones, update overlapping ones
-            var newEntityIds = entities.Select(t => t.GetId()).ToHashSet();
+            var newEntityIds = entities.Select(t => t.Id).ToHashSet();
             var indexToRemove = new List<int>();
             for (int i = 0; i < ViewModels.Count; i++) {
                 if (newEntityIds.Contains(ViewModels[i].Id)) {
@@ -80,7 +80,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
                     indexToRemove.Add(i);
                 }
 
-                if (ViewModels[i].Id == entities[^1].GetId()) {
+                if (ViewModels[i].Id == entities[^1].Id) {
                     break;
                 }
             }
@@ -92,7 +92,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
 
         { // Add the rest to the beginning
             var newEntities = await Task.Run(() => {
-                var entitiesToAddEndIndex = Array.FindIndex(entities, x => x.GetId() == ViewModels[0].Id);
+                var entitiesToAddEndIndex = Array.FindIndex(entities, x => x.Id == ViewModels[0].Id);
                 Entity[] entitiesToAdd;
                 if (entitiesToAddEndIndex < 0) {
                     entitiesToAdd = entities;

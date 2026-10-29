@@ -16,7 +16,7 @@
                 <TranslateTransform x:Name="ContainerTranslateTransform"/>
             </Border.RenderTransform>
             <Border
-                x:Name="Content"
+                x:Name="ContentInternal"
                 Background="Red"
                 Margin="0, 128, 0, 0"
                 Width="400"

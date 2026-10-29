@@ -1,6 +1,6 @@
 namespace Model.Interfaces;
 
 public interface IPaginatedEntity {
-    public string GetId();
-    public bool IsFollowedByGap();
+    public string Id { get; }
+    public bool FollowedByGap { get; }
 }
