@@ -1,7 +1,6 @@
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation;
 
 namespace View.Controls.Components;
 

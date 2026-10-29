@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml.Controls;
-using View.Strings;
 
 namespace View.Controls;
 

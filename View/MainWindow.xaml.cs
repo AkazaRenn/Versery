@@ -1,18 +1,13 @@
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Composition;
-using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
 using View.Controls;
 using View.Interfaces;
-using View.Utilities;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.WindowManagement;
@@ -22,7 +17,6 @@ namespace View;
 
 public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     private NavigationViewItemBase? activeNavigationItem = null;
-    private readonly DialogService dialogService = Services.Get<DialogService>();
     private readonly ViewModel.MainWindow viewModel = new();
 
     public CanvasDevice CanvasDevice { get; }
@@ -72,8 +66,8 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
 
         var nonClientInput = InputNonClientPointerSource.GetForWindowId(AppWindow.Id);
         nonClientInput.ClearRegionRects(NonClientRegionKind.Passthrough);
-        //nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [.. regionRects]);
-        //nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [new RectInt32(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue)]);
+        nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [.. regionRects]);
+        nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [new RectInt32(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue)]);
     }
 
     private RectInt32 GetRegionRect(FrameworkElement element, double offset = 0) {
@@ -150,10 +144,8 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     }
 
     private void Button_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
-        _ = dialogService.Show(
-            new PostPanel() {
-                XamlRoot = Content.XamlRoot,
-            }
-        );
+        _ = new PostPanel() {
+            XamlRoot = Content.XamlRoot,
+        }.ShowAsync();
     }
 }

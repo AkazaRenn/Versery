@@ -2,7 +2,6 @@
 using Model.DataPersistence;
 using Model.Server;
 using Refit;
-using Windows.Storage;
 
 namespace Model;
 

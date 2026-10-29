@@ -9,25 +9,19 @@
     <Popup
         x:Name="Popup"
         IsOpen="False">
-        <Grid
-            x:Name="SmokeLayer"
-            Loaded="SmokeLayer_Loaded"
-            Unloaded="SmokeLayer_Unloaded">
-            <Rectangle
-                x:Name="SmokeLayerBackground"
-                Fill="{ThemeResource SmokeFillColorDefaultBrush}"
-                Opacity="0"
-                OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+        <Border 
+            x:Name="Container"
+            Loaded="Container_Loaded">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="ContainerTranslateTransform"/>
+            </Border.RenderTransform>
             <Border
-                x:Name="Dialog"
+                x:Name="Content"
                 Background="Red"
                 Margin="0, 128, 0, 0"
-                SizeChanged="Dialog_SizeChanged"
-                PointerPressed="Dialog_PointerPressed">
-                <Border.RenderTransform>
-                    <TranslateTransform x:Name="DialogTranslateTransform"/>
-                </Border.RenderTransform>
+                Width="400"
+                PointerPressed="Content_PointerPressed">
             </Border>
-        </Grid>
+        </Border>
     </Popup>
 </ContentDialog>

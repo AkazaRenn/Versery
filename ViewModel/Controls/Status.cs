@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using Model.Access;
 using Model.Server.Entities;
 using Model.Utilities;
-using System.Collections.ObjectModel;
 using ViewModel.Extensions;
 
 namespace ViewModel.Controls;

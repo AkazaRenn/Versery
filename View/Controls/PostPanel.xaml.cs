@@ -3,92 +3,104 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
-using View.Utilities;
 
 namespace View.Controls;
 
 internal sealed partial class PostPanel: ContentDialog {
-    private readonly DialogService dialogService = Services.Get<DialogService>();
-
     public ViewModel.Controls.PostPanel? ViewModel { get; set; } = null;
 
     public PostPanel() {
         InitializeComponent();
-        Bindings.Initialize();
-        InitializeDialogTranslationStoryboard();
+        //Bindings.Initialize();
+
+        containerTranslationStoryboardAnimation = new() {
+            Duration = Utilities.Transitions.DefaultDuration,
+            EasingFunction = new CubicEase(),
+        };
+        transitionStoryboard.Children.Add(containerTranslationStoryboardAnimation);
+        Storyboard.SetTarget(containerTranslationStoryboardAnimation, ContainerTranslateTransform);
+        Storyboard.SetTargetProperty(containerTranslationStoryboardAnimation, "Y");
+
+        smokeLayerOpacityStoryboardAnimation = new() {
+            Duration = containerTranslationStoryboardAnimation.Duration,
+            EasingFunction = containerTranslationStoryboardAnimation.EasingFunction,
+        };
+        transitionStoryboard.Children.Add(smokeLayerOpacityStoryboardAnimation);
+        Storyboard.SetTargetProperty(smokeLayerOpacityStoryboardAnimation, "Opacity");
+    }
+
+    public async void HideGracefully() {
+        var AnimationCompletedTask = new TaskCompletionSource();
+
+        transitionStoryboard.Completed += (s, e) => {
+            AnimationCompletedTask.SetResult();
+        };
+
+        AnimateTransition(false);
+        await AnimationCompletedTask.Task;
+        Hide();
+    }
+
+    public new void Hide() {
+        base.Hide();
+        Popup.IsOpen = false;
     }
 
     private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args) {
         // ContentDialog's smoke popup is the open root popup whose child is a bare Rectangle.
-        VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot)
+        var smokeLayer = VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot)
             .Select(p => p.Child)
             .OfType<Rectangle>()
-            .FirstOrDefault()?.Visibility = Visibility.Collapsed;
+            .FirstOrDefault();
+        if (smokeLayer is not null) {
+            smokeLayer.Opacity = 0;
+            Storyboard.SetTarget(smokeLayerOpacityStoryboardAnimation, smokeLayer);
+            smokeLayer.SizeChanged += SmokeLayer_SizeChanged;
+        }
 
-        SmokeLayer.Height = XamlRoot.Size.Height;
-        SmokeLayer.Width = XamlRoot.Size.Width;
-        DialogTranslateTransform.Y = SmokeLayer.Height;
-
+        Container.Height = XamlRoot.Size.Height;
+        Container.Width = XamlRoot.Size.Width;
         Popup.XamlRoot = XamlRoot;
         Popup.IsOpen = true;
     }
 
-    private void Dialog_SizeChanged(object sender, SizeChangedEventArgs e) {
-        if (e.PreviousSize.Height == 0) {
-            AnimateDialogTranslation(true);
-            SmokeLayerBackground.Opacity = 1;
-        }
+    private void SmokeLayer_SizeChanged(object sender, SizeChangedEventArgs e) {
+        Container.Height = e.NewSize.Height;
+        Container.Width = e.NewSize.Width;
     }
 
-    private async void Dialog_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) {
-        AnimateDialogTranslation(false);
-        SmokeLayerBackground.Opacity = 0;
+    private void Container_Loaded(object sender, RoutedEventArgs e) {
+        AnimateTransition(true);
     }
 
-    private void SmokeLayer_Loaded(object sender, RoutedEventArgs e) {
-        XamlRoot.Changed -= XamlRoot_Changed;
-        XamlRoot.Changed += XamlRoot_Changed;
+    private async void Content_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e) {
+        HideGracefully();
     }
 
-    private void SmokeLayer_Unloaded(object sender, RoutedEventArgs e) {
-        XamlRoot.Changed -= XamlRoot_Changed;
-    }
-
-    private void XamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args) {
-        SmokeLayer.Height = sender.Size.Height;
-        SmokeLayer.Width = sender.Size.Width;
-    }
-
-    private readonly Storyboard DialogTranslationStoryboard = new();
-    private readonly DoubleAnimation DialogTranslationStoryboardAnimation = new() {
-        Duration = Utilities.Transitions.DefaultDuration,
-        EasingFunction = new CubicEase(),
-    };
-    private void InitializeDialogTranslationStoryboard() {
-        DialogTranslationStoryboardAnimation.Completed += DialogTranslationStoryboardAnimation_Completed;
-        DialogTranslationStoryboard.Children.Add(DialogTranslationStoryboardAnimation);
-        Storyboard.SetTarget(DialogTranslationStoryboardAnimation, DialogTranslateTransform);
-        Storyboard.SetTargetProperty(DialogTranslationStoryboardAnimation, "Y");
-    }
-    private void DialogTranslationStoryboardAnimation_Completed(object? sender, object e) {
-        if (DialogTranslateTransform.Y != 0) {
-            Hide();
-            Popup.IsOpen = false;
-        }
-    }
-    private void AnimateDialogTranslation(bool enter) {
-        DialogTranslationStoryboard.Stop();
+    private readonly Storyboard transitionStoryboard = new();
+    private readonly DoubleAnimation containerTranslationStoryboardAnimation;
+    private readonly DoubleAnimation smokeLayerOpacityStoryboardAnimation;
+    private void AnimateTransition(bool enter) {
+        transitionStoryboard.Stop();
 
         if (enter) {
-            DialogTranslationStoryboardAnimation.From = Dialog.ActualHeight;
-            DialogTranslationStoryboardAnimation.To = 0;
-            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
+            containerTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
+
+            containerTranslationStoryboardAnimation.From = Content.ActualHeight;
+            containerTranslationStoryboardAnimation.To = 0;
+
+            smokeLayerOpacityStoryboardAnimation.From = 0;
+            smokeLayerOpacityStoryboardAnimation.To = 1;
         } else {
-            DialogTranslationStoryboardAnimation.From = 0;
-            DialogTranslationStoryboardAnimation.To = Dialog.ActualHeight;
-            DialogTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
+            containerTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
+
+            containerTranslationStoryboardAnimation.From = 0;
+            containerTranslationStoryboardAnimation.To = Content.ActualHeight;
+
+            smokeLayerOpacityStoryboardAnimation.From = 1;
+            smokeLayerOpacityStoryboardAnimation.To = 0;
         }
 
-        DialogTranslationStoryboard.Begin();
+        transitionStoryboard.Begin();
     }
 }
