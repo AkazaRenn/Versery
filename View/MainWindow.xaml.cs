@@ -67,7 +67,6 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
         var nonClientInput = InputNonClientPointerSource.GetForWindowId(AppWindow.Id);
         nonClientInput.ClearRegionRects(NonClientRegionKind.Passthrough);
         nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [.. regionRects]);
-        nonClientInput.SetRegionRects(NonClientRegionKind.Passthrough, [new RectInt32(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue)]);
     }
 
     private RectInt32 GetRegionRect(FrameworkElement element, double offset = 0) {
