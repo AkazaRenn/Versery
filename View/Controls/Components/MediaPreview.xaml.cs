@@ -8,14 +8,14 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace View.Controls.Components;
 
-internal sealed partial class MediaPreview: UserControl {
+internal sealed partial class MediaPreview: ImageButton {
     public Uri? UriSource {
         get => BitmapImage.UriSource;
         set => BitmapImage.UriSource = value;
     }
     public bool HideImage {
-        get => ImageButton.ImageVisibility == Visibility.Collapsed;
-        set => ImageButton.ImageVisibility = value ? Visibility.Collapsed : Visibility.Visible;
+        get => ImageVisibility == Visibility.Collapsed;
+        set => ImageVisibility = value ? Visibility.Collapsed : Visibility.Visible;
     }
 
     internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
@@ -33,7 +33,7 @@ internal sealed partial class MediaPreview: UserControl {
         if ((BackgroundBlur is null) ||
             String.IsNullOrWhiteSpace(BackgroundBlur.Hash) ||
             (BackgroundBlur.AspectRatio <= 0)) {
-            ImageButton.Background = DefaultBackground;
+            Background = DefaultBackground;
         } else {
             int width = 32;
             int height = 32;
@@ -60,10 +60,10 @@ internal sealed partial class MediaPreview: UserControl {
             }
             bitmap.Invalidate();
 
-            if (ImageButton.Background is ImageBrush imageBrush) {
+            if (Background is ImageBrush imageBrush) {
                 imageBrush.ImageSource = bitmap;
             } else {
-                ImageButton.Background = new ImageBrush {
+                Background = new ImageBrush {
                     ImageSource = bitmap,
                     Stretch = Stretch.UniformToFill,
                     AlignmentX = AlignmentX.Center,
