@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Grid
+<components:SlideDialog
     x:Class="View.Controls.PostPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
     xmlns:fluenticons="using:FluentIcons.WinUI"
     xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls"
+    Entered="SlideDialog_Entered">
+<Grid
+    x:Name="PanelRoot"
     RowDefinitions="48, Auto, *, 48"
     Margin="0, 128, 0, 0"
     Padding="8, 0, 8, 0"
@@ -110,3 +113,4 @@
         </Button>
     </RelativePanel>
 </Grid>
+</components:SlideDialog>

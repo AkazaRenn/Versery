@@ -1,20 +1,30 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 
 namespace View.Controls.Components;
 
-internal sealed partial class SlideDialog: ContentDialog {
+internal partial class SlideDialog: ContentDialog {
     public new UIElement? Content {
        get => Container.Child;
        set => Container.Child = value;
     }
     public event Action? Entered;
 
+    private readonly Popup Popup = new() { IsOpen = false };
+    private readonly Border Container = new();
+    private readonly TranslateTransform ContainerTranslateTransform = new();
+
     public SlideDialog() {
-        InitializeComponent();
+        Visibility = Visibility.Collapsed;
+        Container.RenderTransform = ContainerTranslateTransform;
+        Container.Loaded += Container_Loaded;
+        Popup.Child = Container;
+        base.Content = Popup;
+        Opened += ContentDialog_Opened;
 
         containerTranslationStoryboardAnimation = new() {
             Duration = Utilities.Transitions.DefaultDuration,

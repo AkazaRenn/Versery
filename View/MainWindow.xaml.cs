@@ -147,17 +147,8 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     }
 
     private void Button_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
-        var postPanel = new PostPanel();
-        var slideDialog = new SlideDialog() {
+        _ = new PostPanel() {
             XamlRoot = Content.XamlRoot,
-            Content = postPanel,
-        };
-        postPanel.Dismissed += () => {
-            slideDialog.HideGracefully();
-        };
-        slideDialog.Entered += () => {
-            postPanel.IsHitTestVisible = true;
-        };
-        _ = slideDialog.ShowAsync();
+        }.ShowAsync();
     }
 }

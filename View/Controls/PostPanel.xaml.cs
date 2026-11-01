@@ -1,16 +1,19 @@
-using Microsoft.UI.Xaml.Controls;
+using View.Controls.Components;
 
 namespace View.Controls;
 
-internal sealed partial class PostPanel: Grid {
+internal sealed partial class PostPanel: SlideDialog {
     public ViewModel.Controls.PostPanel? ViewModel { get; set; } = null;
-    public event Action? Dismissed;
 
     public PostPanel() {
         InitializeComponent();
     }
 
     private void DismissButton_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
-        Dismissed?.Invoke();
+        HideGracefully();
+    }
+
+    private void SlideDialog_Entered() {
+        PanelRoot.IsHitTestVisible = true;
     }
 }
