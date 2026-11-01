@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using View.Controls;
+using View.Controls.Components;
 using View.Interfaces;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -114,6 +115,9 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
         }
 
         Navigate(typeof(Pages.Home));
+
+        // Testing only
+        Button_Tapped(null, null);
     }
 
     private void Frame_Navigated(object sender, NavigationEventArgs e) {
@@ -143,8 +147,17 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     }
 
     private void Button_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
-        _ = new PostPanel() {
+        var postPanel = new PostPanel();
+        var slideDialog = new SlideDialog() {
             XamlRoot = Content.XamlRoot,
-        }.ShowAsync();
+            Content = postPanel,
+        };
+        postPanel.Dismissed += () => {
+            slideDialog.HideGracefully();
+        };
+        slideDialog.Entered += () => {
+            postPanel.IsHitTestVisible = true;
+        };
+        _ = slideDialog.ShowAsync();
     }
 }

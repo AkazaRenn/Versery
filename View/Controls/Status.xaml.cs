@@ -93,9 +93,12 @@ internal sealed partial class Status: Grid {
             PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
         }
     }
+    internal const bool CollapsePostBodyButtonInitialIsEnabled = true;
+    internal const double CollapsePostBodyButtonInitialOpacity = 1;
     private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {
         PostBodyRichTextBlockExpandedManually = true;
-        CollapsePostBodyButton.Visibility = Visibility.Collapsed;
+        CollapsePostBodyButton.IsEnabled = false;
+        CollapsePostBodyButton.Opacity = 0;
         PostBodyRichTextBlockOpacityMaskForeground.OpacityTransition = Utilities.Transitions.ScalarTransition;
         PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
         PostBodyRichTextBlockOpacityMaskForeground.OpacityTransition = null;
@@ -110,6 +113,7 @@ internal sealed partial class Status: Grid {
     private void PostBodyGridMaxHeightStoryboard_Completed(object? sender, object e) {
         if (PostBodyGrid.MaxHeight > 0) {
             PostBodyGrid.MaxHeight = double.PositiveInfinity;
+            CollapsePostBodyButton.Visibility = Visibility.Collapsed;
         }
     }
     private void InitializePostBodyGridMaxHeightStoryboard() {
@@ -220,7 +224,6 @@ internal sealed partial class Status: Grid {
     }
     private string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
     internal static Icon GetToggleMediaPreviewsButtonIcon(bool imagePreviewHidden) => imagePreviewHidden ? Icon.EyeOff : Icon.Eye;
-
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
     internal static Icon GetReplyIcon(bool isReply) => isReply ? Icon.ArrowReplyAll : Icon.ArrowReply;

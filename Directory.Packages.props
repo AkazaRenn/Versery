@@ -8,6 +8,7 @@
     <PackageVersion Include="CommunityToolkit.Labs.WinUI.Controls.OpacityMaskView" Version="0.1.251217-build.2433" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.RichSuggestBox" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Converters" Version="8.2.251219" />
     <PackageVersion Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-arm64" Version="9.0.2.1100" />
     <PackageVersion Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-x64" Version="9.0.2.1100" />

@@ -144,16 +144,15 @@
                             Opacity="1"/>
                     </Border>
                 </ctcontrols:OpacityMaskView.OpacityMask>
-                <ScrollView
-                    VerticalScrollMode="Disabled"
-                    HorizontalScrollMode="Disabled">
+                <StackPanel
+                    Orientation="Vertical">
                     <RichTextBlock
                         x:Name="PostBodyRichTextBlock"
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
                         extensions:RichTextBlock.Html="{x:Bind ViewModel.PostBody}"
                         SizeChanged="PostBodyRichTextBlock_SizeChanged"/>
-                </ScrollView>
+                </StackPanel>
             </ctcontrols:OpacityMaskView>
             <Button
                 x:Name="CollapsePostBodyButton"
@@ -165,6 +164,9 @@
                 FontSize="12"
                 Padding="16,0,16,0"
                 Visibility="Collapsed"
+                IsEnabled="{x:Bind controls:Status.CollapsePostBodyButtonInitialIsEnabled}"
+                Opacity="{x:Bind controls:Status.CollapsePostBodyButtonInitialOpacity}"
+                OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"
                 Click="CollapsePostBodyButton_Click"/>
         </Grid>
 
