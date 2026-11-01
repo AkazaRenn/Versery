@@ -10,27 +10,14 @@
     <PackageReference Include="ZoneTree" />
   </ItemGroup>
 
-  <!-- Refitter: generates Server\Generated from the Mastodon OpenAPI spec, only when an input changes. -->
+  <!-- Refitter: regenerates Server\Generated from the Mastodon OpenAPI spec on every build. -->
   <PropertyGroup>
-    <RefitterAutoScan>false</RefitterAutoScan>
-    <RefitterJsonLibraryVersion>$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))</RefitterJsonLibraryVersion>
     <RefitterNoLogging>true</RefitterNoLogging>
+    <RefitterJsonLibraryVersion>$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)'))</RefitterJsonLibraryVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Refitter.MSBuild" PrivateAssets="all" />
-    <RefitterInput Include="$(MSBuildProjectFullPath);Server\Mastodon.refitter;..\Dependency\mastodon-openapi\dist\schema.json" />
-    <UpToDateCheckInput Include="@(RefitterInput)" />
+    <UpToDateCheckInput Include="Server\Mastodon.refitter;..\Dependency\mastodon-openapi\dist\schema.json" />
     <Compile Remove="Server\Generated\**" />
   </ItemGroup>
-  <Target Name="GenerateMastodonApi" BeforeTargets="CoreCompile" Inputs="@(RefitterInput)" Outputs="$(IntermediateOutputPath)refitter.stamp">
-    <RefitterGenerateTask ProjectFileDirectory="$(MSBuildProjectDirectory)"
-                          DisableLogging="$(RefitterNoLogging)"
-                          JsonLibraryVersion="$(RefitterJsonLibraryVersion)" />
-    <Touch Files="$(IntermediateOutputPath)refitter.stamp" AlwaysCreate="true" />
-  </Target>
-  <Target Name="IncludeMastodonApi" AfterTargets="GenerateMastodonApi" BeforeTargets="CoreCompile">
-    <ItemGroup>
-      <Compile Include="Server\Generated\*.cs" />
-    </ItemGroup>
-  </Target>
 </Project>
