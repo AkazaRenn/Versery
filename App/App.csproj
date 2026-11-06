@@ -6,6 +6,8 @@
     <AssemblyName>$(SolutionName)</AssemblyName>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <!-- DeploymentManager.Initialize needs packageManagement capability inside AppContainer -->
+    <WindowsAppSdkDeploymentManagerInitialize>false</WindowsAppSdkDeploymentManagerInitialize>
   </PropertyGroup>
 
   <ItemGroup>
