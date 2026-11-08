@@ -29,6 +29,13 @@ internal sealed partial class Emoji: Panel {
     private int currentFrame = 0;
     private IReferenceCountedDisposable<FrameDataCollection>? frameData = null;
 
+    public string ShortCode {
+        get;
+        set {
+            field = value;
+            ToolTipService.SetToolTip(this, value);
+        }
+    } = string.Empty;
     public Uri? Source {
         get;
         set {
@@ -282,6 +289,8 @@ internal sealed partial class Emoji: Panel {
                     rgba->format = (int)AVPixelFormat.AV_PIX_FMT_RGBA;
                     rgba->width = width;
                     rgba->height = height;
+                    // Decoded frames are already full progressive rows (e.g. Adam7 PNG); swscale rejects the flag mismatch
+                    frame->flags &= ~ffmpeg.AV_FRAME_FLAG_INTERLACED;
                     if (ffmpeg.sws_scale_frame(sws, rgba, frame) < 0) {
                         ffmpeg.av_frame_unref(rgba);
                         ffmpeg.av_frame_unref(frame);
@@ -296,8 +305,8 @@ internal sealed partial class Emoji: Panel {
 
                     // Enforce a minimum delay of 100ms to avoid excessively fast frames
                     var delayMs = frame->duration * timeBase * 1000.0;
-                    if (double.IsNaN(delayMs) || (delayMs < 100)) {
-                        delayMs = 100;
+                    if (double.IsNaN(delayMs) || (delayMs < 50)) {
+                        delayMs = 50;
                     }
 
                     collection.Add(new(

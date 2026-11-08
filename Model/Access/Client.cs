@@ -1,14 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Model.DataPersistence;
 using Model.Enumerations;
+using Model.Server.Entities;
 
 namespace Model.Access;
 
 public sealed class Client {
     private readonly ApplicationStates applicationStates = Services.Get<ApplicationStates>();
-    private Database.Client? database;
-    private Server.Client? server;
-    private Entities.Account? account;
+    private Database.Client database = null!;
+    private Server.Client server = null!;
 
     public bool SignedIn => server is not null && database is not null;
 
@@ -16,85 +16,84 @@ public sealed class Client {
         // Flushes the stores so the next launch doesn't rely on write-ahead log replay.
         AppDomain.CurrentDomain.ProcessExit += (_, _) => database?.Dispose();
 
-        var user = applicationStates.ActiveUser;
-        if (string.IsNullOrWhiteSpace(user)) {
+        var userId = applicationStates.ActiveUser;
+        if (string.IsNullOrWhiteSpace(userId)) {
             return;
         }
+        database = new(userId);
 
-        var token = Credentials.GetAccessToken(user);
-        if (string.IsNullOrWhiteSpace(token)) {
-            return;
-        }
-
-        var split = user.Split('@');
+        var split = userId.Split('@');
         if (split.Length != 2) {
             return;
         }
-
-        var instance = split.Last();
-        server = new(instance, token);
-        database = new(user);
+        var instanceId = split.Last();
+        var accessToken = Credentials.GetAccessToken(userId);
+        if (string.IsNullOrWhiteSpace(accessToken)) {
+            return;
+        }
+        server = new(instanceId, accessToken);
     }
 
-    internal async Task NewUser(string instance, string accessToken) {
-        server = new(instance, accessToken);
-        var serverAccount = await server.Accounts.GetAccountVerifyCredentials();
-        var instanceInfo = await server.Instance.GetInstanceV2();
-        var canonicalInstance = instanceInfo.Domain.Trim().ToLowerInvariant();
-        var userId = $"{serverAccount.Username}@{canonicalInstance}";
+    internal async Task NewUser(string instanceId, string accessToken) {
+        instanceId = instanceId.Trim().ToLowerInvariant();
+        accessToken = accessToken.Trim();
+        server = new(instanceId, accessToken);
+        account = await server.Accounts.GetAccountVerifyCredentials();
+        instance = await server.Instance.GetInstanceV2();
+        var canonicalInstance = instance.Domain.Trim().ToLowerInvariant();
+        var userId = $"{account.Username}@{canonicalInstance}";
 
         database?.Dispose();
-        database = new Database.Client(userId);
-        account = database.AddAccount(serverAccount);
+        database = new(userId);
+        database.AddAccount(account);
 
-        Credentials.AddAccessToken(userId, server.AccessToken);
+        Credentials.AddAccessToken(userId, accessToken);
         applicationStates.ActiveUser = userId;
 
         StrongReferenceMessenger.Default.Send(new Messages.SignInCompleted());
     }
 
-    public async Task<Entities.Account?> GetAccount() {
-        if ((account is null) && SignedIn) {
-            var serverAccount = await server!.Accounts.GetAccountVerifyCredentials();
-            account = database!.AddAccount(serverAccount);
-        }
+    private Instance? instance;
+    public async Task<Instance?> GetInstance() {
+        instance ??= await server.Instance.GetInstanceV2();
+        return instance;
+    }
 
+    private CredentialAccount? account;
+    public async Task<CredentialAccount?> GetAccount() {
+        if (account is null) {
+            account = await server.Accounts.GetAccountVerifyCredentials();
+            database.AddAccount(account);
+        }
         return account;
     }
 
-    public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, string? afterId = null) {
-        if (!SignedIn) {
-            throw new InvalidOperationException("Client is not signed in");
-        }
+    private IReadOnlyList<CustomEmoji>? emojis = null;
+    public async Task<IReadOnlyList<CustomEmoji>> GetCustomEmojis() {
+        emojis ??= [.. await server.CustomEmojis.GetCustomEmojis()];
+        return emojis;
+    }
 
+    public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         var serverStatuses = type switch {
-            TimelineType.Home => await server!.Timelines.GetTimelineHome(limit: Constants.StatusesCountPerLoad, max_id: afterId),
-            TimelineType.Federated => await server!.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: false, max_id: afterId),
-            TimelineType.Local => await server!.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: true, max_id: afterId),
+            TimelineType.Home => await server.Timelines.GetTimelineHome(limit: Constants.StatusesCountPerLoad, max_id: afterId),
+            TimelineType.Federated => await server.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: false, max_id: afterId),
+            TimelineType.Local => await server.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: true, max_id: afterId),
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 
-        return [.. database!.AddTimeline(serverStatuses, afterId)];
+        return [.. database.AddTimeline(serverStatuses, afterId)];
     }
 
     public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null, uint count = Constants.StatusesCountPerLoad) {
-        if (!SignedIn) {
-            throw new InvalidOperationException("Client is not signed in");
-        }
-        return database!.GetTimeline(count, afterId);
+        return database.GetTimeline(count, afterId);
     }
 
     public Entities.Status? GetStatus(string id) {
-        if (!SignedIn) {
-            throw new InvalidOperationException("Client is not signed in");
-        }
-        return database!.GetStatus(id);
+        return database.GetStatus(id);
     }
 
     public Entities.Account? GetAccount(string id) {
-        if (!SignedIn) {
-            throw new InvalidOperationException("Client is not signed in");
-        }
-        return database!.GetAccount(id);
+        return database.GetAccount(id);
     }
 }

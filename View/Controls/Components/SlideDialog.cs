@@ -12,7 +12,6 @@ internal partial class SlideDialog: ContentDialog {
        get => Container.Child;
        set => Container.Child = value;
     }
-    public event Action? Entered;
 
     private readonly Popup Popup = new() { IsOpen = false };
     private readonly Border Container = new();
@@ -45,8 +44,7 @@ internal partial class SlideDialog: ContentDialog {
     }
 
     private void TransitionStoryboard_Completed(object? sender, object e) {
-        transitionStoryboard.Completed -= TransitionStoryboard_Completed;
-        Entered?.Invoke();
+        Container.IsHitTestVisible = true;
     }
 
     public async void HideGracefully() {
@@ -118,6 +116,7 @@ internal partial class SlideDialog: ContentDialog {
             smokeLayerOpacityStoryboardAnimation.To = 0;
         }
 
+        Container.IsHitTestVisible = false;
         transitionStoryboard.Begin();
     }
 }

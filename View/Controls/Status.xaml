@@ -157,7 +157,6 @@
             <Button
                 x:Name="CollapsePostBodyButton"
                 x:Load="{x:Bind utils:Converters.IsNull(ViewModel.SpoilerText)}"
-                x:Uid="Controls_Status_CollapsePostBodyButton"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
                 Height="24"
@@ -167,7 +166,9 @@
                 IsEnabled="{x:Bind controls:Status.CollapsePostBodyButtonInitialIsEnabled}"
                 Opacity="{x:Bind controls:Status.CollapsePostBodyButtonInitialOpacity}"
                 OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"
-                Click="CollapsePostBodyButton_Click"/>
+                Click="CollapsePostBodyButton_Click">
+                <fluenticons:FluentIcon Icon="ChevronDown"/>
+            </Button>
         </Grid>
 
         <controls:Status

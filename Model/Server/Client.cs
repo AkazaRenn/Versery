@@ -7,6 +7,7 @@ internal sealed class Client {
     public string AccessToken { get; }
 
     public IAccountsApi Accounts { get; }
+    public ICustom_emojisApi CustomEmojis { get; }
     public IInstanceApi Instance { get; }
     public ITimelinesApi Timelines { get; }
 
@@ -21,6 +22,7 @@ internal sealed class Client {
         var refitSettings = Services.Get<RefitSettings>();
 
         Accounts = RestService.ForGenerated<IAccountsApi>(httpClient, refitSettings);
+        CustomEmojis = RestService.ForGenerated<ICustom_emojisApi>(httpClient, refitSettings);
         Instance = RestService.ForGenerated<IInstanceApi>(httpClient, refitSettings);
         Timelines = RestService.ForGenerated<ITimelinesApi>(httpClient, refitSettings);
     }

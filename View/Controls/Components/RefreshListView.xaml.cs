@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using ViewModel.Interfaces;
 
 namespace View.Controls.Components;
 
@@ -50,8 +51,10 @@ internal sealed partial class RefreshListView: RefreshContainer {
             return;
         }
 
-        if (args.Phase == 0 && args.Item is ViewModel.Controls.Timeline status) {
-            status.Index = args.ItemIndex;
+        if (args.Phase == 0) {
+            if (args.Item is IPaginatedViewModel viewModel) {
+                viewModel.Index = args.ItemIndex;
+            }
             OnItemRealized?.Invoke(args.ItemIndex);
         }
     }

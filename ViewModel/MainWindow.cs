@@ -13,22 +13,26 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<Messages.Si
     [ObservableProperty]
     public partial Uri? Avatar { get; set; }
 
+    [ObservableProperty]
+    public partial bool PostEnabled { get; set; } = false;
+
     void IRecipient<Messages.SignInRequested>.Receive(Messages.SignInRequested _) {
         NavigationRequested?.Invoke(Enumerations.Page.SignIn, null);
     }
 
     void IRecipient<Messages.SignInCompleted>.Receive(Messages.SignInCompleted message) {
         NavigationRequested?.Invoke(Enumerations.Page.Home, null);
-        _ = UpdateUserInfo();
+        _ = UpdateInfo();
     }
 
     public MainWindow() {
         StrongReferenceMessenger.Default.Register<Messages.SignInRequested>(this);
         StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
-        _ = UpdateUserInfo();
+        _ = UpdateInfo();
     }
 
-    private async Task UpdateUserInfo() {
+    private async Task UpdateInfo() {
+        PostEnabled = client.SignedIn;
         var uri = (await client.GetAccount())?.Avatar;
         if (uri is not null) {
             Avatar = await Cache.Get(uri);

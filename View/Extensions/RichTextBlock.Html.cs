@@ -100,6 +100,7 @@ internal static partial class RichTextBlock {
                 Width = fontSize,
                 Height = fontSize,
                 Margin = new(0, 0, 0, -fontSize * 0.15),
+                ShortCode = shortCode,
             };
             if (sourceTask.IsCompletedSuccessfully) {
                 emojiControl.Source = sourceTask.Result;

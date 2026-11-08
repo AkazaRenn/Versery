@@ -4,113 +4,161 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
+    xmlns:vm.controls="using:ViewModel.Controls"
     xmlns:fluenticons="using:FluentIcons.WinUI"
-    xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls"
-    Entered="SlideDialog_Entered">
-<Grid
-    x:Name="PanelRoot"
-    RowDefinitions="48, Auto, *, 48"
-    Margin="0, 128, 0, 0"
-    Padding="8, 0, 8, 0"
-    CornerRadius="8, 8, 0, 0"
-    BorderBrush="{ThemeResource ContentDialogBorderBrush}"
-    BorderThickness="{ThemeResource CommandBarOverflowPresenterBorderUpThickness}"
-    Background="{ThemeResource ContentDialogBackground}"
-    IsHitTestVisible="False">
-    <RelativePanel
-        Grid.Row="0"
-        Margin="0, 0, -8, 0">
-        <components:ImageButton
-            x:Name="AvatarButton"
-            RelativePanel.AlignLeftWithPanel="True"
-            RelativePanel.AlignVerticalCenterWithPanel="True">
-        </components:ImageButton>
-        <Button
-            x:Name="VisibilityButton"
-            RelativePanel.RightOf="AvatarButton"
-            Style="{StaticResource SubtleButtonStyle}"
-            RelativePanel.AlignVerticalCenterWithPanel="True">
-            <fluenticons:FluentIcon Icon="Globe"/>
-        </Button>
-        <Button
-            x:Name="ContentWarningButton"
-            RelativePanel.RightOf="VisibilityButton"
-            Style="{StaticResource SubtleButtonStyle}"
-            RelativePanel.AlignVerticalCenterWithPanel="True">
-            <fluenticons:FluentIcon Icon="Warning"/>
-        </Button>
-        <Button
-            x:Name="ScheduleButton"
-            RelativePanel.RightOf="ContentWarningButton"
-            Style="{StaticResource SubtleButtonStyle}"
-            RelativePanel.AlignVerticalCenterWithPanel="True">
-            <fluenticons:FluentIcon Icon="Calendar"/>
-        </Button>
-        <Button
-            x:Name="LanguageButton"
-            RelativePanel.RightOf="ScheduleButton"
-            Style="{StaticResource SubtleButtonStyle}"
-            RelativePanel.AlignVerticalCenterWithPanel="True">
-            <fluenticons:FluentIcon Icon="LocalLanguageGlobe"/>
-        </Button>
-        <Button
-            x:Name="DismissButton"
-            RelativePanel.AlignRightWithPanel="True"
-            Height="44"
-            Width="48"
-            Margin="0, 0, 0, 4"
-            CornerRadius="0"
-            Tapped="DismissButton_Tapped"
-            Style="{StaticResource SubtleButtonStyle}">
-            <fluenticons:FluentIcon
-                Margin="0, 4, 0, 0"
-                Icon="Dismiss"/>
-        </Button>
-    </RelativePanel>
-    <TextBox
-        x:Name="ContentWarningTextBox"
-        Grid.Row="1"
-        Padding="8"
-        Margin="0, 0, 0, 8"
-        PlaceholderText="Content warning"/>
-    <ctcontrols:RichSuggestBox
-        x:Name="ContentBox"
-        Grid.Row="2"
-        Padding="8"
-        VerticalAlignment="Stretch"
-        ClipboardCopyFormat="PlainText"
-        ClipboardPasteFormat="PlainText"
-        PlaceholderText="What's happening?"/>
-    <RelativePanel
-        Grid.Row="3">
-        <Button
-            x:Name="AddMediaButton"
-            RelativePanel.AlignLeftWithPanel="True"
-            RelativePanel.AlignVerticalCenterWithPanel="True"
-            Style="{StaticResource SubtleButtonStyle}">
-            <fluenticons:FluentIcon Icon="Image"/>
-        </Button>
-        <Button
-            x:Name="EmojiButton"
-            RelativePanel.RightOf="AddMediaButton"
-            RelativePanel.AlignVerticalCenterWithPanel="True"
-            Style="{StaticResource SubtleButtonStyle}">
-            <fluenticons:FluentIcon Icon="Emoji"/>
-        </Button>
-        <Button
-            x:Name="PollButton"
-            RelativePanel.RightOf="EmojiButton"
-            RelativePanel.AlignVerticalCenterWithPanel="True"
-            Style="{StaticResource SubtleButtonStyle}">
-            <fluenticons:FluentIcon Icon="Poll"/>
-        </Button>
-        <Button
-            x:Name="PostButton"
-            RelativePanel.AlignRightWithPanel="True"
-            RelativePanel.AlignVerticalCenterWithPanel="True"
-            Style="{StaticResource AccentButtonStyle}">
-            <fluenticons:FluentIcon Icon="Send"/>
-        </Button>
-    </RelativePanel>
-</Grid>
+    xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls">
+    <Grid
+        x:Name="PanelRoot"
+        RowDefinitions="48, Auto, *, 48"
+        Margin="0, 128, 0, 0"
+        Padding="8, 0, 8, 0"
+        CornerRadius="8, 8, 0, 0"
+        BorderBrush="{ThemeResource ContentDialogBorderBrush}"
+        BorderThickness="{ThemeResource CommandBarOverflowPresenterBorderUpThickness}"
+        Background="{ThemeResource ContentDialogBackground}">
+        <RelativePanel
+            Grid.Row="0"
+            Margin="-4, 0, 0, 0">
+            <Button
+                x:Name="DismissButton"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Height="36"
+                Width="40"
+                Tapped="DismissButton_Tapped"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon
+                    Icon="Dismiss"
+                    FontSize="16" />
+            </Button>
+            <Button
+                x:Name="VisibilityButton"
+                RelativePanel.LeftOf="ContentWarningButton"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="{x:Bind GetVisibilityIcon(viewModel.Visibility), Mode=OneWay}" />
+                <Button.Flyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem
+                            x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Public"
+                            Command="{x:Bind viewModel.VisibilityPublicCommand}">
+                            <MenuFlyoutItem.Icon>
+                                <fluenticons:FluentIcon Icon="Globe"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Unlisted"
+                            Command="{x:Bind viewModel.VisibilityUnlistedCommand}">
+                            <MenuFlyoutItem.Icon>
+                                <fluenticons:FluentIcon Icon="LockOpen"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Private"
+                            Command="{x:Bind viewModel.VisibilityPrivateCommand}">
+                            <MenuFlyoutItem.Icon>
+                                <fluenticons:FluentIcon Icon="LockClosed"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Direct"
+                            Command="{x:Bind viewModel.VisibilityDirectCommand}">
+                            <MenuFlyoutItem.Icon>
+                                <fluenticons:FluentIcon Icon="Mail"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+            <Button
+                x:Name="ContentWarningButton"
+                RelativePanel.LeftOf="ScheduleButton"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="Warning" />
+            </Button>
+            <Button
+                x:Name="ScheduleButton"
+                RelativePanel.LeftOf="LanguageButton"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="Calendar" />
+            </Button>
+            <Button
+                x:Name="LanguageButton"
+                RelativePanel.LeftOf="AvatarButton"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="LocalLanguageGlobe" />
+            </Button>
+            <components:ImageButton
+                x:Name="AvatarButton"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True"> </components:ImageButton>
+        </RelativePanel>
+        <TextBox
+            x:Name="ContentWarningTextBox"
+            x:Uid="Controls_PostPanel_ContentWarningTextBox"
+            Grid.Row="1"
+            Padding="8"
+            Margin="0, 0, 0, 8" />
+        <ctcontrols:RichSuggestBox
+            x:Name="ContentBox"
+            x:Uid="Controls_PostPanel_ContentBox"
+            Grid.Row="2"
+            Padding="8"
+            VerticalAlignment="Stretch"
+            ClipboardCopyFormat="PlainText"
+            ClipboardPasteFormat="PlainText" />
+        <RelativePanel
+            Grid.Row="3">
+            <Button
+                x:Name="AddMediaButton"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="Attach" />
+            </Button>
+            <Button
+                x:Name="EmojiButton"
+                RelativePanel.RightOf="AddMediaButton"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Tapped="EmojiButton_Tapped"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="Emoji" />
+            </Button>
+            <TeachingTip
+                x:Name="EmojiPicker"
+                Target="{x:Bind EmojiButton}">
+                <GridView
+                    x:Name="EmojiGridView"
+                    ItemsSource="{x:Bind viewModel.Emojis}"
+                    IsItemClickEnabled="True"
+                    SelectionMode="None"
+                    Loaded="EmojiGridView_Loaded"
+                    ContainerContentChanging="EmojiGridView_ContainerContentChanging">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="vm.controls:PostPanel_Emoji">
+                            <components:Emoji
+                                Height="32"
+                                Width="32"
+                                ShortCode="{x:Bind ShortCode}"
+                                Source="{x:Bind Source, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </TeachingTip>
+            <Button
+                x:Name="PollButton"
+                RelativePanel.RightOf="EmojiButton"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="Poll" />
+            </Button>
+            <Button
+                x:Name="PostButton"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource AccentButtonStyle}">
+                <fluenticons:FluentIcon Icon="Send" />
+            </Button>
+        </RelativePanel>
+    </Grid>
 </components:SlideDialog>

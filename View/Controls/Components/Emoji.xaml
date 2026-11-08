@@ -5,5 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Loaded="Panel_Loaded"
     Unloaded="Panel_Unloaded"
-    SizeChanged="Panel_SizeChanged">
+    SizeChanged="Panel_SizeChanged"
+    Background="Transparent">
 </Panel>
