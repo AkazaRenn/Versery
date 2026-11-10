@@ -26,7 +26,10 @@ internal sealed partial class PostPanel: SlideDialog {
     private void EmojiButton_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
         EmojiPicker.IsOpen = !EmojiPicker.IsOpen;
     }
-    private void EmojiGridView_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) {
+    private void EmojiSearchTextBox_TextChanged(object sender, Microsoft.UI.Xaml.Controls.TextChangedEventArgs e) {
+        viewModel.UpdateEmojiFilter(EmojiSearchTextBox.Text);
+    }
+    private void SlideDialog_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) {
         if (viewModel.Emojis.Count == 0) {
             viewModel.LoadMoreEmojis();
         }
@@ -35,7 +38,6 @@ internal sealed partial class PostPanel: SlideDialog {
         if (args.InRecycleQueue) {
             return;
         }
-
         if (args.Phase == 0) {
             viewModel.OnEmojiRealized(args.ItemIndex);
         }

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.WinUI.Collections;
 using Model.Access;
 using Model.Server.Entities;
 using System.Collections.ObjectModel;
@@ -25,17 +26,37 @@ public sealed partial class PostPanel: ObservableObject {
     public void VisibilityDirect() => Visibility = StatusVisibilityEnum.Direct;
     public bool IsVisibilityDirect => Visibility == StatusVisibilityEnum.Direct;
 
+    public AdvancedCollectionView EmojisView { get; }
     public ObservableCollection<PostPanel_Emoji> Emojis { get; } = [];
+    private string currentEmojiFilter = string.Empty;
+    public async void UpdateEmojiFilter(string filter) {
+        if (filter == currentEmojiFilter) {
+            return;
+        }
+
+        currentEmojiFilter = filter;
+        await Task.Delay(200);
+        if (currentEmojiFilter != filter) {
+            return;
+        }
+
+        using (EmojisView.DeferRefresh()) {
+            if (string.IsNullOrWhiteSpace(filter)) {
+                EmojisView.Filter = x => true;
+            } else {
+                EmojisView.Filter = x => ((PostPanel_Emoji)x).ShortCode.Contains(filter);
+            }
+        }
+    }
     public async void LoadMoreEmojis() {
         if (allEmojisLoaded) {
             return;
         }
+        const int emojiBatchSize = 100;
         var emojis = await client.GetCustomEmojis();
-        const int emojiBatchSize = 20;
-        foreach (var emoji in emojis.Skip(Emojis.Count).Take(emojiBatchSize)) {
-            if (emoji.VisibleInPicker) {
-                Emojis.Add(new PostPanel_Emoji(emoji.Shortcode, emoji.Url));
-            }
+        var emojisToAdd = emojis.Skip(Emojis.Count).Take(emojiBatchSize).Where(x => x.VisibleInPicker);
+        foreach (var emoji in emojisToAdd) {
+            Emojis.Add(new PostPanel_Emoji(emoji.Shortcode, emoji.Url));
         }
         allEmojisLoaded = emojis.Count <= Emojis.Count;
     }
@@ -46,6 +67,10 @@ public sealed partial class PostPanel: ObservableObject {
         if (index >= Emojis.Count - 1) {
             LoadMoreEmojis();
         }
+    }
+
+    public PostPanel() {
+        EmojisView = new(Emojis);
     }
 }
 
