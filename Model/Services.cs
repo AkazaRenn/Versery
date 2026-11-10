@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Model.DataPersistence;
 using Model.Server;
+using Model.Server.Entities;
 using Refit;
 
 namespace Model;
@@ -16,7 +17,7 @@ public class Services {
         services.AddSingleton<ApplicationStates>();
         services.AddSingleton<RefitSettings>(sp => {
             return new() {
-                ContentSerializer = new SystemTextJsonContentSerializer(ApiJsonContext.Default.Options),
+                ContentSerializer = new SystemTextJsonContentSerializer(MastodonAPISerializerContext.Default.Options),
             };
         });
     }

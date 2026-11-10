@@ -27,16 +27,19 @@ public sealed partial class PostPanel: ObservableObject {
     public bool IsVisibilityDirect => Visibility == StatusVisibilityEnum.Direct;
 
     public AdvancedCollectionView EmojisView { get; }
-    public ObservableCollection<PostPanel_Emoji> Emojis { get; } = [];
-    private string currentEmojiFilter = string.Empty;
-    public async void UpdateEmojiFilter(string filter) {
-        if (filter == currentEmojiFilter) {
-            return;
+    private readonly ObservableCollection<PostPanel_Emoji> emojis = [];
+    public string EmojiFilter {
+        get;
+        set {
+            if (field != value) {
+                field = value;
+                UpdateEmojiFilter(value);
+            }
         }
-
-        currentEmojiFilter = filter;
+    } = string.Empty;
+    public async void UpdateEmojiFilter(string filter) {
         await Task.Delay(200);
-        if (currentEmojiFilter != filter) {
+        if (EmojiFilter != filter) {
             return;
         }
 
@@ -44,36 +47,52 @@ public sealed partial class PostPanel: ObservableObject {
             if (string.IsNullOrWhiteSpace(filter)) {
                 EmojisView.Filter = x => true;
             } else {
-                EmojisView.Filter = x => ((PostPanel_Emoji)x).ShortCode.Contains(filter);
+                EmojisView.Filter = x => ((PostPanel_Emoji)x).ShortCode.Contains(filter, StringComparison.OrdinalIgnoreCase);
             }
+        }
+    }
+    public void LoadInitialEmojis() {
+        if (emojis.Count == 0) {
+            LoadMoreEmojis();
         }
     }
     public async void LoadMoreEmojis() {
         if (allEmojisLoaded) {
             return;
         }
-        const int emojiBatchSize = 100;
-        var emojis = await client.GetCustomEmojis();
-        var emojisToAdd = emojis.Skip(Emojis.Count).Take(emojiBatchSize).Where(x => x.VisibleInPicker);
+        const int emojiBatchSize = 30;
+        var serverEmojis = await client.GetCustomEmojis();
+        var emojisToAdd = serverEmojis.Skip(emojis.Count).Take(emojiBatchSize);
         foreach (var emoji in emojisToAdd) {
-            Emojis.Add(new PostPanel_Emoji(emoji.Shortcode, emoji.Url));
+            emojis.Add(new PostPanel_Emoji(emoji.Shortcode, emoji.Url));
         }
-        allEmojisLoaded = emojis.Count <= Emojis.Count;
+        allEmojisLoaded = serverEmojis.Count <= emojis.Count;
     }
     public void OnEmojiRealized(int index) {
-        if (index >= 0 && index < Emojis.Count) {
-            Emojis[index].Load();
+        if ((index >= 0) &&
+            (index < EmojisView.Count)) {
+            ((PostPanel_Emoji)EmojisView[index]).Load();
         }
-        if (index >= Emojis.Count - 1) {
+        if (index >= (EmojisView.Count - 1)) {
             LoadMoreEmojis();
         }
     }
 
+    public async Task Post(string content) {
+        if (string.IsNullOrWhiteSpace(content)) {
+            return;
+        }
+        var textStatus = new TextStatus() {
+            Status = content,
+            Visibility = Visibility,
+        };
+        await client.PostStatus(textStatus);
+    }
+
     public PostPanel() {
-        EmojisView = new(Emojis);
+        EmojisView = new(emojis);
     }
 }
-
 
 public sealed partial class PostPanel_Emoji(string shortCode, Uri? sourceRemote = null): ObservableObject {
     public string ShortCode => shortCode;

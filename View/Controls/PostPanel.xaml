@@ -36,6 +36,7 @@
                 x:Name="VisibilityButton"
                 RelativePanel.LeftOf="ContentWarningButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
+                Margin="0, 0, 4, 0"
                 Style="{StaticResource SubtleButtonStyle}">
                 <fluenticons:FluentIcon Icon="{x:Bind GetVisibilityIcon(viewModel.Visibility), Mode=OneWay}" />
                 <Button.Flyout>
@@ -72,6 +73,7 @@
                 x:Name="ContentWarningButton"
                 RelativePanel.LeftOf="ScheduleButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
+                Margin="0, 0, 4, 0"
                 Style="{StaticResource SubtleButtonStyle}">
                 <fluenticons:FluentIcon Icon="Warning" />
             </Button>
@@ -79,6 +81,7 @@
                 x:Name="ScheduleButton"
                 RelativePanel.LeftOf="LanguageButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
+                Margin="0, 0, 4, 0"
                 Style="{StaticResource SubtleButtonStyle}">
                 <fluenticons:FluentIcon Icon="Calendar" />
             </Button>
@@ -86,20 +89,23 @@
                 x:Name="LanguageButton"
                 RelativePanel.LeftOf="AvatarButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
+                Margin="0, 0, 4, 0"
                 Style="{StaticResource SubtleButtonStyle}">
                 <fluenticons:FluentIcon Icon="LocalLanguageGlobe" />
             </Button>
             <components:ImageButton
                 x:Name="AvatarButton"
                 RelativePanel.AlignRightWithPanel="True"
-                RelativePanel.AlignVerticalCenterWithPanel="True"> </components:ImageButton>
+                RelativePanel.AlignVerticalCenterWithPanel="True">
+            </components:ImageButton>
         </RelativePanel>
         <TextBox
             x:Name="ContentWarningTextBox"
             x:Uid="Controls_PostPanel_ContentWarningTextBox"
             Grid.Row="1"
             Padding="8"
-            Margin="0, 0, 0, 8" />
+            Margin="0, 0, 0, 8"
+            GotFocus="TextBox_GotFocus"/>
         <ctcontrols:RichSuggestBox
             x:Name="ContentBox"
             x:Uid="Controls_PostPanel_ContentBox"
@@ -107,7 +113,10 @@
             Padding="8"
             VerticalAlignment="Stretch"
             ClipboardCopyFormat="PlainText"
-            ClipboardPasteFormat="PlainText" />
+            ClipboardPasteFormat="PlainText"
+            DisabledFormattingAccelerators="All"
+            Loaded="ContentBox_Loaded"
+            GotFocus="TextBox_GotFocus"/>
         <RelativePanel
             Grid.Row="3">
             <Button
@@ -121,15 +130,43 @@
                 x:Name="EmojiButton"
                 RelativePanel.RightOf="AddMediaButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
+                Margin="4, 0, 0, 0"
                 Tapped="EmojiButton_Tapped"
                 Style="{StaticResource SubtleButtonStyle}">
                 <fluenticons:FluentIcon Icon="Emoji" />
             </Button>
+            <Button
+                x:Name="PollButton"
+                RelativePanel.RightOf="EmojiButton"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Margin="4, 0, 0, 0"
+                Style="{StaticResource SubtleButtonStyle}">
+                <fluenticons:FluentIcon Icon="Poll" />
+            </Button>
+            <Button
+                x:Name="PostButton"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{StaticResource AccentButtonStyle}"
+                Tapped="PostButton_Tapped">
+                <Grid>
+                    <fluenticons:FluentIcon
+                        x:Name="PostButtonIcon"
+                        Icon="Send" />
+                    <ProgressRing
+                        x:Name="PostButtonProgressRing"
+                        Width="{x:Bind PostButtonIcon.FontSize}"
+                        Height="{x:Bind PostButtonIcon.FontSize}"
+                        Visibility="Collapsed"
+                        IsActive="True"/>
+                </Grid>
+            </Button>
             <TeachingTip
                 x:Name="EmojiPicker"
                 IsLightDismissEnabled="True"
-                Target="{x:Bind EmojiButton}">
-                <Grid 
+                Target="{x:Bind EmojiButton}"
+                Closed="EmojiPicker_Closed">
+                <Grid
                     RowDefinitions="Auto, *"
                     RowSpacing="4"
                     Height="288"
@@ -141,8 +178,8 @@
                         Margin="-2, 0, 4, 0"
                         Padding="32, 5, 6, 6"
                         HorizontalAlignment="Stretch"
-                        TextChanged="EmojiSearchTextBox_TextChanged"/>
-                    <FontIcon 
+                        Text="{x:Bind viewModel.EmojiFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <FontIcon
                         Grid.Row="0"
                         Margin="8, 8, 0, 0"
                         FontSize="16"
@@ -157,33 +194,20 @@
                         IsItemClickEnabled="True"
                         SelectionMode="None"
                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                        ContainerContentChanging="EmojiGridView_ContainerContentChanging">
+                        ContainerContentChanging="EmojiGridView_ContainerContentChanging"
+                        ItemClick="EmojiGridView_ItemClick">
                         <GridView.ItemTemplate>
                             <DataTemplate x:DataType="vm.controls:PostPanel_Emoji">
                                 <components:Emoji
-                                Height="32"
-                                Width="32"
-                                ShortCode="{x:Bind ShortCode}"
-                                Source="{x:Bind Source, Mode=OneWay}"/>
+                                    Height="32"
+                                    Width="32"
+                                    ShortCode="{x:Bind ShortCode}"
+                                    Source="{x:Bind Source, Mode=OneWay}"/>
                             </DataTemplate>
                         </GridView.ItemTemplate>
                     </GridView>
                 </Grid>
             </TeachingTip>
-            <Button
-                x:Name="PollButton"
-                RelativePanel.RightOf="EmojiButton"
-                RelativePanel.AlignVerticalCenterWithPanel="True"
-                Style="{StaticResource SubtleButtonStyle}">
-                <fluenticons:FluentIcon Icon="Poll" />
-            </Button>
-            <Button
-                x:Name="PostButton"
-                RelativePanel.AlignRightWithPanel="True"
-                RelativePanel.AlignVerticalCenterWithPanel="True"
-                Style="{StaticResource AccentButtonStyle}">
-                <fluenticons:FluentIcon Icon="Send" />
-            </Button>
         </RelativePanel>
     </Grid>
 </components:SlideDialog>

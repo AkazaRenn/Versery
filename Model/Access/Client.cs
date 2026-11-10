@@ -70,7 +70,7 @@ public sealed class Client {
 
     private IReadOnlyList<CustomEmoji>? emojis = null;
     public async Task<IReadOnlyList<CustomEmoji>> GetCustomEmojis() {
-        emojis ??= [.. await server.CustomEmojis.GetCustomEmojis()];
+        emojis ??= [.. (await server.CustomEmojis.GetCustomEmojis()).Where(x => x.VisibleInPicker)];
         return emojis;
     }
 
@@ -91,6 +91,10 @@ public sealed class Client {
 
     public Entities.Status? GetStatus(string id) {
         return database.GetStatus(id);
+    }
+
+    public async Task PostStatus(TextStatus textStatus) {
+        await server.Status.CreateStatus(textStatus);
     }
 
     public Entities.Account? GetAccount(string id) {

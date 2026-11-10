@@ -8,7 +8,7 @@
   "multipleInterfaces": "ByTag",
   "useCancellationTokens": true,
   "optionalParameters": true,
-  "generateJsonSerializerContext": false,
+  "generateJsonSerializerContext": true,
   "generateDefaultAdditionalProperties": false,
   "codeGeneratorSettings": {
     "generateNullableReferenceTypes": true

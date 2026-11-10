@@ -43,7 +43,7 @@ public sealed partial class Authentication(string instance) {
             return null;
         }
 
-        return JsonSerializer.Deserialize(appRegistrationJson, ApiJsonContext.Default.CredentialApplication);
+        return JsonSerializer.Deserialize(appRegistrationJson, MastodonAPISerializerContext.Default.CredentialApplication);
     }
 
     private async Task<CredentialApplication> GetOrCreateAppRegistration() {
@@ -59,7 +59,7 @@ public sealed partial class Authentication(string instance) {
             Website = Constants.ProjectLink,
         });
 
-        Credentials.AddAppRegistration(instance, JsonSerializer.Serialize(newAppRegistration, ApiJsonContext.Default.CredentialApplication));
+        Credentials.AddAppRegistration(instance, JsonSerializer.Serialize(newAppRegistration, MastodonAPISerializerContext.Default.CredentialApplication));
         return newAppRegistration;
     }
 
