@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Text;
 using View.Controls.Components;
 using CommunityToolkit.WinUI.Controls;
+using Windows.Foundation.Collections;
 
 namespace View.Controls;
 
@@ -51,6 +52,12 @@ internal sealed partial class PostPanel: SlideDialog {
             viewModel.OnEmojiRealized(args.ItemIndex);
         }
     }
+    private void EmojisView_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs args) {
+        if ((args.CollectionChange == CollectionChange.Reset) &&
+            (viewModel.EmojisView.Count > 0)) {
+            EmojiGridView.ScrollIntoView(viewModel.EmojisView[0], ScrollIntoViewAlignment.Leading);
+        }
+    }
     private void EmojiPicker_Closed(TeachingTip sender, TeachingTipClosedEventArgs args) {
         focusedElement?.Focus(FocusState.Programmatic);
     }
@@ -87,5 +94,6 @@ internal sealed partial class PostPanel: SlideDialog {
     public PostPanel() {
         InitializeComponent();
         Bindings.Initialize();
+        viewModel.EmojisView.VectorChanged += EmojisView_VectorChanged;
     }
 }

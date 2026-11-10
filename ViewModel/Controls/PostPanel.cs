@@ -39,16 +39,8 @@ public sealed partial class PostPanel: ObservableObject {
     } = string.Empty;
     public async void UpdateEmojiFilter(string filter) {
         await Task.Delay(200);
-        if (EmojiFilter != filter) {
-            return;
-        }
-
-        using (EmojisView.DeferRefresh()) {
-            if (string.IsNullOrWhiteSpace(filter)) {
-                EmojisView.Filter = x => true;
-            } else {
-                EmojisView.Filter = x => ((PostPanel_Emoji)x).ShortCode.Contains(filter, StringComparison.OrdinalIgnoreCase);
-            }
+        if (EmojiFilter == filter) {
+            EmojisView.Refresh();
         }
     }
     public void LoadInitialEmojis() {
@@ -90,7 +82,9 @@ public sealed partial class PostPanel: ObservableObject {
     }
 
     public PostPanel() {
-        EmojisView = new(emojis);
+        EmojisView = new(emojis) {
+            Filter = x => ((PostPanel_Emoji)x).ShortCode.Contains(EmojiFilter, StringComparison.OrdinalIgnoreCase),
+        };
     }
 }
 
