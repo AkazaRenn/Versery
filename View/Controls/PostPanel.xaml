@@ -38,7 +38,11 @@
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Margin="0, 0, 4, 0"
                 Style="{StaticResource SubtleButtonStyle}">
-                <fluenticons:FluentIcon Icon="{x:Bind GetVisibilityIcon(viewModel.Visibility), Mode=OneWay}" />
+                <components:SwitchContentPanel CurrentContent="{x:Bind GetVisibilityFluentIcon(viewModel.Visibility), Mode=OneWay}">
+                    <components:SwitchContentPanel.DefaultContent>
+                        <fluenticons:FluentIcon Icon="Globe" />
+                    </components:SwitchContentPanel.DefaultContent>
+                </components:SwitchContentPanel>
                 <Button.Flyout>
                     <MenuFlyout Placement="Bottom">
                         <MenuFlyoutItem
@@ -105,6 +109,7 @@
             Grid.Row="1"
             Padding="8"
             Margin="0, 0, 0, 8"
+            Text="{x:Bind viewModel.SpoilerText, Mode=TwoWay}"
             GotFocus="TextBox_GotFocus"/>
         <ctcontrols:RichSuggestBox
             x:Name="ContentBox"
@@ -133,7 +138,14 @@
                 Margin="4, 0, 0, 0"
                 Tapped="EmojiButton_Tapped"
                 Style="{StaticResource SubtleButtonStyle}">
-                <fluenticons:FluentIcon Icon="Emoji" />
+                <components:SwitchContentPanel x:Name="EmojiButtonContentPanel">
+                    <components:SwitchContentPanel.DefaultContent>
+                        <fluenticons:FluentIcon Icon="Emoji" />
+                    </components:SwitchContentPanel.DefaultContent>
+                    <components:SwitchContentPanel.AlternateContent>
+                        <fluenticons:FluentIcon Icon="Emoji" IconVariant="Filled"/>
+                    </components:SwitchContentPanel.AlternateContent>
+                </components:SwitchContentPanel>
             </Button>
             <Button
                 x:Name="PollButton"
@@ -149,17 +161,19 @@
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Style="{StaticResource AccentButtonStyle}"
                 Tapped="PostButton_Tapped">
-                <Grid>
-                    <fluenticons:FluentIcon
-                        x:Name="PostButtonIcon"
-                        Icon="Send" />
-                    <ProgressRing
-                        x:Name="PostButtonProgressRing"
-                        Width="{x:Bind PostButtonIcon.FontSize}"
-                        Height="{x:Bind PostButtonIcon.FontSize}"
-                        Visibility="Collapsed"
-                        IsActive="True"/>
-                </Grid>
+                <components:SwitchContentPanel x:Name="PostButtonContentPanel">
+                    <components:SwitchContentPanel.DefaultContent>
+                        <fluenticons:FluentIcon
+                            x:Name="PostButtonIcon"
+                            Icon="Send" />
+                    </components:SwitchContentPanel.DefaultContent>
+                    <components:SwitchContentPanel.AlternateContent>
+                        <ProgressRing
+                            Width="{x:Bind PostButtonIcon.FontSize}"
+                            Height="{x:Bind PostButtonIcon.FontSize}"
+                            IsActive="True"/>
+                    </components:SwitchContentPanel.AlternateContent>
+                </components:SwitchContentPanel>
             </Button>
             <TeachingTip
                 x:Name="EmojiPicker"

@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Blurhash.Core" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.OpacityMaskView" />
+    <PackageReference Include="CommunityToolkit.WinUI.Animations" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.RichSuggestBox" />
     <PackageReference Include="DevEnvy.FFmpeg.Binaries.LGPLv3.Runtime.win-arm64" />

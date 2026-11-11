@@ -38,8 +38,8 @@ public sealed class Client {
         instanceId = instanceId.Trim().ToLowerInvariant();
         accessToken = accessToken.Trim();
         server = new(instanceId, accessToken);
-        account = await server.Accounts.GetAccountVerifyCredentials();
-        instance = await server.Instance.GetInstanceV2();
+        var account = await AccountTask;
+        var instance = await InstanceTask;
         var canonicalInstance = instance.Domain.Trim().ToLowerInvariant();
         var userId = $"{account.Username}@{canonicalInstance}";
 
@@ -53,25 +53,34 @@ public sealed class Client {
         StrongReferenceMessenger.Default.Send(new Messages.SignInCompleted());
     }
 
-    private Instance? instance;
-    public async Task<Instance?> GetInstance() {
-        instance ??= await server.Instance.GetInstanceV2();
-        return instance;
-    }
-
-    private CredentialAccount? account;
-    public async Task<CredentialAccount?> GetAccount() {
-        if (account is null) {
-            account = await server.Accounts.GetAccountVerifyCredentials();
-            database.AddAccount(account);
+    private readonly Lock instanceLock = new();
+    public Task<Instance> InstanceTask {
+        get {
+            lock (instanceLock) {
+                return field ??= server.Instance.GetInstanceV2();
+            }
         }
-        return account;
-    }
+    } = null;
 
-    private IReadOnlyList<CustomEmoji>? emojis = null;
-    public async Task<IReadOnlyList<CustomEmoji>> GetCustomEmojis() {
-        emojis ??= [.. (await server.CustomEmojis.GetCustomEmojis()).Where(x => x.VisibleInPicker)];
-        return emojis;
+    private readonly Lock accountLock = new();
+    public Task<CredentialAccount> AccountTask {
+        get {
+            lock (accountLock) {
+                return field ??= server.Accounts.GetAccountVerifyCredentials();
+            }
+        }
+    } = null;
+
+    private readonly Lock emojisLock = new();
+    public Task<IReadOnlyList<CustomEmoji>> EmojisTask {
+        get {
+            lock (emojisLock) {
+                return field ??= GetCustomEmojisVisibleInPicker();
+            }
+        }
+    } = null;
+    private async Task<IReadOnlyList<CustomEmoji>> GetCustomEmojisVisibleInPicker() {
+        return [.. (await server.CustomEmojis.GetCustomEmojis()).Where(x => x.VisibleInPicker)];
     }
 
     public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, string? afterId = null) {

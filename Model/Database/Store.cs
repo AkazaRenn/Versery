@@ -23,7 +23,6 @@ internal sealed class Store<T>: IDisposable {
             .SetValueSerializer(new JsonValueSerializer(typeInfo))
             .OpenOrCreate();
         maintainer = tree.CreateMaintainer();
-        maintainer.EnableJobForCleaningInactiveCaches = true;
     }
 
     public bool TryGet(string id, [NotNullWhen(true)] out T? value) {

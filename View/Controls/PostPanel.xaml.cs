@@ -1,10 +1,12 @@
+using CommunityToolkit.WinUI.Controls;
 using FluentIcons.Common;
+using FluentIcons.WinUI;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Text;
+using System.Windows.Input;
 using View.Controls.Components;
-using CommunityToolkit.WinUI.Controls;
 using Windows.Foundation.Collections;
 
 namespace View.Controls;
@@ -16,15 +18,15 @@ internal sealed partial class PostPanel: SlideDialog {
         HideGracefully();
     }
 
-    internal Icon GetVisibilityIcon(object visibility) {
+    internal FluentIcon GetVisibilityFluentIcon(object _) {
         if (viewModel.IsVisibilityUnlisted) {
-            return Icon.LockOpen;
+            return new FluentIcon() { Icon = Icon.LockOpen };
         } else if (viewModel.IsVisibilityPrivate) {
-            return Icon.LockClosed;
+            return new FluentIcon() { Icon = Icon.LockClosed };
         } else if (viewModel.IsVisibilityDirect) {
-            return Icon.Mail;
+            return new FluentIcon() { Icon = Icon.Mail };
         } else {
-            return Icon.Globe;
+            return new FluentIcon() { Icon = Icon.Globe };
         }
     }
 
@@ -40,6 +42,9 @@ internal sealed partial class PostPanel: SlideDialog {
 
     private void EmojiButton_Tapped(object sender, TappedRoutedEventArgs e) {
         EmojiPicker.IsOpen = !EmojiPicker.IsOpen;
+        if (EmojiPicker.IsOpen) {
+            EmojiButtonContentPanel.SwitchToAlternate();
+        }
     }
     private void SlideDialog_Loaded(object sender, RoutedEventArgs e) {
         viewModel.LoadInitialEmojis();
@@ -59,6 +64,7 @@ internal sealed partial class PostPanel: SlideDialog {
         }
     }
     private void EmojiPicker_Closed(TeachingTip sender, TeachingTipClosedEventArgs args) {
+        EmojiButtonContentPanel.SwitchToDefault();
         focusedElement?.Focus(FocusState.Programmatic);
     }
     private void EmojiGridView_ItemClick(object sender, ItemClickEventArgs e) {
@@ -80,12 +86,10 @@ internal sealed partial class PostPanel: SlideDialog {
     private async void PostButton_Tapped(object sender, TappedRoutedEventArgs e) {
         if (ContentBox.TextDocument is { } document) {
             PostButton.IsEnabled = false;
-            PostButtonProgressRing.Visibility = Visibility.Visible;
-            PostButtonIcon.Visibility = Visibility.Collapsed;
+            EmojiButtonContentPanel.SwitchToAlternate();
             document.GetText(TextGetOptions.NoHidden, out var content);
             await viewModel.Post(content.Trim());
-            PostButtonIcon.Visibility = Visibility.Visible;
-            PostButtonProgressRing.Visibility = Visibility.Collapsed;
+            PostButtonContentPanel.SwitchToDefault();
             PostButton.IsEnabled = true;
             HideGracefully();
         }
