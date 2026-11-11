@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
+    xmlns:enumerations="using:ViewModel.Enumerations"
     xmlns:utilities="using:View.Utilities"
     xmlns:vm.controls="using:ViewModel.Controls"
     xmlns:fluenticons="using:FluentIcons.WinUI"
@@ -48,25 +49,29 @@
                     <MenuFlyout Placement="Bottom">
                         <MenuFlyoutItem
                             x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Public"
-                            Command="{x:Bind viewModel.VisibilityPublicCommand}">
+                            Command="{x:Bind viewModel.SetVisibilityCommand}"
+                            CommandParameter="{x:Bind enumerations:Visibility.Public}">
                             <MenuFlyoutItem.Icon>
                                 <fluenticons:FluentIcon Icon="Globe"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Unlisted"
-                            Command="{x:Bind viewModel.VisibilityUnlistedCommand}">
+                            Command="{x:Bind viewModel.SetVisibilityCommand}"
+                            CommandParameter="{x:Bind enumerations:Visibility.Unlisted}">
                             <MenuFlyoutItem.Icon>
                                 <fluenticons:FluentIcon Icon="LockOpen"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Private"
-                            Command="{x:Bind viewModel.VisibilityPrivateCommand}">
+                            Command="{x:Bind viewModel.SetVisibilityCommand}"
+                            CommandParameter="{x:Bind enumerations:Visibility.Private}">
                             <MenuFlyoutItem.Icon>
                                 <fluenticons:FluentIcon Icon="LockClosed"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutItem x:Uid="Controls_PostPanel_VisibilityButton_FlyoutItem_Direct"
-                            Command="{x:Bind viewModel.VisibilityDirectCommand}">
+                            Command="{x:Bind viewModel.SetVisibilityCommand}"
+                            CommandParameter="{x:Bind enumerations:Visibility.Direct}">
                             <MenuFlyoutItem.Icon>
                                 <fluenticons:FluentIcon Icon="Mail"/>
                             </MenuFlyoutItem.Icon>

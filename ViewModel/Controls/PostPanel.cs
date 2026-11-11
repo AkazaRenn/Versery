@@ -4,6 +4,7 @@ using CommunityToolkit.WinUI.Collections;
 using Model.Access;
 using Model.Server.Entities;
 using System.Collections.ObjectModel;
+using ViewModel.Enumerations;
 
 namespace ViewModel.Controls;
 
@@ -12,30 +13,18 @@ public sealed partial class PostPanel: ObservableObject {
     private bool allEmojisLoaded = false;
 
     [ObservableProperty]
-    public partial StatusVisibilityEnum Visibility { get; set; } = StatusVisibilityEnum.Public;
-
+    public partial Visibility Visibility { get; set; } = Visibility.Public;
+    [RelayCommand]
+    public void SetVisibility(Visibility visibility) => Visibility = visibility;
     [ObservableProperty]
     public partial string Language { get; set; } = string.Empty;
     private async void SetDefaultProperties() {
         var account = await client.AccountTask;
         if (account is not null) {
-            Visibility = account.Source.Privacy;
+            Visibility = account.Source.Privacy.Client;
             Language = account.Source.Language ?? Language;
         }
     }
-
-    [RelayCommand]
-    public void VisibilityPublic() => Visibility = StatusVisibilityEnum.Public;
-    public bool IsVisibilityPublic => Visibility == StatusVisibilityEnum.Public;
-    [RelayCommand]
-    public void VisibilityUnlisted() => Visibility = StatusVisibilityEnum.Unlisted;
-    public bool IsVisibilityUnlisted => Visibility == StatusVisibilityEnum.Unlisted;
-    [RelayCommand]
-    public void VisibilityPrivate() => Visibility = StatusVisibilityEnum.Private;
-    public bool IsVisibilityPrivate => Visibility == StatusVisibilityEnum.Private;
-    [RelayCommand]
-    public void VisibilityDirect() => Visibility = StatusVisibilityEnum.Direct;
-    public bool IsVisibilityDirect => Visibility == StatusVisibilityEnum.Direct;
 
     public string SpoilerText { get; set; } = string.Empty;
 
@@ -89,7 +78,7 @@ public sealed partial class PostPanel: ObservableObject {
         }
         var textStatus = new TextStatus() {
             Status = content,
-            Visibility = Visibility,
+            Visibility = Visibility.Server,
             SpoilerText = SpoilerText,
         };
         await client.PostStatus(textStatus);

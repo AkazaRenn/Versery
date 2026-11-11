@@ -17,17 +17,22 @@ internal sealed partial class SwitchContentPanel: Grid {
         set => Change(value);
     }
     public bool IsUsingDefaultContent {
+        get => currentContainer == DefaultContainer;
         set {
             if (value) {
-                SwitchToDefault();
+                if (!IsUsingDefaultContent) {
+                    Switch();
+                }
             } else {
-                SwitchToAlternate();
+                if (IsUsingDefaultContent) {
+                    Switch();
+                }
             }
         }
     }
 
-    public Border currentContainer;
-    public Border nextContainer;
+    private Border currentContainer;
+    private Border nextContainer;
     public void Switch() {
         currentContainer.Visibility = Visibility.Collapsed;
         nextContainer.Visibility = Visibility.Visible;
@@ -36,16 +41,6 @@ internal sealed partial class SwitchContentPanel: Grid {
     public void Change(UIElement newContent) {
         nextContainer.Child = newContent;
         Switch();
-    }
-    public void SwitchToDefault() {
-        if (currentContainer != DefaultContainer) {
-            Switch();
-        }
-    }
-    public void SwitchToAlternate() {
-        if (currentContainer != AlternateContainer) {
-            Switch();
-        }
     }
 
     public SwitchContentPanel() {

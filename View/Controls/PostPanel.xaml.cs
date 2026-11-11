@@ -1,11 +1,9 @@
-using CommunityToolkit.WinUI.Controls;
 using FluentIcons.Common;
 using FluentIcons.WinUI;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using System.Windows.Input;
 using View.Controls.Components;
 using Windows.Foundation.Collections;
 
@@ -18,16 +16,15 @@ internal sealed partial class PostPanel: SlideDialog {
         HideGracefully();
     }
 
-    internal FluentIcon GetVisibilityFluentIcon(object _) {
-        if (viewModel.IsVisibilityUnlisted) {
-            return new FluentIcon() { Icon = Icon.LockOpen };
-        } else if (viewModel.IsVisibilityPrivate) {
-            return new FluentIcon() { Icon = Icon.LockClosed };
-        } else if (viewModel.IsVisibilityDirect) {
-            return new FluentIcon() { Icon = Icon.Mail };
-        } else {
-            return new FluentIcon() { Icon = Icon.Globe };
-        }
+    internal FluentIcon GetVisibilityFluentIcon(ViewModel.Enumerations.Visibility visibility) {
+        return new FluentIcon() {
+            Icon = visibility switch {
+                ViewModel.Enumerations.Visibility.Unlisted => Icon.LockOpen,
+                ViewModel.Enumerations.Visibility.Private => Icon.LockClosed,
+                ViewModel.Enumerations.Visibility.Direct => Icon.Mail,
+                _ => Icon.Globe,
+            }
+        };
     }
 
     private UIElement? focusedElement = null;
