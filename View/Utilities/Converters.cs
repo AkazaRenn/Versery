@@ -3,6 +3,10 @@
 namespace View.Utilities;
 
 internal static class Converters {
+    public static bool Reverse(bool value) {
+        return !value;
+    }
+
     public static bool IsNull(object? value) {
         return value is null;
     }

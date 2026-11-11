@@ -16,6 +16,15 @@ internal sealed partial class SwitchContentPanel: Grid {
         get => currentContainer.Child;
         set => Change(value);
     }
+    public bool IsUsingDefaultContent {
+        set {
+            if (value) {
+                SwitchToDefault();
+            } else {
+                SwitchToAlternate();
+            }
+        }
+    }
 
     public Border currentContainer;
     public Border nextContainer;

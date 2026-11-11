@@ -42,9 +42,6 @@ internal sealed partial class PostPanel: SlideDialog {
 
     private void EmojiButton_Tapped(object sender, TappedRoutedEventArgs e) {
         EmojiPicker.IsOpen = !EmojiPicker.IsOpen;
-        if (EmojiPicker.IsOpen) {
-            EmojiButtonContentPanel.SwitchToAlternate();
-        }
     }
     private void SlideDialog_Loaded(object sender, RoutedEventArgs e) {
         viewModel.LoadInitialEmojis();
@@ -64,7 +61,6 @@ internal sealed partial class PostPanel: SlideDialog {
         }
     }
     private void EmojiPicker_Closed(TeachingTip sender, TeachingTipClosedEventArgs args) {
-        EmojiButtonContentPanel.SwitchToDefault();
         focusedElement?.Focus(FocusState.Programmatic);
     }
     private void EmojiGridView_ItemClick(object sender, ItemClickEventArgs e) {
@@ -86,10 +82,8 @@ internal sealed partial class PostPanel: SlideDialog {
     private async void PostButton_Tapped(object sender, TappedRoutedEventArgs e) {
         if (ContentBox.TextDocument is { } document) {
             PostButton.IsEnabled = false;
-            EmojiButtonContentPanel.SwitchToAlternate();
             document.GetText(TextGetOptions.NoHidden, out var content);
             await viewModel.Post(content.Trim());
-            PostButtonContentPanel.SwitchToDefault();
             PostButton.IsEnabled = true;
             HideGracefully();
         }
