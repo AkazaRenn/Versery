@@ -37,6 +37,10 @@ internal partial class ImageButton: Grid {
         get => Button.Flyout;
         set => Button.Flyout = value;
     }
+    public bool IsEnabled {
+        get => Button.IsEnabled;
+        set => Button.IsEnabled = value;
+    }
 
     public ImageButton() {
         ImageRectangle.Fill = ImageBrush;

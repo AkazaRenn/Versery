@@ -29,7 +29,8 @@
                 Height="36"
                 Width="40"
                 Tapped="DismissButton_Tapped"
-                Style="{StaticResource SubtleButtonStyle}">
+                Style="{StaticResource SubtleButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon
                     Icon="Dismiss"
                     FontSize="16" />
@@ -38,8 +39,8 @@
                 x:Name="VisibilityButton"
                 RelativePanel.LeftOf="ContentWarningButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Margin="0, 0, 4, 0"
-                Style="{StaticResource SubtleButtonStyle}">
+                Style="{StaticResource SubtleButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <components:SwitchContentPanel CurrentContent="{x:Bind GetVisibilityFluentIcon(viewModel.Visibility), Mode=OneWay}">
                     <components:SwitchContentPanel.DefaultContent>
                         <fluenticons:FluentIcon Icon="Globe" />
@@ -80,33 +81,49 @@
                 </Button.Flyout>
             </Button>
             <Button
+                Visibility="Collapsed"
                 x:Name="ContentWarningButton"
                 RelativePanel.LeftOf="ScheduleButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Margin="0, 0, 4, 0"
-                Style="{StaticResource SubtleButtonStyle}">
+                Margin="4, 0, 0, 0"
+                Style="{StaticResource SubtleButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Warning" />
             </Button>
             <Button
+                Visibility="Collapsed"
                 x:Name="ScheduleButton"
                 RelativePanel.LeftOf="LanguageButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Margin="0, 0, 4, 0"
-                Style="{StaticResource SubtleButtonStyle}">
+                Margin="4, 0, 0, 0"
+                Style="{StaticResource SubtleButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Calendar" />
             </Button>
             <Button
                 x:Name="LanguageButton"
                 RelativePanel.LeftOf="AvatarButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Margin="0, 0, 4, 0"
-                Style="{StaticResource SubtleButtonStyle}">
+                Margin="4, 0, 0, 0"
+                Style="{StaticResource SubtleButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="LocalLanguageGlobe" />
+                <Button.Flyout>
+                    <MenuFlyout
+                        x:Name="LanguageButtonMenuFlyout"
+                        Placement="Bottom"
+                        Opening="LanguageButtonMenuFlyout_Opening"
+                        Opened="LanguageButtonMenuFlyout_Opened">
+                    </MenuFlyout>
+                </Button.Flyout>
             </Button>
             <components:ImageButton
                 x:Name="AvatarButton"
                 RelativePanel.AlignRightWithPanel="True"
-                RelativePanel.AlignVerticalCenterWithPanel="True">
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Margin="4, 0, 0, 0"
+                Visibility="Collapsed"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
             </components:ImageButton>
         </RelativePanel>
         <TextBox
@@ -116,6 +133,7 @@
             Padding="8"
             Margin="0, 0, 0, 8"
             Text="{x:Bind viewModel.SpoilerText, Mode=TwoWay}"
+            IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}"
             GotFocus="TextBox_GotFocus"/>
         <ctcontrols:RichSuggestBox
             x:Name="ContentBox"
@@ -126,6 +144,7 @@
             ClipboardCopyFormat="PlainText"
             ClipboardPasteFormat="PlainText"
             DisabledFormattingAccelerators="All"
+            IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}"
             Loaded="ContentBox_Loaded"
             GotFocus="TextBox_GotFocus"/>
         <RelativePanel
@@ -134,16 +153,20 @@
                 x:Name="AddMediaButton"
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Style="{StaticResource SubtleButtonStyle}">
+                Margin="0, 0, 4, 0"
+                Style="{StaticResource SubtleButtonStyle}"
+                Visibility="Collapsed"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Attach" />
             </Button>
             <Button
                 x:Name="EmojiButton"
                 RelativePanel.RightOf="AddMediaButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Margin="4, 0, 0, 0"
+                Margin="0, 0, 4, 0"
                 Tapped="EmojiButton_Tapped"
-                Style="{StaticResource SubtleButtonStyle}">
+                Style="{StaticResource SubtleButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind utilities:Converters.Reverse(EmojiPicker.IsOpen), Mode=OneWay}">
                     <components:SwitchContentPanel.DefaultContent>
                         <fluenticons:FluentIcon Icon="Emoji" />
@@ -157,8 +180,9 @@
                 x:Name="PollButton"
                 RelativePanel.RightOf="EmojiButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Margin="4, 0, 0, 0"
-                Style="{StaticResource SubtleButtonStyle}">
+                Visibility="Collapsed"
+                Style="{StaticResource SubtleButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Poll" />
             </Button>
             <Button
@@ -166,8 +190,9 @@
                 RelativePanel.AlignRightWithPanel="True"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Style="{StaticResource AccentButtonStyle}"
+                IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}"
                 Tapped="PostButton_Tapped">
-                <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind PostButton.IsEnabled, Mode=OneWay}">
+                <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                     <components:SwitchContentPanel.DefaultContent>
                         <fluenticons:FluentIcon
                             x:Name="PostButtonIcon"
@@ -188,20 +213,18 @@
                 Closed="EmojiPicker_Closed">
                 <Grid
                     RowDefinitions="Auto, *"
-                    RowSpacing="4"
-                    Height="288"
-                    Width="288"
-                    Margin="-4, -4, -7, -18">
+                    Margin="-12, -12, -12, -12"
+                    Width="300">
                     <TextBox
                         x:Name="EmojiSearchTextBox"
                         Grid.Row="0"
-                        Margin="-2, 0, 4, 0"
-                        Padding="32, 5, 6, 6"
+                        Margin="-4, 0, -4, 0"
+                        Padding="41, 9, 6, 10"
                         HorizontalAlignment="Stretch"
                         Text="{x:Bind viewModel.EmojiFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <FontIcon
                         Grid.Row="0"
-                        Margin="8, 8, 0, 0"
+                        Margin="12, 12, 0, 0"
                         FontSize="16"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Left"
@@ -210,6 +233,10 @@
                     <GridView
                         x:Name="EmojiGridView"
                         Grid.Row="1"
+                        Height="244"
+                        Margin="0, 0, -4, 0"
+                        Padding="0, 4, 0, 0"
+                        HorizontalAlignment="Center"
                         ItemsSource="{x:Bind viewModel.EmojisView}"
                         IsItemClickEnabled="True"
                         SelectionMode="None"

@@ -3,40 +3,18 @@
     x:Class="View.Controls.Components.SwitchContentPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:utilities="using:View.Utilities"
-    xmlns:ctanimations="using:CommunityToolkit.WinUI.Animations">
+    xmlns:extensions="using:View.Extensions"
+    xmlns:utilities="using:View.Utilities">
     <Border
         x:Name="DefaultContainer"
         Visibility="Visible"
-        Opacity="1">
-        <ctanimations:Implicit.ShowAnimations>
-            <ctanimations:OpacityAnimation
-                From="0"
-                To="1"
-                Duration="{x:Bind utilities:Transitions.DefaultDuration}"/>
-        </ctanimations:Implicit.ShowAnimations>
-        <ctanimations:Implicit.HideAnimations>
-            <ctanimations:OpacityAnimation
-                From="1"
-                To="0"
-                Duration="{x:Bind utilities:Transitions.DefaultDuration}"/>
-        </ctanimations:Implicit.HideAnimations>
+        Opacity="1"
+        extensions:UIElement.FadeVisibility="True">
     </Border>
     <Border
         x:Name="AlternateContainer"
         Visibility="Collapsed"
-        Opacity="0">
-        <ctanimations:Implicit.ShowAnimations>
-            <ctanimations:OpacityAnimation
-                From="0"
-                To="1"
-                Duration="{x:Bind utilities:Transitions.DefaultDuration}"/>
-        </ctanimations:Implicit.ShowAnimations>
-        <ctanimations:Implicit.HideAnimations>
-            <ctanimations:OpacityAnimation
-                From="1"
-                To="0"
-                Duration="{x:Bind utilities:Transitions.DefaultDuration}"/>
-        </ctanimations:Implicit.HideAnimations>
+        Opacity="0"
+        extensions:UIElement.FadeVisibility="True">
     </Border>
 </Grid>

@@ -4,7 +4,9 @@ using CommunityToolkit.WinUI.Collections;
 using Model.Access;
 using Model.Server.Entities;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using ViewModel.Enumerations;
+using Windows.System.UserProfile;
 
 namespace ViewModel.Controls;
 
@@ -13,11 +15,40 @@ public sealed partial class PostPanel: ObservableObject {
     private bool allEmojisLoaded = false;
 
     [ObservableProperty]
+    public partial bool IsEnabled { get; private set; } = true;
+
+    [ObservableProperty]
     public partial Visibility Visibility { get; set; } = Visibility.Public;
     [RelayCommand]
     public void SetVisibility(Visibility visibility) => Visibility = visibility;
+
     [ObservableProperty]
     public partial string Language { get; set; } = string.Empty;
+    [RelayCommand]
+    public void SetLanguage(string language) => Language = language;
+    public static CultureInfo[] LanguageList {
+        get {
+            if (field is null) {
+                var preferredLanguageOrder = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                foreach (var languageTag in GlobalizationPreferences.Languages) {
+                    var code = CultureInfo.GetCultureInfo(languageTag).TwoLetterISOLanguageName;
+                    if ((code.Length == 2) && (code != "iv")) {
+                        preferredLanguageOrder.TryAdd(code, preferredLanguageOrder.Count);
+                    }
+                }
+                var languages = CultureInfo.GetCultures(CultureTypes.NeutralCultures)
+                    .Select(culture => culture.TwoLetterISOLanguageName)
+                    .Where(code => code.Length == 2 && code != "iv")
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .Select(code => CultureInfo.GetCultureInfo(code))
+                    .OrderBy(culture => preferredLanguageOrder.GetValueOrDefault(culture.Name, int.MaxValue))
+                    .ThenBy(culture => culture.NativeName, StringComparer.CurrentCultureIgnoreCase);
+                field = [.. languages];
+            }
+            return field;
+        }
+    } = null;
+
     private async void SetDefaultProperties() {
         var account = await client.AccountTask;
         if (account is not null) {
@@ -76,12 +107,15 @@ public sealed partial class PostPanel: ObservableObject {
         if (string.IsNullOrWhiteSpace(content)) {
             return;
         }
+        IsEnabled = false;
         var textStatus = new TextStatus() {
             Status = content,
             Visibility = Visibility.Server,
+            Language = Language,
             SpoilerText = SpoilerText,
         };
         await client.PostStatus(textStatus);
+        IsEnabled = true;
     }
 
     public PostPanel() {

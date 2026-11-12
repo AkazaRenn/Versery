@@ -37,6 +37,27 @@ internal sealed partial class PostPanel: SlideDialog {
         ContentBox.Focus(FocusState.Programmatic);
     }
 
+    private void LanguageButtonMenuFlyout_Opening(object sender, object e) {
+        if (LanguageButtonMenuFlyout.Items.Count == 0) {
+            foreach (var culture in ViewModel.Controls.PostPanel.LanguageList) {
+                LanguageButtonMenuFlyout.Items.Add(new MenuFlyoutItem {
+                    Text = culture.NativeName,
+                    Command = viewModel.SetLanguageCommand,
+                    CommandParameter = culture.TwoLetterISOLanguageName,
+                });
+            }
+        }
+    }
+    private void LanguageButtonMenuFlyout_Opened(object sender, object e) {
+        foreach (var item in LanguageButtonMenuFlyout.Items.OfType<MenuFlyoutItem>()) {
+            if ((item.CommandParameter is string code) && (code == viewModel.Language)) {
+                item.StartBringIntoView();
+                item.Focus(FocusState.Programmatic);
+                break;
+            }
+        }
+    }
+
     private void EmojiButton_Tapped(object sender, TappedRoutedEventArgs e) {
         EmojiPicker.IsOpen = !EmojiPicker.IsOpen;
     }
@@ -61,6 +82,7 @@ internal sealed partial class PostPanel: SlideDialog {
         focusedElement?.Focus(FocusState.Programmatic);
     }
     private void EmojiGridView_ItemClick(object sender, ItemClickEventArgs e) {
+        EmojiSearchTextBox.Focus(FocusState.Programmatic);
         if ((e.ClickedItem is ViewModel.Controls.PostPanel_Emoji emoji) &&
             (ContentBox.TextDocument is { } document)) {
             var selection = document.Selection;
@@ -78,10 +100,8 @@ internal sealed partial class PostPanel: SlideDialog {
 
     private async void PostButton_Tapped(object sender, TappedRoutedEventArgs e) {
         if (ContentBox.TextDocument is { } document) {
-            PostButton.IsEnabled = false;
             document.GetText(TextGetOptions.NoHidden, out var content);
             await viewModel.Post(content.Trim());
-            PostButton.IsEnabled = true;
             HideGracefully();
         }
     }
