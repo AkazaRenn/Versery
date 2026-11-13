@@ -8,6 +8,7 @@
     xmlns:components="using:View.Controls.Components"
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
+    xmlns:vmcontrols="using:ViewModel.Controls"
     xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="{x:Bind GridColumnWidth0}"/>
@@ -180,93 +181,52 @@
             CornerRadius="4"
             Padding="8"/>
 
-        <ctcontrols:ConstrainedBox
-            x:Name="ImagesGrid"
-            x:Load="{x:Bind LoadImages}"
-            AspectRatio="{x:Bind ImagesGridAspectRatio}"
-            CornerRadius="4">
-            <Grid>
-                <ctcontrols:UniformGrid
-                    Columns="2"
-                    ColumnSpacing="4"
-                    Rows="2"
-                    RowSpacing="4"
-                    Orientation="{x:Bind ImagesGridOrientation}">
-                    <components:MediaPreview
-                        x:Name="Image0"
-                        UriSource="{x:Bind ViewModel.ImagePreviews[0].Uri, Mode=OneWay}"
-                        ImageFadeVisibility="False"
-                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
-                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[0])}">
-                    </components:MediaPreview>
-                    <components:MediaPreview
-                        x:Name="Image1"
-                        x:Load="{x:Bind LoadImage1}"
-                        UriSource="{x:Bind ViewModel.ImagePreviews[1].Uri, Mode=OneWay}"
-                        ImageFadeVisibility="False"
-                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
-                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[1])}">
-                    </components:MediaPreview>
-                    <components:MediaPreview
-                        x:Name="Image2"
-                        x:Load="{x:Bind LoadImage2}"
-                        UriSource="{x:Bind ViewModel.ImagePreviews[2].Uri, Mode=OneWay}"
-                        ImageFadeVisibility="False"
-                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
-                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[2])}">
-                    </components:MediaPreview>
-                    <components:MediaPreview
-                        x:Name="Image3"
-                        x:Load="{x:Bind LoadImage3}"
-                        UriSource="{x:Bind ViewModel.ImagePreviews[3].Uri, Mode=OneWay}"
-                        ImageFadeVisibility="False"
-                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
-                        BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[3])}">
-                        <Border
-                            x:Name="Image3Overlay"
-                            x:Load="{x:Bind LoadImage3Overlay}">
-                            <Border.Background>
-                                <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
-                            </Border.Background>
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                FontSize="32"
-                                FontWeight="ExtraBold"
-                                Text="{x:Bind Image3OverlayText}">
-                            </TextBlock>
-                        </Border>
-                    </components:MediaPreview>
-                </ctcontrols:UniformGrid>
-                <Button
-                    x:Name="ToggleMediaPreviewsButton"
-                    Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Margin="4,4,0,0"
-                    Padding="4">
-                    <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}">
-                        <components:SwitchContentPanel.DefaultContent>
-                            <fluenticons:FluentIcon
-                                Icon="EyeOff"
-                                FontSize="20"/>
-                        </components:SwitchContentPanel.DefaultContent>
-                        <components:SwitchContentPanel.AlternateContent>
-                            <fluenticons:FluentIcon
-                                Icon="Eye"
-                                FontSize="20"/>
-                        </components:SwitchContentPanel.AlternateContent>
-                    </components:SwitchContentPanel>
-                    <Button.Background>
-                        <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
-                    </Button.Background>
-                    <Button.Resources>
-                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
-                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
-                    </Button.Resources>
-                </Button>
-            </Grid>
-        </ctcontrols:ConstrainedBox>
+        <Grid
+            x:Name="MediasGrid"
+            x:Load="{x:Bind LoadMedias}">
+            <components:MediaGrid
+                ColumnSpacing="4"
+                RowSpacing="4"
+                ItemsSource="{x:Bind ViewModel.MediaPreviews}">
+                <components:MediaGrid.ItemTemplate>
+                    <DataTemplate x:DataType="vmcontrols:Status_MediaPreview">
+                        <components:MediaPreview
+                            UriSource="{x:Bind Uri, Mode=OneWay}"
+                            AspectRatio="{x:Bind AspectRatio}"
+                            BlurHash="{x:Bind BlurHash}"
+                            ImageFadeVisibility="False"
+                            ImageOpacity="{x:Bind controls:Status.GetImageOpacity(Hidden), Mode=OneWay}"/>
+                    </DataTemplate>
+                </components:MediaGrid.ItemTemplate>
+            </components:MediaGrid>
+            <Button
+                x:Name="ToggleMediaPreviewsButton"
+                Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Margin="4,4,0,0"
+                Padding="4">
+                <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}">
+                    <components:SwitchContentPanel.DefaultContent>
+                        <fluenticons:FluentIcon
+                            Icon="EyeOff"
+                            FontSize="20"/>
+                    </components:SwitchContentPanel.DefaultContent>
+                    <components:SwitchContentPanel.AlternateContent>
+                        <fluenticons:FluentIcon
+                            Icon="Eye"
+                            FontSize="20"/>
+                    </components:SwitchContentPanel.AlternateContent>
+                </components:SwitchContentPanel>
+                <Button.Background>
+                    <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
+                </Button.Background>
+                <Button.Resources>
+                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
+                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
+                </Button.Resources>
+            </Button>
+        </Grid>
 
         <Button
             x:Name="CardButton"

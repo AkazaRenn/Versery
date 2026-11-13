@@ -38,11 +38,15 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool IsBookmarked { get; private set; } = false;
 
-    public double FirstImageAspect { get; } = 1.0;
     public Uri[] ImagesRemote { get; } = [];
-    public MediaPreview?[] ImagePreviews { get; } = new MediaPreview?[4];
+    public Status_MediaPreview[] MediaPreviews { get; } = [];
     [ObservableProperty]
     public partial bool ImagePreviewsHidden { get; private set; } = false;
+    partial void OnImagePreviewsHiddenChanged(bool value) {
+        foreach (var imagePreview in MediaPreviews) {
+            imagePreview.Hidden = value;
+        }
+    }
     [RelayCommand]
     private void ToggleImagePreviewsHidden() {
         ImagePreviewsHidden = !ImagePreviewsHidden;
@@ -85,13 +89,7 @@ public sealed partial class Status: ObservableObject {
 
         var validImages = status.Images.Where(x => x.Source is not null).ToArray();
         ImagesRemote = [.. validImages.Select(x => x.Source!)];
-        for (int i = 0; i < Math.Min(ImagePreviews.Length, validImages.Length); i++) {
-            ImagePreviews[i] = new(validImages[i]);
-        }
-        if (ImagePreviews[0] is not null) {
-            // Avoid the preview from taking too much space
-            FirstImageAspect = Math.Clamp(ImagePreviews[0]!.AspectRatio, 0.5, 2);
-        }
+        MediaPreviews = [.. validImages.Select(x => new Status_MediaPreview(x))];
         ImagePreviewsHidden = status.Sensitive;
 
         if (status.Card is not null) {
@@ -115,8 +113,8 @@ public sealed partial class Status: ObservableObject {
     internal async Task DownloadMedias() {
         _ = Poster.DownloadAvatar();
         _ = Card?.DownloadImage();
-        foreach (var imagePreview in ImagePreviews) {
-            _ = imagePreview?.Download();
+        foreach (var imagePreview in MediaPreviews) {
+            _ = imagePreview.Download();
         }
         _ = Quote?.DownloadMedias();
     }
@@ -167,20 +165,6 @@ public sealed partial class Status: ObservableObject {
         }
     }
 
-    public sealed partial class MediaPreview(Model.Entities.Media media): ObservableObject {
-        public double AspectRatio { get; } = media.AspectRatio;
-        public string BlurHash { get; } = media.BlurHash ?? String.Empty;
-
-        public Uri? Remote { get; } = media.Preview;
-        [ObservableProperty]
-        public partial Uri? Uri { get; private set; } = null;
-        internal async Task Download() {
-            if (Uri is null && Remote is not null) {
-                Uri = await Cache.Get(Remote);
-            }
-        }
-    }
-
     public sealed partial class Card_(Model.Entities.Card card): ObservableObject {
         public Uri? Url { get; } = card.Url;
         public string Title { get; } = card.Title;
@@ -200,6 +184,23 @@ public sealed partial class Status: ObservableObject {
             if (Image is null && ImageRemote is not null) {
                 Image = await Cache.Get(ImageRemote);
             }
+        }
+    }
+}
+
+public sealed partial class Status_MediaPreview(Model.Entities.Media media): ObservableObject {
+    public double AspectRatio { get; } = media.AspectRatio;
+    public string BlurHash { get; } = media.BlurHash ?? String.Empty;
+
+    [ObservableProperty]
+    public partial bool Hidden { get; internal set; } = false;
+
+    public Uri? Remote { get; } = media.Preview;
+    [ObservableProperty]
+    public partial Uri? Uri { get; private set; } = null;
+    internal async Task Download() {
+        if (Uri is null && Remote is not null) {
+            Uri = await Cache.Get(Remote);
         }
     }
 }

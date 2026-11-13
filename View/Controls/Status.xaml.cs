@@ -1,10 +1,8 @@
-using CommunityToolkit.WinUI.Controls;
 using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Numerics;
-using View.Controls.Components;
 using View.Strings;
 
 namespace View.Controls;
@@ -27,7 +25,6 @@ internal sealed partial class Status: Grid {
     private void Update() {
         PostBodyRichTextBlockExpandedManually = false;
         Bindings.Update();
-        UpdateMediaSpans();
     }
 
     public double AvatarSize { get; set; } = 36;
@@ -141,89 +138,8 @@ internal sealed partial class Status: Grid {
 
     private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
-    private bool LoadImages => ViewModel?.ImagesRemote.Length > 0;
-    private bool LoadImage1 => ViewModel?.ImagesRemote.Length > 1;
-    private bool LoadImage2 => ViewModel?.ImagesRemote.Length > 2;
-    private bool LoadImage3 => ViewModel?.ImagesRemote.Length > 3;
-    private bool LoadImage3Overlay => ViewModel?.ImagesRemote.Length > 4;
-    private AspectRatio ImagesGridAspectRatio => ViewModel?.ImagesRemote.Length <= 1 ? ViewModel.FirstImageAspect : 1;
-    private Orientation ImagesGridOrientation {
-        get {
-            if (ViewModel?.ImagesRemote.Length >= 4) {
-                return Orientation.Horizontal;
-            } else if (ViewModel?.FirstImageAspect > 1) {
-                return Orientation.Horizontal;
-            } else {
-                return Orientation.Vertical;
-            }
-        }
-    }
-    internal double GetImageOpacity(bool imagePreviewsHidden) => imagePreviewsHidden ? 0 : 1;
-    internal static MediaPreview.Blur? GetMediaPreviewBackgroundBlurHash(ViewModel.Controls.Status.MediaPreview? mediaPreview) {
-        if (mediaPreview is null) {
-            return null;
-        }
-        return new(mediaPreview.BlurHash, mediaPreview.AspectRatio);
-    }
-    private int Image0ColumnSpan {
-        get {
-            if (ViewModel?.ImagesRemote.Length == 1) {
-                return 2;
-            } else if (ViewModel?.ImagesRemote.Length >= 4) {
-                return 1;
-            } else if (ViewModel?.FirstImageAspect <= 1) {
-                return 1;
-            } else {
-                return 2;
-            }
-        }
-    }
-    private int Image0RowSpan {
-        get {
-            if (ViewModel?.ImagesRemote.Length == 1) {
-                return 2;
-            } else if (ViewModel?.ImagesRemote.Length >= 4) {
-                return 1;
-            } else if (ViewModel?.FirstImageAspect <= 1) {
-                return 2;
-            } else {
-                return 1;
-            }
-        }
-    }
-    private int Image1ColumnSpan {
-        get {
-            if (ViewModel?.ImagesRemote.Length > 2) {
-                return 1;
-            } else if (ViewModel?.FirstImageAspect <= 1) {
-                return 1;
-            } else {
-                return 2;
-            }
-        }
-    }
-    private int Image1RowSpan {
-        get {
-            if (ViewModel?.ImagesRemote.Length > 2) {
-                return 1;
-            } else if (ViewModel?.FirstImageAspect <= 1) {
-                return 2;
-            } else {
-                return 1;
-            }
-        }
-    }
-    private void UpdateMediaSpans() {
-        if (Image0 is not null) {
-            Grid.SetColumnSpan(Image0, Image0ColumnSpan);
-            Grid.SetRowSpan(Image0, Image0RowSpan);
-        }
-        if (Image1 is not null) {
-            Grid.SetColumnSpan(Image1, Image1ColumnSpan);
-            Grid.SetRowSpan(Image1, Image1RowSpan);
-        }
-    }
-    private string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
+    private bool LoadMedias => ViewModel?.MediaPreviews.Length > 0;
+    internal static double GetImageOpacity(bool imagePreviewsHidden) => imagePreviewsHidden ? 0 : 1;
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
     internal static Icon GetReplyIcon(bool isReply) => isReply ? Icon.ArrowReplyAll : Icon.ArrowReply;

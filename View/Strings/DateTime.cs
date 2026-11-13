@@ -1,6 +1,6 @@
-﻿// Ported from Tusky's TimestampUtils.kt, licensed under GPLv3:
+﻿// Recreated from
 // https://codeberg.org/tusky/Tusky/src/commit/7fef19efc66f9462e01435396fe10ffbb228ccda/app/src/main/java/com/keylesspalace/tusky/util/TimestampUtils.kt
-// https://codeberg.org/tusky/Tusky/src/commit/7fef19efc66f9462e01435396fe10ffbb228ccda/LICENSE.txt
+
 using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace View.Strings;

@@ -17,7 +17,17 @@ internal sealed partial class MediaPreview: ImageButton {
         get => ImageVisibility == Visibility.Collapsed;
         set => ImageVisibility = value ? Visibility.Collapsed : Visibility.Visible;
     }
-    public Blur? BackgroundBlur {
+    public double AspectRatio {
+        get;
+        set {
+            if (field != value) {
+                field = value;
+                // MediaGrid sizes its tiles from this.
+                (Parent as Microsoft.UI.Xaml.UIElement)?.InvalidateMeasure();
+            }
+        }
+    } = 1;
+    public string? BlurHash {
         get;
         set {
             if (field != value) {
@@ -29,16 +39,15 @@ internal sealed partial class MediaPreview: ImageButton {
 
     internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
     private async Task UpdateBackground() {
-        if ((BackgroundBlur is null) ||
-            String.IsNullOrWhiteSpace(BackgroundBlur.Hash) ||
-            (BackgroundBlur.AspectRatio <= 0)) {
+        if (String.IsNullOrWhiteSpace(BlurHash) ||
+            (AspectRatio <= 0)) {
             Background = DefaultBackground;
         } else {
             int width = 32;
             int height = 32;
             var pixels = await Task.Run(() => {
                 var decoded = new Pixel[width, height];
-                Core.Decode(BackgroundBlur.Hash, decoded);
+                Core.Decode(BlurHash, decoded);
                 var buffer = new byte[width * height * 4];
                 for (var y = 0; y < height; y++) {
                     for (var x = 0; x < width; x++) {
@@ -75,6 +84,4 @@ internal sealed partial class MediaPreview: ImageButton {
     public MediaPreview() {
         InitializeComponent();
     }
-
-    public record Blur(string Hash, double AspectRatio);
 }
