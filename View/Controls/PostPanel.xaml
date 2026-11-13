@@ -247,7 +247,7 @@
                                 <components:Emoji
                                     Height="32"
                                     Width="32"
-                                    ShortCode="{x:Bind ShortCode}"
+                                    Shortcode="{x:Bind Shortcode}"
                                     Source="{x:Bind Source, Mode=OneWay}"/>
                             </DataTemplate>
                         </GridView.ItemTemplate>

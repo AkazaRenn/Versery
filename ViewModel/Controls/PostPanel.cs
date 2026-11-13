@@ -101,13 +101,13 @@ public sealed partial class PostPanel: ObservableObject {
     public PostPanel() {
         SetDefaultProperties();
         EmojisView = new(emojis) {
-            Filter = x => ((PostPanel_Emoji)x).ShortCode.Contains(EmojiFilter, StringComparison.OrdinalIgnoreCase),
+            Filter = x => ((PostPanel_Emoji)x).Shortcode.Contains(EmojiFilter, StringComparison.OrdinalIgnoreCase),
         };
     }
 }
 
 public sealed partial class PostPanel_Emoji(string shortCode, Uri? sourceRemote = null): ObservableObject {
-    public string ShortCode => shortCode;
+    public string Shortcode => shortCode;
     [ObservableProperty]
     public partial Uri? Source { get; private set; } = null;
     internal async void Load() {

@@ -17,7 +17,7 @@ internal sealed partial class MediaPreview: ImageButton {
         get => ImageVisibility == Visibility.Collapsed;
         set => ImageVisibility = value ? Visibility.Collapsed : Visibility.Visible;
     }
-    public double AspectRatio {
+    public double Aspect {
         get;
         set {
             if (field != value) {
@@ -27,7 +27,7 @@ internal sealed partial class MediaPreview: ImageButton {
             }
         }
     } = 1;
-    public string? BlurHash {
+    public string? Blurhash {
         get;
         set {
             if (field != value) {
@@ -36,18 +36,22 @@ internal sealed partial class MediaPreview: ImageButton {
             }
         }
     } = null;
+    public string? Description {
+        get => Tooltip;
+        set => Tooltip = value;
+    }
 
     internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
     private async Task UpdateBackground() {
-        if (String.IsNullOrWhiteSpace(BlurHash) ||
-            (AspectRatio <= 0)) {
+        if (String.IsNullOrWhiteSpace(Blurhash) ||
+            (Aspect <= 0)) {
             Background = DefaultBackground;
         } else {
             int width = 32;
             int height = 32;
             var pixels = await Task.Run(() => {
                 var decoded = new Pixel[width, height];
-                Core.Decode(BlurHash, decoded);
+                Core.Decode(Blurhash, decoded);
                 var buffer = new byte[width * height * 4];
                 for (var y = 0; y < height; y++) {
                     for (var x = 0; x < width; x++) {

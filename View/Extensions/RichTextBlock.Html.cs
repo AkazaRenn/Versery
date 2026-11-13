@@ -63,7 +63,7 @@ internal static partial class RichTextBlock {
     private static Inline? RenderInline(InlineToken token, Dictionary<string, Task<Uri?>> emojis, double fontSize) {
         return token switch {
             TextToken text => new Run { Text = text.Text },
-            EmojiToken emoji => CreateEmoji(emoji.ShortCode, emojis, fontSize),
+            EmojiToken emoji => CreateEmoji(emoji.Shortcode, emojis, fontSize),
             LineBreakToken => new LineBreak(),
             BoldToken bold => RenderInlineChildren(new Bold(), bold.Children, emojis, fontSize),
             ItalicToken italic => RenderInlineChildren(new Italic(), italic.Children, emojis, fontSize),
@@ -96,7 +96,7 @@ internal static partial class RichTextBlock {
                 Width = fontSize,
                 Height = fontSize,
                 Margin = new(0, 0, 0, -fontSize * 0.15),
-                ShortCode = shortCode,
+                Shortcode = shortCode,
             };
             if (sourceTask.IsCompletedSuccessfully) {
                 emojiControl.Source = sourceTask.Result;

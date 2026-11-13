@@ -29,13 +29,10 @@ internal sealed partial class Emoji: Panel {
     private int currentFrame = 0;
     private IReferenceCountedDisposable<FrameDataCollection>? frameData = null;
 
-    public string ShortCode {
-        get;
-        set {
-            field = value;
-            ToolTipService.SetToolTip(this, value);
-        }
-    } = string.Empty;
+    public string Shortcode {
+        get => (ToolTipService.GetToolTip(this) as string) ?? string.Empty;
+        set => ToolTipService.SetToolTip(this, value);
+    }
     public Uri? Source {
         get;
         set {

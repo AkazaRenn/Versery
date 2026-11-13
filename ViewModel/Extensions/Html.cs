@@ -150,7 +150,7 @@ public sealed class Html {
             }
 
             var startIndex = index;
-            if (!TryReadEmojiShortCode(rawText, ref index, out var shortCode)) {
+            if (!TryReadEmojiShortcode(rawText, ref index, out var shortCode)) {
                 text.Append(rawText, startIndex, index - startIndex);
                 continue;
             }
@@ -172,7 +172,7 @@ public sealed class Html {
         }
     }
 
-    private static bool TryReadEmojiShortCode(string rawText, ref int index, out string shortCode) {
+    private static bool TryReadEmojiShortcode(string rawText, ref int index, out string shortCode) {
         shortCode = string.Empty;
 
         int startIndex = index;
@@ -201,7 +201,7 @@ public sealed class Html {
 
 public abstract record InlineToken;
 public sealed record TextToken(string Text): InlineToken;
-public sealed record EmojiToken(string ShortCode): InlineToken;
+public sealed record EmojiToken(string Shortcode): InlineToken;
 public sealed record LineBreakToken: InlineToken;
 public sealed record BoldToken(List<InlineToken> Children): InlineToken;
 public sealed record ItalicToken(List<InlineToken> Children): InlineToken;

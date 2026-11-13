@@ -19,6 +19,10 @@ internal static class Converters {
         return !string.IsNullOrEmpty(value);
     }
 
+    public static bool StringIsNotNullOrWhiteSpace(string? value) {
+        return !string.IsNullOrWhiteSpace(value);
+    }
+
     public static Visibility BoolToVisibility(bool value) {
         return value ? Visibility.Visible : Visibility.Collapsed;
     }

@@ -189,8 +189,9 @@ public sealed partial class Status: ObservableObject {
 }
 
 public sealed partial class Status_MediaPreview(Model.Entities.Media media): ObservableObject {
-    public double AspectRatio { get; } = media.AspectRatio;
-    public string BlurHash { get; } = media.BlurHash ?? String.Empty;
+    public double Aspect { get; } = media.AspectRatio;
+    public string? Blurhash { get; } = media.BlurHash;
+    public string? Description { get; } = media.Description;
 
     [ObservableProperty]
     public partial bool Hidden { get; internal set; } = false;

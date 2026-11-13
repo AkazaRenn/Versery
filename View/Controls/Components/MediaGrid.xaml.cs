@@ -74,7 +74,7 @@ internal sealed partial class MediaGrid: Grid {
     }
 
     private void UpdateTiles(List<MediaPreview> tiles) {
-        var ratios = tiles.Select(x => x.AspectRatio).ToArray();
+        var ratios = tiles.Select(x => x.Aspect).ToArray();
         if (!ratios.SequenceEqual(layoutRatios)) {
             layoutRatios = ratios;
             layout = (ratios.Length > 0) ? TiledLayout.Create(ratios) : null;

@@ -192,8 +192,9 @@
                     <DataTemplate x:DataType="vmcontrols:Status_MediaPreview">
                         <components:MediaPreview
                             UriSource="{x:Bind Uri, Mode=OneWay}"
-                            AspectRatio="{x:Bind AspectRatio}"
-                            BlurHash="{x:Bind BlurHash}"
+                            Aspect="{x:Bind Aspect}"
+                            Blurhash="{x:Bind Blurhash}"
+                            Description="{x:Bind Description}"
                             ImageFadeVisibility="False"
                             ImageOpacity="{x:Bind controls:Status.GetImageOpacity(Hidden), Mode=OneWay}"/>
                     </DataTemplate>

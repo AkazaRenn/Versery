@@ -110,7 +110,7 @@ internal sealed partial class Status: Grid {
     private void PostBodyGridMaxHeightStoryboard_Completed(object? sender, object e) {
         if (PostBodyGrid.MaxHeight > 0) {
             PostBodyGrid.MaxHeight = double.PositiveInfinity;
-            CollapsePostBodyButton.Visibility = Visibility.Collapsed;
+            CollapsePostBodyButton?.Visibility = Visibility.Collapsed;
         }
     }
     private void InitializePostBodyGridMaxHeightStoryboard() {

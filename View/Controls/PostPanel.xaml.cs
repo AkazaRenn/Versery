@@ -93,7 +93,7 @@ internal sealed partial class PostPanel: SlideDialog {
 
             selection.SetText(
                 TextSetOptions.Unhide,
-                $"{(hasSpaceBefore ? "" : " ")}:{emoji.ShortCode}:{(hasSpaceAfter ? "" : " ")}");
+                $"{(hasSpaceBefore ? "" : " ")}:{emoji.Shortcode}:{(hasSpaceAfter ? "" : " ")}");
             selection.Collapse(false);
         }
     }

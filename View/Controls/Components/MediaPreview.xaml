@@ -4,7 +4,25 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
+    xmlns:utilities="using:View.Utilities"
+    xmlns:fluenticons="using:FluentIcons.WinUI"
     Background="{x:Bind components:MediaPreview.DefaultBackground}">
+    <Border
+        x:Name="DescriptionIcon"
+        x:Load="{x:Bind utilities:Converters.StringIsNotNullOrWhiteSpace(Description)}"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Bottom"
+        BorderBrush="{ThemeResource ButtonBorderBrush}"
+        BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
+        CornerRadius="{ThemeResource ControlCornerRadius}"
+        IsHitTestVisible="False"
+        Margin="0, 0, 4, 4"
+        Padding="4">
+        <Border.Background>
+            <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
+        </Border.Background>
+        <fluenticons:FluentIcon Icon="TextDescription"/>
+    </Border>
     <components:ImageButton.ImageSource>
         <BitmapImage
             x:Name="BitmapImage"

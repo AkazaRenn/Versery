@@ -50,6 +50,10 @@ internal partial class ImageButton: Grid {
         get => Button.IsEnabled;
         set => Button.IsEnabled = value;
     }
+    public string? Tooltip {
+        get => ToolTipService.GetToolTip(Button) as string;
+        set => ToolTipService.SetToolTip(Button, value);
+    }
 
     public ImageButton() {
         ImageRectangle.Fill = ImageBrush;
@@ -57,6 +61,7 @@ internal partial class ImageButton: Grid {
         ImageRectangle.Unloaded += ImageRectangle_Unloaded;
         Children.Add(ImageRectangle);
         Children.Add(Button);
+        Tooltip = null;
     }
 
     private void ImageRectangle_Loaded(object sender, RoutedEventArgs e) {
