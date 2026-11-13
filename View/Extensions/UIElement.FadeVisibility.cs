@@ -50,4 +50,21 @@ public static partial class UIElement {
             element.ClearValue(Implicit.HideAnimationsProperty);
         }
     }
+
+    extension(Microsoft.UI.Xaml.UIElement uiElement) {
+        public bool FadeVisibility {
+            get => GetFadeVisibility(uiElement);
+            set {
+                // Workaround for controls in ListView not supporting implicit animations
+                // https://github.com/microsoft/microsoft-ui-xaml/issues/6483
+                if (value) {
+                    uiElement.OpacityTransition = null;
+                }
+                SetFadeVisibility(uiElement, value);
+                if (!value) {
+                    uiElement.OpacityTransition = Utilities.Transitions.ScalarTransition;
+                }
+            }
+        }
+    }
 }

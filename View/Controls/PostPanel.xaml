@@ -111,7 +111,6 @@
                 <Button.Flyout>
                     <MenuFlyout
                         x:Name="LanguageButtonMenuFlyout"
-                        Placement="Bottom"
                         Opening="LanguageButtonMenuFlyout_Opening"
                         Opened="LanguageButtonMenuFlyout_Opened">
                     </MenuFlyout>

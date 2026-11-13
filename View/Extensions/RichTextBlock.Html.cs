@@ -31,10 +31,6 @@ internal static partial class RichTextBlock {
             richTextBlock.Blocks.Clear();
             RenderRichContent(richTextBlock, newVm.ContentToken, newVm.Emojis);
             richTextBlock.MaxHeight = double.PositiveInfinity;
-        } else if ((d is Span span) && (newVm.ContentToken.Paragraphs.Count > 0)) {
-            foreach (var inline in RenderParagraph(newVm.ContentToken.Paragraphs.First(), newVm.Emojis, span.FontSize)) {
-                span.Inlines.Add(inline);
-            }
         }
     }
 
@@ -112,6 +108,13 @@ internal static partial class RichTextBlock {
             };
         } else {
             return new Run { Text = $":{shortCode}:" };
+        }
+    }
+
+    extension(Microsoft.UI.Xaml.Controls.RichTextBlock richTextBlock) {
+        public Html? Html {
+            get => GetHtml(richTextBlock);
+            set => SetHtml(richTextBlock, value);
         }
     }
 }

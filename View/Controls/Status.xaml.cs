@@ -158,6 +158,7 @@ internal sealed partial class Status: Grid {
             }
         }
     }
+    internal double GetImageOpacity(bool imagePreviewsHidden) => imagePreviewsHidden ? 0 : 1;
     internal static MediaPreview.Blur? GetMediaPreviewBackgroundBlurHash(ViewModel.Controls.Status.MediaPreview? mediaPreview) {
         if (mediaPreview is null) {
             return null;
@@ -223,7 +224,6 @@ internal sealed partial class Status: Grid {
         }
     }
     private string Image3OverlayText => $"+ {ViewModel?.ImagesRemote.Length - 4}";
-    internal static Icon GetToggleMediaPreviewsButtonIcon(bool imagePreviewHidden) => imagePreviewHidden ? Icon.EyeOff : Icon.Eye;
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
     internal static Icon GetReplyIcon(bool isReply) => isReply ? Icon.ArrowReplyAll : Icon.ArrowReply;

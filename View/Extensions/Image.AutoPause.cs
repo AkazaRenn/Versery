@@ -95,4 +95,11 @@ public static partial class Image {
         window.Activated -= Window_Activated;
         window.Closed -= Window_Closed;
     }
+
+    extension(Microsoft.UI.Xaml.Controls.Image image) {
+        public bool AutoPause {
+            get => GetAutoPause(image);
+            set => SetAutoPause(image, value);
+        }
+    }
 }

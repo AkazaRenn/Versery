@@ -39,7 +39,7 @@ internal sealed partial class PostPanel: SlideDialog {
 
     private void LanguageButtonMenuFlyout_Opening(object sender, object e) {
         if (LanguageButtonMenuFlyout.Items.Count == 0) {
-            foreach (var culture in ViewModel.Controls.PostPanel.LanguageList) {
+            foreach (var culture in viewModel.LanguageList) {
                 LanguageButtonMenuFlyout.Items.Add(new MenuFlyoutItem {
                     Text = culture.NativeName,
                     Command = viewModel.SetLanguageCommand,

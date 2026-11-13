@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
+using View.Extensions;
 using View.Interfaces;
 
 namespace View.Controls.Components;
@@ -32,6 +33,14 @@ internal partial class ImageButton: Grid {
     public Visibility ImageVisibility {
         get => ImageRectangle.Visibility;
         set => ImageRectangle.Visibility = value;
+    }
+    public double ImageOpacity {
+        get => ImageRectangle.Opacity;
+        set => ImageRectangle.Opacity = value;
+    }
+    public bool ImageFadeVisibility {
+        get => ImageRectangle.FadeVisibility;
+        set => ImageRectangle.FadeVisibility = value;
     }
     public FlyoutBase Flyout {
         get => Button.Flyout;

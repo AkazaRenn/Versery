@@ -195,28 +195,32 @@
                     <components:MediaPreview
                         x:Name="Image0"
                         UriSource="{x:Bind ViewModel.ImagePreviews[0].Uri, Mode=OneWay}"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        ImageFadeVisibility="False"
+                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
                         BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[0])}">
                     </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image1"
                         x:Load="{x:Bind LoadImage1}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[1].Uri, Mode=OneWay}"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        ImageFadeVisibility="False"
+                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
                         BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[1])}">
                     </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image2"
                         x:Load="{x:Bind LoadImage2}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[2].Uri, Mode=OneWay}"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        ImageFadeVisibility="False"
+                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
                         BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[2])}">
                     </components:MediaPreview>
                     <components:MediaPreview
                         x:Name="Image3"
                         x:Load="{x:Bind LoadImage3}"
                         UriSource="{x:Bind ViewModel.ImagePreviews[3].Uri, Mode=OneWay}"
-                        HideImage="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}"
+                        ImageFadeVisibility="False"
+                        ImageOpacity="{x:Bind GetImageOpacity(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
                         BackgroundBlur="{x:Bind controls:Status.GetMediaPreviewBackgroundBlurHash(ViewModel.ImagePreviews[3])}">
                         <Border
                             x:Name="Image3Overlay"
@@ -241,9 +245,18 @@
                     HorizontalAlignment="Left"
                     Margin="4,4,0,0"
                     Padding="4">
-                    <fluenticons:FluentIcon
-                        Icon="{x:Bind controls:Status.GetToggleMediaPreviewsButtonIcon(ViewModel.ImagePreviewsHidden), Mode=OneWay}"
-                        FontSize="20"/>
+                    <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}">
+                        <components:SwitchContentPanel.DefaultContent>
+                            <fluenticons:FluentIcon
+                                Icon="EyeOff"
+                                FontSize="20"/>
+                        </components:SwitchContentPanel.DefaultContent>
+                        <components:SwitchContentPanel.AlternateContent>
+                            <fluenticons:FluentIcon
+                                Icon="Eye"
+                                FontSize="20"/>
+                        </components:SwitchContentPanel.AlternateContent>
+                    </components:SwitchContentPanel>
                     <Button.Background>
                         <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
                     </Button.Background>

@@ -8,13 +8,11 @@
     <Border
         x:Name="DefaultContainer"
         Visibility="Visible"
-        Opacity="1"
         extensions:UIElement.FadeVisibility="True">
     </Border>
     <Border
         x:Name="AlternateContainer"
         Visibility="Collapsed"
-        Opacity="0"
         extensions:UIElement.FadeVisibility="True">
     </Border>
 </Grid>

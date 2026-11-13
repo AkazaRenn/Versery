@@ -17,8 +17,6 @@ internal sealed partial class MediaPreview: ImageButton {
         get => ImageVisibility == Visibility.Collapsed;
         set => ImageVisibility = value ? Visibility.Collapsed : Visibility.Visible;
     }
-
-    internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
     public Blur? BackgroundBlur {
         get;
         set {
@@ -29,6 +27,7 @@ internal sealed partial class MediaPreview: ImageButton {
         }
     } = null;
 
+    internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
     private async Task UpdateBackground() {
         if ((BackgroundBlur is null) ||
             String.IsNullOrWhiteSpace(BackgroundBlur.Hash) ||
