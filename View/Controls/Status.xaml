@@ -74,17 +74,6 @@
         extensions:RichTextBlock.Html="{x:Bind ViewModel.Poster.DisplayName}"/>
 
     <TextBlock
-        Grid.Column="2"
-        Grid.Row="1"
-        FontSize="{x:Bind PosterAccountFontSize}"
-        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-        VerticalAlignment="Center"
-        TextTrimming="CharacterEllipsis"
-        TextWrapping="NoWrap"
-        IsTextSelectionEnabled="False"
-        Text="{x:Bind ViewModel.Poster.AccountName}"/>
-
-    <TextBlock
         Grid.Column="4"
         Grid.Row="0"
         FontSize="{x:Bind PosterAccountFontSize}"
@@ -95,16 +84,26 @@
         IsTextSelectionEnabled="False"
         Text="{x:Bind controls:Status.GetStatusTimeString(ViewModel.CreatedAt)}"/>
 
+    <TextBlock
+        Grid.Column="2"
+        Grid.Row="1"
+        FontSize="{x:Bind PosterAccountFontSize}"
+        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+        VerticalAlignment="Center"
+        TextTrimming="CharacterEllipsis"
+        TextWrapping="NoWrap"
+        IsTextSelectionEnabled="False"
+        Text="{x:Bind ViewModel.Poster.AccountName}"/>
+
     <StackPanel
         Grid.Column="{x:Bind ContentStackPanelGridColumn}"
         Grid.ColumnSpan="99"
         Grid.Row="3"
         Spacing="8">
-
         <Grid
             x:Name="SpoilerTextGrid"
             x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.SpoilerText)}"
-            ColumnDefinitions="Auto, *, Auto"
+            ColumnDefinitions="*, Auto"
             ColumnSpacing="4">
             <RichTextBlock
                 Grid.Column="0"
@@ -112,9 +111,10 @@
                 TextWrapping="WrapWholeWords"
                 IsTextSelectionEnabled="False"
                 Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"/>
+                extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"
+                Tapped="ShowSpoilerButton_Click"/>
             <Button
-                Grid.Column="2"
+                Grid.Column="1"
                 VerticalAlignment="Center"
                 FontSize="12"
                 Padding="8, 0, 8, 0"
@@ -187,7 +187,7 @@
             <components:MediaGrid
                 ColumnSpacing="4"
                 RowSpacing="4"
-                ItemsSource="{x:Bind ViewModel.MediaPreviews}">
+                ItemsSource="{x:Bind ViewModel.Medias}">
                 <components:MediaGrid.ItemTemplate>
                     <DataTemplate x:DataType="vmcontrols:Status_MediaPreview">
                         <components:MediaPreview
@@ -207,7 +207,7 @@
                 HorizontalAlignment="Left"
                 Margin="4,4,0,0"
                 Padding="4">
-                <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind ViewModel.ImagePreviewsHidden, Mode=OneWay}">
+                <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind ViewModel.MediaPreviewsHidden, Mode=OneWay}">
                     <components:SwitchContentPanel.DefaultContent>
                         <fluenticons:FluentIcon
                             Icon="EyeOff"

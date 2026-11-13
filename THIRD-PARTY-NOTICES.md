@@ -8,6 +8,10 @@ License: MIT
 Source: https://codeberg.org/tusky/Tusky/ \
 License: GPLv3
 
+## mastodon-openapi
+Source: https://github.com/abraham/mastodon-openapi \
+License: MIT
+
 ## mastodon-android
 Source: https://github.com/mastodon/mastodon-android \
 License: GPLv3

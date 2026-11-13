@@ -88,12 +88,17 @@ public sealed partial class PostPanel: ObservableObject {
             return;
         }
         IsEnabled = false;
-        var textStatus = new TextStatus() {
-            Status = content,
-            Visibility = Visibility.Server,
-            Language = Language,
-            SpoilerText = SpoilerText,
-        };
+        var textStatus = new TextStatus(
+            inReplyToId: null,
+            language: Language,
+            quoteApprovalPolicy: null,
+            quotedStatusId: null,
+            scheduledAt: null,
+            sensitive: false,
+            spoilerText: SpoilerText,
+            status: content,
+            visibility: Visibility.Server
+        );
         await client.PostStatus(textStatus);
         IsEnabled = true;
     }

@@ -16,16 +16,16 @@ internal sealed class Client: IDisposable {
         var timelines = Timeline.Get(count, afterId).ToArray();
         foreach (var timeline in timelines) {
             if (GetStatus(timeline.Id) is Entities.Status status) {
-                GetAccount(status.AccountId);
-                if ((status.ReblogId is not null) && GetStatus(status.ReblogId) is Entities.Status reblogStatus) {
-                    GetAccount(reblogStatus.AccountId);
+                GetAccount(status.Account);
+                if ((status.Reblog is not null) && GetStatus(status.Reblog) is Entities.Status reblogStatus) {
+                    GetAccount(reblogStatus.Account);
                 }
             }
         }
         return timelines;
     }
 
-    public List<Entities.Timeline> AddTimeline(IEnumerable<Model.Server.Entities.Status> serverStatuses, string? afterId = null) {
+    public List<Entities.Timeline> AddTimeline(IEnumerable<Server.Entities.Status> serverStatuses, string? afterId = null) {
         serverStatuses = serverStatuses.ToCollection();
 
         var dbTimeline = new List<Entities.Timeline>(serverStatuses.Count() + 1);
@@ -35,8 +35,8 @@ internal sealed class Client: IDisposable {
 
         Timeline.Add(dbTimeline, afterId);
         var flattened = serverStatuses.Flattened.DistinctBy(x => x.Id).ToCollection();
-        Status.Add(Entities.Status.FromServer(flattened));
-        Account.Add(Entities.Account.FromServer(flattened.Select(x => x.Account).DistinctBy(x => x.Id)));
+        Status.Add(flattened.Select(x => new Entities.Status(x)));
+        Account.Add(flattened.Select(x => x.Account).DistinctBy(x => x.Id));
 
         return dbTimeline;
     }
@@ -45,14 +45,8 @@ internal sealed class Client: IDisposable {
         return Status.Get(id);
     }
 
-    public Entities.Account? GetAccount(string id) {
+    public Server.Entities.Account? GetAccount(string id) {
         return Account.Get(id);
-    }
-
-    public Entities.Account AddAccount(Model.Server.Entities.CredentialAccount serverAccount) {
-        var account = new Entities.Account(serverAccount);
-        Account.Add(account);
-        return account;
     }
 
     public void Dispose() {

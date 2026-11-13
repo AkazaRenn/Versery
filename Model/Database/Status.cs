@@ -3,23 +3,17 @@
 namespace Model.Database;
 
 internal sealed class Status(string id): IDisposable {
-    private readonly MemoryCache cache = new(new MemoryCacheOptions { SizeLimit = 2048 });
-    private readonly MemoryCacheEntryOptions entryOptions = new() { Size = 1 };
-    private readonly Store<Entities.Status> db = new(id, "Statuses", StoreJsonContext.Default.Status);
+    private readonly Store<Entities.Status> db = new(id, "Statuses", StoreJsonContext.Default.DatabaseStatus);
 
     public Entities.Status? Get(string id) {
-        if (cache.TryGetValue(id, out Entities.Status? cached)) {
-            return cached;
-        }
         if (db.TryGet(id, out var status)) {
-            cache.Set(id, status, entryOptions);
+            return status;
         }
-        return status;
+        return null;
     }
 
     public void Add(Entities.Status status) {
         db.Upsert(status.Id, status);
-        cache.Set(status.Id, status, entryOptions);
     }
 
     public void Add(IEnumerable<Entities.Status> statuses) {

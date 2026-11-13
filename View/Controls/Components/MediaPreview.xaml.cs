@@ -38,7 +38,7 @@ internal sealed partial class MediaPreview: ImageButton {
     } = null;
     public string? Description {
         get => Tooltip;
-        set => Tooltip = value;
+        set => Tooltip = string.IsNullOrWhiteSpace(value) ? null : value;
     }
 
     internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);

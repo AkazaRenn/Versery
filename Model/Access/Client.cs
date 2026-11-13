@@ -45,7 +45,6 @@ public sealed class Client {
 
         database?.Dispose();
         database = new(userId);
-        database.AddAccount(account);
 
         Credentials.AddAccessToken(userId, accessToken);
         applicationStates.ActiveUser = userId;
@@ -106,7 +105,7 @@ public sealed class Client {
         await server.Status.CreateStatus(textStatus);
     }
 
-    public Entities.Account? GetAccount(string id) {
+    public Account? GetAccount(string id) {
         return database.GetAccount(id);
     }
 }

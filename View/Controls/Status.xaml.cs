@@ -46,7 +46,7 @@ internal sealed partial class Status: Grid {
 
     private double PosterAccountFontSize => DisplayNameFontSize * 0.85;
 
-    internal static string GetStatusTimeString(System.DateTime dateTime) => dateTime.ToRelativeStringShort();
+    internal static string GetStatusTimeString(System.DateTimeOffset dateTime) => dateTime.ToRelativeStringShort();
 
     private int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
@@ -138,7 +138,7 @@ internal sealed partial class Status: Grid {
 
     private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
-    private bool LoadMedias => ViewModel?.MediaPreviews.Length > 0;
+    private bool LoadMedias => ViewModel?.Medias.Length > 0;
     internal static double GetImageOpacity(bool imagePreviewsHidden) => imagePreviewsHidden ? 0 : 1;
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;

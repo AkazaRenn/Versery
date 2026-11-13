@@ -29,11 +29,11 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
         Id = timeline.Id;
         var status = client.GetStatus(Id)!;
 
-        if (status.ReblogId == null) {
+        if (string.IsNullOrWhiteSpace(status.Reblog)) {
             Content = Status.Create(Id);
         } else {
-            Reblogger = Status.Account.Create(status.AccountId);
-            Content = Status.Create(status.ReblogId);
+            Reblogger = Status.Account.Create(status.Account);
+            Content = Status.Create(status.Reblog);
         }
         FollowedByGap = timeline.FollowedByGap;
 

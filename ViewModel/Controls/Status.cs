@@ -21,7 +21,7 @@ public sealed partial class Status: ObservableObject {
     };
 
     public Account Poster { get; }
-    public DateTime CreatedAt { get; } = DateTime.MinValue;
+    public DateTimeOffset CreatedAt { get; } = DateTimeOffset.MinValue;
     public Uri? Uri { get; } = null;
     public Status? Quote { get; } = null;
 
@@ -38,18 +38,17 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool IsBookmarked { get; private set; } = false;
 
-    public Uri[] ImagesRemote { get; } = [];
-    public Status_MediaPreview[] MediaPreviews { get; } = [];
+    public Status_MediaPreview[] Medias { get; } = [];
     [ObservableProperty]
-    public partial bool ImagePreviewsHidden { get; private set; } = false;
-    partial void OnImagePreviewsHiddenChanged(bool value) {
-        foreach (var imagePreview in MediaPreviews) {
+    public partial bool MediaPreviewsHidden { get; private set; } = false;
+    partial void OnMediaPreviewsHiddenChanged(bool value) {
+        foreach (var imagePreview in Medias) {
             imagePreview.Hidden = value;
         }
     }
     [RelayCommand]
     private void ToggleImagePreviewsHidden() {
-        ImagePreviewsHidden = !ImagePreviewsHidden;
+        MediaPreviewsHidden = !MediaPreviewsHidden;
     }
 
     public Card_? Card { get; } = null;
@@ -58,24 +57,24 @@ public sealed partial class Status: ObservableObject {
         Id = id;
         var status = client.GetStatus(Id)!;
 
-        Poster = Account.Create(status.AccountId);
+        Poster = Account.Create(status.Account);
 
-        if ((status.QuotedStatusId is not null) &&
-            (status.QuotedStatusId != Id)) {
-            Quote = Create(status.QuotedStatusId);
+        if ((!string.IsNullOrWhiteSpace(status.Quote)) &&
+            (status.Quote != Id)) {
+            Quote = Create(status.Quote);
         }
 
         CanBeReblogged = status.Visibility < StatusVisibilityEnum.Private;
-        IsReply = !String.IsNullOrWhiteSpace(status.InReplyToId);
+        IsReply = !string.IsNullOrWhiteSpace(status.InReplyToId);
         IsReblogged = status.Reblogged is true;
         IsFavourited = status.Favourited is true;
         IsBookmarked = status.Bookmarked is true;
 
         PostBody.RawText = status.Content;
         foreach (var emoji in status.Emojis) {
-            PostBody.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+            PostBody.Emojis.Add(emoji.Shortcode, Cache.Get(emoji.Url));
         }
-        if (!String.IsNullOrEmpty(status.SpoilerText)) {
+        if (!string.IsNullOrEmpty(status.SpoilerText)) {
             Collapsed = true;
             SpoilerText = new Html {
                 IsPlainText = true,
@@ -85,12 +84,12 @@ public sealed partial class Status: ObservableObject {
         }
 
         CreatedAt = status.CreatedAt;
-        Uri = status.Uri;
+        if (Uri.TryCreate(status.Uri, UriKind.Absolute, out var uri)) {
+            Uri = uri;
+        }
 
-        var validImages = status.Images.Where(x => x.Source is not null).ToArray();
-        ImagesRemote = [.. validImages.Select(x => x.Source!)];
-        MediaPreviews = [.. validImages.Select(x => new Status_MediaPreview(x))];
-        ImagePreviewsHidden = status.Sensitive;
+        Medias = [.. status.MediaAttachments.Select(x => new Status_MediaPreview(x))];
+        MediaPreviewsHidden = status.Sensitive;
 
         if (status.Card is not null) {
             Card = new(status.Card);
@@ -113,7 +112,7 @@ public sealed partial class Status: ObservableObject {
     internal async Task DownloadMedias() {
         _ = Poster.DownloadAvatar();
         _ = Card?.DownloadImage();
-        foreach (var imagePreview in MediaPreviews) {
+        foreach (var imagePreview in Medias) {
             _ = imagePreview.Download();
         }
         _ = Quote?.DownloadMedias();
@@ -127,7 +126,6 @@ public sealed partial class Status: ObservableObject {
 
         public string Id { get; }
         public string AccountName { get; }
-        public Dictionary<string, Uri> Emojis { get; }
         public Html DisplayName { get; } = new();
 
         public Uri? AvatarRemote { get; }
@@ -142,11 +140,10 @@ public sealed partial class Status: ObservableObject {
         private Account(string id) {
             Id = id;
             var account = client.GetAccount(id)!;
-            AccountName = $"@{account.AccountName}";
-            Emojis = account.Emojis;
+            AccountName = $"@{account.Acct}";
             DisplayName.RawText = account.DisplayName;
             foreach (var emoji in account.Emojis) {
-                DisplayName.Emojis.Add(emoji.Key, Cache.Get(emoji.Value));
+                DisplayName.Emojis.Add(emoji.Shortcode, Cache.Get(emoji.Url));
             }
             AvatarRemote = account.Avatar;
 
@@ -165,7 +162,7 @@ public sealed partial class Status: ObservableObject {
         }
     }
 
-    public sealed partial class Card_(Model.Entities.Card card): ObservableObject {
+    public sealed partial class Card_(PreviewCard card): ObservableObject {
         public Uri? Url { get; } = card.Url;
         public string Title { get; } = card.Title;
         public string Description { get; } = card.Description;
@@ -188,15 +185,15 @@ public sealed partial class Status: ObservableObject {
     }
 }
 
-public sealed partial class Status_MediaPreview(Model.Entities.Media media): ObservableObject {
-    public double Aspect { get; } = media.AspectRatio;
-    public string? Blurhash { get; } = media.BlurHash;
+public sealed partial class Status_MediaPreview(MediaAttachment media): ObservableObject {
+    public double Aspect { get; } = media.Meta?.Original?.Aspect ?? 1;
+    public string? Blurhash { get; } = media.Blurhash;
     public string? Description { get; } = media.Description;
 
     [ObservableProperty]
     public partial bool Hidden { get; internal set; } = false;
 
-    public Uri? Remote { get; } = media.Preview;
+    public Uri? Remote { get; } = media.RemoteUrl;
     [ObservableProperty]
     public partial Uri? Uri { get; private set; } = null;
     internal async Task Download() {

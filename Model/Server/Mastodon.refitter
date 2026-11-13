@@ -11,6 +11,9 @@
   "generateJsonSerializerContext": true,
   "generateDefaultAdditionalProperties": false,
   "codeGeneratorSettings": {
-    "generateNullableReferenceTypes": true
+    "generateNullableReferenceTypes": true,
+    "generateOptionalPropertiesAsNullable": true,
+    "generateNativeRecords": true,
+    "excludedTypeNames": [ "OAuthScopes" ]
   }
 }

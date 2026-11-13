@@ -3,26 +3,20 @@
 namespace Model.Database;
 
 internal sealed class Account(string id): IDisposable {
-    private readonly MemoryCache cache = new(new MemoryCacheOptions { SizeLimit = 512 });
-    private readonly MemoryCacheEntryOptions entryOptions = new() { Size = 1 };
-    private readonly Store<Entities.Account> db = new(id, "Accounts", StoreJsonContext.Default.Account);
+    private readonly Store<Server.Entities.Account> db = new(id, "Accounts", Server.Entities.MastodonAPISerializerContext.Default.Account);
 
-    public Entities.Account? Get(string id) {
-        if (cache.TryGetValue(id, out Entities.Account? cached)) {
-            return cached;
-        }
+    public Server.Entities.Account? Get(string id) {
         if (db.TryGet(id, out var account)) {
-            cache.Set(id, account, entryOptions);
+            return account;
         }
-        return account;
+        return null;
     }
 
-    public void Add(Entities.Account account) {
+    public void Add(Server.Entities.Account account) {
         db.Upsert(account.Id, account);
-        cache.Set(account.Id, account, entryOptions);
     }
 
-    public void Add(IEnumerable<Entities.Account> accounts) {
+    public void Add(IEnumerable<Server.Entities.Account> accounts) {
         foreach (var account in accounts) {
             Add(account);
         }

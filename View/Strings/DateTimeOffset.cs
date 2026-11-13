@@ -5,15 +5,15 @@ using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace View.Strings;
 
-internal static class DateTime {
-    static readonly Type type = typeof(DateTime);
+internal static class DateTimeOffset {
+    static readonly Type type = typeof(DateTimeOffset);
     static readonly ResourceLoader resourceLoader = new("resources.pri", $"{type.Namespace!.Split('.')[0]}/{type.Name}");
 
     const uint DaysPerYear = 365;
 
-    extension(System.DateTime dateTime) {
+    extension(System.DateTimeOffset dateTime) {
         internal string ToRelativeStringShort() {
-            TimeSpan span = System.DateTime.UtcNow - dateTime.ToUniversalTime();
+            TimeSpan span = System.DateTimeOffset.UtcNow - dateTime.ToUniversalTime();
             if (span.Duration() < TimeSpan.FromSeconds(1)) {
                 return resourceLoader.GetString("Now");
             }

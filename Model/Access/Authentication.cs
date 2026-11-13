@@ -25,14 +25,15 @@ public sealed partial class Authentication(string instance) {
             var code = match.Groups[1].Value;
             var appRegistration = GetStoredAppRegistration() ?? throw new InvalidOperationException("The app must be registered before you can connect");
 
-            var auth = await authenticationClient.OAuth.PostOauthToken(new PostOauthTokenRequest {
-                GrantType = "authorization_code",
-                Code = code,
-                ClientId = appRegistration.ClientId,
-                ClientSecret = appRegistration.ClientSecret,
-                RedirectUri = RedirectUri,
-                Scope = Scopes,
-            });
+            var auth = await authenticationClient.OAuth.PostOauthToken(new PostOauthTokenRequest(
+                clientId: appRegistration.ClientId,
+                clientSecret: appRegistration.ClientSecret,
+                code: code,
+                codeVerifier: null,
+                grantType: "authorization_code",
+                redirectUri: RedirectUri,
+                scope: Scopes
+            ));
             await client.NewUser(instance, auth.AccessToken);
         }
     }
@@ -52,12 +53,12 @@ public sealed partial class Authentication(string instance) {
             return storedAppRegistration;
         }
 
-        var newAppRegistration = await authenticationClient.Apps.CreateApp(new CreateAppRequest {
-            ClientName = Constants.AppName,
-            RedirectUris = [new Uri(RedirectUri)],
-            Scopes = Scopes,
-            Website = Constants.ProjectLink,
-        });
+        var newAppRegistration = await authenticationClient.Apps.CreateApp(new CreateAppRequest(
+            clientName: Constants.AppName,
+            redirectUris: [new Uri(RedirectUri)],
+            scopes: Scopes,
+            website: Constants.ProjectLink
+        ));
 
         Credentials.AddAppRegistration(instance, JsonSerializer.Serialize(newAppRegistration, MastodonAPISerializerContext.Default.CredentialApplication));
         return newAppRegistration;
