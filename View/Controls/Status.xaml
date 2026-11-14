@@ -133,16 +133,13 @@
         <Grid
             x:Name="PostBodyGrid"
             Opacity="{x:Bind controls:Status.GetPostBodyGridInitialOpacity(ViewModel.Collapsed)}"
-            OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"
             MaxHeight="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
-            <ctcontrols:OpacityMaskView >
+            <ctcontrols:OpacityMaskView>
                 <ctcontrols:OpacityMaskView.OpacityMask>
-                    <Border
-                        Background="{x:Bind utils:Brushes.CollapsedStatusBrush}">
+                    <Border Background="{x:Bind utils:Brushes.CollapsedStatusBrush}">
                         <Rectangle
                             x:Name="PostBodyRichTextBlockOpacityMaskForeground"
-                            Fill="{x:Bind utils:Brushes.White}"
-                            Opacity="1"/>
+                            Fill="{x:Bind utils:Brushes.White}"/>
                     </Border>
                 </ctcontrols:OpacityMaskView.OpacityMask>
                 <StackPanel
@@ -157,16 +154,13 @@
             </ctcontrols:OpacityMaskView>
             <Button
                 x:Name="CollapsePostBodyButton"
-                x:Load="{x:Bind utils:Converters.IsNull(ViewModel.SpoilerText)}"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Center"
                 Height="24"
                 FontSize="12"
                 Padding="16,0,16,0"
                 Visibility="Collapsed"
-                IsEnabled="{x:Bind controls:Status.CollapsePostBodyButtonInitialIsEnabled}"
-                Opacity="{x:Bind controls:Status.CollapsePostBodyButtonInitialOpacity}"
-                OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"
+                IsEnabled="{x:Bind utils:Values.True}"
                 Click="CollapsePostBodyButton_Click">
                 <fluenticons:FluentIcon Icon="ChevronDown"/>
             </Button>
