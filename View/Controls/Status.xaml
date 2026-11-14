@@ -134,9 +134,10 @@
             x:Name="PostBodyGrid"
             Opacity="{x:Bind controls:Status.GetPostBodyGridInitialOpacity(ViewModel.Collapsed)}"
             MaxHeight="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
-            <ctcontrols:OpacityMaskView x:Name="PostBodyGridOpacityMaskView">
-                <StackPanel
-                    Orientation="Vertical">
+            <ctcontrols:OpacityMaskView
+                x:Name="PostBodyGridOpacityMaskView"
+                OpacityMask="{x:Bind utils:Values.NullUIElement}">
+                <StackPanel Orientation="Vertical">
                     <RichTextBlock
                         x:Name="PostBodyRichTextBlock"
                         TextWrapping="WrapWholeWords"

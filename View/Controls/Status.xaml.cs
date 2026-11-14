@@ -15,6 +15,7 @@ internal sealed partial class Status: Grid {
         get;
         set {
             if (field != value) {
+                postBodyGridStoryboard.Stop();
                 field = value;
                 if (DispatcherQueue.HasThreadAccess) {
                     Bindings.Update();
@@ -75,7 +76,7 @@ internal sealed partial class Status: Grid {
         const double MaxPostBodyHeight = 500;
         const double CollapsedPostBodyHeight = 360;
 
-        if (PostBodyRichTextBlock.ActualHeight > MaxPostBodyHeight) {
+        if (PostBodyRichTextBlock.DesiredSize.Height > MaxPostBodyHeight) {
             PostBodyGrid.MaxHeight = CollapsedPostBodyHeight;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
             CollapsePostBodyButton.Opacity = 1;
@@ -108,14 +109,14 @@ internal sealed partial class Status: Grid {
         }
     }
     private void AnimatePostBodyGrid(bool expand) {
+        double currentGridHeight = PostBodyGrid.ActualHeight;
         double currentGridMaxHeight = PostBodyGrid.MaxHeight;
         double currentGridOpacity = PostBodyGrid.Opacity;
         double currentCollapsePostBodyButtonOpacity = CollapsePostBodyButton.Opacity;
 
         postBodyGridStoryboard.Stop();
-
         if (expand) {
-            double targetHeight = PostBodyRichTextBlock.ActualHeight;
+            double targetHeight = PostBodyRichTextBlock.DesiredSize.Height;
 
             postBodyGridMaxHeightAnimation.From = Math.Max(currentGridMaxHeight, targetHeight - Utilities.Transitions.MaxTransitionDistance);
             postBodyGridMaxHeightAnimation.To = targetHeight;
@@ -127,7 +128,7 @@ internal sealed partial class Status: Grid {
 
             ((PostBodyGridOpacityMaskView.OpacityMask as Rectangle)?.Fill as Brushes.FadeOutBrush)?.MoveOut();
         } else {
-            postBodyGridMaxHeightAnimation.From = Math.Min(currentGridMaxHeight, Utilities.Transitions.MaxTransitionDistance);
+            postBodyGridMaxHeightAnimation.From = Math.Min(currentGridHeight, Utilities.Transitions.MaxTransitionDistance);
             postBodyGridMaxHeightAnimation.To = 0;
 
             postBodyGridOpacityAnimation.From = currentGridOpacity;
