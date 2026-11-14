@@ -134,14 +134,7 @@
             x:Name="PostBodyGrid"
             Opacity="{x:Bind controls:Status.GetPostBodyGridInitialOpacity(ViewModel.Collapsed)}"
             MaxHeight="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
-            <ctcontrols:OpacityMaskView>
-                <ctcontrols:OpacityMaskView.OpacityMask>
-                    <Border Background="{x:Bind utils:Brushes.CollapsedStatusBrush}">
-                        <Rectangle
-                            x:Name="PostBodyRichTextBlockOpacityMaskForeground"
-                            Fill="{x:Bind utils:Brushes.White}"/>
-                    </Border>
-                </ctcontrols:OpacityMaskView.OpacityMask>
+            <ctcontrols:OpacityMaskView x:Name="PostBodyGridOpacityMaskView">
                 <StackPanel
                     Orientation="Vertical">
                     <RichTextBlock
@@ -201,18 +194,18 @@
                 HorizontalAlignment="Left"
                 Margin="4,4,0,0"
                 Padding="4">
-                <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind ViewModel.MediaPreviewsHidden, Mode=OneWay}">
-                    <components:SwitchContentPanel.DefaultContent>
-                        <fluenticons:FluentIcon
-                            Icon="EyeOff"
-                            FontSize="20"/>
-                    </components:SwitchContentPanel.DefaultContent>
-                    <components:SwitchContentPanel.AlternateContent>
-                        <fluenticons:FluentIcon
-                            Icon="Eye"
-                            FontSize="20"/>
-                    </components:SwitchContentPanel.AlternateContent>
-                </components:SwitchContentPanel>
+                <Grid>
+                    <fluenticons:FluentIcon
+                        Icon="EyeOff"
+                        FontSize="20"
+                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                    <fluenticons:FluentIcon
+                        Icon="Eye"
+                        FontSize="20"
+                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                </Grid>
                 <Button.Background>
                     <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
                 </Button.Background>

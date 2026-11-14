@@ -1,9 +1,12 @@
 using FluentIcons.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Shapes;
 using System.Numerics;
 using View.Strings;
+using View.Utilities;
 
 namespace View.Controls;
 
@@ -76,11 +79,14 @@ internal sealed partial class Status: Grid {
             PostBodyGrid.MaxHeight = CollapsedPostBodyHeight;
             CollapsePostBodyButton.Visibility = Visibility.Visible;
             CollapsePostBodyButton.Opacity = 1;
-            PostBodyRichTextBlockOpacityMaskForeground.Opacity = 0;
+            PostBodyGridOpacityMaskView.OpacityMask ??= new Rectangle() {
+                Fill = Brushes.CollapsedStatusOpacityMaskBrush,
+            };
         } else {
             PostBodyGrid.MaxHeight = double.PositiveInfinity;
             CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-            PostBodyRichTextBlockOpacityMaskForeground.Opacity = 1;
+            CollapsePostBodyButton.Opacity = 0;
+            PostBodyGridOpacityMaskView.OpacityMask = null;
         }
     }
     private void CollapsePostBodyButton_Click(object sender, RoutedEventArgs e) {
@@ -88,23 +94,22 @@ internal sealed partial class Status: Grid {
         AnimatePostBodyGrid(true);
     }
     private readonly Storyboard postBodyGridStoryboard = new();
-    private readonly CubicEase postBodyGridEasingFunction = new();
+    private readonly CubicEase postBodyGridEasingFunction = new() {
+        EasingMode = EasingMode.EaseOut,
+    };
     private readonly DoubleAnimation postBodyGridMaxHeightAnimation;
     private readonly DoubleAnimation postBodyGridOpacityAnimation;
-    private readonly DoubleAnimation postBodyGridOpacityMaskForegroundOpacityAnimation;
     private readonly DoubleAnimation collapsePostBodyButtonOpacityAnimation;
     private void PostBodyGridStoryboard_Completed(object? sender, object e) {
-        if (postBodyGridEasingFunction.EasingMode == EasingMode.EaseOut) {
+        if (PostBodyGrid.MaxHeight != 0) {
             PostBodyGrid.MaxHeight = double.PositiveInfinity;
             CollapsePostBodyButton.Visibility = Visibility.Collapsed;
-        } else if (postBodyGridEasingFunction.EasingMode == EasingMode.EaseIn) {
-            PostBodyGrid.MaxHeight = 0;
+            PostBodyGridOpacityMaskView.OpacityMask = null;
         }
     }
     private void AnimatePostBodyGrid(bool expand) {
-        double currentGridHeight = PostBodyGrid.ActualHeight;
+        double currentGridMaxHeight = PostBodyGrid.MaxHeight;
         double currentGridOpacity = PostBodyGrid.Opacity;
-        double currentRichTextBlockOpacityMaskForegroundOpacity = PostBodyRichTextBlockOpacityMaskForeground.Opacity;
         double currentCollapsePostBodyButtonOpacity = CollapsePostBodyButton.Opacity;
 
         postBodyGridStoryboard.Stop();
@@ -112,26 +117,22 @@ internal sealed partial class Status: Grid {
         if (expand) {
             double targetHeight = PostBodyRichTextBlock.ActualHeight;
 
-            postBodyGridEasingFunction.EasingMode = EasingMode.EaseOut;
-
-            postBodyGridMaxHeightAnimation.From = Math.Max(currentGridHeight, targetHeight - Utilities.Transitions.MaxTransitionDistance);
+            postBodyGridMaxHeightAnimation.From = Math.Max(currentGridMaxHeight, targetHeight - Utilities.Transitions.MaxTransitionDistance);
             postBodyGridMaxHeightAnimation.To = targetHeight;
 
             postBodyGridOpacityAnimation.From = currentGridOpacity;
             postBodyGridOpacityAnimation.To = 1;
 
-            postBodyGridOpacityMaskForegroundOpacityAnimation.From = currentRichTextBlockOpacityMaskForegroundOpacity;
             collapsePostBodyButtonOpacityAnimation.From = currentCollapsePostBodyButtonOpacity;
-        } else {
-            postBodyGridEasingFunction.EasingMode = EasingMode.EaseIn;
 
-            postBodyGridMaxHeightAnimation.From = currentGridHeight;
-            postBodyGridMaxHeightAnimation.To = Math.Max(0, currentGridHeight - Utilities.Transitions.MaxTransitionDistance);
+            ((PostBodyGridOpacityMaskView.OpacityMask as Rectangle)?.Fill as Brushes.FadeOutBrush)?.MoveOut();
+        } else {
+            postBodyGridMaxHeightAnimation.From = Math.Min(currentGridMaxHeight, Utilities.Transitions.MaxTransitionDistance);
+            postBodyGridMaxHeightAnimation.To = 0;
 
             postBodyGridOpacityAnimation.From = currentGridOpacity;
             postBodyGridOpacityAnimation.To = 0;
 
-            postBodyGridOpacityMaskForegroundOpacityAnimation.From = 1;
             collapsePostBodyButtonOpacityAnimation.From = 0;
         }
 
@@ -166,15 +167,6 @@ internal sealed partial class Status: Grid {
         Storyboard.SetTarget(postBodyGridOpacityAnimation, PostBodyGrid);
         Storyboard.SetTargetProperty(postBodyGridOpacityAnimation, "Opacity");
         postBodyGridStoryboard.Children.Add(postBodyGridOpacityAnimation);
-
-        postBodyGridOpacityMaskForegroundOpacityAnimation = new() {
-            Duration = Utilities.Transitions.DefaultDuration,
-            EasingFunction = postBodyGridEasingFunction,
-            To = 1,
-        };
-        Storyboard.SetTarget(postBodyGridOpacityMaskForegroundOpacityAnimation, PostBodyRichTextBlockOpacityMaskForeground);
-        Storyboard.SetTargetProperty(postBodyGridOpacityMaskForegroundOpacityAnimation, "Opacity");
-        postBodyGridStoryboard.Children.Add(postBodyGridOpacityMaskForegroundOpacityAnimation);
 
         collapsePostBodyButtonOpacityAnimation = new() {
             Duration = Utilities.Transitions.DefaultDuration,

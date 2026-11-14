@@ -34,4 +34,12 @@ internal static class Converters {
     public static Visibility NullableObjectToVisibility(object? value) {
         return BoolToVisibility(IsNotNull(value));
     }
+
+    public static double BoolToDouble(bool value) {
+        return value ? 1 : 0;
+    }
+
+    public static double BoolToDoubleReversed(bool value) {
+        return BoolToDouble(!value);
+    }
 }
