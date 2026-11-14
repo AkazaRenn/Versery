@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Model.DataPersistence;
-using Model.Server;
 using Model.Server.Entities;
 using Refit;
 

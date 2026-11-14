@@ -7,7 +7,6 @@ using Model.Server.Entities;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using ViewModel.Enumerations;
-using Windows.System.UserProfile;
 
 namespace ViewModel.Controls;
 

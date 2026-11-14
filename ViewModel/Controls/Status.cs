@@ -189,11 +189,12 @@ public sealed partial class Status_MediaPreview(MediaAttachment media): Observab
     public double Aspect { get; } = media.Meta?.Original?.Aspect ?? 1;
     public string? Blurhash { get; } = media.Blurhash;
     public string? Description { get; } = media.Description;
+    public Uri? Full { get; } = media.RemoteUrl;
 
     [ObservableProperty]
     public partial bool Hidden { get; internal set; } = false;
 
-    public Uri? Remote { get; } = media.RemoteUrl;
+    public Uri? Remote { get; } = media.PreviewUrl;
     [ObservableProperty]
     public partial Uri? Uri { get; private set; } = null;
     internal async Task Download() {

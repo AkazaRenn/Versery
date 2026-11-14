@@ -142,7 +142,6 @@ internal sealed partial class Status: Grid {
     internal static double GetImageOpacity(bool imagePreviewsHidden) => imagePreviewsHidden ? 0 : 1;
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
-    internal static Icon GetReplyIcon(bool isReply) => isReply ? Icon.ArrowReplyAll : Icon.ArrowReply;
     internal static Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;
     internal static IconVariant GetFavouriteIconVariant(bool favourited) => favourited ? IconVariant.Color : IconVariant.Regular;
 

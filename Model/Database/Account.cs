@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-
-namespace Model.Database;
+﻿namespace Model.Database;
 
 internal sealed class Account(string id): IDisposable {
     private readonly Store<Server.Entities.Account> db = new(id, "Accounts", Server.Entities.MastodonAPISerializerContext.Default.Account);

@@ -21,5 +21,6 @@ internal sealed partial class Timeline: Grid {
         InitializeComponent();
     }
 
-    private double PosterAvatarScale => ViewModel?.Reblogger is null ? 1 : 0.9;
+    private double PosterAvatarScale => ((ViewModel?.Reblogger is null) && ViewModel?.Content.IsReply == false) ? 1 : 0.9;
+    private bool LoadReplyIconBorder => (ViewModel?.Reblogger is null) && (ViewModel?.Content.IsReply == true);
 }

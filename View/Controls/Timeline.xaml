@@ -70,6 +70,27 @@
         </Image>
     </Border>
 
+    <Border
+        x:Name="ReplyIconBorder"
+        x:Load="{x:Bind LoadReplyIconBorder}"
+        Grid.Column="0"
+        Grid.Row="1"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left"
+        Margin="28, 28, 0, 0"
+        IsHitTestVisible="False"
+        Height="20"
+        Width="20"
+        CornerRadius="10"
+        Background="{x:Bind utils:Brushes.MediumPurple}">
+        <fluenticons:FluentIcon
+            x:Name="ReplyIcon"
+            Icon="ArrowReply"
+            Foreground="White"
+            IconVariant="Filled"
+            FontSize="12"/>
+    </Border>
+
     <Button
         x:Uid="Controls_Timeline_LoadMoreButton"
         x:Name="LoadMoreButton"

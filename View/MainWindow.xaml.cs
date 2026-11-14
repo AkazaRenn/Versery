@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using View.Controls;
-using View.Controls.Components;
 using View.Interfaces;
 using Windows.Foundation;
 using Windows.Graphics;

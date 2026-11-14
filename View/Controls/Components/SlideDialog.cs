@@ -9,8 +9,8 @@ namespace View.Controls.Components;
 
 internal partial class SlideDialog: ContentDialog {
     public new UIElement? Content {
-       get => Container.Child;
-       set => Container.Child = value;
+        get => Container.Child;
+        set => Container.Child = value;
     }
 
     private readonly Popup Popup = new() { IsOpen = false };

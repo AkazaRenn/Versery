@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-
-namespace Model.Database;
+﻿namespace Model.Database;
 
 internal sealed class Status(string id): IDisposable {
     private readonly Store<Entities.Status> db = new(id, "Statuses", StoreJsonContext.Default.DatabaseStatus);
