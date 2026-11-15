@@ -105,6 +105,14 @@ public sealed class Client {
         await server.Status.CreateStatus(textStatus);
     }
 
+    public async Task<Status> FavouriteStatus(string id, bool state) {
+        return state ? await server.Status.PostStatusFavourite(id) : await server.Status.PostStatusUnfavourite(id);
+    }
+
+    public async Task<Status> ReblogStatus(string id, bool state) {
+        return state ? await server.Status.PostStatusReblog(id) : await server.Status.PostStatusUnreblog(id);
+    }
+
     public Account? GetAccount(string id) {
         return database.GetAccount(id);
     }

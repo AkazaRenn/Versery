@@ -33,8 +33,20 @@ public sealed partial class Status: ObservableObject {
     public partial bool CanBeReblogged { get; private set; } = true;
     [ObservableProperty]
     public partial bool IsReblogged { get; private set; } = false;
+    [RelayCommand]
+    public async Task ToggleReblogged() {
+        IsReblogged = !IsReblogged;
+        var status = await client.ReblogStatus(Id, IsReblogged);
+        IsReblogged = status?.Reblogged ?? !IsReblogged;
+    }
     [ObservableProperty]
     public partial bool IsFavourited { get; private set; } = false;
+    [RelayCommand]
+    public async Task ToggleFavourited() {
+        IsFavourited = !IsFavourited;
+        var status = await client.FavouriteStatus(Id, IsFavourited);
+        IsFavourited = status?.Favourited ?? !IsFavourited;
+    }
     [ObservableProperty]
     public partial bool IsBookmarked { get; private set; } = false;
 
