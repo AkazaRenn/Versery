@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Windows.Input;
 using Windows.Foundation;
 
 namespace View.Controls.Components;
@@ -30,6 +31,19 @@ internal sealed partial class MediaGrid: Grid {
             OnItemsChanged();
         }
     } = null;
+
+    public ICommand? ToggleMediaPreviewsCommand {
+        get => ToggleMediaPreviewsButton.Command;
+        set => ToggleMediaPreviewsButton.Command = value;
+    }
+
+    public bool MediaPreviewsHidden {
+        get => HiddenIcon.Opacity == 1;
+        set {
+            HiddenIcon.Opacity = value ? 1 : 0;
+            VisibleIcon.Opacity = value ? 0 : 1;
+        }
+    }
 
     private INotifyCollectionChanged? observedCollection = null;
     private bool hasGeneratedChildren = false;
@@ -57,7 +71,7 @@ internal sealed partial class MediaGrid: Grid {
             return;
         }
 
-        Children.Clear();
+        Tiles.Children.Clear();
         hasGeneratedChildren = false;
         if ((ItemsSource is not IEnumerable items) || (ItemTemplate is null)) {
             return;
@@ -68,7 +82,7 @@ internal sealed partial class MediaGrid: Grid {
                 throw new InvalidOperationException($"{nameof(MediaGrid)}.{nameof(ItemTemplate)} root must be a {nameof(FrameworkElement)}.");
             }
             element.DataContext = item;
-            Children.Add(element);
+            Tiles.Children.Add(element);
         }
         hasGeneratedChildren = true;
     }
@@ -79,13 +93,13 @@ internal sealed partial class MediaGrid: Grid {
             layoutRatios = ratios;
             layout = (ratios.Length > 0) ? TiledLayout.Create(ratios) : null;
 
-            ColumnDefinitions.Clear();
-            RowDefinitions.Clear();
+            Tiles.ColumnDefinitions.Clear();
+            Tiles.RowDefinitions.Clear();
             foreach (var size in layout?.ColumnSizes ?? []) {
-                ColumnDefinitions.Add(new() { Width = new(size, GridUnitType.Star) });
+                Tiles.ColumnDefinitions.Add(new() { Width = new(size, GridUnitType.Star) });
             }
             foreach (var size in layout?.RowSizes ?? []) {
-                RowDefinitions.Add(new() { Height = new(size, GridUnitType.Star) });
+                Tiles.RowDefinitions.Add(new() { Height = new(size, GridUnitType.Star) });
             }
         }
 
@@ -103,8 +117,8 @@ internal sealed partial class MediaGrid: Grid {
 
     // Height is derived from the offered width only; the offered height is ignored.
     protected override Size MeasureOverride(Size availableSize) {
-        var tiles = new List<MediaPreview>(Children.Count);
-        foreach (var child in Children) {
+        var tiles = new List<MediaPreview>(Tiles.Children.Count);
+        foreach (var child in Tiles.Children) {
             if (child is not MediaPreview item) {
                 throw new InvalidOperationException($"{nameof(MediaGrid)} children must be {nameof(MediaPreview)}, got {child.GetType().FullName}.");
             }
