@@ -11,7 +11,7 @@ using ZoneTree.Serializers;
 namespace Model.Database;
 
 internal sealed class Store<T>: IDisposable
-    where T: IDatabaseEntity {
+    where T : IDatabaseEntity {
     private static readonly string root = ApplicationData.Current.LocalFolder.Path;
 
     private readonly IZoneTree<string, T> tree;

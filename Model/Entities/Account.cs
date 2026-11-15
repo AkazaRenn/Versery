@@ -1,5 +1,4 @@
 ﻿using Model.Interfaces;
-using Model.Server.Entities;
 using System.Text.Json.Serialization;
 
 namespace Model.Entities;

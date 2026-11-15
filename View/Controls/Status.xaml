@@ -305,18 +305,39 @@
                 Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}"
                 IsEnabled="{x:Bind ViewModel.CanBeReblogged}">
-                <fluenticons:FluentIcon
-                    Icon="{x:Bind controls:Status.GetReblogIcon(ViewModel.CanBeReblogged)}"
-                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
+                <Grid>
+                    <fluenticons:FluentIcon
+                        Icon="{x:Bind controls:Status.GetReblogIcon(ViewModel.CanBeReblogged)}"
+                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
+                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.IsReblogged), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                    <fluenticons:FluentIcon
+                        Icon="ArrowRepeatAll"
+                        IconVariant="Filled"
+                        Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
+                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                </Grid>
             </Button>
             <Button
                 Grid.Column="4"
                 Style="{StaticResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
-                <fluenticons:FluentIcon
-                    Icon="Star"
-                    IconVariant="{x:Bind controls:Status.GetFavouriteIconVariant(ViewModel.IsFavourited)}"
-                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
+                <Grid>
+                    <fluenticons:FluentIcon
+                        Icon="Star"
+                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
+                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.IsFavourited), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                    <fluenticons:FluentIcon
+                        Icon="Star"
+                        IconVariant="Filled"
+                        Foreground="{x:Bind utils:Brushes.Orange}"
+                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
+                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsFavourited), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                </Grid>
             </Button>
             <Button
                 Grid.Column="6"
