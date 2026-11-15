@@ -106,11 +106,15 @@ public sealed class Client {
     }
 
     public async Task<Status> FavouriteStatus(string id, bool state) {
-        return state ? await server.Status.PostStatusFavourite(id) : await server.Status.PostStatusUnfavourite(id);
+        var status = state ? await server.Status.PostStatusFavourite(id) : await server.Status.PostStatusUnfavourite(id);
+        database.AddStatus(status);
+        return status;
     }
 
     public async Task<Status> ReblogStatus(string id, bool state) {
-        return state ? await server.Status.PostStatusReblog(id) : await server.Status.PostStatusUnreblog(id);
+        var status = state ? await server.Status.PostStatusReblog(id) : await server.Status.PostStatusUnreblog(id);
+        database.AddStatus(status);
+        return status;
     }
 
     public Account? GetAccount(string id) {

@@ -283,86 +283,13 @@
             </Grid>
         </Button>
 
-        <Grid
+        <components:ReactButtons
             x:Name="ReactButtonsGrid"
             x:Load="{x:Bind ReactButtons}"
-            ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
-            <Button
-                Grid.Column="0"
-                Style="{StaticResource SubtleButtonStyle}"
-                Padding="{x:Bind controls:Status.ReactButtonPadding}">
-                <fluenticons:FluentIcon
-                    Icon="Comment"
-                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                    RenderTransformOrigin="0.5, 0.5">
-                    <fluenticons:FluentIcon.RenderTransform>
-                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
-                    </fluenticons:FluentIcon.RenderTransform>
-                </fluenticons:FluentIcon>
-            </Button>
-            <Button
-                Grid.Column="2"
-                Style="{StaticResource SubtleButtonStyle}"
-                Padding="{x:Bind controls:Status.ReactButtonPadding}"
-                IsEnabled="{x:Bind ViewModel.CanBeReblogged}"
-                Command="{x:Bind ViewModel.ToggleRebloggedCommand}">
-                <Grid>
-                    <fluenticons:FluentIcon
-                        Icon="{x:Bind controls:Status.GetReblogIcon(ViewModel.CanBeReblogged)}"
-                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.IsReblogged), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                    <fluenticons:FluentIcon
-                        Icon="ArrowRepeatAll"
-                        IconVariant="Filled"
-                        Foreground="{ThemeResource AccentFillColorDefaultBrush}"
-                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                </Grid>
-            </Button>
-            <Button
-                Grid.Column="4"
-                Style="{StaticResource SubtleButtonStyle}"
-                Padding="{x:Bind controls:Status.ReactButtonPadding}"
-                Command="{x:Bind ViewModel.ToggleFavouritedCommand}">
-                <Grid>
-                    <fluenticons:FluentIcon
-                        Icon="Star"
-                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.IsFavourited), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                    <fluenticons:FluentIcon
-                        Icon="Star"
-                        IconVariant="Filled"
-                        Foreground="{x:Bind utils:Brushes.Orange}"
-                        FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsFavourited), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                </Grid>
-            </Button>
-            <Button
-                Grid.Column="6"
-                Style="{StaticResource SubtleButtonStyle}"
-                Padding="{x:Bind controls:Status.ReactButtonPadding}">
-                <fluenticons:FluentIcon
-                    x:Name="ShareIcon"
-                    Icon="Share"
-                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"/>
-            </Button>
-            <Button
-                Grid.Column="8"
-                Style="{StaticResource SubtleButtonStyle}"
-                Padding="{x:Bind controls:Status.ReactButtonPadding}">
-                <fluenticons:FluentIcon
-                    Icon="MoreHorizontal"
-                    FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                    RenderTransformOrigin="0.5, 0.5">
-                    <fluenticons:FluentIcon.RenderTransform>
-                        <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
-                    </fluenticons:FluentIcon.RenderTransform>
-                </fluenticons:FluentIcon>
-            </Button>
-        </Grid>
+            ReblogButtonIsEnabled="{x:Bind ViewModel.CanBeReblogged}"
+            ReblogButtonCommand="{x:Bind ViewModel.ToggleRebloggedCommand}"
+            IsReblogged="{x:Bind ViewModel.IsReblogged, Mode=OneWay}"
+            FavouriteButtonCommand="{x:Bind ViewModel.ToggleFavouritedCommand}"
+            IsFavourited="{x:Bind ViewModel.IsFavourited, Mode=OneWay}"/>
     </StackPanel>
 </Grid>

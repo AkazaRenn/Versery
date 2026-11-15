@@ -39,6 +39,10 @@ internal sealed class Client(string account): IDisposable {
         return Status.Get(id);
     }
 
+    public void AddStatus(Server.Entities.Status status) {
+        Status.Add(new Entities.Status(status));
+    }
+
     public Entities.Account? GetAccount(string id) {
         return Account.Get(id);
     }
