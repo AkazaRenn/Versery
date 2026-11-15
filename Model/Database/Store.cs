@@ -19,7 +19,7 @@ internal sealed class Store<T>: IDisposable
 
     public Store(string accountId, string name, JsonTypeInfo<T> typeInfo) {
         tree = new ZoneTreeFactory<string, T>()
-            .SetMutableSegmentMaxItemCount(10_000)
+            .SetMutableSegmentMaxItemCount(4_000)
             .SetDataDirectory(Path.Combine(root, accountId, name))
             .SetComparer(new IdComparer())
             .SetKeySerializer(new Utf8StringSerializer())
