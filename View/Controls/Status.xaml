@@ -211,13 +211,15 @@
                     <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
                 </Button.Background>
                 <Button.Resources>
-                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
-                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
+                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver"
+                        Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
+                    <SolidColorBrush x:Key="ButtonBackgroundPressed"
+                        Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
                 </Button.Resources>
             </Button>
         </Grid>
 
-        <Button
+        <components:PreviewCard
             x:Name="CardButton"
             x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.Card)}"
             Height="96"
@@ -225,63 +227,13 @@
             VerticalContentAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             Padding="0"
-            Command="{x:Bind ViewModel.Card.InvokeCommand}">
-            <Grid
-                ColumnDefinitions="Auto, *"
-                CornerRadius="4">
-                <Rectangle
-                    x:Name="CardImageRectangle"
-                    x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.Card.ImageRemote)}"
-                    Width="96">
-                    <Rectangle.Fill>
-                        <ImageBrush
-                            Stretch="UniformToFill"
-                            AlignmentX="Center"
-                            AlignmentY="Center">
-                            <ImageBrush.ImageSource>
-                                <BitmapImage UriSource="{x:Bind ViewModel.Card.Image, Mode=OneWay}"/>
-                            </ImageBrush.ImageSource>
-                        </ImageBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <Grid
-                    Grid.Column="1"
-                    MaxHeight="96"
-                    VerticalAlignment="Center"
-                    RowDefinitions="Auto, *, Auto"
-                    Padding="8,4,8,4">
-                    <TextBlock
-                        Grid.Row="0"
-                        FontSize="14"
-                        FontWeight="SemiBold"
-                        TextTrimming="WordEllipsis"
-                        TextWrapping="WrapWholeWords"
-                        IsTextSelectionEnabled="False"
-                        MaxLines="2"
-                        Text="{x:Bind ViewModel.Card.Title}"/>
-                    <TextBlock
-                        Grid.Row="1"
-                        Margin="0, 4, 0, 0"
-                        FontSize="12"
-                        TextTrimming="WordEllipsis"
-                        TextWrapping="WrapWholeWords"
-                        IsTextSelectionEnabled="False"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.Card.Description}"/>
-                    <TextBlock
-                        x:Name="CardProviderNameTextBlock"
-                        x:Load="{x:Bind utils:Converters.StringIsNotNullOrEmpty(ViewModel.Card.ProviderName)}"
-                        Grid.Row="2"
-                        Margin="0, 4, 0, 0"
-                        FontSize="12"
-                        TextTrimming="WordEllipsis"
-                        TextWrapping="NoWrap"
-                        IsTextSelectionEnabled="False"
-                        Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.Card.ProviderName}"/>
-                </Grid>
-            </Grid>
-        </Button>
+            Command="{x:Bind ViewModel.Card.InvokeCommand}"
+            LoadImage="{x:Bind utils:Converters.IsNotNull(ViewModel.Card.ImageRemote)}"
+            ImageSource="{x:Bind ViewModel.Card.Image, Mode=OneWay}"
+            Title="{x:Bind ViewModel.Card.Title}"
+            Description="{x:Bind ViewModel.Card.Description}"
+            LoadProviderName="{x:Bind utils:Converters.StringIsNotNullOrEmpty(ViewModel.Card.ProviderName)}"
+            ProviderName="{x:Bind ViewModel.Card.ProviderName}"/>
 
         <components:ReactButtons
             x:Name="ReactButtonsGrid"

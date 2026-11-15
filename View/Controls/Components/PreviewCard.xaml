@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+    x:Class="View.Controls.Components.PreviewCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:components="using:View.Controls.Components"
+    Style="{StaticResource DefaultButtonStyle}">
+    <Grid
+        CornerRadius="{x:Bind CornerRadius}"
+        ColumnDefinitions="Auto, *">
+        <Rectangle
+            x:Name="ImageRectangle"
+            x:Load="False"
+            Width="96">
+            <Rectangle.Fill>
+                <ImageBrush
+                    Stretch="UniformToFill"
+                    AlignmentX="Center"
+                    AlignmentY="Center">
+                    <ImageBrush.ImageSource>
+                        <BitmapImage x:Name="Image" />
+                    </ImageBrush.ImageSource>
+                </ImageBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Grid
+            Grid.Column="1"
+            MaxHeight="96"
+            VerticalAlignment="Center"
+            RowDefinitions="Auto, *, Auto"
+            Padding="8,4,8,4">
+            <TextBlock
+                x:Name="TitleTextBlock"
+                Grid.Row="0"
+                FontSize="14"
+                FontWeight="SemiBold"
+                TextTrimming="WordEllipsis"
+                TextWrapping="WrapWholeWords"
+                IsTextSelectionEnabled="False"
+                MaxLines="2" />
+            <TextBlock
+                x:Name="DescriptionTextBlock"
+                Grid.Row="1"
+                Margin="0, 4, 0, 0"
+                FontSize="12"
+                TextTrimming="WordEllipsis"
+                TextWrapping="WrapWholeWords"
+                IsTextSelectionEnabled="False"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock
+                x:Name="ProviderNameTextBlock"
+                x:Load="False"
+                Grid.Row="2"
+                Margin="0, 4, 0, 0"
+                FontSize="12"
+                TextTrimming="WordEllipsis"
+                TextWrapping="NoWrap"
+                IsTextSelectionEnabled="False"
+                Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}" />
+        </Grid>
+    </Grid>
+</Button>
