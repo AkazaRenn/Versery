@@ -1,14 +1,16 @@
-﻿using System.Text.Json.Serialization;
+﻿using Model.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Model.Entities;
 
-public record Status: Server.Entities.Status {
+public record Status: Server.Entities.Status, IDatabaseEntity {
     [JsonPropertyName("account")]
-    public new string Account { get; set; } = string.Empty;
+    public new string Account { get; init; } = string.Empty;
     [JsonPropertyName("quote")]
-    public new string? Quote { get; set; } = null;
+    public new string? Quote { get; init; } = null;
     [JsonPropertyName("reblog")]
-    public new string? Reblog { get; set; } = null;
+    public new string? Reblog { get; init; } = null;
+    public DateTimeOffset ExpiresAt { get; init; } = DateTimeOffset.UtcNow.AddMonths(3);
 
     public Status(Server.Entities.Status serverStatus) : base(serverStatus) {
         Account = serverStatus.Account.Id;

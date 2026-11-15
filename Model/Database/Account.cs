@@ -1,20 +1,20 @@
 ﻿namespace Model.Database;
 
 internal sealed class Account(string id): IDisposable {
-    private readonly Store<Server.Entities.Account> db = new(id, "Accounts", Server.Entities.MastodonAPISerializerContext.Default.Account);
+    private readonly Store<Entities.Account> db = new(id, "Accounts", StoreJsonContext.Default.DatabaseAccount);
 
-    public Server.Entities.Account? Get(string id) {
+    public Entities.Account? Get(string id) {
         if (db.TryGet(id, out var account)) {
             return account;
         }
         return null;
     }
 
-    public void Add(Server.Entities.Account account) {
+    public void Add(Entities.Account account) {
         db.Upsert(account.Id, account);
     }
 
-    public void Add(IEnumerable<Server.Entities.Account> accounts) {
+    public void Add(IEnumerable<Entities.Account> accounts) {
         foreach (var account in accounts) {
             Add(account);
         }

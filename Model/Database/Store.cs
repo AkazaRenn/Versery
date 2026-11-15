@@ -1,3 +1,4 @@
+using Model.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,7 +10,8 @@ using ZoneTree.Serializers;
 
 namespace Model.Database;
 
-internal sealed class Store<T>: IDisposable {
+internal sealed class Store<T>: IDisposable
+    where T: IDatabaseEntity {
     private static readonly string root = ApplicationData.Current.LocalFolder.Path;
 
     private readonly IZoneTree<string, T> tree;
@@ -17,10 +19,14 @@ internal sealed class Store<T>: IDisposable {
 
     public Store(string accountId, string name, JsonTypeInfo<T> typeInfo) {
         tree = new ZoneTreeFactory<string, T>()
+            .SetMutableSegmentMaxItemCount(10_000)
             .SetDataDirectory(Path.Combine(root, accountId, name))
             .SetComparer(new IdComparer())
             .SetKeySerializer(new Utf8StringSerializer())
             .SetValueSerializer(new JsonValueSerializer(typeInfo))
+            .SetIsDeletedDelegate((in string key, in T value) =>
+                (value is null) ||
+                (value.ExpiresAt < DateTimeOffset.UtcNow))
             .OpenOrCreate();
         maintainer = tree.CreateMaintainer();
     }
@@ -76,6 +82,7 @@ internal sealed class Store<T>: IDisposable {
     }
 }
 
+[JsonSerializable(typeof(Entities.Account), TypeInfoPropertyName = "DatabaseAccount")]
 [JsonSerializable(typeof(Entities.Status), TypeInfoPropertyName = "DatabaseStatus")]
 [JsonSerializable(typeof(Entities.Timeline))]
 internal sealed partial class StoreJsonContext: JsonSerializerContext;

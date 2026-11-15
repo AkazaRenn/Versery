@@ -1,16 +1,10 @@
 ﻿
 namespace Model.Database;
 
-internal sealed class Client: IDisposable {
-    private Account Account { get; }
-    private Status Status { get; }
-    private Timeline Timeline { get; }
-
-    public Client(string account) {
-        Status = new(account);
-        Account = new(account);
-        Timeline = new(account);
-    }
+internal sealed class Client(string account): IDisposable {
+    private Account Account { get; } = new(account);
+    private Status Status { get; } = new(account);
+    private Timeline Timeline { get; } = new(account);
 
     public Entities.Timeline[] GetTimeline(uint count, string? afterId = null) {
         var timelines = Timeline.Get(count, afterId).ToArray();
@@ -36,7 +30,7 @@ internal sealed class Client: IDisposable {
         Timeline.Add(dbTimeline, afterId);
         var flattened = serverStatuses.Flattened.DistinctBy(x => x.Id).ToCollection();
         Status.Add(flattened.Select(x => new Entities.Status(x)));
-        Account.Add(flattened.Select(x => x.Account).DistinctBy(x => x.Id));
+        Account.Add(flattened.DistinctBy(x => x.Account.Id).Select(x => new Entities.Account(x.Account)));
 
         return dbTimeline;
     }
@@ -45,7 +39,7 @@ internal sealed class Client: IDisposable {
         return Status.Get(id);
     }
 
-    public Server.Entities.Account? GetAccount(string id) {
+    public Entities.Account? GetAccount(string id) {
         return Account.Get(id);
     }
 
