@@ -13,18 +13,18 @@
     RowDefinitions="Auto, Auto">
 
     <Grid
+        x:Name="PosterInfoGrid"
         Grid.Row="0"
         ColumnDefinitions="Auto, *, Auto"
         RowDefinitions="*, *"
-        Height="{x:Bind AvatarButton.Height}"
         Margin="0, 0, 0, 8">
         <components:ImageButton
-            x:Name="AvatarButton"
             Grid.Column="0"
             Grid.Row="0"
             Grid.RowSpan="99"
-            Width="{x:Bind AvatarButton.Height}"
-            CornerRadius="{x:Bind utils:Converters.ToCornerRadius(AvatarButton.Height)}"
+            Height="{x:Bind PosterInfoGrid.Height}"
+            Width="{x:Bind PosterInfoGrid.Height}"
+            CornerRadius="{x:Bind utils:Converters.SizeToCornerRadius(PosterInfoGrid.Height)}"
             Margin="0, 0, 8, 0">
             <components:ImageButton.ImageSource>
                 <BitmapImage
@@ -296,7 +296,7 @@
                     <fluenticons:FluentIcon
                         Icon="ArrowRepeatAll"
                         IconVariant="Filled"
-                        Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                        Foreground="{x:Bind utils:Brushes.MediumSlateBlue}"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
                         Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
                         OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>

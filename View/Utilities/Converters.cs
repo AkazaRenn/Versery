@@ -47,7 +47,7 @@ internal static class Converters {
         return value * multiplier;
     }
 
-    public static CornerRadius ToCornerRadius(double size) {
+    public static CornerRadius SizeToCornerRadius(double size) {
         return new(size / 2);
     }
 }
