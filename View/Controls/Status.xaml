@@ -270,7 +270,7 @@
             ColumnDefinitions="Auto, *, Auto, *, Auto, *, Auto, *, Auto">
             <Button
                 Grid.Column="0"
-                Style="{StaticResource SubtleButtonStyle}"
+                Style="{ThemeResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="Comment"
@@ -283,7 +283,7 @@
             </Button>
             <Button
                 Grid.Column="2"
-                Style="{StaticResource SubtleButtonStyle}"
+                Style="{ThemeResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}"
                 IsEnabled="{x:Bind ViewModel.CanBeReblogged}"
                 Command="{x:Bind ViewModel.ToggleRebloggedCommand}">
@@ -304,7 +304,7 @@
             </Button>
             <Button
                 Grid.Column="4"
-                Style="{StaticResource SubtleButtonStyle}"
+                Style="{ThemeResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}"
                 Command="{x:Bind ViewModel.ToggleFavouritedCommand}">
                 <Grid>
@@ -324,7 +324,7 @@
             </Button>
             <Button
                 Grid.Column="6"
-                Style="{StaticResource SubtleButtonStyle}"
+                Style="{ThemeResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     x:Name="ShareIcon"
@@ -333,7 +333,7 @@
             </Button>
             <Button
                 Grid.Column="8"
-                Style="{StaticResource SubtleButtonStyle}"
+                Style="{ThemeResource SubtleButtonStyle}"
                 Padding="{x:Bind controls:Status.ReactButtonPadding}">
                 <fluenticons:FluentIcon
                     Icon="MoreHorizontal"
