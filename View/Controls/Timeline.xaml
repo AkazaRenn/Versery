@@ -11,17 +11,6 @@
     ColumnSpacing="8"
     RowDefinitions="Auto, Auto, Auto">
 
-    <RichTextBlock
-        x:Name="ReactorDisplayName"
-        x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.Reblogger)}"
-        Grid.Column="1"
-        Grid.Row="0"
-        Margin="0,4,0,-4"
-        FontSize="12"
-        Foreground="{ThemeResource TextFillColorTertiary}"
-        IsTextSelectionEnabled="False"
-        extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName}"/>
-
     <fluenticons:FluentIcon
         x:Name="ReactorIcon"
         x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.Reblogger)}"
@@ -33,18 +22,29 @@
         FontSize="12"
         Icon="ArrowRepeatAll"/>
 
+    <RichTextBlock
+        x:Name="ReactorDisplayName"
+        x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.Reblogger)}"
+        Grid.Column="1"
+        Grid.Row="0"
+        Margin="0,4,0,-4"
+        FontSize="12"
+        Foreground="{ThemeResource TextFillColorTertiary}"
+        IsTextSelectionEnabled="False"
+        extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName}"/>
+
     <controls:Status
         x:Name="Status"
         Grid.Column="0"
         Grid.ColumnSpan="99"
         Grid.Row="1"
-        Padding="8 8 8 8"
+        Padding="8 8 8 4"
         BorderThickness="0 0 0 0.5"
         BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
         AvatarSize="40"
         AvatarScale="{x:Bind PosterAvatarScale}"
         DisplayNameFontSize="16"
-        PostBodyLeftPadding="True"
+        PostBodyLeftMargin="48"
         ShowQuote="True"
         ReactButtons="True"
         ViewModel="{x:Bind ViewModel.Content}"/>

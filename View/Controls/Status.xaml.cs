@@ -25,28 +25,26 @@ internal sealed partial class Status: Grid {
         }
     }
 
-    public double AvatarSize { get; set; } = 36;
-    public double AvatarScale { set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value; }
-    public double DisplayNameFontSize { get; set; } = 14;
-    public bool PostBodyLeftPadding { get; set; } = false;
+    public double AvatarSize { 
+        get => AvatarButton.Height;
+        set => AvatarButton.Height = value;
+    }
+    public double AvatarScale { 
+        get => AvatarScaleTransform.ScaleX;
+        set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value; 
+    }
+    public double DisplayNameFontSize {
+        get => DisplayNameRichTextBlock.FontSize;
+        set => DisplayNameRichTextBlock.FontSize = value;
+    }
+    public double PostBodyLeftMargin {
+        get => ContentStackPanel.Margin.Left;
+        set => ContentStackPanel.Margin = new(value, 0, 0, 0);
+    }
     public bool ShowQuote { get; set; } = false;
     public bool ReactButtons { get; set; } = false;
 
-    private GridLength GridColumnWidth0 => new(AvatarSize);
-    private GridLength GridRowHeight0 => new(AvatarSize / 2);
-    private GridLength GridRowHeight1 => GridRowHeight0;
-
-    private bool LoadAboveLine => false;
-    private bool LoadBelowLine => false;
-    private double LineWidth => 4;
-
-    private CornerRadius AvatarButtonCornerRadius => new(AvatarSize / 2);
-
-    private double PosterAccountFontSize => DisplayNameFontSize * 0.85;
-
     internal static string GetStatusTimeString(System.DateTimeOffset dateTime) => dateTime.ToRelativeStringShort();
-
-    private int ContentStackPanelGridColumn => PostBodyLeftPadding ? 2 : 0;
 
     private void ShowSpoilerButtonIcon_SizeChanged(object sender, SizeChangedEventArgs e) {
         ShowSpoilerButtonIcon.CenterPoint = new Vector3((float)ShowSpoilerButtonIcon.ActualWidth / 2, (float)ShowSpoilerButtonIcon.ActualHeight / 2, 0);

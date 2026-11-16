@@ -9,96 +9,76 @@
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
     xmlns:vmcontrols="using:ViewModel.Controls"
-    xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls">
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="{x:Bind GridColumnWidth0}"/>
-        <ColumnDefinition Width="8"/>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="2"/>
-        <ColumnDefinition Width="Auto"/>
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-        <RowDefinition Height="{x:Bind GridRowHeight0}"/>
-        <RowDefinition Height="{x:Bind GridRowHeight1}"/>
-        <RowDefinition Height="8"/>
-        <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
+    xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls"
+    RowDefinitions="Auto, Auto">
 
-    <Rectangle
-        x:Name="AboveLine"
-        x:Load="{x:Bind LoadAboveLine}"
-        Grid.Column="0"
+    <Grid
         Grid.Row="0"
-        Width="{x:Bind LineWidth}"
-        VerticalAlignment="Top"
-        Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
+        ColumnDefinitions="Auto, *, Auto"
+        RowDefinitions="*, *"
+        Height="{x:Bind AvatarButton.Height}"
+        Margin="0, 0, 0, 8">
+        <components:ImageButton
+            x:Name="AvatarButton"
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.RowSpan="99"
+            Width="{x:Bind AvatarButton.Height}"
+            CornerRadius="{x:Bind utils:Converters.ToCornerRadius(AvatarButton.Height)}"
+            Margin="0, 0, 8, 0">
+            <components:ImageButton.ImageSource>
+                <BitmapImage
+                    x:Name="PosterAvatarButtonBitmapImage"
+                    UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
+            </components:ImageButton.ImageSource>
+            <components:ImageButton.RenderTransform>
+                <ScaleTransform
+                    x:Name="AvatarScaleTransform"
+                    CenterX="0"
+                    CenterY="0"/>
+            </components:ImageButton.RenderTransform>
+        </components:ImageButton>
 
-    <Rectangle
-        x:Name="BelowLine"
-        x:Load="{x:Bind LoadBelowLine}"
-        Grid.Column="0"
-        Grid.Row="0"
-        Width="{x:Bind LineWidth}"
-        VerticalAlignment="Stretch"
-        Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
+        <RichTextBlock
+            x:Name="DisplayNameRichTextBlock"
+            Grid.Column="1"
+            Grid.Row="0"
+            FontWeight="SemiBold"
+            VerticalAlignment="Center"
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="NoWrap"
+            IsTextSelectionEnabled="False"
+            extensions:RichTextBlock.Html="{x:Bind ViewModel.Poster.DisplayName}"/>
 
-    <components:ImageButton
-        Grid.Column="0"
-        Grid.Row="0"
-        Grid.RowSpan="2"
-        Width="{x:Bind AvatarSize}"
-        Height="{x:Bind AvatarSize}"
-        CornerRadius="{x:Bind AvatarButtonCornerRadius}">
-        <components:ImageButton.ImageSource>
-            <BitmapImage
-                x:Name="PosterAvatarButtonBitmapImage"
-                UriSource="{x:Bind ViewModel.Poster.Avatar, Mode=OneWay}"/>
-        </components:ImageButton.ImageSource>
-        <components:ImageButton.RenderTransform>
-            <ScaleTransform
-                x:Name="AvatarScaleTransform"
-                CenterX="0"
-                CenterY="0"/>
-        </components:ImageButton.RenderTransform>
-    </components:ImageButton>
+        <TextBlock
+            x:Name="StatusTimeTextBlock"
+            Grid.Column="2"
+            Grid.Row="0"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Margin="2, 0, 0, 0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+            FontSize="{x:Bind utils:Converters.MultiplyDouble(DisplayNameRichTextBlock.FontSize, 0.85)}"
+            TextWrapping="NoWrap"
+            IsTextSelectionEnabled="False"
+            Text="{x:Bind controls:Status.GetStatusTimeString(ViewModel.CreatedAt)}"/>
 
-    <RichTextBlock
-        Grid.Column="2"
-        Grid.Row="0"
-        FontWeight="SemiBold"
-        FontSize="{x:Bind DisplayNameFontSize}"
-        VerticalAlignment="Center"
-        TextTrimming="CharacterEllipsis"
-        TextWrapping="NoWrap"
-        IsTextSelectionEnabled="False"
-        extensions:RichTextBlock.Html="{x:Bind ViewModel.Poster.DisplayName}"/>
-
-    <TextBlock
-        Grid.Column="4"
-        Grid.Row="0"
-        FontSize="{x:Bind PosterAccountFontSize}"
-        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-        VerticalAlignment="Center"
-        HorizontalAlignment="Right"
-        TextWrapping="NoWrap"
-        IsTextSelectionEnabled="False"
-        Text="{x:Bind controls:Status.GetStatusTimeString(ViewModel.CreatedAt)}"/>
-
-    <TextBlock
-        Grid.Column="2"
-        Grid.Row="1"
-        FontSize="{x:Bind PosterAccountFontSize}"
-        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-        VerticalAlignment="Center"
-        TextTrimming="CharacterEllipsis"
-        TextWrapping="NoWrap"
-        IsTextSelectionEnabled="False"
-        Text="{x:Bind ViewModel.Poster.AccountName}"/>
+        <TextBlock
+            x:Name="PosterAccountTextBlock"
+            Grid.Column="1"
+            Grid.Row="1"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            VerticalAlignment="Center"
+            FontSize="{x:Bind utils:Converters.MultiplyDouble(DisplayNameRichTextBlock.FontSize, 0.85)}"
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="NoWrap"
+            IsTextSelectionEnabled="False"
+            Text="{x:Bind ViewModel.Poster.AccountName}"/>
+    </Grid>
 
     <StackPanel
-        Grid.Column="{x:Bind ContentStackPanelGridColumn}"
-        Grid.ColumnSpan="99"
-        Grid.Row="3"
+        x:Name="ContentStackPanel"
+        Grid.Row="1"
         Spacing="8">
         <Grid
             x:Name="SpoilerTextGrid"
@@ -125,8 +105,7 @@
                     Icon="ChevronDown"
                     SizeChanged="ShowSpoilerButtonIcon_SizeChanged"
                     Scale="{x:Bind controls:Status.GetShowSpoilerButtonIconScale(ViewModel.Collapsed), Mode=OneWay}"
-                    ScaleTransition="{x:Bind utils:Transitions.Vector3Transition}">
-                </fluenticons:FluentIcon>
+                    ScaleTransition="{x:Bind utils:Transitions.Vector3Transition}"> </fluenticons:FluentIcon>
             </Button>
         </Grid>
 

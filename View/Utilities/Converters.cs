@@ -42,4 +42,12 @@ internal static class Converters {
     public static double BoolToDoubleReversed(bool value) {
         return BoolToDouble(!value);
     }
+
+    public static double MultiplyDouble(double value, double multiplier) {
+        return value * multiplier;
+    }
+
+    public static CornerRadius ToCornerRadius(double size) {
+        return new(size / 2);
+    }
 }
