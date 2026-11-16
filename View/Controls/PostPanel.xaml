@@ -29,7 +29,7 @@
                 Height="{ThemeResource NavigationBackButtonHeight}"
                 Width="{ThemeResource NavigationBackButtonWidth}"
                 CornerRadius="{ThemeResource ControlCornerRadius}"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}"
                 Tapped="DismissButton_Tapped">
                 <fluenticons:FluentIcon
@@ -40,7 +40,7 @@
                 x:Name="VisibilityButton"
                 RelativePanel.LeftOf="ContentWarningButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <components:SwitchContentPanel CurrentContent="{x:Bind GetVisibilityFluentIcon(viewModel.Visibility), Mode=OneWay}">
                     <components:SwitchContentPanel.DefaultContent>
@@ -87,7 +87,7 @@
                 RelativePanel.LeftOf="ScheduleButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Margin="4, 0, 0, 0"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Warning" />
             </Button>
@@ -97,7 +97,7 @@
                 RelativePanel.LeftOf="LanguageButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Margin="4, 0, 0, 0"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Calendar" />
             </Button>
@@ -106,7 +106,7 @@
                 RelativePanel.LeftOf="AvatarButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Margin="4, 0, 0, 0"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="LocalLanguageGlobe" />
                 <Button.Flyout>
@@ -154,7 +154,7 @@
                 RelativePanel.AlignLeftWithPanel="True"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Margin="0, 0, 4, 0"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 Visibility="Collapsed"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Attach" />
@@ -165,7 +165,7 @@
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Margin="0, 0, 4, 0"
                 Tapped="EmojiButton_Tapped"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <components:SwitchContentPanel IsUsingDefaultContent="{x:Bind utilities:Converters.Reverse(EmojiPicker.IsOpen), Mode=OneWay}">
                     <components:SwitchContentPanel.DefaultContent>
@@ -181,7 +181,7 @@
                 RelativePanel.RightOf="EmojiButton"
                 RelativePanel.AlignVerticalCenterWithPanel="True"
                 Visibility="Collapsed"
-                Style="{ThemeResource SubtleButtonStyle}"
+                Style="{StaticResource SubtleButtonStyle}"
                 IsEnabled="{x:Bind viewModel.IsEnabled, Mode=OneWay}">
                 <fluenticons:FluentIcon Icon="Poll" />
             </Button>
