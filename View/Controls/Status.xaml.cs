@@ -25,16 +25,16 @@ internal sealed partial class Status: Grid {
         }
     }
 
-    public double AvatarSize { 
+    public double AvatarSize {
         get => PosterInfoGrid.Height;
         set {
             PosterInfoGrid.Height = AvatarButton.Height = AvatarButton.Width = value;
             AvatarButton.CornerRadius = new(value / 2);
         }
     }
-    public double AvatarScale { 
+    public double AvatarScale {
         get => AvatarScaleTransform.ScaleX;
-        set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value; 
+        set => AvatarScaleTransform.ScaleX = AvatarScaleTransform.ScaleY = value;
     }
     public double DisplayNameFontSize {
         get => DisplayNameRichTextBlock.FontSize;
@@ -43,6 +43,10 @@ internal sealed partial class Status: Grid {
     public double PostBodyLeftMargin {
         get => ContentStackPanel.Margin.Left;
         set => ContentStackPanel.Margin = new(value, 0, 0, 0);
+    }
+    public double PostBodyFontSize {
+        get => PostBodyRichTextBlock.FontSize;
+        set => PostBodyRichTextBlock.FontSize = value;
     }
     public bool ShowQuote { get; set; } = false;
     public bool ReactButtons { get; set; } = false;
@@ -178,5 +182,9 @@ internal sealed partial class Status: Grid {
         postBodyGridStoryboard.Children.Add(collapsePostBodyButtonOpacityAnimation);
 
         postBodyGridStoryboard.Completed += PostBodyGridStoryboard_Completed;
+    }
+
+    private void Border_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
+
     }
 }

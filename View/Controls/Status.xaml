@@ -146,7 +146,8 @@
             CornerRadius="4"
             Padding="8"
             AvatarSize="32"
-            DisplayNameFontSize="14"/>
+            DisplayNameFontSize="14"
+            PostBodyFontSize="13"/>
 
         <Grid
             x:Name="MediasGrid"
@@ -168,7 +169,6 @@
                 </components:MediaGrid.ItemTemplate>
             </components:MediaGrid>
             <Button
-                x:Name="ToggleMediaPreviewsButton"
                 Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Left"
