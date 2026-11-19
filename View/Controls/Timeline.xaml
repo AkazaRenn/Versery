@@ -18,7 +18,7 @@
         Grid.Row="0"
         Margin="0,4,0,-4"
         HorizontalAlignment="Right"
-        Foreground="{ThemeResource TextFillColorTertiary}"
+        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
         FontSize="12"
         Icon="ArrowRepeatAll"/>
 
@@ -29,7 +29,7 @@
         Grid.Row="0"
         Margin="0,4,0,-4"
         FontSize="12"
-        Foreground="{ThemeResource TextFillColorTertiary}"
+        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
         IsTextSelectionEnabled="False"
         extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName}"/>
 
@@ -82,11 +82,11 @@
         Height="20"
         Width="20"
         CornerRadius="10"
-        Background="{x:Bind utils:Brushes.MediumPurple}">
+        Background="{x:Bind utils:Brushes.SkyBlue}">
         <fluenticons:FluentIcon
             x:Name="ReplyIcon"
             Icon="ArrowReply"
-            Foreground="White"
+            Foreground="{x:Bind utils:Brushes.Black}"
             IconVariant="Filled"
             FontSize="12"/>
     </Border>

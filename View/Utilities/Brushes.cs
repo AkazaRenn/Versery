@@ -8,10 +8,11 @@ namespace View.Utilities;
 internal static partial class Brushes {
     public static readonly SolidColorBrush Transparent = new(Colors.Transparent);
     public static readonly SolidColorBrush TransparentBlack025 = new(Colors.Black) { Opacity = 0.25 };
-    public static readonly SolidColorBrush White = new(Colors.White);
-    public static readonly SolidColorBrush MediumPurple = new(Colors.MediumPurple);
-    public static readonly SolidColorBrush MediumSlateBlue = new(Colors.MediumSlateBlue);
+    public static readonly SolidColorBrush Black = new(Colors.Black);
+    public static readonly SolidColorBrush LimeGreen = new(Colors.LimeGreen);
+    public static readonly SolidColorBrush SkyBlue = new(Colors.SkyBlue);
     public static readonly SolidColorBrush Orange = new(Colors.Orange);
+    public static readonly SolidColorBrush White = new(Colors.White);
 
     public static FadeOutBrush CollapsedStatusOpacityMaskBrush => new(0.6f, 0.9f);
     public sealed partial class FadeOutBrush(float startPoint, float endPoint): XamlCompositionBrushBase {

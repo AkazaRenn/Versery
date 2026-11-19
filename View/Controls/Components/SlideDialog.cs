@@ -27,7 +27,9 @@ internal partial class SlideDialog: ContentDialog {
 
         containerTranslationStoryboardAnimation = new() {
             Duration = Utilities.Transitions.DefaultDuration,
-            EasingFunction = new CubicEase(),
+            EasingFunction = new CubicEase() {
+                EasingMode = EasingMode.EaseOut,
+            },
         };
         transitionStoryboard.Children.Add(containerTranslationStoryboardAnimation);
         Storyboard.SetTarget(containerTranslationStoryboardAnimation, ContainerTranslateTransform);
@@ -99,16 +101,12 @@ internal partial class SlideDialog: ContentDialog {
         double distance = Content is FrameworkElement fe ? fe.ActualHeight + fe.Margin.Bottom : 0;
 
         if (enter) {
-            containerTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseOut;
-
             containerTranslationStoryboardAnimation.From = distance;
             containerTranslationStoryboardAnimation.To = 0;
 
             smokeLayerOpacityStoryboardAnimation.From = 0;
             smokeLayerOpacityStoryboardAnimation.To = 1;
         } else {
-            containerTranslationStoryboardAnimation.EasingFunction.EasingMode = EasingMode.EaseIn;
-
             containerTranslationStoryboardAnimation.From = 0;
             containerTranslationStoryboardAnimation.To = distance;
 

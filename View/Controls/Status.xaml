@@ -306,9 +306,14 @@
                         OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
                     <fluenticons:FluentIcon
                         Icon="ArrowRepeatAll"
-                        IconVariant="Filled"
-                        Foreground="{x:Bind utils:Brushes.MediumSlateBlue}"
+                        Foreground="{x:Bind utils:Brushes.LimeGreen}"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
+                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                    <Ellipse
+                        Height="2"
+                        Width="2"
+                        Fill="{x:Bind utils:Brushes.LimeGreen}"
                         Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
                         OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
                 </Grid>
