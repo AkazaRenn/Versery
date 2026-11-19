@@ -140,7 +140,6 @@ internal sealed partial class Status: Grid {
     private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
 
     private bool LoadMedias => ViewModel?.Medias.Length > 0;
-    internal static double GetImageOpacity(bool imagePreviewsHidden) => imagePreviewsHidden ? 0 : 1;
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
     internal static Icon GetReblogIcon(bool canBeReblogged) => canBeReblogged ? Icon.ArrowRepeatAll : Icon.ArrowRepeatAllOff;

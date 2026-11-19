@@ -14,10 +14,7 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
 
     private readonly Sentinel<string, Timeline> sentinel;
 
-    public event Action<int, IEnumerable<Model.Entities.Timeline>>? MoreLoaded;
-
     public string Id { get; }
-    public int Index { get; set; } = -1;
 
     public Status.Account? Reblogger { get; } = null;
     public Status Content { get; }
@@ -55,15 +52,14 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
     public async Task LoadMore() {
         var timelines = await client.GetTimelineFromServer(TimelineType.Home, Id);
         FollowedByGap = false;
-        MoreLoaded?.Invoke(Index, timelines);
     }
 
-    internal async Task DownloadMedias() {
+    public async void DownloadMedias() {
         _ = Content.DownloadMedias();
         _ = Reblogger?.DownloadAvatar();
     }
 
-    internal static Timeline Create(Model.Entities.Timeline timeline) {
+    public static Timeline Create(Model.Entities.Timeline timeline) {
         lock (cache) {
             if ((!cache.TryGetValue(timeline.Id, out var reference)) ||
                 (!reference.TryGetTarget(out var obj))) {

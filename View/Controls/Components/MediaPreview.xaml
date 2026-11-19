@@ -5,8 +5,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:components="using:View.Controls.Components"
     xmlns:utilities="using:View.Utilities"
-    xmlns:fluenticons="using:FluentIcons.WinUI"
-    Background="{x:Bind components:MediaPreview.DefaultBackground}">
+    xmlns:fluenticons="using:FluentIcons.WinUI">
+    <Rectangle
+        x:Name="Blur"
+        Fill="{x:Bind components:MediaPreview.DefaultBlur}"
+        IsHitTestVisible="False"/>
     <Border
         x:Name="DescriptionIcon"
         x:Load="{x:Bind utilities:Converters.StringIsNotNullOrWhiteSpace(Description)}"

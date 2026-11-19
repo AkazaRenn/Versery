@@ -48,6 +48,9 @@ internal static class Converters {
     }
 
     public static CornerRadius SizeToCornerRadius(double size) {
-        return new(size / 2);
+        if (size >= 0) {
+            return new(size / 2);
+        }
+        return default;
     }
 }

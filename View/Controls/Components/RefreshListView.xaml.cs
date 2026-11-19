@@ -52,9 +52,6 @@ internal sealed partial class RefreshListView: RefreshContainer {
         }
 
         if (args.Phase == 0) {
-            if (args.Item is IPaginatedViewModel viewModel) {
-                viewModel.Index = args.ItemIndex;
-            }
             OnItemRealized?.Invoke(args.ItemIndex);
         }
     }

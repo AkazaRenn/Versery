@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
+using View.Extensions;
 
 namespace View.Controls.Components;
 
@@ -11,10 +12,6 @@ internal sealed partial class MediaPreview: ImageButton {
     public Uri? UriSource {
         get => BitmapImage.UriSource;
         set => BitmapImage.UriSource = value;
-    }
-    public bool HideImage {
-        get => ImageVisibility == Visibility.Collapsed;
-        set => ImageVisibility = value ? Visibility.Collapsed : Visibility.Visible;
     }
     public double Aspect {
         get;
@@ -26,25 +23,33 @@ internal sealed partial class MediaPreview: ImageButton {
             }
         }
     } = 1;
+    public string? Description {
+        get => Tooltip;
+        set => Tooltip = string.IsNullOrWhiteSpace(value) ? null : value;
+    }
     public string? Blurhash {
         get;
         set {
             if (field != value) {
                 field = value;
-                _ = UpdateBackground();
+                _ = UpdateBlur();
             }
         }
     } = null;
-    public string? Description {
-        get => Tooltip;
-        set => Tooltip = string.IsNullOrWhiteSpace(value) ? null : value;
+    public bool BlurFadeVisibility {
+        get => Blur.FadeVisibility;
+        set => Blur.FadeVisibility = value;
+    }
+    public double BlurOpacity {
+        get => Blur.Opacity;
+        set => Blur.Opacity = value;
     }
 
-    internal static readonly SolidColorBrush DefaultBackground = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
-    private async Task UpdateBackground() {
+    internal static readonly SolidColorBrush DefaultBlur = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);
+    private async Task UpdateBlur() {
         if (String.IsNullOrWhiteSpace(Blurhash) ||
             (Aspect <= 0)) {
-            Background = DefaultBackground;
+            Blur.Fill= DefaultBlur;
         } else {
             int width = 32;
             int height = 32;
@@ -71,10 +76,10 @@ internal sealed partial class MediaPreview: ImageButton {
             }
             bitmap.Invalidate();
 
-            if (Background is ImageBrush imageBrush) {
+            if (Blur.Fill is ImageBrush imageBrush) {
                 imageBrush.ImageSource = bitmap;
             } else {
-                Background = new ImageBrush {
+                Blur.Fill = new ImageBrush {
                     ImageSource = bitmap,
                     Stretch = Stretch.UniformToFill,
                     AlignmentX = AlignmentX.Center,

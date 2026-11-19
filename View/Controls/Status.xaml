@@ -160,10 +160,10 @@
                         <components:MediaPreview
                             UriSource="{x:Bind Uri, Mode=OneWay}"
                             Aspect="{x:Bind Aspect}"
-                            Blurhash="{x:Bind Blurhash}"
                             Description="{x:Bind Description}"
-                            ImageFadeVisibility="False"
-                            ImageOpacity="{x:Bind controls:Status.GetImageOpacity(Hidden), Mode=OneWay}"/>
+                            Blurhash="{x:Bind Blurhash}"
+                            BlurFadeVisibility="False"
+                            BlurOpacity="{x:Bind utils:Converters.BoolToDouble(Hidden), Mode=OneWay}"/>
                     </DataTemplate>
                 </components:MediaGrid.ItemTemplate>
             </components:MediaGrid>

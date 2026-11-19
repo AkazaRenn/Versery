@@ -17,7 +17,6 @@ internal partial class ImageButton: Grid {
         AlignmentX = AlignmentX.Center,
         AlignmentY = AlignmentY.Center,
     };
-    private readonly Rectangle ImageRectangle = new();
     private readonly Button Button = new() {
         VerticalAlignment = VerticalAlignment.Stretch,
         HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -29,18 +28,6 @@ internal partial class ImageButton: Grid {
     public ImageSource? ImageSource {
         get => ImageBrush.ImageSource;
         set => ImageBrush.ImageSource = value;
-    }
-    public Visibility ImageVisibility {
-        get => ImageRectangle.Visibility;
-        set => ImageRectangle.Visibility = value;
-    }
-    public double ImageOpacity {
-        get => ImageRectangle.Opacity;
-        set => ImageRectangle.Opacity = value;
-    }
-    public bool ImageFadeVisibility {
-        get => ImageRectangle.FadeVisibility;
-        set => ImageRectangle.FadeVisibility = value;
     }
     public FlyoutBase Flyout {
         get => Button.Flyout;
@@ -56,15 +43,14 @@ internal partial class ImageButton: Grid {
     }
 
     public ImageButton() {
-        ImageRectangle.Fill = ImageBrush;
-        ImageRectangle.Loaded += ImageRectangle_Loaded;
-        ImageRectangle.Unloaded += ImageRectangle_Unloaded;
-        Children.Add(ImageRectangle);
+        Background = ImageBrush;
+        Loaded += ImageButton_Loaded;
+        Unloaded += ImageButton_Unloaded;
         Children.Add(Button);
         Tooltip = null;
     }
 
-    private void ImageRectangle_Loaded(object sender, RoutedEventArgs e) {
+    private void ImageButton_Loaded(object sender, RoutedEventArgs e) {
         if ((window is null) && (Application.Current is IWindowHelper windowHelper)) {
             if (windowHelper.TryGetWindow(this, out window)) {
                 window?.Activated -= Window_Activated;
@@ -73,7 +59,7 @@ internal partial class ImageButton: Grid {
         }
     }
 
-    private void ImageRectangle_Unloaded(object sender, RoutedEventArgs e) {
+    private void ImageButton_Unloaded(object sender, RoutedEventArgs e) {
         window?.Activated -= Window_Activated;
     }
 

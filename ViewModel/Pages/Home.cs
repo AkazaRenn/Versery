@@ -14,10 +14,6 @@ public sealed partial class Home: PaginatedViewModelCollection<Timeline, Model.E
         StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
     }
 
-    protected override void OnAddToViewModelsCollection(Timeline viewModel) {
-        _ = viewModel.DownloadMedias();
-    }
-
     protected override Model.Entities.Timeline[] GetFromDatabase(string? afterId = null) {
         if (!client.SignedIn) {
             return [];

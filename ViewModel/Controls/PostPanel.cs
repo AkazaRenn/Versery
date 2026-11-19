@@ -26,7 +26,7 @@ public sealed partial class PostPanel: ObservableObject {
     public partial string Language { get; set; } = string.Empty;
     [RelayCommand]
     public void SetLanguage(string language) => Language = language;
-    public CultureInfo[] LanguageList => Constants.LanguageList;
+    public static CultureInfo[] LanguageList => Constants.LanguageList;
 
     private async void SetDefaultProperties() {
         var account = await client.AccountTask;
