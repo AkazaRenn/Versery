@@ -168,34 +168,45 @@
                     </DataTemplate>
                 </components:MediaGrid.ItemTemplate>
             </components:MediaGrid>
-            <Button
-                Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                Margin="4,4,0,0"
-                Padding="4">
-                <Grid>
-                    <fluenticons:FluentIcon
-                        Icon="EyeOff"
-                        FontSize="20"
-                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                    <fluenticons:FluentIcon
-                        Icon="Eye"
-                        FontSize="20"
-                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                </Grid>
-                <Button.Background>
-                    <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
-                </Button.Background>
-                <Button.Resources>
-                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver"
-                        Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
-                    <SolidColorBrush x:Key="ButtonBackgroundPressed"
-                        Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
-                </Button.Resources>
-            </Button>
+            <Border
+                VerticalAlignment="{x:Bind controls:Status.GetMediaVisibilityButtonVerticalAlignment(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
+                HorizontalAlignment="{x:Bind controls:Status.GetMediaVisibilityButtonHorizontalAlignment(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
+                Margin="4">
+                <Button
+                    Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
+                    Padding="8"
+                    CornerRadius="8"
+                    BorderThickness="2"
+                    Scale="{x:Bind controls:Status.GetMediaVisibilityButtonScale(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
+                    ScaleTransition="{x:Bind utils:Transitions.Vector3Transition}">
+                    <Grid>
+                        <fluenticons:FluentIcon
+                            Icon="EyeOff"
+                            FontSize="40"
+                            Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
+                            OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                        <fluenticons:FluentIcon
+                            Icon="Eye"
+                            FontSize="40"
+                            Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
+                            OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                    </Grid>
+                    <Button.Background>
+                        <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
+                    </Button.Background>
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver"
+                            Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed"
+                            Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
+                    </Button.Resources>
+                </Button>
+                <Border.Transitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                    </TransitionCollection>
+                </Border.Transitions>
+            </Border>
         </Grid>
 
         <Button
