@@ -19,12 +19,10 @@
         RowDefinitions="*, *"
         Margin="0, 0, 0, 8">
         <components:ImageButton
+            x:Name="AvatarButton"
             Grid.Column="0"
             Grid.Row="0"
             Grid.RowSpan="99"
-            Height="{x:Bind PosterInfoGrid.Height}"
-            Width="{x:Bind PosterInfoGrid.Height}"
-            CornerRadius="{x:Bind utils:Converters.SizeToCornerRadius(PosterInfoGrid.Height)}"
             Margin="0, 0, 8, 0">
             <components:ImageButton.ImageSource>
                 <BitmapImage
@@ -146,7 +144,9 @@
             BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
             BorderThickness="0.5"
             CornerRadius="4"
-            Padding="8"/>
+            Padding="8"
+            AvatarSize="32"
+            DisplayNameFontSize="14"/>
 
         <Grid
             x:Name="MediasGrid"

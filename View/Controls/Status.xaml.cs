@@ -27,7 +27,10 @@ internal sealed partial class Status: Grid {
 
     public double AvatarSize { 
         get => PosterInfoGrid.Height;
-        set => PosterInfoGrid.Height = value;
+        set {
+            PosterInfoGrid.Height = AvatarButton.Height = AvatarButton.Width = value;
+            AvatarButton.CornerRadius = new(value / 2);
+        }
     }
     public double AvatarScale { 
         get => AvatarScaleTransform.ScaleX;
