@@ -41,8 +41,17 @@ internal sealed partial class MediaPreview: ImageButton {
         set => Blur.FadeVisibility = value;
     }
     public double BlurOpacity {
-        get => Blur.Opacity;
-        set => Blur.Opacity = value;
+        get;
+        set {
+            field = value;
+            if ((BitmapImage.PixelHeight > 0) && (BitmapImage.PixelWidth > 0)) {
+                Blur.Opacity = value;
+            }
+        }
+    }
+
+    private void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) {
+        Blur.Opacity = BlurOpacity;
     }
 
     internal static readonly SolidColorBrush DefaultBlur = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);

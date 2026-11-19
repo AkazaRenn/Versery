@@ -29,6 +29,7 @@
     <components:ImageButton.ImageSource>
         <BitmapImage
             x:Name="BitmapImage"
+            ImageOpened="BitmapImage_ImageOpened"
             AutoPlay="False"/>
     </components:ImageButton.ImageSource>
 </components:ImageButton>
