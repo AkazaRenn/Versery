@@ -41,7 +41,7 @@
             x:Name="DisplayNameRichTextBlock"
             Grid.Column="1"
             Grid.Row="0"
-            FontWeight="SemiBold"
+            FontWeight="Bold"
             VerticalAlignment="Center"
             TextTrimming="CharacterEllipsis"
             TextWrapping="NoWrap"
@@ -56,7 +56,6 @@
             Margin="2, 0, 0, 0"
             VerticalAlignment="Center"
             HorizontalAlignment="Right"
-            FontSize="{x:Bind utils:Converters.MultiplyDouble(DisplayNameRichTextBlock.FontSize, 0.85)}"
             TextWrapping="NoWrap"
             IsTextSelectionEnabled="False"
             Text="{x:Bind controls:Status.GetStatusTimeString(ViewModel.CreatedAt)}"/>
@@ -67,7 +66,6 @@
             Grid.Row="1"
             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
             VerticalAlignment="Center"
-            FontSize="{x:Bind utils:Converters.MultiplyDouble(DisplayNameRichTextBlock.FontSize, 0.85)}"
             TextTrimming="CharacterEllipsis"
             TextWrapping="NoWrap"
             IsTextSelectionEnabled="False"
@@ -146,15 +144,17 @@
             CornerRadius="4"
             Padding="8"
             AvatarSize="32"
-            DisplayNameFontSize="14"
+            DisplayNameFontSize="13"
+            PosterAccountFontSize="12"
             PostBodyFontSize="13"/>
 
         <Grid
             x:Name="MediasGrid"
-            x:Load="{x:Bind LoadMedias}">
+            x:Load="{x:Bind LoadMedias}"
+            CornerRadius="{StaticResource ControlCornerRadius}">
             <components:MediaGrid
-                ColumnSpacing="4"
-                RowSpacing="4"
+                ColumnSpacing="2"
+                RowSpacing="2"
                 ItemsSource="{x:Bind ViewModel.Medias}">
                 <components:MediaGrid.ItemTemplate>
                     <DataTemplate x:DataType="vmcontrols:Status_MediaPreview">

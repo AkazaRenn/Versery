@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="View.Pages.Notifications"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:View.Controls"
+    xmlns:vm.controls="using:ViewModel.Controls"
+    xmlns:components="using:View.Controls.Components"
+    NavigationCacheMode="Required">
+    <components:RefreshListView
+        x:Name="RefreshListView"
+        MaxWidth="600"
+        ItemsSource="{x:Bind viewModel.ViewModels}"
+        LoadLatest="{x:Bind viewModel.LoadLatestItems}"
+        OnItemRealized="RefreshListView_OnItemRealized">
+        <components:RefreshListView.ItemTemplate>
+            <DataTemplate x:DataType="vm.controls:Notification">
+                <controls:Notification ViewModel="{x:Bind}" />
+            </DataTemplate>
+        </components:RefreshListView.ItemTemplate>
+    </components:RefreshListView>
+</Page>

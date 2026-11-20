@@ -16,6 +16,7 @@
             VerticalAlignment="Center">
             <TextBox
                 x:Uid="Pages_SignIn_InstanceTextBox"
+                InputScope="Url"
                 Text="{x:Bind viewModel.Instance, Mode=TwoWay}"/>
             <Button
                 x:Uid="Pages_SignIn_SignInButton"

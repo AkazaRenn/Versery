@@ -135,6 +135,9 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
         case ViewModel.Enumerations.Page.Home:
             Navigate(typeof(Pages.Home));
             break;
+        case ViewModel.Enumerations.Page.Notifications:
+            Navigate(typeof(Pages.Notifications));
+            break;
         case ViewModel.Enumerations.Page.SignIn:
             Navigate(typeof(Pages.SignIn));
             break;

@@ -97,6 +97,14 @@ public sealed class Client {
         return database.GetTimeline(count, afterId);
     }
 
+    public async Task<Entities.Notification[]> GetNotificationFromServer(string? afterId = null) {
+        return [];
+    }
+
+    public Entities.Notification[] GetNotificationFromDatabase(string? afterId = null) {
+        return [];
+    }
+
     public Entities.Status? GetStatus(string id) {
         return database.GetStatus(id);
     }

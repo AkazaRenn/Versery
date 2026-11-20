@@ -33,7 +33,7 @@
                     Tag="{x:Bind pages:Home.Type}"/>
                 <NavigationViewItem
                     x:Uid="MainWindow_NavigationViewItem_Notifications"
-                    Tag="{x:Bind pages:SignIn.Type}"/>
+                    Tag="{x:Bind pages:Notifications.Type}"/>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
                 <NavigationViewItemHeader

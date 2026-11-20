@@ -10,8 +10,6 @@ using Windows.Foundation;
 namespace View.Controls.Components;
 
 internal sealed partial class MediaGrid: Grid {
-    private const double TileCornerRadius = 4;
-
     private TiledLayout? layout = null;
     private double[] layoutRatios = [];
 
@@ -93,7 +91,6 @@ internal sealed partial class MediaGrid: Grid {
         for (var i = 0; i < tiles.Count; i++) {
             var item = tiles[i];
             var tile = layout!.Tiles[i];
-            item.CornerRadius = tile.GetCornerRadius(TileCornerRadius);
             SetColumn(item, tile.StartColumn);
             SetColumnSpan(item, Math.Max(1, tile.ColumnSpan));
             SetRow(item, tile.StartRow);
@@ -136,33 +133,7 @@ internal sealed partial class MediaGrid: Grid {
         public int RowSpan { get; } = rowSpan;
         public int StartColumn { get; set; } = startColumn;
         public int StartRow { get; } = startRow;
-        public int ColumnCount { get; set; }
-        public int RowCount { get; set; }
         public int Width { get; init; }
-
-        public CornerRadius GetCornerRadius(double radius) {
-            bool tl = false, tr = false, bl = false, br = false;
-            if ((ColumnCount == 1) && (RowCount == 1)) {
-                tl = tr = bl = br = true;
-            } else if ((ColumnSpan == ColumnCount) && (StartRow == 0)) {
-                tl = tr = true;
-            } else if ((ColumnSpan == ColumnCount) && (StartRow == RowCount - 1)) {
-                bl = br = true;
-            } else if ((StartColumn == 0) && (StartRow == 0) && (RowSpan == RowCount)) {
-                tl = bl = true;
-            } else if ((StartColumn == ColumnCount - 1) && (StartRow == 0) && (RowSpan == RowCount)) {
-                tr = br = true;
-            } else if ((StartColumn == 0) && (StartRow == 0)) {
-                tl = true;
-            } else if ((StartColumn == ColumnCount - ColumnSpan) && (StartRow == 0)) {
-                tr = true;
-            } else if ((StartColumn == 0) && (StartRow == RowCount - RowSpan)) {
-                bl = true;
-            } else if ((StartColumn == ColumnCount - ColumnSpan) && (StartRow == RowCount - RowSpan)) {
-                br = true;
-            }
-            return new(tl ? radius : 0, tr ? radius : 0, br ? radius : 0, bl ? radius : 0);
-        }
     }
 
     // Sizes are in units of a MaxWidth-wide virtual canvas.
@@ -232,10 +203,6 @@ internal sealed partial class MediaGrid: Grid {
                 }
             }
 
-            foreach (var tile in result.Tiles) {
-                tile.ColumnCount = result.ColumnSizes.Length;
-                tile.RowCount = result.RowSizes.Length;
-            }
             return result;
         }
 

@@ -16,11 +16,7 @@ internal sealed partial class Status: Grid {
             if (field != value) {
                 postBodyGridStoryboard.Stop();
                 field = value;
-                if (DispatcherQueue.HasThreadAccess) {
-                    Bindings.Update();
-                } else {
-                    _ = DispatcherQueue.TryEnqueue(Bindings.Update);
-                }
+                Bindings.Update();
             }
         }
     }
@@ -39,6 +35,10 @@ internal sealed partial class Status: Grid {
     public double DisplayNameFontSize {
         get => DisplayNameRichTextBlock.FontSize;
         set => DisplayNameRichTextBlock.FontSize = value;
+    }
+    public double PosterAccountFontSize {
+        get => PosterAccountTextBlock.FontSize;
+        set => PosterAccountTextBlock.FontSize = StatusTimeTextBlock.FontSize = value;
     }
     public double PostBodyLeftMargin {
         get => ContentStackPanel.Margin.Left;
