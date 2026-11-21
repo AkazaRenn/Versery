@@ -84,7 +84,7 @@
         Height="20"
         Width="20"
         CornerRadius="10"
-        Background="{x:Bind utils:Brushes.SkyBlue}">
+        Background="{x:Bind utils:Brushes.Reply}">
         <fluenticons:FluentIcon
             x:Name="ReplyIcon"
             Icon="ArrowReply"

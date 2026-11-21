@@ -14,6 +14,10 @@ internal static partial class Brushes {
     public static readonly SolidColorBrush Orange = new(Colors.Orange);
     public static readonly SolidColorBrush White = new(Colors.White);
 
+    public static SolidColorBrush Reply => SkyBlue;
+    public static SolidColorBrush Reblog => LimeGreen;
+    public static SolidColorBrush Favourite => Orange;
+
     public static FadeOutBrush CollapsedStatusOpacityMaskBrush => new(0.6f, 0.9f);
     public sealed partial class FadeOutBrush(float startPoint, float endPoint): XamlCompositionBrushBase {
         private CompositionColorGradientStop? opaqueStop;

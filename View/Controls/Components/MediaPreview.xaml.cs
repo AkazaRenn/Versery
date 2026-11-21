@@ -86,7 +86,7 @@ internal sealed partial class MediaPreview: ImageButton {
             } else {
                 Blur.Fill = new ImageBrush {
                     ImageSource = bitmap,
-                    Stretch = Stretch.UniformToFill,
+                    Stretch = Stretch.Fill,
                     AlignmentX = AlignmentX.Center,
                     AlignmentY = AlignmentY.Center,
                 };

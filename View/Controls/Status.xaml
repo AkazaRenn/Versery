@@ -264,14 +264,14 @@
                         OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
                     <fluenticons:FluentIcon
                         Icon="ArrowRepeatAll"
-                        Foreground="{x:Bind utils:Brushes.LimeGreen}"
+                        Foreground="{x:Bind utils:Brushes.Reblog}"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
                         Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
                         OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
                     <Ellipse
                         Height="2"
                         Width="2"
-                        Fill="{x:Bind utils:Brushes.LimeGreen}"
+                        Fill="{x:Bind utils:Brushes.Reblog}"
                         Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
                         OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
                 </Grid>
@@ -290,7 +290,7 @@
                     <fluenticons:FluentIcon
                         Icon="Star"
                         IconVariant="Filled"
-                        Foreground="{x:Bind utils:Brushes.Orange}"
+                        Foreground="{x:Bind utils:Brushes.Favourite}"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
                         Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsFavourited), Mode=OneWay}"
                         OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
