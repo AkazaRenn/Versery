@@ -64,7 +64,7 @@
             HorizontalAlignment="Right"
             Margin="0, 0, 16, 16"
             IsEnabled="{x:Bind viewModel.PostEnabled, Mode=OneWay}"
-            Tapped="Button_Tapped">
+            Tapped="PostButton_Tapped">
             <fluenticons:FluentIcon
                 Icon="Edit"
                 IconVariant="Filled"

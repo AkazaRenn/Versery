@@ -32,10 +32,13 @@ public sealed partial class MainWindow: ObservableObject, IRecipient<Messages.Si
     }
 
     private async Task UpdateInfo() {
-        PostEnabled = client.SignedIn;
-        var uri = (await client.AccountTask).Avatar;
-        if (uri is not null) {
-            Avatar = await Cache.Get(uri);
+        var signedIn = client.SignedIn;
+        PostEnabled = signedIn;
+        if (signedIn) {
+            var uri = (await client.AccountTask).Avatar;
+            if (uri is not null) {
+                Avatar = await Cache.Get(uri);
+            }
         }
     }
 }

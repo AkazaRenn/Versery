@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Model;
 using Model.Access;
-using Model.Enumerations;
 using Model.Utilities;
 using ViewModel.Interfaces;
 
@@ -54,8 +53,8 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
         FollowedByGap = false;
     }
 
-    public async void DownloadMedias() {
-        _ = Content.DownloadMedias();
+    public async void DownloadMedia() {
+        _ = Content.DownloadMedia();
         _ = Reblogger?.DownloadAvatar();
     }
 

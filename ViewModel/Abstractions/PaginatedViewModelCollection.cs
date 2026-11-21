@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using ViewModel.Interfaces;
 
 namespace ViewModel.Abstractions;
@@ -88,7 +87,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
     }
 
     public async Task OnItemRealized(int index) {
-        ViewModels[index].DownloadMedias();
+        ViewModels[index].DownloadMedia();
 
         if ((index == ViewModels.Count - 1) && (!loadingOldEntities) && hasMoreEntitiesToLoad) {
             loadingOldEntities = true;

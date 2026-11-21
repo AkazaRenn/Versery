@@ -5,6 +5,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using View.Controls;
 using View.Interfaces;
@@ -16,7 +17,7 @@ using WinUIEx;
 namespace View;
 
 public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
-    private NavigationViewItemBase? activeNavigationItem = null;
+    private readonly Dictionary<Type, NavigationViewItem> navigationItems = [];
     private readonly ViewModel.MainWindow viewModel = new();
 
     public CanvasDevice CanvasDevice { get; }
@@ -42,9 +43,24 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     }
 
     private void Navigate(Type type) {
-        if (Frame.Content?.GetType() != type) {
-            Frame.Navigate(type);
+        if (Frame.Content?.GetType() == type) {
+            return;
         }
+
+        // Comment out for now, the overflow menu movement does not update the index making it hard to use
+        //var currentPageIndex = Navigation.MenuItems.OfType<NavigationViewItem>().ToList().FindIndex(item => item.Tag as Type == Frame.Content?.GetType());
+        //var targetPageIndex = Navigation.MenuItems.OfType<NavigationViewItem>().ToList().FindIndex(item => item.Tag as Type == type);
+
+        NavigationTransitionInfo? navigationTransitionInfo = null;
+        //if ((currentPageIndex >= 0) && (targetPageIndex >= 0)) {
+        //    if (currentPageIndex < targetPageIndex) {
+        //        navigationTransitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight };
+        //    } else if (currentPageIndex > targetPageIndex) {
+        //        navigationTransitionInfo = new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft };
+        //    }
+        //}
+
+        Frame.Navigate(type, null, navigationTransitionInfo);
     }
 
     private void UpdateNonClientInputPassthrough() {
@@ -85,16 +101,16 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
     }
 
     private void Navigation_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args) {
-        if (activeNavigationItem == args.InvokedItemContainer) {
+        if (args.InvokedItemContainer.Tag is not Type pageType) {
+            return;
+        }
+
+        if (pageType == Frame.Content.GetType()) {
             if (Frame.Content is INavigationPage navigationPage) {
                 navigationPage.OnNavigationReInvoke();
             }
         } else {
-            if (args.InvokedItemContainer is NavigationViewItem item) {
-                if (item.Tag is Type pageType) {
-                    Navigate(pageType);
-                }
-            }
+            Navigate(pageType);
         }
     }
 
@@ -113,20 +129,23 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
             item.Height = Navigation.CompactPaneLength - 8;
         }
 
-        Navigate(typeof(Pages.Home));
+        foreach (var item in Navigation.MenuItems.OfType<NavigationViewItem>()) {
+            if (item.Tag is Type pageType) {
+                navigationItems[pageType] = item;
+            }
+        }
 
-        // Testing only
-        Button_Tapped(null, null);
+        Navigate(typeof(Pages.Home));
     }
 
     private void Frame_Navigated(object sender, NavigationEventArgs e) {
         Navigation.IsBackEnabled = Frame.CanGoBack;
 
-        if ((Navigation.SelectedItem is not NavigationViewItem navigationViewItem) ||
-            (navigationViewItem.Tag as Type != e.SourcePageType)) {
-            Navigation.SelectedItem = Navigation.MenuItems.OfType<NavigationViewItem>().FirstOrDefault(item => item.Tag as Type == e.SourcePageType);
+        if (((Navigation.SelectedItem is not NavigationViewItem navigationViewItem) ||
+            (navigationViewItem.Tag as Type != e.SourcePageType)) &&
+            navigationItems.TryGetValue(e.SourcePageType, out var menuItem)) {
+            Navigation.SelectedItem = menuItem;
         }
-        activeNavigationItem = Navigation.SelectedItem as NavigationViewItem;
         UpdateNonClientInputPassthrough();
     }
 
@@ -148,7 +167,7 @@ public sealed partial class MainWindow: WindowEx, IGraphicsDeviceProvider {
         UpdateNonClientInputPassthrough();
     }
 
-    private void Button_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
+    private void PostButton_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
         _ = new PostPanel() {
             XamlRoot = Content.XamlRoot,
         }.ShowAsync();

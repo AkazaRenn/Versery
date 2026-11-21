@@ -36,10 +36,6 @@ internal sealed partial class MediaPreview: ImageButton {
             }
         }
     } = null;
-    public bool BlurFadeVisibility {
-        get => Blur.FadeVisibility;
-        set => Blur.FadeVisibility = value;
-    }
     public double BlurOpacity {
         get;
         set {
@@ -58,7 +54,7 @@ internal sealed partial class MediaPreview: ImageButton {
     private async Task UpdateBlur() {
         if (String.IsNullOrWhiteSpace(Blurhash) ||
             (Aspect <= 0)) {
-            Blur.Fill= DefaultBlur;
+            Blur.Fill = DefaultBlur;
         } else {
             int width = 32;
             int height = 32;
@@ -100,5 +96,6 @@ internal sealed partial class MediaPreview: ImageButton {
 
     public MediaPreview() {
         InitializeComponent();
+        Blur.FadeVisibility = false;
     }
 }

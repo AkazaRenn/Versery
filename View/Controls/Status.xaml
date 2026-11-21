@@ -148,66 +148,24 @@
             PosterAccountFontSize="12"
             PostBodyFontSize="13"/>
 
-        <Grid
-            x:Name="MediasGrid"
-            x:Load="{x:Bind LoadMedias}"
-            CornerRadius="{StaticResource ControlCornerRadius}">
-            <components:MediaGrid
-                ColumnSpacing="2"
-                RowSpacing="2"
-                ItemsSource="{x:Bind ViewModel.Medias}">
-                <components:MediaGrid.ItemTemplate>
-                    <DataTemplate x:DataType="vmcontrols:Status_MediaPreview">
-                        <components:MediaPreview
-                            UriSource="{x:Bind Uri, Mode=OneWay}"
-                            Aspect="{x:Bind Aspect}"
-                            Description="{x:Bind Description}"
-                            Blurhash="{x:Bind Blurhash}"
-                            BlurFadeVisibility="False"
-                            BlurOpacity="{x:Bind utils:Converters.BoolToDouble(Hidden), Mode=OneWay}"/>
-                    </DataTemplate>
-                </components:MediaGrid.ItemTemplate>
-            </components:MediaGrid>
-            <Border
-                VerticalAlignment="{x:Bind controls:Status.GetMediaVisibilityButtonVerticalAlignment(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
-                HorizontalAlignment="{x:Bind controls:Status.GetMediaVisibilityButtonHorizontalAlignment(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
-                Margin="4">
-                <Button
-                    Command="{x:Bind ViewModel.ToggleImagePreviewsHiddenCommand}"
-                    Padding="8"
-                    CornerRadius="8"
-                    BorderThickness="2"
-                    Scale="{x:Bind controls:Status.GetMediaVisibilityButtonScale(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
-                    ScaleTransition="{x:Bind utils:Transitions.Vector3Transition}">
-                    <Grid>
-                        <fluenticons:FluentIcon
-                            Icon="EyeOff"
-                            FontSize="40"
-                            Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
-                            OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                        <fluenticons:FluentIcon
-                            Icon="Eye"
-                            FontSize="40"
-                            Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.MediaPreviewsHidden), Mode=OneWay}"
-                            OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
-                    </Grid>
-                    <Button.Background>
-                        <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
-                    </Button.Background>
-                    <Button.Resources>
-                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver"
-                            Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
-                        <SolidColorBrush x:Key="ButtonBackgroundPressed"
-                            Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
-                    </Button.Resources>
-                </Button>
-                <Border.Transitions>
-                    <TransitionCollection>
-                        <RepositionThemeTransition IsStaggeringEnabled="False"/>
-                    </TransitionCollection>
-                </Border.Transitions>
-            </Border>
-        </Grid>
+        <components:MediaGrid
+            x:Name="MediaGrid"
+            x:Load="{x:Bind LoadMedia}"
+            CornerRadius="{StaticResource ControlCornerRadius}"
+            ColumnSpacing="2"
+            RowSpacing="2"
+            MediaPreviewsHidden="{x:Bind ViewModel.MediaPreviewsHidden, Mode=TwoWay}"
+            ItemsSource="{x:Bind ViewModel.Media}">
+            <components:MediaGrid.ItemTemplate>
+                <DataTemplate x:DataType="vmcontrols:Status_MediaPreview">
+                    <components:MediaPreview
+                        UriSource="{x:Bind Uri, Mode=OneWay}"
+                        Aspect="{x:Bind Aspect}"
+                        Description="{x:Bind Description}"
+                        Blurhash="{x:Bind Blurhash}"/>
+                </DataTemplate>
+            </components:MediaGrid.ItemTemplate>
+        </components:MediaGrid>
 
         <Button
             x:Name="CardButton"

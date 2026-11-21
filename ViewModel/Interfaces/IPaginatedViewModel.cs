@@ -6,7 +6,7 @@ public interface IPaginatedViewModel<ViewModel, Entity>
     where ViewModel : IPaginatedViewModel<ViewModel, Entity>
     where Entity : IPaginatedEntity {
     public string Id { get; }
-    public void DownloadMedias();
+    public void DownloadMedia();
     public void Update(Entity entity);
     public static abstract ViewModel Create(Entity entity);
     public static abstract IEnumerable<ViewModel> FromEntities(IEnumerable<Entity> entities);

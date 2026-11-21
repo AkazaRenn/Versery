@@ -3,6 +3,50 @@
     x:Class="View.Controls.Components.MediaGrid"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:utilities="using:View.Utilities"
+    xmlns:fluenticons="using:FluentIcons.WinUI"
     Loaded="Grid_Loaded"
     Unloaded="Grid_Unloaded">
+    <Grid x:Name="PanelGrid"/>
+    <Border
+        x:Name="MediaVisibilityButtonBorder"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center"
+        Margin="4">
+        <Button
+            x:Name="MediaVisibilityButton"
+            Padding="8"
+            CornerRadius="8"
+            BorderThickness="2"
+            ScaleTransition="{x:Bind utilities:Transitions.Vector3Transition}"
+            Click="MediaVisibilityButton_Click">
+            <Grid>
+                <fluenticons:FluentIcon
+                    x:Name="MediaVisibilityButtonEyeOff"
+                    Icon="EyeOff"
+                    FontSize="40"
+                    OpacityTransition="{x:Bind utilities:Transitions.ScalarTransition}"/>
+                <fluenticons:FluentIcon
+                    x:Name="MediaVisibilityButtonEye"
+                    Icon="Eye"
+                    FontSize="40"
+                    Opacity="0"
+                    OpacityTransition="{x:Bind utilities:Transitions.ScalarTransition}"/>
+            </Grid>
+            <Button.Background>
+                <SolidColorBrush Color="{ThemeResource SystemAltHighColor}" Opacity="0.5"/>
+            </Button.Background>
+            <Button.Resources>
+                <SolidColorBrush x:Key="ButtonBackgroundPointerOver"
+                    Color="{ThemeResource SystemAltHighColor}" Opacity="0.45"/>
+                <SolidColorBrush x:Key="ButtonBackgroundPressed"
+                    Color="{ThemeResource SystemAltHighColor}" Opacity="0.55"/>
+            </Button.Resources>
+        </Button>
+        <Border.Transitions>
+            <TransitionCollection>
+                <RepositionThemeTransition IsStaggeringEnabled="False"/>
+            </TransitionCollection>
+        </Border.Transitions>
+    </Border>
 </Grid>

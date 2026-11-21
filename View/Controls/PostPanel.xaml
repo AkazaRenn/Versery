@@ -13,7 +13,7 @@
     <Grid
         x:Name="PanelRoot"
         RowDefinitions="48, Auto, *, 48"
-        Margin="0, 128, 0, 0"
+        Margin="0, 64, 0, 0"
         Padding="8, 0, 8, 0"
         CornerRadius="8, 8, 0, 0"
         BorderBrush="{ThemeResource ContentDialogBorderBrush}"

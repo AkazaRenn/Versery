@@ -12,57 +12,61 @@ internal static class DateTimeOffset {
     const uint DaysPerYear = 365;
 
     extension(System.DateTimeOffset dateTime) {
-        internal string ToRelativeStringShort() {
-            TimeSpan span = System.DateTimeOffset.UtcNow - dateTime.ToUniversalTime();
-            if (span.Duration() < TimeSpan.FromSeconds(1)) {
-                return resourceLoader.GetString("Now");
-            }
+        internal string RelativeStringShort {
+            get {
+                TimeSpan span = System.DateTimeOffset.UtcNow - dateTime.ToUniversalTime();
+                if (span.Duration() < TimeSpan.FromSeconds(1)) {
+                    return resourceLoader.GetString("Now");
+                }
 
-            bool future = span < TimeSpan.Zero;
-            span = span.Duration();
+                bool future = span < TimeSpan.Zero;
+                span = span.Duration();
 
-            string key;
-            uint value;
-            if (span.TotalMinutes < 1) {
-                value = (uint)span.TotalSeconds;
-                key = future ? "InSeconds" : "SecondsAgo";
-            } else if (span.TotalHours < 1) {
-                value = (uint)span.TotalMinutes;
-                key = future ? "InMinutes" : "MinutesAgo";
-            } else if (span.TotalDays < 1) {
-                value = (uint)span.TotalHours;
-                key = future ? "InHours" : "HoursAgo";
-            } else if (span.TotalDays < DaysPerYear) {
-                value = (uint)span.TotalDays;
-                key = future ? "InDays" : "DaysAgo";
-            } else {
-                value = (uint)(span.TotalDays / DaysPerYear);
-                key = future ? "InYears" : "YearsAgo";
+                string key;
+                uint value;
+                if (span.TotalMinutes < 1) {
+                    value = (uint)span.TotalSeconds;
+                    key = future ? "InSeconds" : "SecondsAgo";
+                } else if (span.TotalHours < 1) {
+                    value = (uint)span.TotalMinutes;
+                    key = future ? "InMinutes" : "MinutesAgo";
+                } else if (span.TotalDays < 1) {
+                    value = (uint)span.TotalHours;
+                    key = future ? "InHours" : "HoursAgo";
+                } else if (span.TotalDays < DaysPerYear) {
+                    value = (uint)span.TotalDays;
+                    key = future ? "InDays" : "DaysAgo";
+                } else {
+                    value = (uint)(span.TotalDays / DaysPerYear);
+                    key = future ? "InYears" : "YearsAgo";
+                }
+                return string.Format(resourceLoader.GetString(key), value);
             }
-            return string.Format(resourceLoader.GetString(key), value);
         }
     }
 
     extension(TimeSpan timeSpan) {
-        internal string ToStringShort() {
-            TimeSpan span = timeSpan < TimeSpan.Zero ? TimeSpan.Zero : timeSpan;
+        internal string StringShort {
+            get {
+                TimeSpan span = timeSpan < TimeSpan.Zero ? TimeSpan.Zero : timeSpan;
 
-            string key;
-            uint value;
-            if (span.TotalMinutes < 1) {
-                value = (uint)span.TotalSeconds;
-                key = value == 1 ? "DurationSecondOne" : "DurationSecondOther";
-            } else if (span.TotalHours < 1) {
-                value = (uint)span.TotalMinutes;
-                key = value == 1 ? "DurationMinuteOne" : "DurationMinuteOther";
-            } else if (span.TotalDays < 1) {
-                value = (uint)span.TotalHours;
-                key = value == 1 ? "DurationHourOne" : "DurationHourOther";
-            } else {
-                value = (uint)span.TotalDays;
-                key = value == 1 ? "DurationDayOne" : "DurationDayOther";
+                string key;
+                uint value;
+                if (span.TotalMinutes < 1) {
+                    value = (uint)span.TotalSeconds;
+                    key = value == 1 ? "DurationSecondOne" : "DurationSecondOther";
+                } else if (span.TotalHours < 1) {
+                    value = (uint)span.TotalMinutes;
+                    key = value == 1 ? "DurationMinuteOne" : "DurationMinuteOther";
+                } else if (span.TotalDays < 1) {
+                    value = (uint)span.TotalHours;
+                    key = value == 1 ? "DurationHourOne" : "DurationHourOther";
+                } else {
+                    value = (uint)span.TotalDays;
+                    key = value == 1 ? "DurationDayOne" : "DurationDayOther";
+                }
+                return string.Format(resourceLoader.GetString(key), value);
             }
-            return string.Format(resourceLoader.GetString(key), value);
         }
     }
 }

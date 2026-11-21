@@ -50,18 +50,8 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool IsBookmarked { get; private set; } = false;
 
-    public Status_MediaPreview[] Medias { get; } = [];
-    [ObservableProperty]
-    public partial bool MediaPreviewsHidden { get; private set; } = false;
-    partial void OnMediaPreviewsHiddenChanged(bool value) {
-        foreach (var imagePreview in Medias) {
-            imagePreview.Hidden = value;
-        }
-    }
-    [RelayCommand]
-    private void ToggleImagePreviewsHidden() {
-        MediaPreviewsHidden = !MediaPreviewsHidden;
-    }
+    public Status_MediaPreview[] Media { get; } = [];
+    public bool MediaPreviewsHidden { get; set; } = true;
 
     public Card_? Card { get; } = null;
 
@@ -100,7 +90,7 @@ public sealed partial class Status: ObservableObject {
             Uri = uri;
         }
 
-        Medias = [.. status.MediaAttachments.Select(x => new Status_MediaPreview(x))];
+        Media = [.. status.MediaAttachments.Select(x => new Status_MediaPreview(x))];
         MediaPreviewsHidden = status.Sensitive;
 
         if (status.Card is not null) {
@@ -121,13 +111,13 @@ public sealed partial class Status: ObservableObject {
         }
     }
 
-    internal async Task DownloadMedias() {
+    internal async Task DownloadMedia() {
         _ = Poster.DownloadAvatar();
         _ = Card?.DownloadImage();
-        foreach (var imagePreview in Medias) {
-            _ = imagePreview.Download();
+        foreach (var media in Media) {
+            _ = media.Download();
         }
-        _ = Quote?.DownloadMedias();
+        _ = Quote?.DownloadMedia();
     }
 
     public sealed partial class Account: ObservableObject {
@@ -202,9 +192,6 @@ public sealed partial class Status_MediaPreview(MediaAttachment media): Observab
     public string? Blurhash { get; } = media.Blurhash;
     public string? Description { get; } = media.Description;
     public Uri? Full { get; } = media.RemoteUrl;
-
-    [ObservableProperty]
-    public partial bool Hidden { get; internal set; } = false;
 
     public Uri? Remote { get; } = media.PreviewUrl;
     [ObservableProperty]

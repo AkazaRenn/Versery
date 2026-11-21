@@ -51,7 +51,7 @@ internal sealed partial class Status: Grid {
     public bool ShowQuote { get; set; } = false;
     public bool ReactButtons { get; set; } = false;
 
-    internal static string GetStatusTimeString(System.DateTimeOffset dateTime) => dateTime.ToRelativeStringShort();
+    internal static string GetStatusTimeString(System.DateTimeOffset dateTime) => dateTime.RelativeStringShort;
 
     private void ShowSpoilerButtonIcon_SizeChanged(object sender, SizeChangedEventArgs e) {
         ShowSpoilerButtonIcon.CenterPoint = new Vector3((float)ShowSpoilerButtonIcon.ActualWidth / 2, (float)ShowSpoilerButtonIcon.ActualHeight / 2, 0);
@@ -145,15 +145,7 @@ internal sealed partial class Status: Grid {
     }
 
     private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
-
-    private bool LoadMedias => ViewModel?.Medias.Length > 0;
-    internal static HorizontalAlignment GetMediaVisibilityButtonHorizontalAlignment(bool value) {
-        return value ? HorizontalAlignment.Center : HorizontalAlignment.Left;
-    }
-    internal static VerticalAlignment GetMediaVisibilityButtonVerticalAlignment(bool value) {
-        return value ? VerticalAlignment.Center : VerticalAlignment.Top;
-    }
-    internal static Vector3 GetMediaVisibilityButtonScale(bool hidden) => hidden ? Vector3.One : new(0.5f, 0.5f, 1);
+    private bool LoadMedia => ViewModel?.Media.Length > 0;
 
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;
@@ -190,9 +182,5 @@ internal sealed partial class Status: Grid {
         postBodyGridStoryboard.Children.Add(collapsePostBodyButtonOpacityAnimation);
 
         postBodyGridStoryboard.Completed += PostBodyGridStoryboard_Completed;
-    }
-
-    private void Border_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e) {
-
     }
 }

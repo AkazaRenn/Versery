@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Numerics;
 using Windows.Foundation;
 
 namespace View.Controls.Components;
@@ -20,7 +21,6 @@ internal sealed partial class MediaGrid: Grid {
             OnItemsChanged();
         }
     } = null;
-
     public DataTemplate? ItemTemplate {
         get;
         set {
@@ -28,6 +28,52 @@ internal sealed partial class MediaGrid: Grid {
             OnItemsChanged();
         }
     } = null;
+    public new double ColumnSpacing {
+        get => PanelGrid.ColumnSpacing;
+        set => PanelGrid.ColumnSpacing = value;
+    }
+    public new double RowSpacing {
+        get => PanelGrid.RowSpacing;
+        set => PanelGrid.RowSpacing = value;
+    }
+
+    public static readonly DependencyProperty MediaPreviewsHiddenProperty =
+        DependencyProperty.Register(
+            nameof(MediaPreviewsHidden),
+            typeof(bool),
+            typeof(MediaGrid),
+            new PropertyMetadata(true, OnMediaPreviewsHiddenChanged));
+    public bool MediaPreviewsHidden {
+        get => (bool)GetValue(MediaPreviewsHiddenProperty);
+        set => SetValue(MediaPreviewsHiddenProperty, value);
+    }
+    private static void OnMediaPreviewsHiddenChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args) {
+        var grid = (MediaGrid)sender;
+        var value = (bool)args.NewValue;
+        if (value) {
+            grid.MediaVisibilityButton.Scale = Vector3.One;
+            grid.MediaVisibilityButtonBorder.VerticalAlignment = VerticalAlignment.Center;
+            grid.MediaVisibilityButtonBorder.HorizontalAlignment = HorizontalAlignment.Center;
+            grid.MediaVisibilityButtonEyeOff.Opacity = 1;
+            grid.MediaVisibilityButtonEye.Opacity = 0;
+            foreach (var child in grid.PanelGrid.Children.OfType<MediaPreview>()) {
+                child.BlurOpacity = 1;
+            }
+        } else {
+            grid.MediaVisibilityButton.Scale = new(0.5f, 0.5f, 1);
+            grid.MediaVisibilityButtonBorder.VerticalAlignment = VerticalAlignment.Top;
+            grid.MediaVisibilityButtonBorder.HorizontalAlignment = HorizontalAlignment.Left;
+            grid.MediaVisibilityButtonEyeOff.Opacity = 0;
+            grid.MediaVisibilityButtonEye.Opacity = 1;
+            foreach (var child in grid.PanelGrid.Children.OfType<MediaPreview>()) {
+                child.BlurOpacity = 0;
+            }
+        }
+    }
+
+    private void MediaVisibilityButton_Click(object sender, RoutedEventArgs e) {
+        MediaPreviewsHidden = !MediaPreviewsHidden;
+    }
 
     private INotifyCollectionChanged? observedCollection = null;
     private bool hasGeneratedChildren = false;
@@ -55,7 +101,7 @@ internal sealed partial class MediaGrid: Grid {
             return;
         }
 
-        Children.Clear();
+        PanelGrid.Children.Clear();
         hasGeneratedChildren = false;
         if ((ItemsSource is not IEnumerable items) || (ItemTemplate is null)) {
             return;
@@ -66,7 +112,7 @@ internal sealed partial class MediaGrid: Grid {
                 throw new InvalidOperationException($"{nameof(MediaGrid)}.{nameof(ItemTemplate)} root must be a {nameof(FrameworkElement)}.");
             }
             element.DataContext = item;
-            Children.Add(element);
+            PanelGrid.Children.Add(element);
         }
         hasGeneratedChildren = true;
     }
@@ -77,13 +123,13 @@ internal sealed partial class MediaGrid: Grid {
             layoutRatios = ratios;
             layout = (ratios.Length > 0) ? TiledLayout.Create(ratios) : null;
 
-            ColumnDefinitions.Clear();
-            RowDefinitions.Clear();
+            PanelGrid.ColumnDefinitions.Clear();
+            PanelGrid.RowDefinitions.Clear();
             foreach (var size in layout?.ColumnSizes ?? []) {
-                ColumnDefinitions.Add(new() { Width = new(size, GridUnitType.Star) });
+                PanelGrid.ColumnDefinitions.Add(new() { Width = new(size, GridUnitType.Star) });
             }
             foreach (var size in layout?.RowSizes ?? []) {
-                RowDefinitions.Add(new() { Height = new(size, GridUnitType.Star) });
+                PanelGrid.RowDefinitions.Add(new() { Height = new(size, GridUnitType.Star) });
             }
         }
 
@@ -100,8 +146,8 @@ internal sealed partial class MediaGrid: Grid {
 
     // Height is derived from the offered width only; the offered height is ignored.
     protected override Size MeasureOverride(Size availableSize) {
-        var tiles = new List<MediaPreview>(Children.Count);
-        foreach (var child in Children) {
+        var tiles = new List<MediaPreview>(PanelGrid.Children.Count);
+        foreach (var child in PanelGrid.Children) {
             if (child is not MediaPreview item) {
                 throw new InvalidOperationException($"{nameof(MediaGrid)} children must be {nameof(MediaPreview)}, got {child.GetType().FullName}.");
             }

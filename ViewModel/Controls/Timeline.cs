@@ -54,8 +54,8 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
         FollowedByGap = false;
     }
 
-    public async void DownloadMedias() {
-        _ = Content.DownloadMedias();
+    public async void DownloadMedia() {
+        _ = Content.DownloadMedia();
         _ = Reblogger?.DownloadAvatar();
     }
 
