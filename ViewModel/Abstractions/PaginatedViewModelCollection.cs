@@ -24,7 +24,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch
             entities = await GetFromServer();
         }
 
-        int currentVersion = Interlocked.Increment(ref version);
+        int currentVersion = ++version;
 
         var viewModels = ViewModel.FromEntities(entities, currentVersion);
         foreach (var viewModel in viewModels) {
@@ -42,7 +42,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch
             return;
         }
 
-        int currentVersion = Interlocked.Increment(ref version);
+        int currentVersion = ++version;
 
         // No overlapping, add all to the beginning
         if (entities.Last().FollowedByGap || ViewModels.Count == 0) {
