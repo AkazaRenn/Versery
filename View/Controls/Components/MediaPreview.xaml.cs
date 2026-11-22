@@ -44,7 +44,7 @@ internal sealed partial class MediaPreview: ImageButton {
                 Blur.Opacity = value;
             }
         }
-    }
+    } = 1;
 
     private void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) {
         Blur.Opacity = BlurOpacity;

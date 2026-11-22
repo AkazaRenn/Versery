@@ -108,10 +108,11 @@ internal sealed partial class MediaGrid: Grid {
         }
 
         foreach (var item in items) {
-            if (ItemTemplate.LoadContent() is not FrameworkElement element) {
-                throw new InvalidOperationException($"{nameof(MediaGrid)}.{nameof(ItemTemplate)} root must be a {nameof(FrameworkElement)}.");
+            if (ItemTemplate.LoadContent() is not MediaPreview element) {
+                throw new InvalidOperationException($"{nameof(MediaGrid)}.{nameof(ItemTemplate)} root must be a {nameof(MediaPreview)}.");
             }
             element.DataContext = item;
+            element.BlurOpacity = MediaPreviewsHidden ? 1 : 0;
             PanelGrid.Children.Add(element);
         }
         hasGeneratedChildren = true;
