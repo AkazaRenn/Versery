@@ -56,7 +56,7 @@ internal sealed partial class MediaGrid: Grid {
             grid.MediaVisibilityButtonBorder.HorizontalAlignment = HorizontalAlignment.Center;
             grid.MediaVisibilityButtonEyeOff.Opacity = 1;
             grid.MediaVisibilityButtonEye.Opacity = 0;
-            foreach (var child in grid.PanelGrid.Children.OfType<MediaPreview>()) {
+            foreach (var child in grid.PanelGrid.Children.Cast<MediaPreview>()) {
                 child.BlurOpacity = 1;
             }
         } else {
@@ -65,7 +65,7 @@ internal sealed partial class MediaGrid: Grid {
             grid.MediaVisibilityButtonBorder.HorizontalAlignment = HorizontalAlignment.Left;
             grid.MediaVisibilityButtonEyeOff.Opacity = 0;
             grid.MediaVisibilityButtonEye.Opacity = 1;
-            foreach (var child in grid.PanelGrid.Children.OfType<MediaPreview>()) {
+            foreach (var child in grid.PanelGrid.Children.Cast<MediaPreview>()) {
                 child.BlurOpacity = 0;
             }
         }
@@ -76,7 +76,6 @@ internal sealed partial class MediaGrid: Grid {
     }
 
     private INotifyCollectionChanged? observedCollection = null;
-    private bool hasGeneratedChildren = false;
 
     private void OnItemsChanged() {
         if (IsLoaded) {
@@ -96,13 +95,7 @@ internal sealed partial class MediaGrid: Grid {
     }
 
     private void GenerateChildren() {
-        // Leave children declared directly in XAML alone.
-        if ((ItemsSource is null) && !hasGeneratedChildren) {
-            return;
-        }
-
         PanelGrid.Children.Clear();
-        hasGeneratedChildren = false;
         if ((ItemsSource is not IEnumerable items) || (ItemTemplate is null)) {
             return;
         }
@@ -115,7 +108,6 @@ internal sealed partial class MediaGrid: Grid {
             element.BlurOpacity = MediaPreviewsHidden ? 1 : 0;
             PanelGrid.Children.Add(element);
         }
-        hasGeneratedChildren = true;
     }
 
     private void UpdateTiles(List<MediaPreview> tiles) {
@@ -147,16 +139,11 @@ internal sealed partial class MediaGrid: Grid {
 
     // Height is derived from the offered width only; the offered height is ignored.
     protected override Size MeasureOverride(Size availableSize) {
-        var tiles = new List<MediaPreview>(PanelGrid.Children.Count);
-        foreach (var child in PanelGrid.Children) {
-            if (child is not MediaPreview item) {
-                throw new InvalidOperationException($"{nameof(MediaGrid)} children must be {nameof(MediaPreview)}, got {child.GetType().FullName}.");
-            }
+        var tiles = PanelGrid.Children
+            .Cast<MediaPreview>()
             // Collapsed children are excluded from the layout.
-            if (child.Visibility == Visibility.Visible) {
-                tiles.Add(item);
-            }
-        }
+            .Where(x => x.Visibility == Visibility.Visible)
+            .ToList();
         UpdateTiles(tiles);
 
         // Unbounded width would produce an infinite height, which layout rejects.
