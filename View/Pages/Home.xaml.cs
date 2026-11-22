@@ -20,7 +20,7 @@ internal sealed partial class Home: Page, INavigationPage {
         }
     }
 
-    private void RefreshListView_OnItemRealized(int index) {
-        _ = viewModel.OnItemRealized(index);
+    private async void RefreshListView_OnItemRealized(int index) {
+        await viewModel.OnItemRealized(index);
     }
 }

@@ -1,15 +1,19 @@
 ﻿using Model.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Model.Entities;
 
-public record Notification(): IPaginatedEntity, IDatabaseEntity {
-    public string Id { get; init; } = string.Empty;
-    public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.MinValue;
-    public bool FollowedByGap { get; internal set; } = false;
+public record Notification: Server.Entities.NotificationGroup, IPaginatedEntity {
+    [JsonIgnore]
+    public string Id => MostRecentNotificationId.ToString();
     public DateTimeOffset ExpiresAt { get; init; } = DateTimeOffset.UtcNow.AddMonths(3);
+    public bool FollowedByGap { get; set; } = false;
 
-    internal Notification(Server.Entities.Status serverStatus) : this() {
-        Id = serverStatus.Id;
-        CreatedAt = serverStatus.CreatedAt;
+    public Notification(Server.Entities.NotificationGroup serverNotificationGroup) : base(serverNotificationGroup) {
+    }
+
+    private static readonly Server.Entities.NotificationGroup empty = (Server.Entities.NotificationGroup)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(Server.Entities.NotificationGroup));
+    [JsonConstructor]
+    public Notification() : base(empty) {
     }
 }

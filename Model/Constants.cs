@@ -11,7 +11,7 @@ public static class Constants {
     public static string AppVersionString { get; } = $"{AppVersion.Major}.{AppVersion.Minor}.{AppVersion.Build}.{AppVersion.Revision}";
     public const string ProjectLink = "https://github.com/AkazaRenn/Versery/";
 
-    public const int StatusesCountPerLoad = 40;
+    public const int ItemsCountPerLoad = 40;
 
     private static readonly Lazy<CultureInfo[]> languageList = new(BuildLanguageList);
     public static CultureInfo[] LanguageList => languageList.Value;

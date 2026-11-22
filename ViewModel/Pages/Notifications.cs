@@ -20,11 +20,11 @@ public sealed partial class Notifications: PaginatedViewModelCollection<Notifica
         return client.GetNotificationFromDatabase(afterId);
     }
 
-    protected override async Task<Model.Entities.Notification[]> GetFromServer() {
+    protected override async Task<Model.Entities.Notification[]> GetFromServer(string? afterId = null) {
         if (!client.SignedIn) {
             return [];
         }
-        return await client.GetNotificationFromServer();
+        return await client.GetNotificationFromServer(afterId);
     }
 
     public void Receive(Messages.SignInCompleted message) {

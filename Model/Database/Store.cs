@@ -1,4 +1,5 @@
 using Model.Interfaces;
+using Model.Server.Entities;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,37 +15,52 @@ internal sealed class Store<T>: IDisposable
     where T : IDatabaseEntity {
     private static readonly string root = ApplicationData.Current.LocalFolder.Path;
 
-    private readonly IZoneTree<string, T> tree;
+    private IZoneTree<string, T>? tree;
+    private IZoneTree<string, T> Tree => tree ?? throw new ObjectDisposedException(nameof(Store<>));
     private readonly IMaintainer maintainer;
+    private readonly string accountId;
+    private readonly string name;
 
-    public Store(string accountId, string name, JsonTypeInfo<T> typeInfo) {
-        tree = new ZoneTreeFactory<string, T>()
-            .SetMutableSegmentMaxItemCount(4_000)
-            .SetDataDirectory(Path.Combine(root, accountId, name))
+    public Store(string accountId, string name, int maxItemCount, JsonTypeInfo<T> typeInfo) {
+        this.accountId = accountId;
+        this.name = name;
+
+        var factory = new ZoneTreeFactory<string, T>()
+            .SetDataDirectory(DataDirectory)
             .SetComparer(new IdComparer())
             .SetKeySerializer(new Utf8StringSerializer())
             .SetValueSerializer(new JsonValueSerializer(typeInfo))
             .SetIsDeletedDelegate((in string key, in T value) =>
                 (value is null) ||
-                (value.ExpiresAt < DateTimeOffset.UtcNow))
-            .OpenOrCreate();
+                (value.ExpiresAt < DateTimeOffset.UtcNow));
+        if (maxItemCount > 0) {
+            factory = factory.SetMutableSegmentMaxItemCount(maxItemCount);
+        }
+
+        tree = factory.OpenOrCreate();
         maintainer = tree.CreateMaintainer();
     }
 
     public bool TryGet(string id, [NotNullWhen(true)] out T? value) {
-        return tree.TryGet(id, out value) && (value is not null);
+        return Tree.TryGet(id, out value) && (value is not null);
     }
 
     public bool Contains(string id) {
-        return tree.ContainsKey(id);
+        return Tree.ContainsKey(id);
     }
 
     public void Upsert(string id, T value) {
-        tree.Upsert(id, value);
+        Tree.Upsert(id, value);
     }
 
+    public bool Remove(string id) {
+        return Tree.TryDelete(id, out _);
+    }
+
+    public string DataDirectory => Path.Combine(root, accountId, name);
+
     public IEnumerable<T> GetDescending(string? afterId = null) {
-        using var iterator = tree.CreateReverseIterator();
+        using var iterator = Tree.CreateReverseIterator();
         if (afterId is null) {
             iterator.SeekFirst();
         } else {
@@ -65,7 +81,8 @@ internal sealed class Store<T>: IDisposable
     public void Dispose() {
         maintainer.WaitForBackgroundThreads();
         maintainer.Dispose();
-        tree.Dispose();
+        Tree.Dispose();
+        tree = null;
     }
 
     // Instance-assigned status ids sort chronologically by length, then ordinal.
@@ -83,6 +100,7 @@ internal sealed class Store<T>: IDisposable
 }
 
 [JsonSerializable(typeof(Entities.Account), TypeInfoPropertyName = "DatabaseAccount")]
+[JsonSerializable(typeof(Entities.Notification), TypeInfoPropertyName = "DatabaseNotification")]
 [JsonSerializable(typeof(Entities.Status), TypeInfoPropertyName = "DatabaseStatus")]
 [JsonSerializable(typeof(Entities.Timeline))]
 internal sealed partial class StoreJsonContext: JsonSerializerContext;

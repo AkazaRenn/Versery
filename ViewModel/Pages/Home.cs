@@ -21,11 +21,11 @@ public sealed partial class Home: PaginatedViewModelCollection<Timeline, Model.E
         return client.GetTimelineFromDatabase(afterId);
     }
 
-    protected override async Task<Model.Entities.Timeline[]> GetFromServer() {
+    protected override async Task<Model.Entities.Timeline[]> GetFromServer(string? afterId = null) {
         if (!client.SignedIn) {
             return [];
         }
-        return await client.GetTimelineFromServer(TimelineType.Home);
+        return await client.GetTimelineFromServer(TimelineType.Home, afterId);
     }
 
     public void Receive(Messages.SignInCompleted message) {

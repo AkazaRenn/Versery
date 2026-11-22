@@ -2,6 +2,7 @@
 using Model.DataPersistence;
 using Model.Enumerations;
 using Model.Server.Entities;
+using ReactiveUI.Primitives.Advanced;
 
 namespace Model.Access;
 
@@ -84,25 +85,26 @@ public sealed class Client {
 
     public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, string? afterId = null) {
         var serverStatuses = type switch {
-            TimelineType.Home => await server.Timelines.GetTimelineHome(limit: Constants.StatusesCountPerLoad, max_id: afterId),
-            TimelineType.Federated => await server.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: false, max_id: afterId),
-            TimelineType.Local => await server.Timelines.GetTimelinePublic(limit: Constants.StatusesCountPerLoad, local: true, max_id: afterId),
+            TimelineType.Home => await server.Timelines.GetTimelineHome(limit: Constants.ItemsCountPerLoad, max_id: afterId),
+            TimelineType.Federated => await server.Timelines.GetTimelinePublic(limit: Constants.ItemsCountPerLoad, local: false, max_id: afterId),
+            TimelineType.Local => await server.Timelines.GetTimelinePublic(limit: Constants.ItemsCountPerLoad, local: true, max_id: afterId),
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 
         return [.. database.AddTimeline(serverStatuses, afterId)];
     }
 
-    public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null, uint count = Constants.StatusesCountPerLoad) {
+    public Entities.Timeline[] GetTimelineFromDatabase(string? afterId = null, uint count = Constants.ItemsCountPerLoad) {
         return database.GetTimeline(count, afterId);
     }
 
     public async Task<Entities.Notification[]> GetNotificationFromServer(string? afterId = null) {
-        return [];
+        var serverNotifications = await server.Notifications.GetNotificationsV2(limit: Constants.ItemsCountPerLoad, max_id: afterId);
+        return [.. database.AddNotification(serverNotifications, afterId)];
     }
 
-    public Entities.Notification[] GetNotificationFromDatabase(string? afterId = null) {
-        return [];
+    public Entities.Notification[] GetNotificationFromDatabase(string? afterId = null, uint count = Constants.ItemsCountPerLoad) {
+        return database.GetNotification(count, afterId);
     }
 
     public Entities.Status? GetStatus(string id) {

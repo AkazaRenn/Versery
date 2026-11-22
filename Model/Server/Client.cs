@@ -9,6 +9,7 @@ internal sealed class Client {
     public IAccountsApi Accounts { get; }
     public ICustomEmojisApi CustomEmojis { get; }
     public IInstanceApi Instance { get; }
+    public INotificationsApi Notifications { get; }
     public IStatusesApi Status { get; }
     public ITimelinesApi Timelines { get; }
 
@@ -25,6 +26,7 @@ internal sealed class Client {
         Accounts = RestService.ForGenerated<IAccountsApi>(httpClient, refitSettings);
         CustomEmojis = RestService.ForGenerated<ICustomEmojisApi>(httpClient, refitSettings);
         Instance = RestService.ForGenerated<IInstanceApi>(httpClient, refitSettings);
+        Notifications = RestService.ForGenerated<INotificationsApi>(httpClient, refitSettings);
         Status = RestService.ForGenerated<IStatusesApi>(httpClient, refitSettings);
         Timelines = RestService.ForGenerated<ITimelinesApi>(httpClient, refitSettings);
     }
