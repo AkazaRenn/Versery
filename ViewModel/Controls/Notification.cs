@@ -12,6 +12,7 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
     private static readonly Dictionary<string, WeakReference<Notification>> cache = [];
 
     private readonly Sentinel<string, Notification> sentinel;
+    private int version = 0;
 
     public string Id { get; }
 
@@ -21,7 +22,7 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
     [ObservableProperty]
     public partial bool FollowedByGap { get; set; } = false;
 
-    private Notification(Model.Entities.Notification Notification) {
+    private Notification(Model.Entities.Notification Notification, int version) {
         Id = Notification.Id;
         var status = client.GetStatus(Id)!;
 
@@ -34,16 +35,17 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
         FollowedByGap = Notification.FollowedByGap;
 
         sentinel = new(Id, cache);
+        this.version = version;
     }
 
-    public void Update(Model.Entities.Notification entity) {
+    public void Update(Model.Entities.Notification entity, int version) {
         //throw new NotImplementedException();
     }
 
-    public static IEnumerable<Notification> FromEntities(IEnumerable<Model.Entities.Notification> Notifications) {
+    public static IEnumerable<Notification> FromEntities(IEnumerable<Model.Entities.Notification> Notifications, int version) {
         Notifications = Notifications.ToCollection();
         for (int i = 0; i < Notifications.Count(); i++) {
-            yield return Create(Notifications.ElementAt(i));
+            yield return Create(Notifications.ElementAt(i), version);
         }
     }
 
@@ -58,13 +60,12 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
         _ = Reblogger?.DownloadAvatar();
     }
 
-    public static Notification Create(Model.Entities.Notification Notification) {
+    public static Notification Create(Model.Entities.Notification Notification, int version) {
         lock (cache) {
             if ((!cache.TryGetValue(Notification.Id, out var reference)) ||
                 (!reference.TryGetTarget(out var obj))) {
-                obj = new(Notification);
-                reference = new(obj);
-                cache[Notification.Id] = reference;
+                obj = new(Notification, version);
+                cache[Notification.Id] = new(obj);
             }
             return obj;
         }

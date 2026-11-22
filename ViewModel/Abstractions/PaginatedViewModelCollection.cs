@@ -3,7 +3,7 @@ using ViewModel.Interfaces;
 
 namespace ViewModel.Abstractions;
 
-public abstract class PaginatedViewModelCollection<ViewModel, Entity>
+public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch
     where ViewModel : IPaginatedViewModel<ViewModel, Entity>
     where Entity : Model.Interfaces.IPaginatedEntity {
     protected abstract Entity[] GetFromDatabase(string? afterId = null);
@@ -24,7 +24,9 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
             entities = await GetFromServer();
         }
 
-        var viewModels = ViewModel.FromEntities(entities);
+        int currentVersion = Interlocked.Increment(ref version);
+
+        var viewModels = ViewModel.FromEntities(entities, currentVersion);
         foreach (var viewModel in viewModels) {
             ViewModels.Add(viewModel);
         }
@@ -40,10 +42,12 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
             return;
         }
 
+        int currentVersion = Interlocked.Increment(ref version);
+
         // No overlapping, add all to the beginning
         if (entities.Last().FollowedByGap || ViewModels.Count == 0) {
             var newViewModels = await Task.Run(() => {
-                return ViewModel.FromEntities(entities).ToArray();
+                return ViewModel.FromEntities(entities, currentVersion).ToArray();
             });
             ViewModels.Clear();
             for (int i = 0; i < newViewModels.Length; i++) {
@@ -63,7 +67,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
             }
 
             var newViewModels = await Task.Run(() => {
-                return ViewModel.FromEntities(newEntities).ToArray();
+                return ViewModel.FromEntities(newEntities, currentVersion).ToArray();
             });
             for (int i = 0; i < newViewModels.Length; i++) {
                 ViewModels.Insert(i, newViewModels[i]);
@@ -72,7 +76,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
             // Update existing items and remove any that are no longer present
             for (int i = newEntities.Count; i < entities.Length;) {
                 if (entities[i].Id == ViewModels[i].Id) {
-                    ViewModels[i].Update(entities[i]);
+                    ViewModels[i].Update(entities[i], currentVersion);
                     i++;
                 } else {
                     ViewModels.RemoveAt(i);
@@ -93,7 +97,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>
             loadingOldEntities = true;
             var viewModels = await Task.Run(() => {
                 var entities = GetFromDatabase(ViewModels.Last().Id);
-                return ViewModel.FromEntities(entities).ToArray();
+                return ViewModel.FromEntities(entities, version).ToArray();
             });
             if (viewModels.Length == 0) {
                 hasMoreEntitiesToLoad = false;

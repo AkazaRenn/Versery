@@ -13,6 +13,7 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
     private static readonly Dictionary<string, WeakReference<Timeline>> cache = [];
 
     private readonly Sentinel<string, Timeline> sentinel;
+    private int version;
 
     public string Id { get; }
 
@@ -22,7 +23,7 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
     [ObservableProperty]
     public partial bool FollowedByGap { get; set; } = false;
 
-    private Timeline(Model.Entities.Timeline timeline) {
+    private Timeline(Model.Entities.Timeline timeline, int version) {
         Id = timeline.Id;
         var status = client.GetStatus(Id)!;
 
@@ -35,16 +36,25 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
         FollowedByGap = timeline.FollowedByGap;
 
         sentinel = new(Id, cache);
+        this.version = version;
     }
 
-    public void Update(Model.Entities.Timeline entity) {
-        //throw new NotImplementedException();
+    public void Update(Model.Entities.Timeline entity, int version) {
+        // Content.Update(version);
+        // Reblogger?.Update(version);
+
+        if (this.version == version) {
+            return;
+        }
+
+        FollowedByGap = entity.FollowedByGap;
+        this.version = version;
     }
 
-    public static IEnumerable<Timeline> FromEntities(IEnumerable<Model.Entities.Timeline> timelines) {
+    public static IEnumerable<Timeline> FromEntities(IEnumerable<Model.Entities.Timeline> timelines, int version) {
         timelines = timelines.ToCollection();
         for (int i = 0; i < timelines.Count(); i++) {
-            yield return Create(timelines.ElementAt(i));
+            yield return Create(timelines.ElementAt(i), version);
         }
     }
 
@@ -59,13 +69,12 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
         _ = Reblogger?.DownloadAvatar();
     }
 
-    public static Timeline Create(Model.Entities.Timeline timeline) {
+    public static Timeline Create(Model.Entities.Timeline timeline, int version) {
         lock (cache) {
             if ((!cache.TryGetValue(timeline.Id, out var reference)) ||
                 (!reference.TryGetTarget(out var obj))) {
-                obj = new(timeline);
-                reference = new(obj);
-                cache[timeline.Id] = reference;
+                obj = new(timeline, version);
+                cache[timeline.Id] = new(obj);
             }
             return obj;
         }
