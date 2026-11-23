@@ -17,6 +17,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
 
     private bool loading = false;
     private bool hasMoreEntitiesToLoad = true;
+    private bool CanLoad => client.SignedIn && !loading;
 
     public PaginatedViewModelCollection() {
         StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
@@ -29,7 +30,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
     }
 
     private async Task LoadInitialItems() {
-        if (loading) {
+        if (!CanLoad) {
             return;
         }
 
@@ -52,32 +53,26 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
 
     public Func<Task> LoadLatestItems => LoadLatestItemsInternal;
     private async Task LoadLatestItemsInternal() {
-        if (loading) {
-            return;
-        }
-
         await LoadMoreItems(0);
     }
 
     public async Task OnItemRealized(int index) {
         ViewModels[index].DownloadMedia();
-
-        if ((index == ViewModels.Count - 1) && (!loading) && hasMoreEntitiesToLoad) {
-            await LoadMoreItems(index + 1, ViewModels[index].Id, true);
+        if ((index == ViewModels.Count - 1) && hasMoreEntitiesToLoad) {
+            await LoadMoreItems(index + 1, ViewModels[index].Id);
         }
     }
 
-    private async Task LoadMoreItems(int startingIndex, string? afterId = null, bool useDatabase = false) {
+    private async Task LoadMoreItems(int startingIndex, string? afterId = null) {
+        if (!CanLoad) {
+            return;
+        }
+
         loading = true;
 
         try {
             var entities = await Task.Run(async () => {
-                var entities = await GetFromServer(afterId);
-                if (useDatabase && entities.Length == 0) {
-                    entities = GetFromDatabase(afterId);
-
-                }
-                return entities;
+                return await GetFromServer(afterId);
             });
 
             if (entities.Length == 0) {
