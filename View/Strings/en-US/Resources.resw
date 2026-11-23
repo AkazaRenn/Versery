@@ -126,7 +126,7 @@
   <data name="Controls_PostPanel_VisibilityButton_FlyoutItem_Public.Text" xml:space="preserve">
     <value>Public: Post to public timelines</value>
   </data>
-  <data name="Controls_Timeline_LoadMoreButton.Content" xml:space="preserve">
+  <data name="Controls_Components_RefreshContainer_LoadMoreButton_TextBlock.Text" xml:space="preserve">
     <value>Load more</value>
   </data>
   <data name="Controls_UserProfileButton_MenuFlyout_ManageAccounts.Text" xml:space="preserve">

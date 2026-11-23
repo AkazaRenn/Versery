@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Model;
 using Model.Access;
 using System.Collections.ObjectModel;
@@ -6,7 +7,16 @@ using ViewModel.Interfaces;
 
 namespace ViewModel.Abstractions;
 
-public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IRecipient<Messages.SignInCompleted>
+public abstract partial class PaginatedViewModelCollection: ObservableObject {
+    private static int version = 0;
+    protected static int Version => ++version;
+
+    [ObservableProperty]
+    public partial bool IsLoading { get; protected set; } = false;
+}
+
+
+public abstract class PaginatedViewModelCollection<ViewModel, Entity>: PaginatedViewModelCollection, IRecipient<Messages.SignInCompleted>
     where ViewModel : IPaginatedViewModel<ViewModel, Entity>
     where Entity : Model.Interfaces.IDatabaseEntity {
     public ObservableCollection<ViewModel> ViewModels { get; } = [];
@@ -15,9 +25,8 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
     protected abstract Task<Entity[]> GetFromServer(string? afterId = null);
     protected readonly Client client = Model.Services.Get<Client>();
 
-    private bool loading = false;
     private bool hasMoreEntitiesToLoad = true;
-    private bool CanLoad => client.SignedIn && !loading;
+    private bool CanLoad => client.SignedIn && !IsLoading;
 
     public PaginatedViewModelCollection() {
         StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
@@ -34,21 +43,21 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
             return;
         }
 
-        loading = true;
+        IsLoading = true;
 
         var entities = GetFromDatabase();
         if (entities.Length == 0) {
             entities = await GetFromServer();
         }
 
-        int currentVersion = ++version;
+        int currentVersion = Version;
 
         var viewModels = ViewModel.FromEntities(entities, currentVersion);
         foreach (var viewModel in viewModels) {
             ViewModels.Add(viewModel);
         }
 
-        loading = false;
+        IsLoading = false;
     }
 
     public Func<Task> LoadLatestItems => LoadLatestItemsInternal;
@@ -68,7 +77,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
             return;
         }
 
-        loading = true;
+        IsLoading = true;
 
         try {
             var entities = await Task.Run(async () => {
@@ -80,7 +89,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
                 return;
             }
 
-            int currentVersion = ++version;
+            int currentVersion = Version;
 
             var viewModels = await Task.Run(() => {
                 return ViewModel.FromEntities(entities, currentVersion).ToArray();
@@ -141,7 +150,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch, IR
                 }
             }
         } finally {
-            loading = false;
+            IsLoading = false;
         }
     }
 }

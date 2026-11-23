@@ -9,6 +9,10 @@ internal sealed partial class RefreshListView: RefreshContainer {
     public DataTemplate ItemTemplate { set => ListView.ItemTemplate = value; }
     public Func<Task>? LoadLatest { get; set; } = null;
     public event Action<int>? OnItemRealized;
+    public bool IsLoading {
+        get => !LoadMoreButton.IsEnabled;
+        set => LoadMoreButton.IsEnabled = !value;
+    }
 
     private ScrollViewer? scrollViewer = null;
     public bool IsOnTop => scrollViewer?.VerticalOffset == 0;

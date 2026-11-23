@@ -12,6 +12,7 @@
         MaxWidth="600"
         ItemsSource="{x:Bind viewModel.ViewModels}"
         LoadLatest="{x:Bind viewModel.LoadLatestItems}"
+        IsLoading="{x:Bind viewModel.IsLoading, Mode=OneWay}"
         OnItemRealized="RefreshListView_OnItemRealized">
         <components:RefreshListView.ItemTemplate>
             <DataTemplate x:DataType="vm.controls:Timeline">

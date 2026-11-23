@@ -29,7 +29,7 @@ internal sealed class Store<T>: IDisposable
             .SetComparer(new IdComparer())
             .SetKeySerializer(new Utf8StringSerializer())
             .SetValueSerializer(new JsonValueSerializer(typeInfo))
-            .SetIsDeletedDelegate((in string key, in T value) =>
+            .SetIsDeletedDelegate((in key, in value) =>
                 (value is null) ||
                 (value.ExpiresAt < DateTimeOffset.UtcNow));
         if (maxItemCount > 0) {

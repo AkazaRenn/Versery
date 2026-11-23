@@ -123,7 +123,7 @@
   <data name="Controls_PostPanel_ContentWarningTextBox.PlaceholderText" xml:space="preserve">
     <value>內容警告</value>
   </data>
-  <data name="Controls_Timeline_LoadMoreButton.Content" xml:space="preserve">
+  <data name="Controls_Components_RefreshContainer_LoadMoreButton_TextBlock.Text" xml:space="preserve">
     <value>載入更多</value>
   </data>
   <data name="Controls_UserProfileButton_MenuFlyout_ManageAccounts.Text" xml:space="preserve">
