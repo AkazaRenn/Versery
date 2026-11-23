@@ -92,27 +92,4 @@
             IconVariant="Filled"
             FontSize="12"/>
     </Border>
-
-    <Button
-        x:Uid="Controls_Timeline_LoadMoreButton"
-        x:Name="LoadMoreButton"
-        x:Load="{x:Bind ViewModel.FollowedByGap}"
-        Grid.Column="0"
-        Grid.ColumnSpan="99"
-        Grid.Row="2"
-        Height="48"
-        HorizontalAlignment="Stretch"
-        Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
-        Background="{x:Bind utils:Brushes.TransparentBlack025}"
-        FontWeight="Bold"
-        BorderThickness="0 0 0 0.5"
-        BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
-        CornerRadius="0">
-        <Button.Resources>
-            <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="AccentTextFillColorSecondaryBrush"/>
-            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#30000000"/>
-            <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="AccentTextFillColorTertiaryBrush"/>
-            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#50000000"/>
-        </Button.Resources>
-    </Button>
 </Grid>

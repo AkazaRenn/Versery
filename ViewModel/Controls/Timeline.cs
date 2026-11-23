@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Model;
 using Model.Access;
-using Model.Enumerations;
 using Model.Utilities;
 using ViewModel.Interfaces;
 
@@ -20,9 +18,6 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
     public Status.Account? Reblogger { get; } = null;
     public Status Content { get; }
 
-    [ObservableProperty]
-    public partial bool FollowedByGap { get; set; } = false;
-
     private Timeline(Model.Entities.Timeline timeline, int version) {
         Id = timeline.Id;
         var status = client.GetStatus(Id)!;
@@ -33,7 +28,6 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
             Reblogger = Status.Account.Create(status.Account);
             Content = Status.Create(status.Reblog);
         }
-        FollowedByGap = timeline.FollowedByGap;
 
         sentinel = new(Id, cache);
         this.version = version;
@@ -47,7 +41,6 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
             return;
         }
 
-        FollowedByGap = entity.FollowedByGap;
         this.version = version;
     }
 
@@ -56,12 +49,6 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
         for (int i = 0; i < timelines.Count(); i++) {
             yield return Create(timelines.ElementAt(i), version);
         }
-    }
-
-    [RelayCommand]
-    public async Task LoadMore() {
-        var timelines = await client.GetTimelineFromServer(TimelineType.Home, Id);
-        FollowedByGap = false;
     }
 
     public async void DownloadMedia() {

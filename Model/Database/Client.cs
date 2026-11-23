@@ -41,7 +41,7 @@ internal sealed class Client(string account): IDisposable {
         Account.Add(accounts);
 
         var dbNotifications = notifications.NotificationGroups.Select(x => new Entities.Notification(x)).ToArray();
-        Notification.Add(dbNotifications, afterId, afterId is null);
+        Notification.Add(dbNotifications, afterId);
         return dbNotifications;
     }
 

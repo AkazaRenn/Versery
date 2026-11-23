@@ -5,7 +5,7 @@ namespace ViewModel.Abstractions;
 
 public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch
     where ViewModel : IPaginatedViewModel<ViewModel, Entity>
-    where Entity : Model.Interfaces.IPaginatedEntity {
+    where Entity : Model.Interfaces.IDatabaseEntity {
     protected abstract Entity[] GetFromDatabase(string? afterId = null);
     protected abstract Task<Entity[]> GetFromServer(string? afterId = null);
 
@@ -38,85 +38,92 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Batch
 
     public Func<Task> LoadLatestItems => LoadLatestItemsInternal;
     private async Task LoadLatestItemsInternal() {
-        loading = true;
+        if (loading) {
+            return;
+        }
+
         await LoadMoreItems(0);
-        loading = false;
-    }
-
-    private async Task<bool> LoadMoreItems(int startingIndex, string? afterId = null, bool useDatabase = false) {
-        bool usedDatabase = false;
-
-        var entities = await Task.Run(async () => {
-            var entities = await GetFromServer(afterId);
-            if (useDatabase && entities.Length == 0) {
-                entities = GetFromDatabase(afterId);
-                usedDatabase = true;
-
-            }
-            return entities;
-        });
-
-        if (entities.Length == 0) {
-            hasMoreEntitiesToLoad = false;
-            return usedDatabase;
-        }
-
-        int currentVersion = ++version;
-
-        // No overlapping, add all to the beginning
-        if (entities.Last().FollowedByGap || ViewModels.Count == startingIndex) {
-            var newViewModels = await Task.Run(() => {
-                return ViewModel.FromEntities(entities, currentVersion).ToArray();
-            });
-            if (startingIndex == 0) {
-                ViewModels.Clear();
-            } else {
-                for (int i = ViewModels.Count - 1; i >= startingIndex; i--) {
-                    ViewModels.RemoveAt(i);
-                }
-            }
-            for (int i = 0; i < newViewModels.Length; i++) {
-                ViewModels.Insert(i + startingIndex, newViewModels[i]);
-            }
-            return usedDatabase;
-        }
-
-        {
-            // Add new items to the beginning
-            var newViewModels = await Task.Run(() => {
-                return ViewModel.FromEntities(entities.TakeWhile(x => x.Id != ViewModels[startingIndex].Id), currentVersion).ToArray();
-            });
-            for (int i = 0; i < newViewModels.Length; i++) {
-                ViewModels.Insert(i + startingIndex, newViewModels[i]);
-                ViewModels[i + startingIndex].Update(entities[i], currentVersion);
-            }
-
-            // Update existing items and remove any that are no longer present
-            for (int i = newViewModels.Length; i < entities.Length;) {
-                if (entities[i].Id == ViewModels[i + startingIndex].Id) {
-                    ViewModels[i + startingIndex].Update(entities[i], currentVersion);
-                    i++;
-                } else {
-                    ViewModels.RemoveAt(i + startingIndex);
-                }
-            }
-
-            // Clear the rest of the items
-            for (int i = ViewModels.Count - 1; i >= entities.Length + startingIndex; i--) {
-                ViewModels.RemoveAt(i);
-            }
-        }
-
-        return usedDatabase;
     }
 
     public async Task OnItemRealized(int index) {
         ViewModels[index].DownloadMedia();
 
-        if (((index == ViewModels.Count - 1) || ViewModels[index].FollowedByGap) && (!loading) && hasMoreEntitiesToLoad) {
-            loading = true;
-            bool usedDatabase = await LoadMoreItems(index + 1, ViewModels[index].Id, true);
-            ViewModels[index].FollowedByGap = ViewModels[index].FollowedByGap && usedDatabase;
+        if ((index == ViewModels.Count - 1) && (!loading) && hasMoreEntitiesToLoad) {
+            await LoadMoreItems(index + 1, ViewModels[index].Id, true);
+        }
+    }
+
+    private async Task LoadMoreItems(int startingIndex, string? afterId = null, bool useDatabase = false) {
+        loading = true;
+
+        try {
+            var entities = await Task.Run(async () => {
+                var entities = await GetFromServer(afterId);
+                if (useDatabase && entities.Length == 0) {
+                    entities = GetFromDatabase(afterId);
+
+                }
+                return entities;
+            });
+
+            if (entities.Length == 0) {
+                hasMoreEntitiesToLoad = false;
+                return;
+            }
+
+            int currentVersion = ++version;
+
+            var viewModels = await Task.Run(() => {
+                return ViewModel.FromEntities(entities, currentVersion).ToArray();
+            });
+
+            // No overlapping, add all to the beginning
+            if (ViewModels.Count == startingIndex) {
+                if (startingIndex == 0) {
+                    ViewModels.Clear();
+                } else {
+                    for (int i = ViewModels.Count - 1; i >= startingIndex; i--) {
+                        ViewModels.RemoveAt(i);
+                    }
+                }
+                for (int i = 0; i < viewModels.Length; i++) {
+                    ViewModels.Insert(i + startingIndex, viewModels[i]);
+                }
+                return;
+            }
+
+            {
+                // Add new items to the beginning
+                int overlappingStartingIndex = Array.FindIndex(entities, x => x.Id == ViewModels[startingIndex].Id);
+                for (int i = 0; i < overlappingStartingIndex; i++) {
+                    int targetIndex = i + startingIndex;
+                    ViewModels.Insert(targetIndex, viewModels[i]);
+                    ViewModels[targetIndex].Update(entities[i], currentVersion);
+                }
+
+                // Update existing items and remove any that are no longer present
+                for (int i = overlappingStartingIndex; i < entities.Length;) {
+                    int targetIndex = i + startingIndex;
+                    if (targetIndex >= ViewModels.Count) {
+                        foreach (var viewModel in viewModels.Skip(i)) {
+                            ViewModels.Add(viewModel);
+                        }
+                        break;
+                    }
+                    if (entities[i].Id == ViewModels[targetIndex].Id) {
+                        ViewModels[targetIndex].Update(entities[i], currentVersion);
+                        i++;
+                    } else {
+                        ViewModels.RemoveAt(targetIndex);
+                    }
+                }
+
+                // Clear the rest of the items
+                for (int i = ViewModels.Count - 1; i >= entities.Length + startingIndex; i--) {
+                    ViewModels.RemoveAt(i);
+                }
+            }
+        } finally {
             loading = false;
         }
     }

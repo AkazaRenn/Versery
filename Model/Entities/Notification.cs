@@ -3,11 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace Model.Entities;
 
-public record Notification: Server.Entities.NotificationGroup, IPaginatedEntity {
+public record Notification: Server.Entities.NotificationGroup, IDatabaseEntity {
     [JsonIgnore]
     public string Id => MostRecentNotificationId.ToString();
     public DateTimeOffset ExpiresAt { get; init; } = DateTimeOffset.UtcNow.AddMonths(3);
-    public bool FollowedByGap { get; set; } = false;
 
     public Notification(Server.Entities.NotificationGroup serverNotificationGroup) : base(serverNotificationGroup) {
     }

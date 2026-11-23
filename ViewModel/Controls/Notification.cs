@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Model;
 using Model.Access;
 using Model.Utilities;
@@ -19,9 +18,6 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
     public Status.Account? Reblogger { get; } = null;
     public Status Content { get; }
 
-    [ObservableProperty]
-    public partial bool FollowedByGap { get; set; } = false;
-
     private Notification(Model.Entities.Notification Notification, int version) {
         Id = Notification.Id;
         var status = client.GetStatus(Id)!;
@@ -32,7 +28,6 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
             Reblogger = Status.Account.Create(status.Account);
             Content = Status.Create(status.Reblog);
         }
-        FollowedByGap = Notification.FollowedByGap;
 
         sentinel = new(Id, cache);
         this.version = version;
@@ -47,12 +42,6 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
         for (int i = 0; i < Notifications.Count(); i++) {
             yield return Create(Notifications.ElementAt(i), version);
         }
-    }
-
-    [RelayCommand]
-    public async Task LoadMore() {
-        var Notifications = await client.GetNotificationFromServer(Id);
-        FollowedByGap = false;
     }
 
     public async void DownloadMedia() {
