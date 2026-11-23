@@ -36,18 +36,23 @@ internal sealed partial class MediaPreview: ImageButton {
             }
         }
     } = null;
-    public double BlurOpacity {
+    public bool BlurOn {
         get;
         set {
-            field = value;
-            if ((BitmapImage.PixelHeight > 0) && (BitmapImage.PixelWidth > 0)) {
-                Blur.Opacity = value;
+            if (field != value) {
+                field = value;
+                if ((BitmapImage.PixelHeight > 0) && (BitmapImage.PixelWidth > 0)) {
+                    Blur.IsHitTestVisible = value;
+                    Blur.Opacity = value ? 1 : 0;
+                }
             }
+
         }
-    } = 1;
+    } = true;
 
     private void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) {
-        Blur.Opacity = BlurOpacity;
+        Blur.IsHitTestVisible = BlurOn;
+        Blur.Opacity = BlurOn ? 1 : 0;
     }
 
     internal static readonly SolidColorBrush DefaultBlur = Application.Current.Resources["CardBackgroundFillColorDefaultBrush"] as SolidColorBrush ?? new(Colors.LightGray);

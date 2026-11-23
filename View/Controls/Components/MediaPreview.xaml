@@ -9,8 +9,7 @@
     xmlns:fluenticons="using:FluentIcons.WinUI">
     <Rectangle
         x:Name="Blur"
-        Fill="{x:Bind components:MediaPreview.DefaultBlur}"
-        IsHitTestVisible="False"/>
+        Fill="{x:Bind components:MediaPreview.DefaultBlur}"/>
     <Border
         x:Name="DescriptionIcon"
         x:Load="{x:Bind utilities:Converters.StringIsNotNullOrWhiteSpace(Description)}"

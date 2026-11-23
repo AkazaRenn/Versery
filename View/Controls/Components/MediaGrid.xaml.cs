@@ -57,7 +57,7 @@ internal sealed partial class MediaGrid: Grid {
             grid.MediaVisibilityButtonEyeOff.Opacity = 1;
             grid.MediaVisibilityButtonEye.Opacity = 0;
             foreach (var child in grid.PanelGrid.Children.Cast<MediaPreview>()) {
-                child.BlurOpacity = 1;
+                child.BlurOn = true;
             }
         } else {
             grid.MediaVisibilityButton.Scale = new(0.5f, 0.5f, 1);
@@ -66,7 +66,7 @@ internal sealed partial class MediaGrid: Grid {
             grid.MediaVisibilityButtonEyeOff.Opacity = 0;
             grid.MediaVisibilityButtonEye.Opacity = 1;
             foreach (var child in grid.PanelGrid.Children.Cast<MediaPreview>()) {
-                child.BlurOpacity = 0;
+                child.BlurOn = false;
             }
         }
     }
@@ -105,7 +105,7 @@ internal sealed partial class MediaGrid: Grid {
                 throw new InvalidOperationException($"{nameof(MediaGrid)}.{nameof(ItemTemplate)} root must be a {nameof(MediaPreview)}.");
             }
             element.DataContext = item;
-            element.BlurOpacity = MediaPreviewsHidden ? 1 : 0;
+            element.BlurOn = MediaPreviewsHidden;
             PanelGrid.Children.Add(element);
         }
     }
