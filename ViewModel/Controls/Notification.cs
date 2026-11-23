@@ -33,7 +33,7 @@ public sealed partial class Notification: ObservableObject, IPaginatedViewModel<
         this.version = version;
     }
 
-    public void Update(Model.Entities.Notification entity, int version) {
+    public void Update(int version) {
         //throw new NotImplementedException();
     }
 

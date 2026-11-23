@@ -33,7 +33,7 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
         this.version = version;
     }
 
-    public void Update(Model.Entities.Timeline entity, int version) {
+    public void Update(int version) {
         // Content.Update(version);
         // Reblogger?.Update(version);
 

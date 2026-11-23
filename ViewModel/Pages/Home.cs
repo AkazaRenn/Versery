@@ -7,13 +7,7 @@ using ViewModel.Controls;
 
 namespace ViewModel.Pages;
 
-public sealed partial class Home: PaginatedViewModelCollection<Timeline, Model.Entities.Timeline>, IRecipient<Messages.SignInCompleted> {
-    private readonly Client client = Model.Services.Get<Client>();
-
-    public Home() {
-        StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
-    }
-
+public sealed partial class Home: PaginatedViewModelCollection<Timeline, Model.Entities.Timeline> {
     protected override Model.Entities.Timeline[] GetFromDatabase(string? afterId = null) {
         if (!client.SignedIn) {
             return [];
@@ -26,10 +20,5 @@ public sealed partial class Home: PaginatedViewModelCollection<Timeline, Model.E
             return [];
         }
         return await client.GetTimelineFromServer(TimelineType.Home, afterId);
-    }
-
-    public void Receive(Messages.SignInCompleted message) {
-        ViewModels.Clear();
-        _ = LoadInitialItems();
     }
 }
