@@ -82,11 +82,11 @@ public sealed class Client {
         return [.. (await server.CustomEmojis.GetCustomEmojis()).Where(x => x.VisibleInPicker)];
     }
 
-    public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, int count, string? afterId = null) {
+    public async Task<Entities.Timeline[]> GetTimelineFromServer(TimelineType type, uint count, string? afterId = null) {
         var serverStatuses = type switch {
-            TimelineType.Home => await server.Timelines.GetTimelineHome(limit: count, max_id: afterId),
-            TimelineType.Federated => await server.Timelines.GetTimelinePublic(limit: count, local: false, max_id: afterId),
-            TimelineType.Local => await server.Timelines.GetTimelinePublic(limit: count, local: true, max_id: afterId),
+            TimelineType.Home => await server.Timelines.GetTimelineHome(limit: (int)count, max_id: afterId),
+            TimelineType.Federated => await server.Timelines.GetTimelinePublic(limit: (int)count, local: false, max_id: afterId),
+            TimelineType.Local => await server.Timelines.GetTimelinePublic(limit: (int)count, local: true, max_id: afterId),
             _ => throw new ArgumentException("Invalid timeline type", nameof(type)),
         };
 
@@ -97,8 +97,8 @@ public sealed class Client {
         return database.GetTimeline(count, afterId);
     }
 
-    public async Task<Entities.Notification[]> GetNotificationFromServer(int count, string? afterId = null) {
-        var serverNotifications = await server.Notifications.GetNotificationsV2(limit: count, max_id: afterId);
+    public async Task<Entities.Notification[]> GetNotificationFromServer(uint count, string? afterId = null) {
+        var serverNotifications = await server.Notifications.GetNotificationsV2(limit: (int)count, max_id: afterId);
         return [.. database.AddNotification(serverNotifications, afterId)];
     }
 

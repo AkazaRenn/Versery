@@ -14,7 +14,7 @@ public abstract partial class PaginatedViewModelCollection: ObservableObject {
     [ObservableProperty]
     public partial bool IsLoading { get; protected set; } = false;
     [ObservableProperty]
-    public partial bool HasMoreEntitiesToLoad { get; protected set; } = true;
+    public partial bool HasMoreEntitiesToLoad { get; protected set; } = false;
 }
 
 
@@ -23,12 +23,12 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
     where Entity : Model.Interfaces.IDatabaseEntity {
     public ObservableCollection<ViewModel> ViewModels { get; } = [];
 
-    protected abstract Entity[] GetFromDatabase(int count = itemsCountPerLoad, string? afterId = null);
-    protected abstract Task<Entity[]> GetFromServer(int count = itemsCountPerLoad, string? afterId = null);
+    protected abstract Entity[] GetFromDatabase(uint count = itemsCountPerLoad, string? afterId = null);
+    protected abstract Task<Entity[]> GetFromServer(uint count = itemsCountPerLoad, string? afterId = null);
     protected readonly Client client = Model.Services.Get<Client>();
 
     private bool CanLoad => client.SignedIn && !IsLoading;
-    private const int itemsCountPerLoad = Constants.ItemsCountPerLoad;
+    private const uint itemsCountPerLoad = Constants.ItemsCountPerLoad;
 
     public PaginatedViewModelCollection() {
         StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
@@ -48,7 +48,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
     public async Task OnItemRealized(int index) {
         ViewModels[index].DownloadMedia();
         if ((index == ViewModels.Count - 1) && HasMoreEntitiesToLoad) {
-            await LoadMoreItems(index + 1, ViewModels[index].Id);
+            await LoadMoreItems(index + 1, ViewModels[index].PaginateId);
         }
     }
 

@@ -3,36 +3,20 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace Model.Database.Abstractions;
 
-internal abstract class PaginatedEntityStore<T>(string id, JsonTypeInfo<T> typeInfo): IDisposable
+internal abstract class PaginatedEntityStore<T>(string id, JsonTypeInfo<T> typeInfo): EntityStore<T>(id, 0, typeInfo)
     where T : class, IDatabaseEntity {
-    private Store<T>? db = new(id, typeof(T).Name, 0, typeInfo);
-    private Store<T> Db => db ?? throw new ObjectDisposedException(nameof(PaginatedEntityStore<>));
-
-    internal IEnumerable<T> Get(uint count, string? after = null) {
+    public IEnumerable<T> Get(uint count, string? after = null) {
         var entities = Db.GetDescending(after).Take((int)count);
         foreach (var entity in entities) {
             yield return entity;
         }
     }
 
-    internal void Add(IEnumerable<T> entities, bool drop = false) {
+    public void Add(IEnumerable<T> entities, bool drop = false) {
         if (drop) {
             Drop();
         }
 
-        foreach (var entity in entities) {
-            Db.Upsert(entity.Id, entity);
-        }
-    }
-
-    private void Drop() {
-        Db.Dispose();
-        Directory.Delete(Db.DataDirectory, true);
-        db = new(id, typeof(T).Name, 0, typeInfo);
-    }
-
-    public void Dispose() {
-        Db.Dispose();
-        db = null;
+        base.Add(entities);
     }
 }

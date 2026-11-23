@@ -111,57 +111,13 @@ public sealed partial class Status: ObservableObject {
         }
     }
 
-    internal async Task DownloadMedia() {
-        _ = Poster.DownloadAvatar();
-        _ = Card?.DownloadImage();
+    internal async void DownloadMedia() {
+        Poster.DownloadAvatar();
+        Card?.DownloadImage();
         foreach (var media in Media) {
-            _ = media.Download();
+            media.Download();
         }
-        _ = Quote?.DownloadMedia();
-    }
-
-    public sealed partial class Account: ObservableObject {
-        private static readonly Client client = Model.Services.Get<Client>();
-        private static readonly Dictionary<string, WeakReference<Account>> cache = [];
-
-        private readonly Sentinel<string, Account> sentinel;
-
-        public string Id { get; }
-        public string AccountName { get; }
-        public Html DisplayName { get; } = new();
-
-        public Uri? AvatarRemote { get; }
-        [ObservableProperty]
-        public partial Uri? Avatar { get; private set; } = null;
-        internal async Task DownloadAvatar() {
-            if ((Avatar == null) && (AvatarRemote is not null)) {
-                Avatar = await Cache.Get(AvatarRemote);
-            }
-        }
-
-        private Account(string id) {
-            Id = id;
-            var account = client.GetAccount(id)!;
-            AccountName = $"@{account.Acct}";
-            DisplayName.RawText = account.DisplayName;
-            foreach (var emoji in account.Emojis) {
-                DisplayName.Emojis.Add(emoji.Shortcode, Cache.Get(emoji.Url));
-            }
-            AvatarRemote = account.Avatar;
-
-            sentinel = new(Id, cache);
-        }
-
-        internal static Account Create(string id) {
-            lock (cache) {
-                if ((!cache.TryGetValue(id, out var reference)) ||
-                    (!reference.TryGetTarget(out var obj))) {
-                    obj = new(id);
-                    cache[id] = new(obj);
-                }
-                return obj;
-            }
-        }
+        Quote?.DownloadMedia();
     }
 
     public sealed partial class Card_(PreviewCard card): ObservableObject {
@@ -179,7 +135,7 @@ public sealed partial class Status: ObservableObject {
         public Uri? ImageRemote { get; } = card.Image;
         [ObservableProperty]
         public partial Uri? Image { get; private set; } = null;
-        internal async Task DownloadImage() {
+        internal async void DownloadImage() {
             if (Image is null && ImageRemote is not null) {
                 Image = await Cache.Get(ImageRemote);
             }
@@ -196,7 +152,7 @@ public sealed partial class Status_MediaPreview(MediaAttachment media): Observab
     public Uri? Remote { get; } = media.PreviewUrl;
     [ObservableProperty]
     public partial Uri? Uri { get; private set; } = null;
-    internal async Task Download() {
+    internal async void Download() {
         if (Uri is null && Remote is not null) {
             Uri = await Cache.Get(Remote);
         }

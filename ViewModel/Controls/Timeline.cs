@@ -14,8 +14,9 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
     private int version;
 
     public string Id { get; }
+    public string PaginateId => Id;
 
-    public Status.Account? Reblogger { get; } = null;
+    public Account? Reblogger { get; } = null;
     public Status Content { get; }
 
     private Timeline(Model.Entities.Timeline timeline, int version) {
@@ -25,7 +26,7 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
         if (string.IsNullOrWhiteSpace(status.Reblog)) {
             Content = Status.Create(Id);
         } else {
-            Reblogger = Status.Account.Create(status.Account);
+            Reblogger = Account.Create(status.Account);
             Content = Status.Create(status.Reblog);
         }
 
@@ -52,8 +53,8 @@ public sealed partial class Timeline: ObservableObject, IPaginatedViewModel<Time
     }
 
     public async void DownloadMedia() {
-        _ = Content.DownloadMedia();
-        _ = Reblogger?.DownloadAvatar();
+        Content.DownloadMedia();
+        Reblogger?.DownloadAvatar();
     }
 
     public static Timeline Create(Model.Entities.Timeline timeline, int version) {
