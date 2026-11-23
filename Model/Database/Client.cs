@@ -26,7 +26,7 @@ internal sealed class Client(string account): IDisposable {
         Account.Add(accounts);
 
         var dbTimelines = serverStatuses.Select(x => new Entities.Timeline(x)).ToArray();
-        Timeline.Add(dbTimelines, afterId);
+        Timeline.Add(dbTimelines, afterId is null);
         return dbTimelines;
     }
 
@@ -41,7 +41,7 @@ internal sealed class Client(string account): IDisposable {
         Account.Add(accounts);
 
         var dbNotifications = notifications.NotificationGroups.Select(x => new Entities.Notification(x)).ToArray();
-        Notification.Add(dbNotifications, afterId);
+        Notification.Add(dbNotifications, afterId is null);
         return dbNotifications;
     }
 

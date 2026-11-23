@@ -13,6 +13,10 @@ internal sealed partial class RefreshListView: RefreshContainer {
         get => !LoadMoreButton.IsEnabled;
         set => LoadMoreButton.IsEnabled = !value;
     }
+    public Visibility LoadMoreButtonVisibility {
+        get => LoadMoreButton.Visibility;
+        set => LoadMoreButton.Visibility = value;
+    }
 
     private ScrollViewer? scrollViewer = null;
     public bool IsOnTop => scrollViewer?.VerticalOffset == 0;

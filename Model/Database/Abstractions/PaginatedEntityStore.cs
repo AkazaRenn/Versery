@@ -15,8 +15,8 @@ internal abstract class PaginatedEntityStore<T>(string id, JsonTypeInfo<T> typeI
         }
     }
 
-    internal void Add(IEnumerable<T> entities, string? afterId) {
-        if (afterId is null) {
+    internal void Add(IEnumerable<T> entities, bool drop = false) {
+        if (drop) {
             Drop();
         }
 

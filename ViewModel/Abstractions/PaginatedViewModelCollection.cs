@@ -13,6 +13,8 @@ public abstract partial class PaginatedViewModelCollection: ObservableObject {
 
     [ObservableProperty]
     public partial bool IsLoading { get; protected set; } = false;
+    [ObservableProperty]
+    public partial bool HasMoreEntitiesToLoad { get; protected set; } = true;
 }
 
 
@@ -21,43 +23,21 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
     where Entity : Model.Interfaces.IDatabaseEntity {
     public ObservableCollection<ViewModel> ViewModels { get; } = [];
 
-    protected abstract Entity[] GetFromDatabase(string? afterId = null);
-    protected abstract Task<Entity[]> GetFromServer(string? afterId = null);
+    protected abstract Entity[] GetFromDatabase(int count = itemsCountPerLoad, string? afterId = null);
+    protected abstract Task<Entity[]> GetFromServer(int count = itemsCountPerLoad, string? afterId = null);
     protected readonly Client client = Model.Services.Get<Client>();
 
-    private bool hasMoreEntitiesToLoad = true;
     private bool CanLoad => client.SignedIn && !IsLoading;
+    private const int itemsCountPerLoad = Constants.ItemsCountPerLoad;
 
     public PaginatedViewModelCollection() {
         StrongReferenceMessenger.Default.Register<Messages.SignInCompleted>(this);
-        _ = LoadInitialItems();
+        _ = LoadLatestItems();
     }
 
     public void Receive(Messages.SignInCompleted message) {
         ViewModels.Clear();
-        _ = LoadInitialItems();
-    }
-
-    private async Task LoadInitialItems() {
-        if (!CanLoad) {
-            return;
-        }
-
-        IsLoading = true;
-
-        var entities = GetFromDatabase();
-        if (entities.Length == 0) {
-            entities = await GetFromServer();
-        }
-
-        int currentVersion = Version;
-
-        var viewModels = ViewModel.FromEntities(entities, currentVersion);
-        foreach (var viewModel in viewModels) {
-            ViewModels.Add(viewModel);
-        }
-
-        IsLoading = false;
+        _ = LoadLatestItems();
     }
 
     public Func<Task> LoadLatestItems => LoadLatestItemsInternal;
@@ -67,7 +47,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
 
     public async Task OnItemRealized(int index) {
         ViewModels[index].DownloadMedia();
-        if ((index == ViewModels.Count - 1) && hasMoreEntitiesToLoad) {
+        if ((index == ViewModels.Count - 1) && HasMoreEntitiesToLoad) {
             await LoadMoreItems(index + 1, ViewModels[index].Id);
         }
     }
@@ -81,16 +61,29 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
 
         try {
             var entities = await Task.Run(async () => {
-                return await GetFromServer(afterId);
+                Entity[] entities;
+                if (ViewModels.Count == 0) {
+                    entities = GetFromDatabase(itemsCountPerLoad, afterId);
+                    if (entities.Length == 0) {
+                        entities = await GetFromServer(itemsCountPerLoad, afterId);
+                    }
+                } else if (startingIndex == 0) {
+                    entities = await GetFromServer(itemsCountPerLoad, afterId);
+                } else {
+                    entities = await GetFromServer(itemsCountPerLoad, afterId);
+                    if (entities.Length == 0) {
+                        entities = GetFromDatabase(itemsCountPerLoad, afterId);
+                    }
+                }
+                return entities;
             });
 
             if (entities.Length == 0) {
-                hasMoreEntitiesToLoad = false;
                 return;
             }
 
+            HasMoreEntitiesToLoad = entities.Length >= itemsCountPerLoad;
             int currentVersion = Version;
-
             var viewModels = await Task.Run(() => {
                 return ViewModel.FromEntities(entities, currentVersion).ToArray();
             });
