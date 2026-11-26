@@ -1,20 +1,16 @@
 ﻿using Model.Interfaces;
-using System.Text.Json.Serialization;
 
 namespace Model.Entities;
 
-public record Notification: Server.Entities.NotificationGroup, IDatabaseEntity {
-    [JsonIgnore]
-    public string Id => GroupKey;
-    [JsonIgnore]
-    public string IndexId => MostRecentNotificationId.ToString();
+public record Notification(): IDatabaseEntity {
+    public string Id { get; init; } = string.Empty;
+    public string GroupKey { get; init; } = string.Empty;
+    public string? PageMinId { get; init; } = null;
     public DateTimeOffset ExpiresAt { get; init; } = DateTimeOffset.UtcNow.AddMonths(3);
 
-    public Notification(Server.Entities.NotificationGroup serverNotificationGroup) : base(serverNotificationGroup) {
-    }
-
-    private static readonly Server.Entities.NotificationGroup empty = (Server.Entities.NotificationGroup)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(Server.Entities.NotificationGroup));
-    [JsonConstructor]
-    public Notification() : base(empty) {
+    internal Notification(Server.Entities.NotificationGroup serverNotificationGroup) : this() {
+        Id = serverNotificationGroup.MostRecentNotificationId.ToString();
+        GroupKey = serverNotificationGroup.GroupKey;
+        PageMinId = serverNotificationGroup.PageMinId;
     }
 }

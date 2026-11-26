@@ -16,7 +16,7 @@ internal abstract class EntityStore<T>(string id, int maxItemCount, JsonTypeInfo
     }
 
     public void Add(T entity) {
-        Db.Upsert(entity.IndexId, entity);
+        Db.Upsert(entity.Id, entity);
     }
 
     public void Add(IEnumerable<T> entities) {

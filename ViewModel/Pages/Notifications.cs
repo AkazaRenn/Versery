@@ -4,6 +4,10 @@ using ViewModel.Controls;
 namespace ViewModel.Pages;
 
 public sealed partial class Notifications: PaginatedViewModelCollection<Notification, Model.Entities.Notification> {
+    protected override Notification CreateViewModel(Model.Entities.Notification entity) {
+        return new(entity);
+    }
+
     protected override Model.Entities.Notification[] GetFromDatabase(uint count, string? afterId = null) {
         return client.GetNotificationFromDatabase(count, afterId);
     }

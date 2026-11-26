@@ -1,19 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Model.Access;
-using Model.Server.Entities;
-using Model.Utilities;
+using ViewModel.Abstractions;
 using ViewModel.Extensions;
+using ViewModel.Interfaces;
+using ViewModel.Shared;
 
 namespace ViewModel.Controls;
 
-public sealed partial class Status: ObservableObject {
+public sealed partial class Status: CachedViewModel<Status>, ICachedViewModel<Status> {
     private static readonly Client client = Model.Services.Get<Client>();
-    private static readonly Dictionary<string, WeakReference<Status>> cache = [];
-
-    private readonly Sentinel<string, Status> sentinel;
-
-    public string Id { get; }
+    private int version = 0;
 
     public Html? SpoilerText { get; } = null;
     public Html PostBody { get; } = new() {
@@ -50,13 +47,12 @@ public sealed partial class Status: ObservableObject {
     [ObservableProperty]
     public partial bool IsBookmarked { get; private set; } = false;
 
-    public Status_MediaPreview[] Media { get; } = [];
+    public MediaPreview[] Media { get; } = [];
     public bool MediaPreviewsHidden { get; set; } = true;
 
-    public Card_? Card { get; } = null;
+    public PreviewCard? Card { get; } = null;
 
-    private Status(string id) {
-        Id = id;
+    private Status(string id) : base(id) {
         var status = client.GetStatus(Id)!;
 
         Poster = Account.Create(status.Account);
@@ -66,7 +62,7 @@ public sealed partial class Status: ObservableObject {
             Quote = Create(status.Quote);
         }
 
-        CanBeReblogged = status.Visibility < StatusVisibilityEnum.Private;
+        CanBeReblogged = status.Visibility < Model.Server.Entities.StatusVisibilityEnum.Private;
         IsReply = !string.IsNullOrWhiteSpace(status.InReplyToId);
         IsReblogged = status.Reblogged is true;
         IsFavourited = status.Favourited is true;
@@ -90,71 +86,32 @@ public sealed partial class Status: ObservableObject {
             Uri = uri;
         }
 
-        Media = [.. status.MediaAttachments.Select(x => new Status_MediaPreview(x))];
+        Media = [.. status.MediaAttachments.Select(x => new MediaPreview(x))];
         MediaPreviewsHidden = status.Sensitive;
 
         if (status.Card is not null) {
-            Card = new(status.Card);
-        }
-
-        sentinel = new(Id, cache);
-    }
-
-    internal static Status Create(string id) {
-        lock (cache) {
-            if ((!cache.TryGetValue(id, out var reference)) ||
-                (!reference.TryGetTarget(out var obj))) {
-                obj = new(id);
-                cache[id] = new(obj);
-            }
-            return obj;
+            Card = new PreviewCard(status.Card);
         }
     }
 
-    internal async void DownloadMedia() {
+    static Status ICachedViewModel<Status>.New(string id) => new(id);
+
+    internal void Update(int version) {
+        if (this.version == version) {
+            return;
+        }
+
+        this.version = version;
+        Poster.Update(version);
+        Quote?.Update(version);
+    }
+
+    internal void DownloadMedia() {
         Poster.DownloadAvatar();
         Card?.DownloadImage();
         foreach (var media in Media) {
             media.Download();
         }
         Quote?.DownloadMedia();
-    }
-
-    public sealed partial class Card_(PreviewCard card): ObservableObject {
-        public Uri? Url { get; } = card.Url;
-        public string Title { get; } = card.Title;
-        public string Description { get; } = card.Description;
-        public string ProviderName { get; } = card.ProviderName;
-        [RelayCommand]
-        private void Invoke() {
-            if (Url is not null) {
-                _ = Windows.System.Launcher.LaunchUriAsync(Url);
-            }
-        }
-
-        public Uri? ImageRemote { get; } = card.Image;
-        [ObservableProperty]
-        public partial Uri? Image { get; private set; } = null;
-        internal async void DownloadImage() {
-            if (Image is null && ImageRemote is not null) {
-                Image = await Cache.Get(ImageRemote);
-            }
-        }
-    }
-}
-
-public sealed partial class Status_MediaPreview(MediaAttachment media): ObservableObject {
-    public double Aspect { get; } = media.Meta?.Original?.Aspect ?? 1;
-    public string? Blurhash { get; } = media.Blurhash;
-    public string? Description { get; } = media.Description;
-    public Uri? Full { get; } = media.RemoteUrl;
-
-    public Uri? Remote { get; } = media.PreviewUrl;
-    [ObservableProperty]
-    public partial Uri? Uri { get; private set; } = null;
-    internal async void Download() {
-        if (Uri is null && Remote is not null) {
-            Uri = await Cache.Get(Remote);
-        }
     }
 }

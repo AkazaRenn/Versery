@@ -6,7 +6,7 @@
     xmlns:components="using:View.Controls.Components"
     xmlns:enumerations="using:ViewModel.Enumerations"
     xmlns:utilities="using:View.Utilities"
-    xmlns:vm.controls="using:ViewModel.Controls"
+    xmlns:vm.shared="using:ViewModel.Shared"
     xmlns:fluenticons="using:FluentIcons.WinUI"
     xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls"
     Loaded="SlideDialog_Loaded">
@@ -244,7 +244,7 @@
                         ContainerContentChanging="EmojiGridView_ContainerContentChanging"
                         ItemClick="EmojiGridView_ItemClick">
                         <GridView.ItemTemplate>
-                            <DataTemplate x:DataType="vm.controls:PostPanel_Emoji">
+                            <DataTemplate x:DataType="vm.shared:Emoji">
                                 <components:Emoji
                                     Height="32"
                                     Width="32"

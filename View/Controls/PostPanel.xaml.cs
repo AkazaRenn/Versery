@@ -83,7 +83,7 @@ internal sealed partial class PostPanel: SlideDialog {
     }
     private void EmojiGridView_ItemClick(object sender, ItemClickEventArgs e) {
         EmojiSearchTextBox.Focus(FocusState.Programmatic);
-        if ((e.ClickedItem is ViewModel.Controls.PostPanel_Emoji emoji) &&
+        if ((e.ClickedItem is ViewModel.Shared.Emoji emoji) &&
             (ContentBox.TextDocument is { } document)) {
             var selection = document.Selection;
             var hasSpaceBefore = (selection.StartPosition <= 0) ||

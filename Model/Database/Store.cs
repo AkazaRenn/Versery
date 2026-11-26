@@ -100,6 +100,7 @@ internal sealed class Store<T>: IDisposable
 
 [JsonSerializable(typeof(Entities.Account), TypeInfoPropertyName = "DatabaseAccount")]
 [JsonSerializable(typeof(Entities.Notification), TypeInfoPropertyName = "DatabaseNotification")]
+[JsonSerializable(typeof(Entities.NotificationGroup), TypeInfoPropertyName = "DatabaseNotificationGroup")]
 [JsonSerializable(typeof(Entities.Status), TypeInfoPropertyName = "DatabaseStatus")]
 [JsonSerializable(typeof(Entities.Timeline))]
 internal sealed partial class StoreJsonContext: JsonSerializerContext;

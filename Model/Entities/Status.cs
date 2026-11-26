@@ -4,8 +4,6 @@ using System.Text.Json.Serialization;
 namespace Model.Entities;
 
 public record Status: Server.Entities.Status, IDatabaseEntity {
-    [JsonIgnore]
-    public string IndexId => Id;
     [JsonPropertyName("account")]
     public new string Account { get; init; } = string.Empty;
     [JsonPropertyName("quote")]

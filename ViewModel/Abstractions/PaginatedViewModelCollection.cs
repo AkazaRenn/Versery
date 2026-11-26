@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using Model;
 using Model.Access;
 using System.Collections.ObjectModel;
-using ViewModel.Interfaces;
 
 namespace ViewModel.Abstractions;
 
@@ -19,12 +18,13 @@ public abstract partial class PaginatedViewModelCollection: ObservableObject {
 
 
 public abstract class PaginatedViewModelCollection<ViewModel, Entity>: PaginatedViewModelCollection, IRecipient<Messages.SignInCompleted>
-    where ViewModel : IPaginatedViewModel<ViewModel, Entity>
+    where ViewModel : PaginatedViewModel
     where Entity : Model.Interfaces.IDatabaseEntity {
     public ObservableCollection<ViewModel> ViewModels { get; } = [];
 
     protected abstract Entity[] GetFromDatabase(uint count = itemsCountPerLoad, string? afterId = null);
     protected abstract Task<Entity[]> GetFromServer(uint count = itemsCountPerLoad, string? afterId = null);
+    protected abstract ViewModel CreateViewModel(Entity entity);
     protected readonly Client client = Model.Services.Get<Client>();
 
     private bool CanLoad => client.SignedIn && !IsLoading;
@@ -45,7 +45,11 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
         await LoadMoreItems(0);
     }
 
-    public async Task OnItemRealized(int index) {
+    public async Task OnItemRealized(int index, bool realized) {
+        ViewModels[index].Realized = realized;
+        if (!realized) {
+            return;
+        }
         ViewModels[index].DownloadMedia();
         if ((index == ViewModels.Count - 1) && HasMoreEntitiesToLoad) {
             await LoadMoreItems(index + 1, ViewModels[index].PaginateId);
@@ -85,7 +89,11 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
             HasMoreEntitiesToLoad = entities.Length >= itemsCountPerLoad;
             int currentVersion = Version;
             var viewModels = await Task.Run(() => {
-                return ViewModel.FromEntities(entities, currentVersion).ToArray();
+                var result = new ViewModel[entities.Length];
+                for (int i = 0; i < entities.Length; i++) {
+                    result[i] = CreateViewModel(entities[i]);
+                }
+                return result;
             });
 
             // No overlapping, add all to the beginning
@@ -99,6 +107,7 @@ public abstract class PaginatedViewModelCollection<ViewModel, Entity>: Paginated
                 }
                 for (int i = 0; i < viewModels.Length; i++) {
                     ViewModels.Insert(i + startingIndex, viewModels[i]);
+                    viewModels[i].Update(currentVersion);
                 }
                 return;
             }

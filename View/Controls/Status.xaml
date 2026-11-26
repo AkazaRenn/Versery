@@ -3,12 +3,12 @@
     x:Class="View.Controls.Status"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:utils="using:View.Utilities"
+    xmlns:utilities="using:View.Utilities"
     xmlns:controls="using:View.Controls"
     xmlns:components="using:View.Controls.Components"
     xmlns:extensions="using:View.Extensions"
     xmlns:fluenticons="using:FluentIcons.WinUI"
-    xmlns:vmcontrols="using:ViewModel.Controls"
+    xmlns:vm.shared="using:ViewModel.Shared"
     xmlns:ctcontrols="using:CommunityToolkit.WinUI.Controls"
     RowDefinitions="Auto, Auto">
 
@@ -46,7 +46,7 @@
             TextTrimming="CharacterEllipsis"
             TextWrapping="NoWrap"
             IsTextSelectionEnabled="False"
-            extensions:RichTextBlock.Html="{x:Bind ViewModel.Poster.DisplayName}"/>
+            extensions:RichTextBlock.Html="{x:Bind ViewModel.Poster.DisplayName, Mode=OneWay}"/>
 
         <TextBlock
             x:Name="StatusTimeTextBlock"
@@ -78,7 +78,7 @@
         Spacing="8">
         <Grid
             x:Name="SpoilerTextGrid"
-            x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.SpoilerText)}"
+            x:Load="{x:Bind utilities:Converters.IsNotNull(ViewModel.SpoilerText), Mode=OneWay}"
             ColumnDefinitions="*, Auto"
             ColumnSpacing="4">
             <RichTextBlock
@@ -87,7 +87,7 @@
                 TextWrapping="WrapWholeWords"
                 IsTextSelectionEnabled="False"
                 Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
-                extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText}"
+                extensions:RichTextBlock.Html="{x:Bind ViewModel.SpoilerText, Mode=OneWay}"
                 Tapped="ShowSpoilerButton_Click"/>
             <Button
                 Grid.Column="1"
@@ -101,7 +101,7 @@
                     Icon="ChevronDown"
                     SizeChanged="ShowSpoilerButtonIcon_SizeChanged"
                     Scale="{x:Bind controls:Status.GetShowSpoilerButtonIconScale(ViewModel.Collapsed), Mode=OneWay}"
-                    ScaleTransition="{x:Bind utils:Transitions.Vector3Transition}"> </fluenticons:FluentIcon>
+                    ScaleTransition="{x:Bind utilities:Transitions.Vector3Transition}"> </fluenticons:FluentIcon>
             </Button>
         </Grid>
 
@@ -111,13 +111,13 @@
             MaxHeight="{x:Bind controls:Status.GetPostBodyGridInitialHeight(ViewModel.Collapsed)}">
             <ctcontrols:OpacityMaskView
                 x:Name="PostBodyGridOpacityMaskView"
-                OpacityMask="{x:Bind utils:Values.NullUIElement}">
+                OpacityMask="{x:Bind utilities:Values.NullUIElement}">
                 <StackPanel Orientation="Vertical">
                     <RichTextBlock
                         x:Name="PostBodyRichTextBlock"
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
-                        extensions:RichTextBlock.Html="{x:Bind ViewModel.PostBody}"
+                        extensions:RichTextBlock.Html="{x:Bind ViewModel.PostBody, Mode=OneWay}"
                         SizeChanged="PostBodyRichTextBlock_SizeChanged"/>
                 </StackPanel>
             </ctcontrols:OpacityMaskView>
@@ -129,7 +129,7 @@
                 FontSize="12"
                 Padding="16,0,16,0"
                 Visibility="Collapsed"
-                IsEnabled="{x:Bind utils:Values.True}"
+                IsEnabled="{x:Bind utilities:Values.True}"
                 Click="CollapsePostBodyButton_Click">
                 <fluenticons:FluentIcon Icon="ChevronDown"/>
             </Button>
@@ -137,8 +137,8 @@
 
         <controls:Status
             x:Name="QuoteStatus"
-            x:Load="{x:Bind LoadQuote}"
-            ViewModel="{x:Bind ViewModel.Quote}"
+            x:Load="{x:Bind LoadQuote(ViewModel.Quote), Mode=OneWay}"
+            ViewModel="{x:Bind ViewModel.Quote, Mode=OneWay}"
             BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
             BorderThickness="0.5"
             CornerRadius="4"
@@ -150,18 +150,18 @@
 
         <components:MediaGrid
             x:Name="MediaGrid"
-            x:Load="{x:Bind LoadMedia}"
+            x:Load="{x:Bind LoadMedia(ViewModel.Media), Mode=OneWay}"
             CornerRadius="{StaticResource ControlCornerRadius}"
             ColumnSpacing="2"
             RowSpacing="2"
             MediaPreviewsHidden="{x:Bind ViewModel.MediaPreviewsHidden, Mode=TwoWay}"
-            ItemsSource="{x:Bind ViewModel.Media}">
+            ItemsSource="{x:Bind ViewModel.Media, Mode=OneWay}">
             <components:MediaGrid.ItemTemplate>
-                <DataTemplate x:DataType="vmcontrols:Status_MediaPreview">
+                <DataTemplate x:DataType="vm.shared:MediaPreview">
                     <components:MediaPreview
                         UriSource="{x:Bind Uri, Mode=OneWay}"
                         Aspect="{x:Bind Aspect}"
-                        Description="{x:Bind Description}"
+                        Description="{x:Bind Description, Mode=OneWay}"
                         Blurhash="{x:Bind Blurhash}"/>
                 </DataTemplate>
             </components:MediaGrid.ItemTemplate>
@@ -169,19 +169,19 @@
 
         <Button
             x:Name="CardButton"
-            x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.Card)}"
+            x:Load="{x:Bind utilities:Converters.IsNotNull(ViewModel.Card), Mode=OneWay}"
             Height="96"
             HorizontalAlignment="Stretch"
             VerticalContentAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             Padding="0"
-            Command="{x:Bind ViewModel.Card.InvokeCommand}">
+            Command="{x:Bind ViewModel.Card.InvokeCommand, Mode=OneWay}">
             <Grid
                 ColumnDefinitions="Auto, *"
                 CornerRadius="4">
                 <Rectangle
                     x:Name="CardImageRectangle"
-                    x:Load="{x:Bind utils:Converters.IsNotNull(ViewModel.Card.ImageRemote)}"
+                    x:Load="{x:Bind utilities:Converters.IsNotNull(ViewModel.Card.ImageRemote), Mode=OneWay}"
                     Width="96">
                     <Rectangle.Fill>
                         <ImageBrush
@@ -208,7 +208,7 @@
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
                         MaxLines="2"
-                        Text="{x:Bind ViewModel.Card.Title}"/>
+                        Text="{x:Bind ViewModel.Card.Title, Mode=OneWay}"/>
                     <TextBlock
                         Grid.Row="1"
                         Margin="0, 4, 0, 0"
@@ -217,10 +217,10 @@
                         TextWrapping="WrapWholeWords"
                         IsTextSelectionEnabled="False"
                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.Card.Description}"/>
+                        Text="{x:Bind ViewModel.Card.Description, Mode=OneWay}"/>
                     <TextBlock
                         x:Name="CardProviderNameTextBlock"
-                        x:Load="{x:Bind utils:Converters.StringIsNotNullOrEmpty(ViewModel.Card.ProviderName)}"
+                        x:Load="{x:Bind utilities:Converters.StringIsNotNullOrEmpty(ViewModel.Card.ProviderName), Mode=OneWay}"
                         Grid.Row="2"
                         Margin="0, 4, 0, 0"
                         FontSize="12"
@@ -228,7 +228,7 @@
                         TextWrapping="NoWrap"
                         IsTextSelectionEnabled="False"
                         Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}"
-                        Text="{x:Bind ViewModel.Card.ProviderName}"/>
+                        Text="{x:Bind ViewModel.Card.ProviderName, Mode=OneWay}"/>
                 </Grid>
             </Grid>
         </Button>
@@ -260,20 +260,20 @@
                     <fluenticons:FluentIcon
                         Icon="{x:Bind controls:Status.GetReblogIcon(ViewModel.CanBeReblogged)}"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.IsReblogged), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                        Opacity="{x:Bind utilities:Converters.BoolToDoubleReversed(ViewModel.IsReblogged), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utilities:Transitions.ScalarTransition}"/>
                     <fluenticons:FluentIcon
                         Icon="ArrowRepeatAll"
-                        Foreground="{x:Bind utils:Brushes.Reblog}"
+                        Foreground="{x:Bind utilities:Brushes.Reblog}"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                        Opacity="{x:Bind utilities:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utilities:Transitions.ScalarTransition}"/>
                     <Ellipse
                         Height="2"
                         Width="2"
-                        Fill="{x:Bind utils:Brushes.Reblog}"
-                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                        Fill="{x:Bind utilities:Brushes.Reblog}"
+                        Opacity="{x:Bind utilities:Converters.BoolToDouble(ViewModel.IsReblogged), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utilities:Transitions.ScalarTransition}"/>
                 </Grid>
             </Button>
             <Button
@@ -285,15 +285,15 @@
                     <fluenticons:FluentIcon
                         Icon="Star"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDoubleReversed(ViewModel.IsFavourited), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                        Opacity="{x:Bind utilities:Converters.BoolToDoubleReversed(ViewModel.IsFavourited), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utilities:Transitions.ScalarTransition}"/>
                     <fluenticons:FluentIcon
                         Icon="Star"
                         IconVariant="Filled"
-                        Foreground="{x:Bind utils:Brushes.Favourite}"
+                        Foreground="{x:Bind utilities:Brushes.Favourite}"
                         FontSize="{x:Bind controls:Status.ReactButtonFontSize}"
-                        Opacity="{x:Bind utils:Converters.BoolToDouble(ViewModel.IsFavourited), Mode=OneWay}"
-                        OpacityTransition="{x:Bind utils:Transitions.ScalarTransition}"/>
+                        Opacity="{x:Bind utilities:Converters.BoolToDouble(ViewModel.IsFavourited), Mode=OneWay}"
+                        OpacityTransition="{x:Bind utilities:Transitions.ScalarTransition}"/>
                 </Grid>
             </Button>
             <Button

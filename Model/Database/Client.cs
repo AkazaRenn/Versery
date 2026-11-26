@@ -9,6 +9,8 @@ internal sealed class Client(string account): IDisposable {
     private Timeline Timeline => timeline ?? throw new ObjectDisposedException(nameof(Client));
     private Notification? notification = new(account);
     private Notification Notification => notification ?? throw new ObjectDisposedException(nameof(Client));
+    private NotificationGroup? notificationGroup = new(account);
+    private NotificationGroup NotificationGroup => notificationGroup ?? throw new ObjectDisposedException(nameof(Client));
     private Status? status = new(account);
     private Status Status => status ?? throw new ObjectDisposedException(nameof(Client));
     private Account? accountEntity = new(account);
@@ -40,6 +42,8 @@ internal sealed class Client(string account): IDisposable {
         var accounts = notifications.Accounts.Concat(flattened.Select(x => x.Account)).DistinctBy(x => x.Id).Select(x => new Entities.Account(x));
         Account.Add(accounts);
 
+        NotificationGroup.Add(notifications.NotificationGroups.Select(x => new Entities.NotificationGroup(x)));
+
         var dbNotifications = notifications.NotificationGroups.Select(x => new Entities.Notification(x)).ToArray();
         Notification.Add(dbNotifications, afterId is null);
         return dbNotifications;
@@ -47,6 +51,10 @@ internal sealed class Client(string account): IDisposable {
 
     public Entities.Status? GetStatus(string id) {
         return Status.Get(id);
+    }
+
+    public Entities.NotificationGroup? GetNotificationGroup(string id) {
+        return NotificationGroup.Get(id);
     }
 
     public Entities.Account? GetAccount(string id) {
@@ -58,6 +66,8 @@ internal sealed class Client(string account): IDisposable {
         timeline = null;
         Notification.Dispose();
         notification = null;
+        NotificationGroup.Dispose();
+        notificationGroup = null;
         Status.Dispose();
         status = null;
         Account.Dispose();

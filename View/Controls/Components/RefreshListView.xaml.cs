@@ -8,7 +8,7 @@ internal sealed partial class RefreshListView: RefreshContainer {
     public object ItemsSource { set => ListView.ItemsSource = value; }
     public DataTemplate ItemTemplate { set => ListView.ItemTemplate = value; }
     public Func<Task>? LoadLatest { get; set; } = null;
-    public event Action<int>? OnItemRealized;
+    public event Action<int, bool>? OnItemRealized;
     public bool IsLoading {
         get => !LoadMoreButton.IsEnabled;
         set => LoadMoreButton.IsEnabled = !value;
@@ -55,11 +55,9 @@ internal sealed partial class RefreshListView: RefreshContainer {
 
     private void ListView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args) {
         if (args.InRecycleQueue) {
-            return;
-        }
-
-        if (args.Phase == 0) {
-            OnItemRealized?.Invoke(args.ItemIndex);
+            OnItemRealized?.Invoke(args.ItemIndex, false);
+        } else if (args.Phase == 0) {
+            OnItemRealized?.Invoke(args.ItemIndex, true);
         }
     }
 

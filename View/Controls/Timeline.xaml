@@ -31,14 +31,14 @@
         FontSize="13"
         Foreground="{ThemeResource TextFillColorTertiaryBrush}"
         IsTextSelectionEnabled="False"
-        extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName}"/>
+        extensions:RichTextBlock.Html="{x:Bind ViewModel.Reblogger.DisplayName, Mode=OneWay}"/>
 
     <controls:Status
         x:Name="Status"
         Grid.Column="0"
         Grid.ColumnSpan="99"
         Grid.Row="1"
-        Padding="8 8 8 4"
+        Padding="8 8 8 8"
         BorderThickness="0 0 0 0.5"
         BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
         AvatarSize="40"

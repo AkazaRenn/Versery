@@ -20,7 +20,7 @@ internal sealed partial class Notifications: Page, INavigationPage {
         }
     }
 
-    private void RefreshListView_OnItemRealized(int index) {
-        _ = viewModel.OnItemRealized(index);
+    private void RefreshListView_OnItemRealized(int index, bool realized) {
+        _ = viewModel.OnItemRealized(index, realized);
     }
 }

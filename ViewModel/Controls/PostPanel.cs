@@ -7,6 +7,7 @@ using Model.Server.Entities;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using ViewModel.Enumerations;
+using ViewModel.Shared;
 
 namespace ViewModel.Controls;
 
@@ -39,7 +40,7 @@ public sealed partial class PostPanel: ObservableObject {
     public string SpoilerText { get; set; } = string.Empty;
 
     public AdvancedCollectionView EmojisView { get; }
-    private readonly ObservableCollection<PostPanel_Emoji> emojis = [];
+    private readonly ObservableCollection<Emoji> emojis = [];
     public string EmojiFilter {
         get;
         set {
@@ -68,14 +69,14 @@ public sealed partial class PostPanel: ObservableObject {
         var serverEmojis = await client.EmojisTask;
         var emojisToAdd = serverEmojis.Skip(emojis.Count).Take(emojiBatchSize);
         foreach (var emoji in emojisToAdd) {
-            emojis.Add(new PostPanel_Emoji(emoji.Shortcode, emoji.Url));
+            emojis.Add(new Emoji(emoji.Shortcode, emoji.Url));
         }
         allEmojisLoaded = serverEmojis.Count <= emojis.Count;
     }
     public void OnEmojiRealized(int index) {
         if ((index >= 0) &&
             (index < EmojisView.Count)) {
-            ((PostPanel_Emoji)EmojisView[index]).Load();
+            ((Emoji)EmojisView[index]).Load();
         }
         if (index >= (EmojisView.Count - 1)) {
             LoadMoreEmojis();
@@ -105,18 +106,7 @@ public sealed partial class PostPanel: ObservableObject {
     public PostPanel() {
         SetDefaultProperties();
         EmojisView = new(emojis) {
-            Filter = x => ((PostPanel_Emoji)x).Shortcode.Contains(EmojiFilter, StringComparison.OrdinalIgnoreCase),
+            Filter = x => ((Emoji)x).Shortcode.Contains(EmojiFilter, StringComparison.OrdinalIgnoreCase),
         };
-    }
-}
-
-public sealed partial class PostPanel_Emoji(string shortCode, Uri? sourceRemote = null): ObservableObject {
-    public string Shortcode => shortCode;
-    [ObservableProperty]
-    public partial Uri? Source { get; private set; } = null;
-    internal async void Load() {
-        if (sourceRemote is not null) {
-            Source = await Cache.Get(sourceRemote);
-        }
     }
 }

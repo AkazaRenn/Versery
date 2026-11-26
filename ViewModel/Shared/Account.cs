@@ -2,18 +2,16 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Model.Access;
-using Model.Utilities;
+using ViewModel.Abstractions;
 using ViewModel.Extensions;
+using ViewModel.Interfaces;
 
-namespace ViewModel.Controls;
+namespace ViewModel.Shared;
 
-public sealed partial class Account: ObservableObject {
+public sealed partial class Account: CachedViewModel<Account>, ICachedViewModel<Account> {
     private static readonly Client client = Model.Services.Get<Client>();
-    private static readonly Dictionary<string, WeakReference<Account>> cache = [];
+    private int version = 0;
 
-    private readonly Sentinel<string, Account> sentinel;
-
-    public string Id { get; }
     public string AccountName { get; }
     public Html DisplayName { get; } = new();
 
@@ -26,8 +24,7 @@ public sealed partial class Account: ObservableObject {
         }
     }
 
-    private Account(string id) {
-        Id = id;
+    private Account(string id) : base(id) {
         var account = client.GetAccount(id)!;
         AccountName = $"@{account.Acct}";
         DisplayName.RawText = account.DisplayName;
@@ -35,18 +32,15 @@ public sealed partial class Account: ObservableObject {
             DisplayName.Emojis.Add(emoji.Shortcode, Cache.Get(emoji.Url));
         }
         AvatarRemote = account.Avatar;
-
-        sentinel = new(Id, cache);
     }
 
-    internal static Account Create(string id) {
-        lock (cache) {
-            if ((!cache.TryGetValue(id, out var reference)) ||
-                (!reference.TryGetTarget(out var obj))) {
-                obj = new(id);
-                cache[id] = new(obj);
-            }
-            return obj;
+    static Account ICachedViewModel<Account>.New(string id) => new(id);
+
+    internal void Update(int version) {
+        if (this.version == version) {
+            return;
         }
+
+        this.version = version;
     }
 }

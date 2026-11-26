@@ -144,8 +144,8 @@ internal sealed partial class Status: Grid {
         postBodyGridStoryboard.Begin();
     }
 
-    private bool LoadQuote => ShowQuote && (ViewModel?.Quote is not null);
-    private bool LoadMedia => ViewModel?.Media.Length > 0;
+    private bool LoadQuote(ViewModel.Controls.Status? quote) => ShowQuote && (quote is not null);
+    private bool LoadMedia(ViewModel.Shared.MediaPreview[]? media) => media?.Length > 0;
 
     internal static Thickness ReactButtonPadding => new(4, 4, 4, 4);
     internal static double ReactButtonFontSize => 16;

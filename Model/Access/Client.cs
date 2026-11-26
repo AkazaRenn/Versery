@@ -125,4 +125,8 @@ public sealed class Client {
     public Account? GetAccount(string id) {
         return database.GetAccount(id);
     }
+
+    public Entities.NotificationGroup? GetNotificationGroup(string id) {
+        return database.GetNotificationGroup(id);
+    }
 }
