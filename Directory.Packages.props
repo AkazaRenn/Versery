@@ -3,7 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AngleSharp" Version="1.10.5" />
+    <PackageVersion Include="AngleSharp" Version="1.11.0" />
     <PackageVersion Include="Blurhash.Core" Version="4.2.1" />
     <PackageVersion Include="CommunityToolkit.Labs.WinUI.Controls.OpacityMaskView" Version="0.1.251217-build.2433" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
@@ -27,7 +27,7 @@
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.7.0" />
     <PackageVersion Include="Nito.Disposables" Version="2.5.0" />
     <PackageVersion Include="Refit" Version="17.0.0" />
-    <PackageVersion Include="Refitter.MSBuild" Version="2.4.0" />
+    <PackageVersion Include="Refitter.MSBuild" Version="2.4.3" />
     <PackageVersion Include="WinUIEx" Version="2.9.3" />
     <PackageVersion Include="ZoneTree" Version="2.1.8" />
   </ItemGroup>

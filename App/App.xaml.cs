@@ -6,6 +6,7 @@ namespace App;
 
 public sealed partial class App: Application, View.Interfaces.IWindowHelper {
     private readonly List<Window> windows = [];
+    private readonly Notification notification = new();
 
     public IHost Host { get; private set; }
 
@@ -24,6 +25,7 @@ public sealed partial class App: Application, View.Interfaces.IWindowHelper {
 
     protected override void OnLaunched(LaunchActivatedEventArgs args) {
         CreateWindow<MainWindow>().Activate();
+        notification.Initialize();
     }
 
     public T CreateWindow<T>() where T : Window, new() {

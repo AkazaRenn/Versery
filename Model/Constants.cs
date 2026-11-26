@@ -5,11 +5,12 @@ using Windows.System.UserProfile;
 namespace Model;
 
 public static class Constants {
-    public static string PackageName { get; } = Package.Current.Id.FamilyName;
-    public static string AppName { get; } = Package.Current.DisplayName;
-    public static PackageVersion AppVersion { get; } = Package.Current.Id.Version;
-    public static string AppVersionString { get; } = $"{AppVersion.Major}.{AppVersion.Minor}.{AppVersion.Build}.{AppVersion.Revision}";
+    public static readonly string PackageName = Package.Current.Id.FamilyName;
+    public static readonly string AppName = Package.Current.DisplayName;
+    public static readonly PackageVersion AppVersion = Package.Current.Id.Version;
+    public static readonly string AppVersionString = $"{AppVersion.Major}.{AppVersion.Minor}.{AppVersion.Build}.{AppVersion.Revision}";
     public const string ProjectLink = "https://github.com/AkazaRenn/Versery/";
+    public static readonly Guid MsaAppId = new("bce54557-aa3a-4341-add6-b5e0cbb1cf77");
 
     public const int ItemsCountPerLoad = 40;
 
